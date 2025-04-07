@@ -28,7 +28,7 @@ export default function MyButton({
   className,
   hoverBgColor = "rgba(28,37,46,0.8)",
   activeBgColor,
-  backgroundColor,
+  backgroundColor="black",
   fontWeight = 700,
   disabledBgColor,
   disabledTextColor,
@@ -93,7 +93,7 @@ export default function MyButton({
           color: variant === "contained" ? "#ffffff" : color,
           fontWeight,
           backgroundColor:
-            variant === "contained" ? color : backgroundColor || 'inherit',
+            variant === "contained" ? backgroundColor : 'transparent',
           border: variant === "outlined" ? `1px solid ${color}` : "none",
           "&:hover": {
             backgroundColor: disabled || loading ? undefined : hoverBgColor,
@@ -104,7 +104,7 @@ export default function MyButton({
           "&.Mui-disabled": {
             backgroundColor:
               variant === "contained"
-                ? color
+                ? backgroundColor
                 : disabledBgColor || backgroundColor || 'inherit',
             color:
               variant === "contained" ? "#ffffff" : disabledTextColor || color,
