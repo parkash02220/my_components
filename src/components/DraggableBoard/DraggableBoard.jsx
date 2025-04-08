@@ -26,8 +26,7 @@ import {
   Box,
 } from "@mui/material";
 import { GripVertical } from "lucide-react";
-
-const initialColumns = [
+ const initialData = [
   {
     id: "todo",
     title: "Todo",
@@ -186,19 +185,40 @@ const initialColumns = [
     ],
   },
 ];
-
 function DraggableColumn({ column, listeners, overCardId, activeCard }) {
-  const { setNodeRef } = useDroppable({ id: column.id });
-  const activeCardId = activeCard?.id || "";
-  const showShadow =
-    activeCardId && column.cards.find((c) => c.id === overCardId);
-  const shadowIndex = column.cards.findIndex((c) => c.id === overCardId);
-  const cardsWithShadow = [...column.cards];
+  const { setNodeRef } = useDroppable({ id: column?.id });
 
-  if (showShadow && shadowIndex >= 0) {
-    cardsWithShadow.splice(shadowIndex, 0, { id: "shadow-placeholder" });
+  const activeCardId = activeCard?.id || "";
+  const isDraggingCard = Boolean(activeCardId);
+
+  const isDraggingCardInThisColumn = column.cards.some((c) => c?.id === activeCardId);
+  let cardsToRender = column.cards;
+  if (isDraggingCard && isDraggingCardInThisColumn) {
+    cardsToRender = column.cards.filter((c) => c?.id !== activeCardId);
   }
 
+  const isOverColumn = overCardId === column?.id;
+const isOverCardInThisColumn = column.cards.some((c) => c?.id === overCardId);
+const showShadow = isDraggingCard && (isOverCardInThisColumn || isOverColumn);
+
+let shadowIndex = cardsToRender.findIndex((c) => c.id === overCardId);
+if (isOverColumn) {
+  shadowIndex = cardsToRender.length; 
+}
+  
+  const cardsWithShadow = [...cardsToRender];
+
+if (showShadow) {
+  const activeIndex = column.cards.findIndex((c) => c?.id === activeCardId);
+  const overIndex = column.cards.findIndex((c) => c?.id === overCardId);
+
+  const insertIndex = activeIndex < overIndex ? shadowIndex + 1 : shadowIndex;
+  if (shadowIndex >= 0) {
+    cardsWithShadow.splice(insertIndex, 0, { id: "shadow-placeholder" });
+  } else {
+    cardsWithShadow.push({ id: "shadow-placeholder" });
+  }
+}
   return (
     <motion.div layout>
       <Paper
@@ -220,7 +240,7 @@ function DraggableColumn({ column, listeners, overCardId, activeCard }) {
 
         <AnimatePresence>
           {cardsWithShadow.map((card) => {
-            if (card.id === "shadow-placeholder") {
+            if (card?.id === "shadow-placeholder") {
               return (
                 <motion.div
                   key="shadow-placeholder"
@@ -230,7 +250,7 @@ function DraggableColumn({ column, listeners, overCardId, activeCard }) {
                   transition={{ duration: 0.2 }}
                   style={{ width: 336, marginBottom: 8 }}
                 >
-                  <Card sx={{ borderRadius: 3, opacity: 0.5 }}>
+                  <Card sx={{ borderRadius: 3, opacity: 0.5,minHeight:120 }}>
                     <CardContent>
                       <Box display="flex" alignItems="center" gap={2}>
                         <Avatar src={activeCard?.image} />
@@ -252,13 +272,13 @@ function DraggableColumn({ column, listeners, overCardId, activeCard }) {
               );
             }
 
-            if (card.id === activeCardId) {
+            if (card?.id === activeCardId) {
               return null;
             }
 
             return (
               <motion.div
-                key={card.id}
+                key={card?.id}
                 layout
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -277,7 +297,7 @@ function DraggableColumn({ column, listeners, overCardId, activeCard }) {
 
 function DraggableCard({ card, activeCardId }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: card.id });
+    useSortable({ id: card?.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -306,25 +326,44 @@ function DraggableCard({ card, activeCardId }) {
 }
 
 export default function DraggableBoard() {
-  const [columns, setColumns] = useState(initialColumns);
+  const [columns, setColumns] = useState(initialData);
   const [activeCard, setActiveCard] = useState(null);
-  const columnIds = columns.map((col) => col.id);
+  const columnIds = columns.map((col) => col?.id);
   const [overCardId, setOverCardId] = useState(null);
-  const allCardIds = columns.flatMap((col) => col.cards.map((c) => c.id));
+  const allCardIds = columns.flatMap((col) => col.cards.map((c) => c?.id));
 
   const handleDragStart = (event) => {
     const { active } = event;
     const dragged = columns
       .flatMap((col) => col.cards)
-      .find((card) => card.id === active.id);
+      .find((card) => card?.id === active?.id);
     if (dragged) {
+      console.log("::dragged card",dragged)
       setActiveCard(dragged);
     }
   };
 
   const handleDragOver = (event) => {
     const { over } = event;
-    if (over) setOverCardId(over.id);
+
+    if (!over) return;
+  
+    const isOverCard = allCardIds.includes(over?.id);
+    const isOverColumn = columnIds.includes(over?.id);
+  
+    if (isOverCard) {
+      console.log("::is over card",over?.id);
+      setOverCardId(over?.id);
+    } else if (isOverColumn) {
+      console.log("::is over column",over?.id);
+      const column = columns.find((col) => col?.id === over?.id);
+      if (column?.cards?.length) {
+        const lastCardId = column.cards[column.cards.length - 1]?.id;
+        setOverCardId(lastCardId);
+      } else {
+        setOverCardId(null);
+      }
+    }
   };
 
   const handleDragEnd = (event) => {
@@ -333,36 +372,36 @@ export default function DraggableBoard() {
     const { active, over } = event;
     if (!over) return;
 
-    if (columnIds.includes(active.id) && columnIds.includes(over.id)) {
-      const oldIndex = columnIds.indexOf(active.id);
-      const newIndex = columnIds.indexOf(over.id);
+    if (columnIds.includes(active?.id) && columnIds.includes(over?.id)) {
+      const oldIndex = columnIds.indexOf(active?.id);
+      const newIndex = columnIds.indexOf(over?.id);
       setColumns((prev) => arrayMove(prev, oldIndex, newIndex));
       return;
     }
     let sourceCol, targetCol;
 
     columns.forEach((col) => {
-      if (col.cards.find((c) => c.id === active.id)) sourceCol = col;
-      if (col.cards.find((c) => c.id === over.id)) targetCol = col;
+      if (col.cards.find((c) => c?.id === active?.id)) sourceCol = col;
+      if (col.cards.find((c) => c?.id === over?.id)) targetCol = col;
     });
 
     if (!targetCol) {
-      targetCol = columns.find((col) => col.id === over.id);
+      targetCol = columns.find((col) => col?.id === over?.id);
     }
 
     if (!sourceCol || !targetCol) return;
 
-    const sourceIndex = sourceCol.cards.findIndex((c) => c.id === active.id);
-    let targetIndex = targetCol.cards.findIndex((c) => c.id === over.id);
+    const sourceIndex = sourceCol.cards.findIndex((c) => c?.id === active?.id);
+    let targetIndex = targetCol.cards.findIndex((c) => c?.id === over?.id);
 
-    if (sourceCol.id === targetCol.id) {
+    if (sourceCol?.id === targetCol?.id) {
         if (sourceIndex < targetIndex) {
             targetIndex -= 1;
           }
         
       const newCards = arrayMove(sourceCol.cards, sourceIndex, targetIndex);
       const newCol = { ...sourceCol, cards: newCards };
-      setColumns((cols) => cols.map((c) => (c.id === newCol.id ? newCol : c)));
+      setColumns((cols) => cols.map((c) => (c?.id === newCol?.id ? newCol : c)));
     } else {
       const card = sourceCol.cards[sourceIndex];
       const updatedSource = {
@@ -382,9 +421,9 @@ export default function DraggableBoard() {
       };
       setColumns((cols) =>
         cols.map((col) =>
-          col.id === updatedSource.id
+          col?.id === updatedSource?.id
             ? updatedSource
-            : col.id === updatedTarget.id
+            : col?.id === updatedTarget?.id
             ? updatedTarget
             : col
         )
@@ -402,7 +441,7 @@ export default function DraggableBoard() {
           onDragOver={handleDragOver}
         >
         {columnIds.includes(activeCard?.id) ? (
-  // User is dragging a column
+
   <SortableContext items={columnIds} strategy={horizontalListSortingStrategy}>
     <Grid
       container
@@ -412,7 +451,7 @@ export default function DraggableBoard() {
     >
       {columns.map((column) => (
         <SortableColumn
-          key={column.id}
+          key={column?.id}
           column={column}
           overCardId={overCardId}
           activeCard={activeCard}
@@ -421,7 +460,6 @@ export default function DraggableBoard() {
     </Grid>
   </SortableContext>
 ) : (
-  // User is dragging a card
   <SortableContext items={allCardIds} strategy={rectSortingStrategy}>
     <Grid
       container
@@ -431,7 +469,7 @@ export default function DraggableBoard() {
     >
       {columns.map((column) => (
         <SortableColumn
-          key={column.id}
+          key={column?.id}
           column={column}
           overCardId={overCardId}
           activeCard={activeCard}
@@ -479,7 +517,7 @@ export default function DraggableBoard() {
 
 function SortableColumn({ column, overCardId, activeCard }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: column.id });
+    useSortable({ id: column?.id });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
