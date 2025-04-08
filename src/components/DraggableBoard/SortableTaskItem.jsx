@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import React, { useEffect, useState } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 const SortableTaskItem = ({ children, id }) => {
   const [isClient, setIsClient] = useState(false);

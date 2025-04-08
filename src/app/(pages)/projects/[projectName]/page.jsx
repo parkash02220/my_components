@@ -13,7 +13,7 @@ export default function ProjectPage() {
         <h1>Project: {decodeURIComponent(projectName)}</h1>
       </div>
       <Box>
-      <DraggableBoard/>   
+      {/* <DraggableBoard/>    */}
       <BoardSectionList/>      
     </Box>
     </>
