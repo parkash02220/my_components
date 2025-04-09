@@ -12,13 +12,13 @@ import { IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { BOARD_SECTIONS } from "./initialData";
 const BoardSection = ({ id, title, tasks,activeTaskId,overTaskId }) => {
-  console.log("::tasks", tasks);
-  console.log("::over id",overTaskId)
-  console.log("::acitve id",activeTaskId)
   const { setNodeRef } = useDroppable({
     id,
   });
-
+  const bottomPlaceholderId = `bottom-${id}`;
+  const { setNodeRef: setBottomPlaceholderRef } = useDroppable({
+    id: bottomPlaceholderId,
+  });
   const isDragging = !!activeTaskId;
   const activeTask = tasks.find((t) => t?.id === activeTaskId);
   
@@ -38,7 +38,7 @@ const BoardSection = ({ id, title, tasks,activeTaskId,overTaskId }) => {
   if (isDragging && ghostIndex !== -1 && activeTask) {
     enhancedTasks.splice(ghostIndex, 0, {
       ...activeTask,
-      id: `ghost-${activeTask?.id}`,
+      id: `ghost-${activeTask?.id}${Date.now()}`,
       isGhost: true,
     });
   }
@@ -76,11 +76,13 @@ const BoardSection = ({ id, title, tasks,activeTaskId,overTaskId }) => {
        
       <SortableContext
         id={id}
-        items={filteredTasks.map((t) => t?.id)} 
+        items={[...filteredTasks.map((t) => t?.id), bottomPlaceholderId]} 
         strategy={verticalListSortingStrategy}
       >
         <div ref={setNodeRef}>
-        {enhancedTasks.map((task, index) => {
+        {enhancedTasks
+  .filter((task) => task && task.id)
+  .map((task) => {
             if (!task) return null;
 
             const isGhost = task.isGhost;
@@ -99,6 +101,13 @@ const BoardSection = ({ id, title, tasks,activeTaskId,overTaskId }) => {
               </React.Fragment>
             );
           })}
+         <div
+  ref={setBottomPlaceholderRef}
+  style={{
+    height: '10px',
+    marginTop: '1px',
+  }}
+></div>
         </div>
       </SortableContext>
     </Box>

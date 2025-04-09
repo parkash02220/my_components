@@ -35,6 +35,8 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import MyDialog from "../MyDialog/MyDialog";
 import MyTextField from "../MyTextfield/MyTextfield";
 import MyButton from "../MyButton/MyButton";
+import { ApiCall } from "@/utils/ApiCall";
+import { useDebounce } from "@/hooks/useDebounce";
 const drawerWidth = 300;
 
 const openedMixin = (theme) => ({
@@ -122,11 +124,21 @@ export default function MySideDrawer({ children }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  const debouncedSearch = useDebounce(project.name, 500);
+
+  React.useEffect(() => {
+    if (debouncedSearch.trim()) {
+      console.log("Searching for:", debouncedSearch);
+      const res = ApiCall({url:"/checkBoardNameDuplicates",method:"POST",body:debouncedSearch});
+      console.log("::res",res);
+    }
+  }, [debouncedSearch]);
+
+
   React.useEffect(() => {
     const parts = pathname.split("/");
     const selectedSegment = parts.length > 1 ? parts[1] : "";
     setSelectedDrawerItem(selectedSegment);
-    console.log("::selected segment",selectedSegment)
   }, [pathname]);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -209,41 +221,28 @@ export default function MySideDrawer({ children }) {
     title: project.name,
     icon: <FolderOpenIcon />,
   }));
-
-  const componentNavItems = [
-    "autocomplete",
-    "button",
-    "search",
-    "select",
-    "switch",
-    "textfield",
-    "shortsplayer",
-  ].map((comp) => ({
-    segment: comp,
-    title: comp.charAt(0).toUpperCase() + comp.slice(1),
-  }));
-
+  
   const NAVIGATION = [
     { kind: "projects", title: "Projects" },
     { segment: "addproject", title: "+ Project" },
     ...projectNavItems,
-    { kind: "header", title: "Main items" },
-    { segment: "dashboard", title: "Dashboard", icon: <DashboardIcon /> },
-    { segment: "orders", title: "Orders", icon: <ShoppingCartIcon /> },
-    { kind: "divider" },
-    { kind: "header", title: "Analytics" },
-    {
-      segment: "reports",
-      title: "Reports",
-      icon: <BarChartIcon />,
-      children: [
-        { segment: "sales", title: "Sales", icon: <DescriptionIcon /> },
-        { segment: "traffic", title: "Traffic", icon: <DescriptionIcon /> },
-      ],
-    },
-    { segment: "integrations", title: "Integrations", icon: <LayersIcon /> },
-    { kind: "header", title: "My components" },
-    ...componentNavItems,
+    // { kind: "header", title: "Main items" },
+    // { segment: "dashboard", title: "Dashboard", icon: <DashboardIcon /> },
+    // { segment: "orders", title: "Orders", icon: <ShoppingCartIcon /> },
+    // { kind: "divider" },
+    // { kind: "header", title: "Analytics" },
+    // {
+    //   segment: "reports",
+    //   title: "Reports",
+    //   icon: <BarChartIcon />,
+    //   children: [
+    //     { segment: "sales", title: "Sales", icon: <DescriptionIcon /> },
+    //     { segment: "traffic", title: "Traffic", icon: <DescriptionIcon /> },
+    //   ],
+    // },
+    // { segment: "integrations", title: "Integrations", icon: <LayersIcon /> },
+    // { kind: "header", title: "My components" },
+    // ...componentNavItems,
   ];
 
   const renderNavItems = () =>

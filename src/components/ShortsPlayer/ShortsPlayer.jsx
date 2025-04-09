@@ -246,13 +246,7 @@ const ShortsPlayer = ({
   useEffect(() => {
     if (typeof window !== "undefined") {
       const updateHeight = () => {
-        console.log("::entering update height");
         const parentHeight = containerRef.current?.clientHeight;
-        console.log(
-          "::parent height",
-          parentHeight,
-          containerRef.current?.clientHeight
-        );
         setWindowHeight(
           parentHeight && parentHeight > 0 ? parentHeight : window.innerHeight
         );
@@ -266,12 +260,10 @@ const ShortsPlayer = ({
   }, []);
 
   const handleMouseEnter = () => {
-    console.log("::entering mouse in shrots player");
     document.body.style.overflow = "hidden";
   };
 
   const handleMouseLeave = () => {
-    console.log("::exiting mouse in shrots player");
     document.body.style.overflow = "auto";
   };
 
@@ -290,12 +282,10 @@ const ShortsPlayer = ({
 
     scrollTimeout.current = setTimeout(() => {
       const duration = Date.now() - scrollStartTime.current;
-      console.log("Scroll Duration:", duration, "ms");
 
       scrollStartTime.current = null;
 
       let step = 1;
-      console.log("::duration", duration);
       if (duration > 250) step = 2;
       if (duration > 400) step = 3;
       if (duration > 600) step = 4;

@@ -70,7 +70,6 @@ const BoardSectionList = () => {
 
 
     const isOverColumn = overId === overContainer;
-    console.log("::is over coloumn",isOverColumn)
 
     if (
       !activeContainer ||
@@ -91,6 +90,8 @@ const BoardSectionList = () => {
         (item) => item?.id === over?.id
       );
 
+      if (activeIndex === -1 || overIndex === -1) return prev; 
+
       return {
         ...prev,
         [activeContainer]: activeItems.filter(
@@ -106,59 +107,82 @@ const BoardSectionList = () => {
   };
 
   const handleDragEnd = ({ active, over }) => {
-    const isColumnDrag = columnOrder.includes(active?.id);
     setActiveTaskId(null);
     setOverTaskId(null);
     if (!over) return;
-
-    // Reorder columns
-    if (columnOrder.includes(active?.id) && columnOrder.includes(over?.id)) {
-      const oldIndex = columnOrder.indexOf(active?.id);
-      const newIndex = columnOrder.indexOf(over?.id);
-
+  
+    const activeId = active.id;
+    const overId = over.id;
+  
+    const isColumnDrag = columnOrder.includes(activeId);
+  
+    if (isColumnDrag && overId && columnOrder.includes(overId)) {
+      const oldIndex = columnOrder.indexOf(activeId);
+      const newIndex = columnOrder.indexOf(overId);
       if (oldIndex !== newIndex) {
         setColumnOrder((prev) => arrayMove(prev, oldIndex, newIndex));
       }
       return;
     }
-    const activeContainer = findBoardSectionContainer(
-      boardSections,
-      active?.id
-    );
-    const overContainer = findBoardSectionContainer(boardSections, over?.id);
-
-    if (
-      !activeContainer ||
-      !overContainer ||
-      activeContainer !== overContainer
-    ) {
-      setActiveTaskId(null);
-      return;
-    }
-
+  
+    const activeContainer = findBoardSectionContainer(boardSections, activeId);
+    const overContainer = findBoardSectionContainer(boardSections, overId);
+  
+    if (!activeContainer || !overContainer) return;
+  
     const activeIndex = boardSections[activeContainer].findIndex(
-      (task) => task?.id === active?.id
+      (task) => task?.id === activeId
     );
-    const overIndex = boardSections[overContainer].findIndex(
-      (task) => task?.id === over?.id
-    );
-
-    if (activeIndex !== overIndex) {
+  
+    const activeTask = boardSections[activeContainer]?.[activeIndex];
+    if (!activeTask) return;
+  
+    let insertIndex;
+    if (overId.startsWith("bottom-")) {
+      insertIndex = boardSections[overContainer].length;
+    } else {
+      const overIndex = boardSections[overContainer].findIndex(
+        (task) => task?.id === overId
+      );
+      insertIndex = overIndex >= 0 ? overIndex : boardSections[overContainer].length;
+    }
+  
+    if (activeContainer === overContainer) {
+      const adjustedIndex =
+        activeIndex < insertIndex ? insertIndex - 1 : insertIndex;
+  
       setBoardSections((prev) => ({
         ...prev,
-        [overContainer]: arrayMove(prev[overContainer], activeIndex, overIndex),
+        [overContainer]: arrayMove(
+          prev[overContainer],
+          activeIndex,
+          adjustedIndex
+        ),
       }));
+    } else {
+      setBoardSections((prev) => {
+        const newSource = prev[activeContainer].filter(
+          (task) => task?.id !== activeId
+        );
+        const newTarget = [...prev[overContainer]];
+        newTarget.splice(insertIndex, 0, activeTask);
+  
+        return {
+          ...prev,
+          [activeContainer]: newSource,
+          [overContainer]: newTarget,
+        };
+      });
     }
-
-    setActiveTaskId(null);
   };
+  
+  
 
   const dropAnimation = {
     ...defaultDropAnimation,
   };
 
   const task = activeTaskId ? getTaskById(tasks, activeTaskId) : null;
-  console.log("::overid in section list", overTaskId);
   return (
     <Container sx={{ margin: 0 }}>
       <DndContext

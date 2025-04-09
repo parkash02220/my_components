@@ -357,7 +357,6 @@ const Template = (args) => {
     WithYear: (option) =>
       `${option.label || option} (${option.year || "Year unknown"})`,
   };
-  console.log("::Selected value", selectedValue);
   const handleOptionSelect = (_,newValue) => {
     setSelectedValue(newValue);
   }

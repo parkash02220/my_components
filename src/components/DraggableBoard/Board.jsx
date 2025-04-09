@@ -12,6 +12,14 @@ export const initializeBoard = (tasks) => {
 };
 
 export const findBoardSectionContainer = (boardSections, id) => {
+  if (!id) return null;
+  if (id.startsWith("bottom-")) {
+    const actualId = id.replace("bottom-", "");
+    if (actualId in boardSections) {
+      return actualId;
+    }
+  }
+
   if (id in boardSections) {
     return id;
   }

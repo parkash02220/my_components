@@ -234,11 +234,9 @@ const Template = (args) => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        console.log("Form submitted!");
         alert("Form submitted!");
       }}
       onReset={() => {
-        console.log("Form reset!");
         alert("Form reset!");
       }}
     >

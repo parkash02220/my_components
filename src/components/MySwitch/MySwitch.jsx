@@ -82,7 +82,6 @@ export default function MySwitch({
   loadingIndicator,
   ...props
 }) {
-  console.log("::loading indicator",loadingIndicator)
   return (
     <Box sx={{ width: "fit-content", ...boxStyle }} className={className}>
       <FormGroup sx={{ ...formGroupStyle }} >

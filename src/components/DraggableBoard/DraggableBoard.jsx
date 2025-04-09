@@ -338,7 +338,6 @@ export default function DraggableBoard() {
       .flatMap((col) => col.cards)
       .find((card) => card?.id === active?.id);
     if (dragged) {
-      console.log("::dragged card",dragged)
       setActiveCard(dragged);
     }
   };
@@ -352,10 +351,8 @@ export default function DraggableBoard() {
     const isOverColumn = columnIds.includes(over?.id);
   
     if (isOverCard) {
-      console.log("::is over card",over?.id);
       setOverCardId(over?.id);
     } else if (isOverColumn) {
-      console.log("::is over column",over?.id);
       const column = columns.find((col) => col?.id === over?.id);
       if (column?.cards?.length) {
         const lastCardId = column.cards[column.cards.length - 1]?.id;
