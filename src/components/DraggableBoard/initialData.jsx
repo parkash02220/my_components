@@ -1,9 +1,9 @@
-export const BOARD_SECTIONS = {
-  todo: "Todo",
-  inProgress: "In progress",
-  testing: "Testing",
-  done: "Done",
-};
+export const BOARD_SECTIONS = [
+  { id: "todo", label: "Todo", position: 1 },
+  { id: "inProgress", label: "In Progress", position: 2 },
+  { id: "testing", label: "Testing", position: 3 },
+  { id: "done", label: "Done", position: 4 },
+];
 
 import { v4 as uuidv4 } from "uuid";
 

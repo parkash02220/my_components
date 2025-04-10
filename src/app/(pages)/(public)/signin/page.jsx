@@ -1,41 +1,52 @@
 "use client";
 
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "@/redux/reducers/auth/authThunk";
 import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
-import { isUserLoggedIn } from "@/utils";
+import { setAuthTokenToCookies } from "@/utils";
+import { ApiCall } from "@/utils/ApiCall";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const {error,loading} = useSelector((state)=>state.auth);
-  const user = isUserLoggedIn();
   const router = useRouter();
-  const dispatch = useDispatch();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!password || !email) {
-      setError("all fields are necessary");
+      setErrorMsg("all fields are necessary");
       return;
     }
 
-    dispatch(loginUser({email,password}));
+    setLoading(true);
+    setErrorMsg("");
 
-    
-  };
-console.log("::user",user)
-  useEffect(() => {
-    if (user) {
+    const res = await ApiCall({
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/signin`,
+      method: "POST",
+      body: {
+        email,
+        password,
+      },
+    });
+
+    setLoading(false);
+
+    console.log("::res", res);
+    if (res.error) {
+      const error = res?.error?.data?.error || {};
+      console.log("::error.msg", error);
+      setErrorMsg(error);
+      return;
+    }
+    const { token } = res?.data;
+    if (token) {
+      setAuthTokenToCookies(token);
       router.push("/home");
     }
-  }, [user, router]);
-
-
+  };
 
   return (
     <>
@@ -66,7 +77,7 @@ console.log("::user",user)
           <form className="loginForm" onSubmit={handleSubmit}>
             <Box display={"flex"} flexDirection={"column"} gap={2}>
               <MyTextField
-              fullWidth={true}
+                fullWidth={true}
                 id="email"
                 type="email"
                 name="email"
@@ -76,17 +87,17 @@ console.log("::user",user)
                 label="Email"
               />
               <MyTextField
-              fullWidth={true}
+                fullWidth={true}
                 id="password"
                 type="password"
                 name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                 label="Password"
+                label="Password"
               />
-              {error && (
-                <div style={{ fontSize: "13px", color: "red" }}>{error}</div>
+              {errorMsg && (
+                <div style={{ fontSize: "13px", color: "red" }}>{errorMsg}</div>
               )}
               <MyButton type="submit" fullWidth={true} loading={loading}>
                 Login

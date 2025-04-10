@@ -4,8 +4,8 @@ import { getTasksByStatus } from "./tasks";
 export const initializeBoard = (tasks) => {
   const boardSections = {};
 
-  Object.keys(BOARD_SECTIONS).forEach((boardSectionKey) => {
-    boardSections[boardSectionKey] = getTasksByStatus(tasks, boardSectionKey);
+  BOARD_SECTIONS.forEach(({ id }) => {
+    boardSections[id] = getTasksByStatus(tasks, id);
   });
 
   return boardSections;

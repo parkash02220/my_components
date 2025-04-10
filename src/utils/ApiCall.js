@@ -1,16 +1,18 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from "./axiosInstance";
 
 export async function ApiCall({
   url,
-  method = 'GET',
+  method = "GET",
   body = null,
   headers = {},
+  signal,
 }) {
   const config = {
     url,
     method,
     headers,
     data: body,
+    signal,
   };
 
   try {

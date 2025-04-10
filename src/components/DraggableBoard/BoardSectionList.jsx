@@ -21,17 +21,19 @@ import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
 
 import BoardSection from "./BoardSection";
 import TaskItem from "./TaskItem";
-import { INITIAL_TASKS } from "./initialData";
+import { BOARD_SECTIONS, INITIAL_TASKS } from "./initialData";
 import { findBoardSectionContainer, initializeBoard } from "./Board";
 import { getTaskById } from "./tasks";
 import SortableColumn from "./SortableColumn";
 
-const BoardSectionList = () => {
+const BoardSectionList = ({ project }) => {
+  console.log("::project in board section list", project);
   const tasks = INITIAL_TASKS;
   const initialBoardSections = initializeBoard(INITIAL_TASKS);
   const [boardSections, setBoardSections] = useState(initialBoardSections);
+  const sortedSections = BOARD_SECTIONS.sort((a, b) => a.position - b.position);
   const [columnOrder, setColumnOrder] = useState(
-    Object.keys(initialBoardSections)
+    sortedSections.map((s) => s.id)
   );
   const [activeTaskId, setActiveTaskId] = useState(null);
   const [overTaskId, setOverTaskId] = useState(null);
@@ -68,7 +70,6 @@ const BoardSectionList = () => {
     );
     const overContainer = findBoardSectionContainer(boardSections, over?.id);
 
-
     const isOverColumn = overId === overContainer;
 
     if (
@@ -90,7 +91,7 @@ const BoardSectionList = () => {
         (item) => item?.id === over?.id
       );
 
-      if (activeIndex === -1 || overIndex === -1) return prev; 
+      if (activeIndex === -1 || overIndex === -1) return prev;
 
       return {
         ...prev,
@@ -110,12 +111,12 @@ const BoardSectionList = () => {
     setActiveTaskId(null);
     setOverTaskId(null);
     if (!over) return;
-  
+
     const activeId = active.id;
     const overId = over.id;
-  
+
     const isColumnDrag = columnOrder.includes(activeId);
-  
+
     if (isColumnDrag && overId && columnOrder.includes(overId)) {
       const oldIndex = columnOrder.indexOf(activeId);
       const newIndex = columnOrder.indexOf(overId);
@@ -124,19 +125,19 @@ const BoardSectionList = () => {
       }
       return;
     }
-  
+
     const activeContainer = findBoardSectionContainer(boardSections, activeId);
     const overContainer = findBoardSectionContainer(boardSections, overId);
-  
+
     if (!activeContainer || !overContainer) return;
-  
+
     const activeIndex = boardSections[activeContainer].findIndex(
       (task) => task?.id === activeId
     );
-  
+
     const activeTask = boardSections[activeContainer]?.[activeIndex];
     if (!activeTask) return;
-  
+
     let insertIndex;
     if (overId.startsWith("bottom-")) {
       insertIndex = boardSections[overContainer].length;
@@ -144,13 +145,14 @@ const BoardSectionList = () => {
       const overIndex = boardSections[overContainer].findIndex(
         (task) => task?.id === overId
       );
-      insertIndex = overIndex >= 0 ? overIndex : boardSections[overContainer].length;
+      insertIndex =
+        overIndex >= 0 ? overIndex : boardSections[overContainer].length;
     }
-  
+
     if (activeContainer === overContainer) {
       const adjustedIndex =
         activeIndex < insertIndex ? insertIndex - 1 : insertIndex;
-  
+
       setBoardSections((prev) => ({
         ...prev,
         [overContainer]: arrayMove(
@@ -166,7 +168,7 @@ const BoardSectionList = () => {
         );
         const newTarget = [...prev[overContainer]];
         newTarget.splice(insertIndex, 0, activeTask);
-  
+
         return {
           ...prev,
           [activeContainer]: newSource,
@@ -175,8 +177,6 @@ const BoardSectionList = () => {
       });
     }
   };
-  
-  
 
   const dropAnimation = {
     ...defaultDropAnimation,
@@ -197,25 +197,31 @@ const BoardSectionList = () => {
             items={Object.keys(boardSections)}
             strategy={horizontalListSortingStrategy}
           >
-            {columnOrder.map((boardSectionKey) => (
-              <Grid
-                item
-                xs={3}
-                key={boardSectionKey}
-                minWidth={336}
-                sx={{ background: "#F4F6F8", borderRadius: "16px" }}
-              >
-                <SortableColumn key={boardSectionKey} id={boardSectionKey}>
-                  <BoardSection
-                    id={boardSectionKey}
-                    title={boardSectionKey}
-                    tasks={boardSections[boardSectionKey]}
-                    activeTaskId={activeTaskId}
-                    overTaskId={overTaskId}
-                  />
-                </SortableColumn>
-              </Grid>
-            ))}
+            {columnOrder.map((boardSectionKey) => {
+              const sectionData = BOARD_SECTIONS.find(
+                (s) => s.id === boardSectionKey
+              );
+              return (
+                <Grid
+                  item
+                  xs={3}
+                  key={boardSectionKey}
+                  minWidth={336}
+                  sx={{ background: "#F4F6F8", borderRadius: "16px" }}
+                >
+                  <SortableColumn key={boardSectionKey} id={boardSectionKey}>
+                    <BoardSection
+                      id={boardSectionKey}
+                      title={boardSectionKey}
+                      tasks={boardSections[boardSectionKey]}
+                      activeTaskId={activeTaskId}
+                      overTaskId={overTaskId}
+                      sectionLabel={sectionData?.label}
+                    />
+                  </SortableColumn>
+                </Grid>
+              );
+            })}
           </SortableContext>
           <DragOverlay dropAnimation={dropAnimation}>
             {task ? <TaskItem task={task} /> : null}

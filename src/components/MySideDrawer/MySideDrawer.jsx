@@ -1,8 +1,9 @@
 "use client";
 import { v4 as uuidv4 } from "uuid";
-import * as React from "react";
+import { useEffect, useState } from "react";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Collapse } from "@mui/material";
+import CreateProjectDialog from "@/components/MySideDrawer/CreateProjectDialog.jsx";
 import {
   Drawer as MuiDrawer,
   AppBar as MuiAppBar,
@@ -32,11 +33,10 @@ import {
 import { styled } from "@mui/material/styles";
 import { usePathname, useRouter } from "next/navigation";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import MyDialog from "../MyDialog/MyDialog";
-import MyTextField from "../MyTextfield/MyTextfield";
-import MyButton from "../MyButton/MyButton";
 import { ApiCall } from "@/utils/ApiCall";
-import { useDebounce } from "@/hooks/useDebounce";
+import useAllProjects from "@/hooks/projects/useAllProjects";
+import useCreateProject from "@/hooks/projects/useCreateProject";
+import { useAppContext } from "@/context/AppContext";
 const drawerWidth = 300;
 
 const openedMixin = (theme) => ({
@@ -105,37 +105,19 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MySideDrawer({ children }) {
-  const [open, setOpen] = React.useState(true);
-  const [expandedItems, setExpandedItems] = React.useState({});
-  const [selectedDrawerItem, setSelectedDrawerItem] = React.useState(null);
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [project, setProject] = React.useState({
-    name: "",
-    error: false,
-    helperText: "",
-  });
-  const [projects, setProjects] = React.useState([
-    { id: "1", name: "Project 1" },
-    { id: "2", name: "Project 2" },
-    { id: "3", name: "Project 3" },
-    { id: "4", name: "Project 4" },
-  ]);
+  const [open, setOpen] = useState(true);
+  const [expandedItems, setExpandedItems] = useState({});
+  const [selectedDrawerItem, setSelectedDrawerItem] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [loadingProjects, fetchAllProjects] = useAllProjects();
+  const { state } = useAppContext();
+  const { projects } = state;
+  const [loading, isCreated, createProject] = useCreateProject();
 
   const router = useRouter();
   const pathname = usePathname();
 
-  const debouncedSearch = useDebounce(project.name, 500);
-
-  React.useEffect(() => {
-    if (debouncedSearch.trim()) {
-      console.log("Searching for:", debouncedSearch);
-      const res = ApiCall({url:"/checkBoardNameDuplicates",method:"POST",body:debouncedSearch});
-      console.log("::res",res);
-    }
-  }, [debouncedSearch]);
-
-
-  React.useEffect(() => {
+  useEffect(() => {
     const parts = pathname.split("/");
     const selectedSegment = parts.length > 1 ? parts[1] : "";
     setSelectedDrawerItem(selectedSegment);
@@ -156,98 +138,33 @@ export default function MySideDrawer({ children }) {
     }));
   };
 
-  const handleDrawerItemClick = (segment) => {
+  const handleDrawerItemClick = (item) => {
+    const { segment } = item;
     if (segment === "addproject") {
       setDialogOpen(true);
       return;
     }
 
     setSelectedDrawerItem(segment);
-
-    if (segment.includes("-")) {
-      router.push(`/projects/${encodeURIComponent(segment)}`);
-    } else {
-      router.push(`/${segment}`);
-    }
+    console.log("::segment", segment);
+    router.push(`/${segment}`);
   };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-    setProject({
-      name: "",
-      error: false,
-      helperText: "",
-    });
-  };
-
-  const handleProjectInputfieldChange = (e) => {
-    const newName = e.target.value;
-    const trimmedName = newName.trim().toLowerCase();
-    const nameExists = projects.some(
-      (project) => project.name.trim().toLowerCase() === trimmedName
-    );
-
-    let error = false;
-    let helperText = "";
-
-    if (!trimmedName) {
-      error = true;
-      helperText = "Project name cannot be empty";
-    } else if (nameExists) {
-      error = true;
-      helperText = "Project name already exists";
-    }
-
-    setProject({
-      name: newName,
-      error,
-      helperText,
-    });
-  };
-
-  const handleCreateProject = () => {
-    const trimmedName = project.name.trim();
-    const id = uuidv4();
-    const newProject = { id, name: trimmedName };
-
-    setProjects((prev) => [...prev, newProject]);
-    setSelectedDrawerItem(id);
-    router.push(`/projects/${id}-${slugify(trimmedName)}`);
-    handleDialogClose();
-  };
-
-  const projectNavItems = projects.map((project) => ({
-    segment: `${project.id}-${slugify(project.name)}`,
-    title: project.name,
+  const projectNavItems = projects?.map((project) => ({
+    segment: `projects/${project?._id}`,
+    title: project?.name,
     icon: <FolderOpenIcon />,
   }));
-  
+
   const NAVIGATION = [
     { kind: "projects", title: "Projects" },
     { segment: "addproject", title: "+ Project" },
     ...projectNavItems,
-    // { kind: "header", title: "Main items" },
-    // { segment: "dashboard", title: "Dashboard", icon: <DashboardIcon /> },
-    // { segment: "orders", title: "Orders", icon: <ShoppingCartIcon /> },
-    // { kind: "divider" },
-    // { kind: "header", title: "Analytics" },
-    // {
-    //   segment: "reports",
-    //   title: "Reports",
-    //   icon: <BarChartIcon />,
-    //   children: [
-    //     { segment: "sales", title: "Sales", icon: <DescriptionIcon /> },
-    //     { segment: "traffic", title: "Traffic", icon: <DescriptionIcon /> },
-    //   ],
-    // },
-    // { segment: "integrations", title: "Integrations", icon: <LayersIcon /> },
-    // { kind: "header", title: "My components" },
-    // ...componentNavItems,
+    console.log("::project anv items", projectNavItems),
   ];
 
   const renderNavItems = () =>
     NAVIGATION.map((item, index) => {
-      if (item.kind === "header") {
+      if (item?.kind === "header") {
         return open ? (
           <ListItem key={index}>
             <Typography
@@ -263,34 +180,34 @@ export default function MySideDrawer({ children }) {
                 },
               }}
             >
-              {item.title}
+              {item?.title}
             </Typography>
           </ListItem>
         ) : null;
       }
 
-      if (item.kind === "divider") {
+      if (item?.kind === "divider") {
         return <Divider key={index} />;
       }
 
-      const hasChildren = !!item.children?.length;
-      const isExpanded = expandedItems[item.segment];
+      const hasChildren = !!item?.children?.length;
+      const isExpanded = expandedItems[item?.segment];
 
       const navItem = (
         <>
           <ListItemButton
-            key={item.title}
+            key={item?.title}
             onClick={() =>
               hasChildren
                 ? handleExpandToggle(item.segment)
-                : handleDrawerItemClick(item.segment)
+                : handleDrawerItemClick(item)
             }
             sx={{
               minHeight: 48,
               justifyContent: open ? "initial" : "center",
               px: 2.5,
               background:
-                selectedDrawerItem === item.segment ? "#ECF8F4" : "#FFFFFF",
+                selectedDrawerItem === item?.segment ? "#ECF8F4" : "#FFFFFF",
             }}
           >
             <ListItemIcon
@@ -300,10 +217,10 @@ export default function MySideDrawer({ children }) {
                 justifyContent: "center",
               }}
             >
-              {item.icon}
+              {item?.icon}
             </ListItemIcon>
             <ListItemText
-              primary={item.title}
+              primary={item?.title}
               sx={{ opacity: open ? 1 : 0 }}
               primaryTypographyProps={{
                 fontSize: "14px",
@@ -337,10 +254,10 @@ export default function MySideDrawer({ children }) {
                         justifyContent: "center",
                       }}
                     >
-                      {child.icon}
+                      {child?.icon}
                     </ListItemIcon>
                     <ListItemText
-                      primary={child.title}
+                      primary={child?.title}
                       sx={{ opacity: open ? 1 : 0 }}
                       primaryTypographyProps={{
                         fontSize: "14px",
@@ -368,47 +285,24 @@ export default function MySideDrawer({ children }) {
           {navItem}
         </ListItem>
       ) : (
-        <Tooltip title={item.title} placement="right" key={index}>
+        <Tooltip title={item?.title} placement="right" key={index}>
           <ListItem disablePadding>{navItem}</ListItem>
         </Tooltip>
       );
     });
 
+  const handleCreateProject = async (name) => {
+    await createProject(name);
+    fetchAllProjects();
+  };
+
   return (
     <>
       <Box className="createProjectDialog">
-        <MyDialog
+        <CreateProjectDialog
           open={dialogOpen}
-          handleClose={handleDialogClose}
-          title="Create New Project"
-          content={
-            <Box className="createProjectDialog__content" p={"20px 0px"}>
-              <MyTextField
-                fullWidth
-                label="Project Name"
-                value={project.name}
-                onChange={(e) => handleProjectInputfieldChange(e)}
-                variant="outlined"
-                autoFocus
-                error={project.error}
-                helperText={project.helperText}
-              />
-            </Box>
-          }
-          actions={
-            <>
-              <MyButton onClick={handleDialogClose} color="inherit">
-                Cancel
-              </MyButton>
-              <MyButton
-                onClick={handleCreateProject}
-                disabled={project.error}
-                variant="contained"
-              >
-                Create
-              </MyButton>
-            </>
-          }
+          onClose={() => setDialogOpen(false)}
+          onCreate={handleCreateProject}
         />
       </Box>
 
@@ -422,7 +316,11 @@ export default function MySideDrawer({ children }) {
                 height: "40px",
               }}
             >
-              <img src="/drawerLogo.svg" alt="logo" style={{height:"100%"}} />
+              <img
+                src="/drawerLogo.svg"
+                alt="logo"
+                style={{ height: "100%" }}
+              />
             </IconButton>
             <IconButton color="inherit" onClick={toggleDrawer} edge="start">
               {/* {open ? <ChevronLeftIcon /> : <MenuIcon />} */}

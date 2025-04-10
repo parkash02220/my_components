@@ -2,7 +2,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import MySideDrawer from "@/components/MySideDrawer/MySideDrawer";
 import { Box } from "@mui/material";
-import ReduxProvider from "@/redux/ReduxProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,11 +24,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProvider>
-        <Box className="main_container">
-          {children}
-        </Box>
-        </ReduxProvider>
+        <Box className="main_container">{children}</Box>
       </body>
     </html>
   );
