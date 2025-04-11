@@ -20,7 +20,6 @@ const useCreateProject = () => {
       console.log("::error while creating project", res);
       return;
     }
-    console.log("::res data", res.data);
     setIsCreated(true);
   };
 

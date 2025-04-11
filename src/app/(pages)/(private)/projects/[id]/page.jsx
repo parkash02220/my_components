@@ -8,12 +8,10 @@ import { useParams } from "next/navigation";
 export default function ProjectPage() {
   const { id } = useParams();
   const [loadingGetProject, getProjectById] = useGetProject(id);
-  const { state } = useAppContext();
-  const { activeProject } = state;
   return (
     <>
       <Box>
-        <BoardSectionList project={activeProject} />
+        <BoardSectionList />
       </Box>
     </>
   );

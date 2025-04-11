@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import {
@@ -21,20 +21,52 @@ import { sortableKeyboardCoordinates, arrayMove } from "@dnd-kit/sortable";
 
 import BoardSection from "./BoardSection";
 import TaskItem from "./TaskItem";
-import { BOARD_SECTIONS, INITIAL_TASKS } from "./initialData";
 import { findBoardSectionContainer, initializeBoard } from "./Board";
 import { getTaskById } from "./tasks";
 import SortableColumn from "./SortableColumn";
+import { useAppContext } from "@/context/AppContext";
+import useUpdateColumnPosition from "@/hooks/projects/section/useUpdateColumnPosition";
+import useMoveTask from "@/hooks/projects/task/useMoveTask";
+import MyButton from "../MyButton/MyButton";
+import { Box, Typography } from "@mui/material";
+import MyTextField from "../MyTextfield/MyTextfield";
+import useCreateSection from "@/hooks/projects/section/useCreateSection";
 
-const BoardSectionList = ({ project }) => {
-  console.log("::project in board section list", project);
-  const tasks = INITIAL_TASKS;
-  const initialBoardSections = initializeBoard(INITIAL_TASKS);
-  const [boardSections, setBoardSections] = useState(initialBoardSections);
-  const sortedSections = BOARD_SECTIONS.sort((a, b) => a.position - b.position);
-  const [columnOrder, setColumnOrder] = useState(
-    sortedSections.map((s) => s.id)
-  );
+const BoardSectionList = () => {
+  const { state } = useAppContext();
+  const { activeProject } = state;
+  const [showAddColumnButton, setShowAddColumnButton] = useState(true);
+  const inputRef = useRef(null);
+  console.log("::active project", activeProject);
+  const [boardSections, setBoardSections] = useState({});
+  const [columnOrder, setColumnOrder] = useState([]);
+  const [loadingUpdateTask, updateTask] = useMoveTask();
+  const { loadingUpdatingColoumPos, updateColumnPosition } =
+    useUpdateColumnPosition(activeProject?._id);
+  const {
+    loadingCreateColumn,
+    errorCreateColumn,
+    helperTextCreateColumn,
+    newColumnName,
+    handleColumnInputfieldChange,
+    handleColumnInputKeyDown,
+  } = useCreateSection(activeProject?._id, setShowAddColumnButton);
+
+  useEffect(() => {
+    if (!activeProject?.sections) return;
+
+    const sectionMap = {};
+    activeProject.sections.forEach((section) => {
+      sectionMap[section?._id] = section.tasks || [];
+    });
+
+    const sorted = activeProject.sections
+      .slice()
+      .sort((a, b) => a.position - b.position);
+
+    setBoardSections(sectionMap);
+    setColumnOrder(sorted.map((s) => s._id));
+  }, [activeProject]);
   const [activeTaskId, setActiveTaskId] = useState(null);
   const [overTaskId, setOverTaskId] = useState(null);
   const sensors = useSensors(
@@ -45,10 +77,12 @@ const BoardSectionList = ({ project }) => {
   );
 
   const handleDragStart = ({ active }) => {
+    console.log("::Drag start:", active?.id);
     setActiveTaskId(active?.id);
   };
 
   const handleDragOver = ({ active, over }) => {
+    console.log("::Over item:", over?.id);
     const overId = over?.id;
     const activeId = active?.id;
 
@@ -57,9 +91,11 @@ const BoardSectionList = ({ project }) => {
     // Try to find the overId in all tasks to determine if it's a task
     const isOverTask = Object.values(boardSections)
       .flat()
-      .some((task) => task?.id === overId);
-
-    if (isOverTask) {
+      .some((task) => task?._id === overId);
+    console.log("::over id to check bottom", overId);
+    const isOverBottom = overId.startsWith("bottom-");
+    console.log("::is over bottom", isOverBottom);
+    if (isOverTask || isOverBottom) {
       setOverTaskId(overId);
     } else {
       setOverTaskId(null); // don't show preview when hovering over column only
@@ -85,10 +121,10 @@ const BoardSectionList = ({ project }) => {
       const overItems = prev[overContainer];
 
       const activeIndex = activeItems.findIndex(
-        (item) => item?.id === active?.id
+        (item) => item?._id === active?.id
       );
       const overIndex = boardSections[overContainer].findIndex(
-        (item) => item?.id === over?.id
+        (item) => item?._id === over?.id
       );
 
       if (activeIndex === -1 || overIndex === -1) return prev;
@@ -96,7 +132,7 @@ const BoardSectionList = ({ project }) => {
       return {
         ...prev,
         [activeContainer]: activeItems.filter(
-          (item) => item?.id !== active?.id
+          (item) => item?._id !== active?.id
         ),
         [overContainer]: [
           ...overItems.slice(0, overIndex),
@@ -112,8 +148,8 @@ const BoardSectionList = ({ project }) => {
     setOverTaskId(null);
     if (!over) return;
 
-    const activeId = active.id;
-    const overId = over.id;
+    const activeId = active?.id;
+    const overId = over?.id;
 
     const isColumnDrag = columnOrder.includes(activeId);
 
@@ -121,7 +157,9 @@ const BoardSectionList = ({ project }) => {
       const oldIndex = columnOrder.indexOf(activeId);
       const newIndex = columnOrder.indexOf(overId);
       if (oldIndex !== newIndex) {
-        setColumnOrder((prev) => arrayMove(prev, oldIndex, newIndex));
+        const newOrder = arrayMove(columnOrder, oldIndex, newIndex);
+        setColumnOrder(newOrder);
+        updateColumnPosition(activeId, newIndex + 1, activeProject?._id);
       }
       return;
     }
@@ -129,10 +167,17 @@ const BoardSectionList = ({ project }) => {
     const activeContainer = findBoardSectionContainer(boardSections, activeId);
     const overContainer = findBoardSectionContainer(boardSections, overId);
 
+    console.log(
+      "::Active container:",
+      activeContainer,
+      "Over container:",
+      overContainer
+    );
+
     if (!activeContainer || !overContainer) return;
 
     const activeIndex = boardSections[activeContainer].findIndex(
-      (task) => task?.id === activeId
+      (task) => task?._id === activeId
     );
 
     const activeTask = boardSections[activeContainer]?.[activeIndex];
@@ -143,7 +188,7 @@ const BoardSectionList = ({ project }) => {
       insertIndex = boardSections[overContainer].length;
     } else {
       const overIndex = boardSections[overContainer].findIndex(
-        (task) => task?.id === overId
+        (task) => task?._id === overId
       );
       insertIndex =
         overIndex >= 0 ? overIndex : boardSections[overContainer].length;
@@ -164,7 +209,7 @@ const BoardSectionList = ({ project }) => {
     } else {
       setBoardSections((prev) => {
         const newSource = prev[activeContainer].filter(
-          (task) => task?.id !== activeId
+          (task) => task?._id !== activeId
         );
         const newTarget = [...prev[overContainer]];
         newTarget.splice(insertIndex, 0, activeTask);
@@ -176,13 +221,23 @@ const BoardSectionList = ({ project }) => {
         };
       });
     }
+    if (activeContainer !== overContainer || activeIndex !== insertIndex) {
+      updateTask(activeTask._id, overContainer, insertIndex);
+    }
   };
 
   const dropAnimation = {
     ...defaultDropAnimation,
   };
 
-  const task = activeTaskId ? getTaskById(tasks, activeTaskId) : null;
+  const allTasks = Object.values(boardSections).flat();
+  const task = activeTaskId ? getTaskById(allTasks, activeTaskId) : null;
+
+  useEffect(() => {
+    if (!showAddColumnButton && inputRef.current) {
+      inputRef.current.querySelector("input")?.focus();
+    }
+  }, [showAddColumnButton]);
   return (
     <Container sx={{ margin: 0 }}>
       <DndContext
@@ -197,10 +252,11 @@ const BoardSectionList = ({ project }) => {
             items={Object.keys(boardSections)}
             strategy={horizontalListSortingStrategy}
           >
-            {columnOrder.map((boardSectionKey) => {
-              const sectionData = BOARD_SECTIONS.find(
-                (s) => s.id === boardSectionKey
-              );
+            {columnOrder?.map((boardSectionKey) => {
+              const sectionData = boardSections[boardSectionKey];
+              const sectionLabel = activeProject?.sections?.find(
+                (s) => s._id === boardSectionKey
+              )?.name;
               return (
                 <Grid
                   item
@@ -209,14 +265,14 @@ const BoardSectionList = ({ project }) => {
                   minWidth={336}
                   sx={{ background: "#F4F6F8", borderRadius: "16px" }}
                 >
-                  <SortableColumn key={boardSectionKey} id={boardSectionKey}>
+                  <SortableColumn id={boardSectionKey}>
                     <BoardSection
                       id={boardSectionKey}
                       title={boardSectionKey}
                       tasks={boardSections[boardSectionKey]}
                       activeTaskId={activeTaskId}
                       overTaskId={overTaskId}
-                      sectionLabel={sectionData?.label}
+                      sectionLabel={sectionLabel}
                     />
                   </SortableColumn>
                 </Grid>
@@ -226,6 +282,55 @@ const BoardSectionList = ({ project }) => {
           <DragOverlay dropAnimation={dropAnimation}>
             {task ? <TaskItem task={task} /> : null}
           </DragOverlay>
+          <Grid
+            item
+            xs={3}
+            minWidth={336}
+            sx={{ background: "#FFFFFF", borderRadius: "16px" }}
+          >
+            {showAddColumnButton ? (
+              <Box>
+                <MyButton
+                  variant="outlined"
+                  color="black"
+                  fullWidth={true}
+                  size="large"
+                  sx={{ borderColor: "#DBE0E4" }}
+                  hoverBgColor="whitesmoke"
+                  onClick={() => setShowAddColumnButton(false)}
+                >
+                  Add Column
+                </MyButton>
+              </Box>
+            ) : (
+              <Box>
+                <MyTextField
+                  ref={inputRef}
+                  id="newColumnName"
+                  placeholder="Untitled"
+                  label=""
+                  fontWeight={700}
+                  borderColor="black"
+                  background={"white"}
+                  value={newColumnName}
+                  onChange={handleColumnInputfieldChange}
+                  onKeyDown={handleColumnInputKeyDown}
+                  onBlur={() => setShowAddColumnButton(true)}
+                  inputFontSize="18px"
+                />
+                <Typography
+                  sx={{
+                    color: "rgb(122,125,161)",
+                    fontSize: "12px",
+                    mt: 1,
+                    ml: 1,
+                  }}
+                >
+                  Press Enter to create the column.
+                </Typography>
+              </Box>
+            )}
+          </Grid>
         </Grid>
       </DndContext>
     </Container>

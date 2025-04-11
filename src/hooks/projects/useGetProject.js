@@ -13,7 +13,6 @@ const useGetProject = (id) => {
       method: "GET",
     });
     if (res.error) {
-      console.log("::error while getting project", res);
       return;
     }
     dispatch({ type: "SET_ACTIVE_PROJECT", payload: res?.data?.board || {} });

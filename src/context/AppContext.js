@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useContext } from "react";
+import React, { createContext, useReducer, useContext, useState } from "react";
 import { initialState } from "./initialState";
 
 const AppContext = createContext();
@@ -24,6 +24,41 @@ function projectsReducer(state, action) {
       return {
         ...state,
         activeProjectId: payload,
+      };
+    }
+
+    case "ADD_COLUMN_TO_SECTION":{
+      const {section} = payload;
+      const updatedSections = {
+        ...state?.activeProject?.sections,
+        section,
+      }
+      return {
+        ...state,
+        activeProject:{
+          ...state.activeProject,
+          sections:updatedSections,
+        }
+      }
+    }
+
+    case "ADD_TASK_TO_SECTION":{
+      const {sectionId,task} = payload;
+      const updatedSections = state?.activeProject?.sections?.map((section)=>{
+         if(section?._id === sectionId){
+           return {
+            ...section,
+            tasks:[task,...(section?.tasks || [])]
+           }
+         }
+         return section;
+      });
+      return {
+            ...state,
+            activeProject:{
+              ...state.activeProject,
+              sections:updatedSections,
+            }
       };
     }
 

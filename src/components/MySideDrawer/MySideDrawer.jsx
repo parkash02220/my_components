@@ -146,7 +146,6 @@ export default function MySideDrawer({ children }) {
     }
 
     setSelectedDrawerItem(segment);
-    console.log("::segment", segment);
     router.push(`/${segment}`);
   };
   const projectNavItems = projects?.map((project) => ({
@@ -159,7 +158,6 @@ export default function MySideDrawer({ children }) {
     { kind: "projects", title: "Projects" },
     { segment: "addproject", title: "+ Project" },
     ...projectNavItems,
-    console.log("::project anv items", projectNavItems),
   ];
 
   const renderNavItems = () =>

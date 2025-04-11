@@ -48,7 +48,7 @@ const CreateProjectDialog = ({ open, onClose, onCreate }) => {
       handleClose={handleDialogClose}
       title="Create New Project"
       content={
-        <Box p={"20px 0px"}>
+        <Box pt={2} paddingInline={1}>
           <MyTextField
             fullWidth
             label="Project Name"
@@ -79,7 +79,7 @@ const CreateProjectDialog = ({ open, onClose, onCreate }) => {
           p={2}
           pt={0}
         >
-          <MyButton onClick={handleDialogClose} color="inherit">
+          <MyButton onClick={handleDialogClose} color="black" variant="outlined" hoverBgColor="whitesmoke">
             Cancel
           </MyButton>
           <MyButton

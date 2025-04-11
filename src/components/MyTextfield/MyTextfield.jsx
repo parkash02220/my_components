@@ -42,9 +42,20 @@ const MyTextField = ({
   shrink,
   hoverBorderColor,
   autoComplete,
+  background,
+  placeholderColor,
+  fontWeight,
   ...props
 }) => {
-  const shrinkTypes = ["text", "number", "password", "email", "tel", "url", "search"];
+  const shrinkTypes = [
+    "text",
+    "number",
+    "password",
+    "email",
+    "tel",
+    "url",
+    "search",
+  ];
   const shouldShrink = shrinkTypes.includes(type) ? undefined : true;
   return (
     <Box sx={{ width: fullWidth ? "100%" : width || "fit-content" }}>
@@ -95,7 +106,7 @@ const MyTextField = ({
         }}
         InputLabelProps={{
           ...InputLabelProps,
-          shrink: (shrink || shouldShrink),
+          shrink: shrink || shouldShrink,
           style: {
             fontSize: labelFontSize,
             color: error ? errorBorderColor : disabled ? "#a9a9a9" : labelColor,
@@ -108,14 +119,22 @@ const MyTextField = ({
           "& .MuiInputLabel-asterisk": {
             color: requiredColor,
           },
+          "& .MuiOutlinedInput-input::placeholder": {
+            color: placeholderColor,
+            fontWeight:fontWeight,
+          },
           "& .MuiOutlinedInput-root": {
             borderRadius,
             boxShadow,
+            background: background,
+            fontWeight:fontWeight,
             "& .MuiOutlinedInput-notchedOutline": {
               borderColor: error ? errorBorderColor : borderColor,
             },
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: error ? errorBorderColor : hoverBorderColor || borderColor,
+              borderColor: error
+                ? errorBorderColor
+                : hoverBorderColor || borderColor,
             },
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
               borderColor: error ? errorBorderColor : borderColor,

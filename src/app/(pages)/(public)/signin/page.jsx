@@ -7,6 +7,7 @@ import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { setAuthTokenToCookies } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
+import { useState } from "react";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,11 +34,8 @@ export default function SignIn() {
     });
 
     setLoading(false);
-
-    console.log("::res", res);
     if (res.error) {
       const error = res?.error?.data?.error || {};
-      console.log("::error.msg", error);
       setErrorMsg(error);
       return;
     }
