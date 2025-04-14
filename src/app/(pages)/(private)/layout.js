@@ -18,7 +18,7 @@ export default function HomeLayout({ children }) {
 
   return (
     <AppContextProvider>
-      user ? <MySideDrawer>{children}</MySideDrawer> : null
+      {user ? <MySideDrawer>{children}</MySideDrawer> : null}
     </AppContextProvider>
   );
 }

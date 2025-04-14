@@ -1,3 +1,4 @@
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import MySideDrawer from "@/components/MySideDrawer/MySideDrawer";
@@ -24,7 +25,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+         <AppRouterCacheProvider>
         <Box className="main_container">{children}</Box>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

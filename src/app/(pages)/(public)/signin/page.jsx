@@ -8,42 +8,19 @@ import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { setAuthTokenToCookies } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 import { useState } from "react";
+import useLogin from "@/hooks/common/useLogin";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const router = useRouter();
+  const { loadingLogin, loginUser } = useLogin();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!password || !email) {
       setErrorMsg("all fields are necessary");
       return;
     }
-
-    setLoading(true);
-    setErrorMsg("");
-
-    const res = await ApiCall({
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/signin`,
-      method: "POST",
-      body: {
-        email,
-        password,
-      },
-    });
-
-    setLoading(false);
-    if (res.error) {
-      const error = res?.error?.data?.error || {};
-      setErrorMsg(error);
-      return;
-    }
-    const { token } = res?.data;
-    if (token) {
-      setAuthTokenToCookies(token);
-      router.push("/home");
-    }
+    loginUser(email, password, setErrorMsg);
   };
 
   return (
@@ -97,7 +74,7 @@ export default function SignIn() {
               {errorMsg && (
                 <div style={{ fontSize: "13px", color: "red" }}>{errorMsg}</div>
               )}
-              <MyButton type="submit" fullWidth={true} loading={loading}>
+              <MyButton type="submit" fullWidth={true} loading={loadingLogin}>
                 Login
               </MyButton>
             </Box>

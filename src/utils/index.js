@@ -5,7 +5,7 @@ export const getAuthTokenFromCookies = () => {
 
 export const setAuthTokenToCookies = (token) => {
     if(!token) return;
-    return Cookies.set("auth_token",token,{expires: 7});
+    return Cookies.set("auth_token",token,{expires: 1});
 }
 
 export const isUserLoggedIn = () => {

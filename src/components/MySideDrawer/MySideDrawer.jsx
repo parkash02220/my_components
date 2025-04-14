@@ -37,6 +37,8 @@ import { ApiCall } from "@/utils/ApiCall";
 import useAllProjects from "@/hooks/projects/useAllProjects";
 import useCreateProject from "@/hooks/projects/useCreateProject";
 import { useAppContext } from "@/context/AppContext";
+import MyButton from "../MyButton/MyButton";
+import useLogout from "@/hooks/common/useLogout";
 const drawerWidth = 300;
 
 const openedMixin = (theme) => ({
@@ -113,7 +115,7 @@ export default function MySideDrawer({ children }) {
   const { state } = useAppContext();
   const { projects } = state;
   const [loading, isCreated, createProject] = useCreateProject();
-
+  const { loadingLogout, logoutUser } = useLogout();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -337,6 +339,16 @@ export default function MySideDrawer({ children }) {
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           {/* <DrawerHeader /> */}
+          <Box
+            width={"calc(100% - 300px)"}
+            display={"flex"}
+            justifyContent={"end"}
+            mb={3}
+          >
+            <MyButton onClick={logoutUser} loading={loadingLogout}>
+              Logout
+            </MyButton>
+          </Box>
           {children || (
             <Typography>
               This is the main content area. You can replace this with routes or
