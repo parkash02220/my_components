@@ -1,4 +1,5 @@
 import { useAppContext } from "@/context/AppContext";
+import { convertIdFields } from "@/utils";
 
 const { ApiCall } = require("@/utils/ApiCall");
 const { useState, useEffect } = require("react");
@@ -12,10 +13,13 @@ const useGetProject = (id) => {
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/get-board-with-details/${id}`,
       method: "GET",
     });
+
+    setLoadingGetProject(false);
     if (res.error) {
       return;
     }
-    dispatch({ type: "SET_ACTIVE_PROJECT", payload: res?.data?.board || {} });
+    const formattedIdResponse = convertIdFields(res?.data?.board || []);
+    dispatch({ type: "SET_ACTIVE_PROJECT", payload: formattedIdResponse || {} });
   };
 
   useEffect(() => {

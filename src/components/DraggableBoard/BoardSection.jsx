@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Box from "@mui/material/Box";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useDroppable } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -8,7 +9,7 @@ import {
 import Typography from "@mui/material/Typography";
 import TaskItem from "./TaskItem";
 import SortableTaskItem from "./SortableTaskItem";
-import { IconButton } from "@mui/material";
+import { IconButton, Menu, MenuItem } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MyTextField from "../MyTextfield/MyTextfield";
 import useCreateTask from "@/hooks/projects/task/useCreateTask";
@@ -19,6 +20,17 @@ const BoardSection = ({
   activeTaskId,
   overTaskId,
 }) => {
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(menuAnchorEl);
+  const [isEditingLabel, setIsEditingLabel] = useState(false);
+  const [editedLabel, setEditedLabel] = useState(sectionLabel);
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
   const [createTaskOpen, setCreateTaskOpen] = useState(false);
   const inputRef = useRef(null);
   const { newTaskName, handleTaskInputfieldChange, handleTaskInputKeyDown } =
@@ -31,37 +43,34 @@ const BoardSection = ({
     id: bottomPlaceholderId,
   });
   const isDragging = !!activeTaskId;
-  const activeTask = tasks.find((t) => t?._id === activeTaskId);
+  const activeTask = tasks.find((t) => t?.id === activeTaskId);
+
+  const ghostTask = useMemo(() => {
+    if (isDragging && activeTask) {
+      return {
+        ...activeTask,
+        id: `ghost-${activeTask.id}`, // stable and predictable ID
+        isGhost: true,
+      };
+    }
+    return null;
+  }, [isDragging, activeTask?.id]);
 
   // Filter out active task (so it doesn't leave a gap)
   let filteredTasks = tasks;
   if (isDragging) {
-    filteredTasks = tasks.filter((task) => task?._id !== activeTaskId);
+    filteredTasks = tasks.filter((task) => task?.id !== activeTaskId);
   }
 
   let ghostIndex = -1;
-  console.log("::over task id ", overTaskId);
   if (overTaskId === `bottom-${id}`) {
     ghostIndex = filteredTasks.length;
   } else {
-    ghostIndex = filteredTasks.findIndex((task) => task?._id === overTaskId);
+    ghostIndex = filteredTasks.findIndex((task) => task?.id === overTaskId);
   }
   const enhancedTasks = [...filteredTasks];
-  console.log(
-    "::isdragging",
-    isDragging,
-    "ghostindex",
-    ghostIndex,
-    "activetask",
-    activeTask
-  );
-  if (isDragging && ghostIndex !== -1 && activeTask) {
-    console.log("::consle insdie dragging");
-    enhancedTasks.splice(ghostIndex, 0, {
-      ...activeTask,
-      _id: `ghost-${activeTask?._id}${Date.now()}`,
-      isGhost: true,
-    });
+  if (isDragging && ghostIndex !== -1 && ghostTask) {
+    enhancedTasks.splice(ghostIndex, 0, ghostTask);
   }
 
   const handleCreateTaskOpen = () => {
@@ -72,6 +81,14 @@ const BoardSection = ({
       inputRef.current.querySelector("input")?.focus();
     }
   }, [createTaskOpen]);
+
+  console.log("::over task id in board section", overTaskId);
+  console.log("::active task id in board section", activeTaskId);
+  console.log("::ghost index in board section", ghostIndex);
+  console.log("::enahnced tsks in board section", enhancedTasks);
+  console.log("::filtered tasks in board section", filteredTasks);
+  console.log("::is dragging in board section", isDragging);
+  console.log("::bottome id in board section", bottomPlaceholderId);
 
   return (
     <>
@@ -104,7 +121,7 @@ const BoardSection = ({
               {sectionLabel}
             </Typography>
           </Box>
-          <Box>
+          <Box display={"flex"} gap={1}>
             <IconButton
               onClick={handleCreateTaskOpen}
               sx={{
@@ -120,8 +137,92 @@ const BoardSection = ({
             >
               <AddIcon sx={{ height: "20px" }} />
             </IconButton>
+            <IconButton
+              onClick={handleMenuOpen}
+              sx={{
+                color: "black",
+                padding: "0px",
+                width: "20px",
+                height: "20px",
+              }}
+            >
+              <MoreHorizIcon sx={{ height: "20px" }} />
+            </IconButton>
           </Box>
         </Box>
+        {/* Menu Component */}
+        <Menu
+          anchorEl={menuAnchorEl}
+          open={isMenuOpen}
+          onClose={handleMenuClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          PaperProps={{
+            sx: {
+              borderRadius: 2,
+              background: "#FFFFFFE6",
+            },
+          }}
+        >
+          <MenuItem
+            onClick={() => {
+              console.log("Edit clicked for section:", id);
+              setIsEditingLabel(true);
+              handleMenuClose();
+            }}
+          >
+            <Box
+              display={"flex"}
+              gap={2}
+              alignItems={"center"}
+              minWidth={"140px"}
+            >
+              <img src="/rename.svg" alt="rename" width={20} height={20} />
+              <Typography fontSize={14}>Rename</Typography>
+            </Box>
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              console.log("Clear clicked for section:", id);
+              handleMenuClose();
+            }}
+          >
+            <Box
+              display={"flex"}
+              gap={2}
+              alignItems={"center"}
+              minWidth={"140px"}
+            >
+              <img src="/clear.svg" alt="clear" width={20} height={20} />
+              <Typography fontSize={14}>Clear</Typography>
+            </Box>
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              console.log("Delete clicked for section:", id);
+              handleMenuClose();
+            }}
+          >
+            <Box
+              display={"flex"}
+              gap={2}
+              alignItems={"center"}
+              minWidth={"140px"}
+            >
+              <img src="/delete.svg" alt="delete" width={20} height={20} />
+              <Typography color="#FF5630" fontSize={14}>
+                Delete
+              </Typography>
+            </Box>
+          </MenuItem>
+        </Menu>
+
         {createTaskOpen ? (
           <Box className="createTaskBox" mb={2}>
             <MyTextField
@@ -151,24 +252,24 @@ const BoardSection = ({
         ) : null}
         <SortableContext
           id={id}
-          items={[...filteredTasks?.map((t) => t?._id), bottomPlaceholderId]}
+          items={[...filteredTasks?.map((t) => t?.id), bottomPlaceholderId]}
           strategy={verticalListSortingStrategy}
         >
           <div ref={setNodeRef}>
             {enhancedTasks
-              .filter((task) => task && task?._id)
+              .filter((task) => task && task?.id)
               .map((task) => {
                 if (!task) return null;
 
                 const isGhost = task.isGhost;
 
                 return (
-                  <React.Fragment key={task?._id}>
+                  <React.Fragment key={task?.id}>
                     <Box sx={{ mb: 2, opacity: isGhost ? 0.5 : 1 }}>
                       {isGhost ? (
                         <TaskItem task={task} isGhost />
                       ) : (
-                        <SortableTaskItem id={task?._id}>
+                        <SortableTaskItem id={task?.id}>
                           <TaskItem task={task} />
                         </SortableTaskItem>
                       )}

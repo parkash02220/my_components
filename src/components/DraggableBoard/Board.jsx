@@ -25,7 +25,7 @@ export const findBoardSectionContainer = (boardSections, id) => {
   }
 
   const container = Object.keys(boardSections).find((key) =>
-    boardSections[key]?.some((item) => item && item._id === id)
+    boardSections[key]?.some((item) => item && item.id === id)
   );
 
   return container;

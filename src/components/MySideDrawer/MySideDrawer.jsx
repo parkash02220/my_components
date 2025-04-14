@@ -118,7 +118,11 @@ export default function MySideDrawer({ children }) {
   const { loadingLogout, logoutUser } = useLogout();
   const router = useRouter();
   const pathname = usePathname();
+  const [hasMounted, setHasMounted] = useState(false);
 
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
   useEffect(() => {
     const parts = pathname.split("/");
     const selectedSegment = parts.length > 1 ? parts[1] : "";
@@ -296,6 +300,8 @@ export default function MySideDrawer({ children }) {
     fetchAllProjects();
   };
 
+  if (!hasMounted) return null;
+
   return (
     <>
       <Box className="createProjectDialog">
@@ -305,7 +311,6 @@ export default function MySideDrawer({ children }) {
           onCreate={handleCreateProject}
         />
       </Box>
-
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="fixed" open={open}>
@@ -337,13 +342,19 @@ export default function MySideDrawer({ children }) {
           <DrawerHeader />
           <List>{renderNavItems()}</List>
         </Drawer>
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Box
+          component="main"
+          sx={{ flexGrow: 1, p: 3 }}
+          width={"calc(100% - 300px)"}
+        >
           {/* <DrawerHeader /> */}
           <Box
-            width={"calc(100% - 300px)"}
+            width={"100%"}
             display={"flex"}
             justifyContent={"end"}
-            mb={3}
+            height={60}
+            alignItems={"flex-start"}
+            className="logout_buttonBox"
           >
             <MyButton onClick={logoutUser} loading={loadingLogout}>
               Logout

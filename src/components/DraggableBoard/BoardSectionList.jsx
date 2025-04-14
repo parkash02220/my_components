@@ -42,7 +42,7 @@ const BoardSectionList = () => {
   const [columnOrder, setColumnOrder] = useState([]);
   const [loadingUpdateTask, updateTask] = useMoveTask();
   const { loadingUpdatingColoumPos, updateColumnPosition } =
-    useUpdateColumnPosition(activeProject?._id);
+    useUpdateColumnPosition(activeProject?.id);
   const {
     loadingCreateColumn,
     errorCreateColumn,
@@ -50,14 +50,14 @@ const BoardSectionList = () => {
     newColumnName,
     handleColumnInputfieldChange,
     handleColumnInputKeyDown,
-  } = useCreateSection(activeProject?._id, setShowAddColumnButton);
+  } = useCreateSection(activeProject?.id, setShowAddColumnButton);
 
   useEffect(() => {
     if (!activeProject?.sections) return;
 
     const sectionMap = {};
     activeProject.sections.forEach((section) => {
-      sectionMap[section?._id] = section.tasks || [];
+      sectionMap[section?.id] = section.tasks || [];
     });
 
     const sorted = activeProject.sections
@@ -65,7 +65,7 @@ const BoardSectionList = () => {
       .sort((a, b) => a.position - b.position);
 
     setBoardSections(sectionMap);
-    setColumnOrder(sorted.map((s) => s._id));
+    setColumnOrder(sorted.map((s) => s.id));
   }, [activeProject]);
   const [activeTaskId, setActiveTaskId] = useState(null);
   const [overTaskId, setOverTaskId] = useState(null);
@@ -77,24 +77,33 @@ const BoardSectionList = () => {
   );
 
   const handleDragStart = ({ active }) => {
-    console.log("::Drag start:", active?.id);
     setActiveTaskId(active?.id);
   };
 
   const handleDragOver = ({ active, over }) => {
-    console.log("::Over item:", over?.id);
     const overId = over?.id;
     const activeId = active?.id;
+
+    console.log(":: over id in handle drag over", over?.id, overId);
+    console.log(":: acitve id in handle drag over", active?.id, activeId);
 
     if (!overId || !activeId) return;
 
     // Try to find the overId in all tasks to determine if it's a task
     const isOverTask = Object.values(boardSections)
       .flat()
-      .some((task) => task?._id === overId);
-    console.log("::over id to check bottom", overId);
+      .some((task) => task?.id === overId);
     const isOverBottom = overId.startsWith("bottom-");
-    console.log("::is over bottom", isOverBottom);
+
+    console.log("::is over task in handle drag", isOverTask);
+    console.log("::is over bottom in handle drag", isOverBottom, overId);
+    console.log(
+      ":: all task ids",
+      Object.values(boardSections)
+        .flat()
+        .map((t) => t.id)
+    );
+
     if (isOverTask || isOverBottom) {
       setOverTaskId(overId);
     } else {
@@ -105,6 +114,8 @@ const BoardSectionList = () => {
       active?.id
     );
     const overContainer = findBoardSectionContainer(boardSections, over?.id);
+
+    console.log("::is over container in handle drag", overContainer);
 
     const isOverColumn = overId === overContainer;
 
@@ -121,10 +132,10 @@ const BoardSectionList = () => {
       const overItems = prev[overContainer];
 
       const activeIndex = activeItems.findIndex(
-        (item) => item?._id === active?.id
+        (item) => item?.id === active?.id
       );
       const overIndex = boardSections[overContainer].findIndex(
-        (item) => item?._id === over?.id
+        (item) => item?.id === over?.id
       );
 
       if (activeIndex === -1 || overIndex === -1) return prev;
@@ -132,7 +143,7 @@ const BoardSectionList = () => {
       return {
         ...prev,
         [activeContainer]: activeItems.filter(
-          (item) => item?._id !== active?.id
+          (item) => item?.id !== active?.id
         ),
         [overContainer]: [
           ...overItems.slice(0, overIndex),
@@ -159,7 +170,7 @@ const BoardSectionList = () => {
       if (oldIndex !== newIndex) {
         const newOrder = arrayMove(columnOrder, oldIndex, newIndex);
         setColumnOrder(newOrder);
-        updateColumnPosition(activeId, newIndex + 1, activeProject?._id);
+        updateColumnPosition(activeId, newIndex + 1, activeProject?.id);
       }
       return;
     }
@@ -167,17 +178,10 @@ const BoardSectionList = () => {
     const activeContainer = findBoardSectionContainer(boardSections, activeId);
     const overContainer = findBoardSectionContainer(boardSections, overId);
 
-    console.log(
-      "::Active container:",
-      activeContainer,
-      "Over container:",
-      overContainer
-    );
-
     if (!activeContainer || !overContainer) return;
 
     const activeIndex = boardSections[activeContainer].findIndex(
-      (task) => task?._id === activeId
+      (task) => task?.id === activeId
     );
 
     const activeTask = boardSections[activeContainer]?.[activeIndex];
@@ -188,7 +192,7 @@ const BoardSectionList = () => {
       insertIndex = boardSections[overContainer].length;
     } else {
       const overIndex = boardSections[overContainer].findIndex(
-        (task) => task?._id === overId
+        (task) => task?.id === overId
       );
       insertIndex =
         overIndex >= 0 ? overIndex : boardSections[overContainer].length;
@@ -209,7 +213,7 @@ const BoardSectionList = () => {
     } else {
       setBoardSections((prev) => {
         const newSource = prev[activeContainer].filter(
-          (task) => task?._id !== activeId
+          (task) => task?.id !== activeId
         );
         const newTarget = [...prev[overContainer]];
         newTarget.splice(insertIndex, 0, activeTask);
@@ -222,7 +226,7 @@ const BoardSectionList = () => {
       });
     }
     if (activeContainer !== overContainer || activeIndex !== insertIndex) {
-      updateTask(activeTask._id, overContainer, insertIndex);
+      updateTask(activeTask.id, overContainer, insertIndex);
     }
   };
 
@@ -255,7 +259,7 @@ const BoardSectionList = () => {
             {columnOrder?.map((boardSectionKey) => {
               const sectionData = boardSections[boardSectionKey];
               const sectionLabel = activeProject?.sections?.find(
-                (s) => s._id === boardSectionKey
+                (s) => s.id === boardSectionKey
               )?.name;
               return (
                 <Grid
