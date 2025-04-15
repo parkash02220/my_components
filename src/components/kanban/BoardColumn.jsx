@@ -1,0 +1,268 @@
+"use client";
+
+import { SortableContext, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import Scrollbar from "react-scrollbars-custom";
+import { TaskCard } from "./TaskCard";
+import AddIcon from "@mui/icons-material/Add";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import useCreateTask from "@/hooks/projects/task/useCreateTask";
+import MyTextField from "../MyTextfield/MyTextfield";
+function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
+  const inputRef = useRef(null);
+  const [createTaskOpen, setCreateTaskOpen] = useState(false);
+  const { newTaskName, handleTaskInputfieldChange, handleTaskInputKeyDown } =
+    useCreateTask(column?.id, setCreateTaskOpen);
+  const taskIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
+  const isActive = column.id === activeColumnId && !isOverlay;
+  const sortableData = useMemo(
+    () => ({
+      type: "Column",
+      column,
+    }),
+    [column]
+  );
+
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: column.id,
+    data: sortableData,
+    attributes: {
+      roleDescription: `Column: ${column.title}`,
+    },
+  });
+
+  const columnStyle = useMemo(
+    () => ({
+      transform: CSS.Translate.toString(transform),
+      transition,
+      opacity: isOverlay ? 0.75 : isActive ? 0.5 : 1,
+    }),
+    [transform, transition, isOverlay]
+  );
+
+  const handleCreateTaskOpen = () => {
+    setCreateTaskOpen(true);
+  };
+  useEffect(() => {
+    if (createTaskOpen && inputRef.current) {
+      inputRef.current.querySelector("input")?.focus();
+    }
+  }, [createTaskOpen]);
+
+  return (
+    <Paper
+      ref={setNodeRef}
+      elevation={isOverlay ? 6 : 3}
+      style={{
+        height: "100%",
+        width: 336,
+        ...columnStyle,
+        backgroundColor: "#F4F6F8",
+        borderStyle: "solid",
+        border: "transparent",
+        flexShrink: 0,
+        scrollSnapAlign: "center",
+        borderRadius: "16px",
+        padding: "20px 16px 16px 16px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+      }}
+    >
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        // borderBottom="2px solid #ddd"
+        height={"50px"}
+      >
+        <Box display={"flex"} alignItems={"center"} gap={1}>
+          <Typography
+            sx={{
+              height: "24px",
+              minWidth: "24px",
+              background: "rgba(145,158,171,0.16)",
+              whiteSpace: "nowrap",
+              color: "#637381",
+              borderRadius: "50%",
+              fontWeight: 700,
+              fontSize: "12px",
+              borderColor: "rgba(145,158,171,0.24)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "0px 6px",
+              borderRadius: "50%",
+            }}
+          >
+            {tasks?.length || 0}
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 600, color: "rgb(35, 37, 46)" }}
+          >
+            {column.title}
+          </Typography>
+        </Box>
+        <Box
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          gap={1}
+        >
+          <Box
+            sx={{
+              "&:hover": {
+                background: "rgba(99,115,129,0.08)",
+              },
+              borderRadius: "50%",
+              padding: "4px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconButton
+              onClick={handleCreateTaskOpen}
+              sx={{
+                color: "white",
+                padding: "0px",
+                width: "20px",
+                height: "20px",
+              }}
+            >
+              <img
+                src="/addTaskIcon.svg"
+                alt="add task icon"
+                width={"100%"}
+                height={"100%"}
+              />
+            </IconButton>
+          </Box>
+          <Box
+            sx={{
+              "&:hover": {
+                background: "rgba(99,115,129,0.08)",
+              },
+              borderRadius: "50%",
+              padding: "4px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconButton
+              // onClick={handleMenuOpen}
+              sx={{
+                padding: "0px",
+                width: "20px",
+                height: "20px",
+                "&:hover": {
+                  background: "transparent",
+                },
+              }}
+            >
+              <img
+                src="/columnMenuIcon.svg"
+                alt="column menu icon"
+                width={"100%"}
+                height={"100%"}
+              />
+            </IconButton>
+          </Box>
+          <Box
+            sx={{
+              "&:hover": {
+                background: "rgba(99,115,129,0.08)",
+              },
+              borderRadius: "50%",
+              padding: "4px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconButton
+              {...attributes}
+              {...listeners}
+              size="small"
+              style={{
+                cursor: "grab",
+                color: "#999",
+                width: "20px",
+                height: "20px",
+                padding: "0px",
+              }}
+              sx={{
+                "&:hover": {
+                  background: "transparent",
+                },
+              }}
+            >
+              <span className="sr-only">{`Move column: ${column.title}`}</span>
+              <img
+                src="/columnDragIcon.svg"
+                alt="drag column icon"
+                width={"100%"}
+                height={"100%"}
+              />
+            </IconButton>
+          </Box>
+        </Box>
+      </Box>
+
+      {createTaskOpen ? (
+        <Box className="createTaskBox" mb={2}>
+          <MyTextField
+            ref={inputRef}
+            id="newTaskName"
+            placeholder="Untitled"
+            label=""
+            fontWeight={700}
+            borderColor="transparent"
+            background={"white"}
+            value={newTaskName}
+            onChange={handleTaskInputfieldChange}
+            onKeyDown={handleTaskInputKeyDown}
+            onBlur={() => setCreateTaskOpen(false)}
+          />
+          <Typography
+            sx={{
+              color: "rgb(122,125,161)",
+              fontSize: "12px",
+              mt: 1,
+              ml: 1,
+            }}
+          >
+            Press Enter to create task.
+          </Typography>
+        </Box>
+      ) : null}
+
+      <Scrollbar style={{ height: "calc(100% - 60px)" }}>
+        <Box display="flex" flexDirection="column" gap={2}>
+          <SortableContext items={taskIds}>
+            {tasks.map((task) => (
+              <TaskCard key={task.id} task={task} />
+            ))}
+          </SortableContext>
+        </Box>
+      </Scrollbar>
+    </Paper>
+  );
+}
+
+export const BoardColumn = React.memo(BoardColumnComponent);

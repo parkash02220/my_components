@@ -37,7 +37,6 @@ const BoardSectionList = () => {
   const { activeProject } = state;
   const [showAddColumnButton, setShowAddColumnButton] = useState(true);
   const inputRef = useRef(null);
-  console.log("::active project", activeProject);
   const [boardSections, setBoardSections] = useState({});
   const [columnOrder, setColumnOrder] = useState([]);
   const [loadingUpdateTask, updateTask] = useMoveTask();
@@ -84,9 +83,6 @@ const BoardSectionList = () => {
     const overId = over?.id;
     const activeId = active?.id;
 
-    console.log(":: over id in handle drag over", over?.id, overId);
-    console.log(":: acitve id in handle drag over", active?.id, activeId);
-
     if (!overId || !activeId) return;
 
     // Try to find the overId in all tasks to determine if it's a task
@@ -94,15 +90,6 @@ const BoardSectionList = () => {
       .flat()
       .some((task) => task?.id === overId);
     const isOverBottom = overId.startsWith("bottom-");
-
-    console.log("::is over task in handle drag", isOverTask);
-    console.log("::is over bottom in handle drag", isOverBottom, overId);
-    console.log(
-      ":: all task ids",
-      Object.values(boardSections)
-        .flat()
-        .map((t) => t.id)
-    );
 
     if (isOverTask || isOverBottom) {
       setOverTaskId(overId);
@@ -114,8 +101,6 @@ const BoardSectionList = () => {
       active?.id
     );
     const overContainer = findBoardSectionContainer(boardSections, over?.id);
-
-    console.log("::is over container in handle drag", overContainer);
 
     const isOverColumn = overId === overContainer;
 

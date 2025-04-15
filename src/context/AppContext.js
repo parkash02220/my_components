@@ -45,7 +45,7 @@ function projectsReducer(state, action) {
     case "ADD_TASK_TO_SECTION":{
       const {sectionId,task} = payload;
       const updatedSections = state?.activeProject?.sections?.map((section)=>{
-         if(section?._id === sectionId){
+         if(section?.id === sectionId){
            return {
             ...section,
             tasks:[task,...(section?.tasks || [])]

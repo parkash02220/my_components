@@ -22,7 +22,6 @@ const useUpdateColumnPosition = () => {
         }
 
         const data = res?.data;
-        console.log("::data",res?.data);
     }
 
   return {loadingUpdatingColoumPos, updateColumnPosition};

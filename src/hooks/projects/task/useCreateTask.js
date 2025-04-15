@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { ApiCall } from "@/utils/ApiCall";
 import { useAppContext } from "@/context/AppContext";
+import { convertIdFields } from "@/utils";
 
 const useCreateTask = (sectionId="", setCreateTaskOpen) => {
   const [newTaskName, setNewTaskName] = useState("");
@@ -27,7 +28,6 @@ const useCreateTask = (sectionId="", setCreateTaskOpen) => {
   };
 
   const handleTaskInputKeyDown = (e) => {
-    console.log("::key",e.key)
      if(e.key==="Enter"){
         handleCreateTask();
      }
@@ -56,9 +56,11 @@ const useCreateTask = (sectionId="", setCreateTaskOpen) => {
     }
 
     const data = res?.data;
-    console.log("::data in create task hook",data);
+    console.log("::data in create task",data)
 
-     dispatch({type:"ADD_TASK_TO_SECTION",payload:{sectionId,task:res?.data?.task}});
+    const formattedIdResponse = convertIdFields(res?.data?.task || []);
+
+     dispatch({type:"ADD_TASK_TO_SECTION",payload:{sectionId,task:formattedIdResponse}});
      setCreateTaskOpen(false);
   };
 

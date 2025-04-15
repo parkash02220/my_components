@@ -1,12 +1,13 @@
 import { useAppContext } from "@/context/AppContext";
 import { convertIdFields } from "@/utils";
-
-const { ApiCall } = require("@/utils/ApiCall");
-const { useState, useEffect } = require("react");
+import { ApiCall } from "@/utils/ApiCall";
+import { useEffect, useState } from "react";
 
 const useGetProject = (id) => {
   const [loadingGetProject, setLoadingGetProject] = useState(false);
+  const [projectData, setProjectData] = useState(null);
   const { dispatch } = useAppContext();
+
   const getProjectById = async (id) => {
     setLoadingGetProject(true);
     const res = await ApiCall({
@@ -15,18 +16,19 @@ const useGetProject = (id) => {
     });
 
     setLoadingGetProject(false);
-    if (res.error) {
-      return;
-    }
-    const formattedIdResponse = convertIdFields(res?.data?.board || []);
-    dispatch({ type: "SET_ACTIVE_PROJECT", payload: formattedIdResponse || {} });
+    if (res.error) return;
+
+    const formattedIdResponse = convertIdFields(res?.data?.board || {});
+    dispatch({ type: "SET_ACTIVE_PROJECT", payload: formattedIdResponse });
+
+    setProjectData(formattedIdResponse);
   };
 
   useEffect(() => {
-    getProjectById(id);
-  }, []);
+    if (id) getProjectById(id);
+  }, [id]);
 
-  return [loadingGetProject, getProjectById];
+  return { loadingGetProject, getProjectById, projectData };
 };
 
 export default useGetProject;

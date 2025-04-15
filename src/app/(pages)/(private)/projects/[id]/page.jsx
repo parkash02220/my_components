@@ -1,5 +1,6 @@
 "use client";
 import BoardSectionList from "@/components/DraggableBoard/BoardSectionList";
+import KanbanBoard from "@/components/kanban/KanbanBoard";
 import { useAppContext } from "@/context/AppContext";
 import useGetProject from "@/hooks/projects/useGetProject";
 import { Box, CircularProgress, Typography } from "@mui/material";
@@ -7,7 +8,6 @@ import { useParams } from "next/navigation";
 
 export default function ProjectPage() {
   const { id } = useParams();
-  const [loadingGetProject] = useGetProject(id);
   return (
     <>
       <Box
@@ -15,18 +15,7 @@ export default function ProjectPage() {
         overflow={"auto"}
         height={"calc(100vh - 100px)"}
       >
-        {loadingGetProject ? (
-          <Box
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            height={"100%"}
-          >
-            <CircularProgress />
-          </Box>
-        ) : (
-          <BoardSectionList />
-        )}
+        <KanbanBoard boardId={id} />
       </Box>
     </>
   );

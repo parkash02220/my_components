@@ -6,7 +6,6 @@ const useMoveTask = () => {
     const [loadingMoveTask,setLoadingMoveTask] = useState(false);
 
     const moveTask = async (taskId,toSectionId,newPosition) => {
-
         setLoadingMoveTask(true);
 
         const res = await ApiCall({
@@ -22,11 +21,10 @@ const useMoveTask = () => {
         }
 
         const data = res?.data;
-        console.log("::data",data);
 
     }
 
-  return [ loadingMoveTask,moveTask ];
+  return { loadingMoveTask,moveTask };
 };
 
 export default useMoveTask;

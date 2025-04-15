@@ -27,7 +27,6 @@ const useCreateSection = (boardId="", setShowAddColumnButton) => {
   };
 
   const handleColumnInputKeyDown = (e) => {
-    console.log("::key",e.key)
      if(e.key==="Enter"){
         handleCreateColumn();
      }
@@ -55,7 +54,6 @@ const useCreateSection = (boardId="", setShowAddColumnButton) => {
     }
 
     const data = res?.data;
-    console.log("::data in create Column hook",data);
 
     //  dispatch({type:"ADD_COLUMN_TO_SECTION",payload:{section:res?.data?.section}});
      setShowAddColumnButton(true);

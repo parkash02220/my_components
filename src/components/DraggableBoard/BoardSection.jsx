@@ -82,14 +82,6 @@ const BoardSection = ({
     }
   }, [createTaskOpen]);
 
-  console.log("::over task id in board section", overTaskId);
-  console.log("::active task id in board section", activeTaskId);
-  console.log("::ghost index in board section", ghostIndex);
-  console.log("::enahnced tsks in board section", enhancedTasks);
-  console.log("::filtered tasks in board section", filteredTasks);
-  console.log("::is dragging in board section", isDragging);
-  console.log("::bottome id in board section", bottomPlaceholderId);
-
   return (
     <>
       <Box sx={{ backgroundColor: "#eee", padding: 2, borderRadius: 2 }}>

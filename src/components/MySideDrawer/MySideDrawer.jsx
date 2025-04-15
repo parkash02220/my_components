@@ -39,6 +39,8 @@ import useCreateProject from "@/hooks/projects/useCreateProject";
 import { useAppContext } from "@/context/AppContext";
 import MyButton from "../MyButton/MyButton";
 import useLogout from "@/hooks/common/useLogout";
+import { SingleNavItem } from "./SingleNavItem";
+import { CollapsibleNavItem } from "./CollapsibleNavItem";
 const drawerWidth = 300;
 
 const openedMixin = (theme) => ({
@@ -161,139 +163,68 @@ export default function MySideDrawer({ children }) {
   }));
 
   const NAVIGATION = [
-    { kind: "projects", title: "Projects" },
-    { segment: "addproject", title: "+ Project" },
-    ...projectNavItems,
+    { type: "header", title: "Projects" },
+    { type: "item", segment: "addproject", title: "+ Project" },
+    // Spread out all project items as top-level items
+    ...(projects?.map((project) => ({
+      type: "item",
+      segment: `projects/${project?._id}`,
+      title: project?.name,
+      icon: <FolderOpenIcon />,
+    })) || []),
   ];
+  const renderNavItems = () => {
+    return NAVIGATION.map((item, index) => {
+      switch (item.type) {
+        case "header":
+          return open ? (
+            <ListItem key={index}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  fontSize: "12px",
+                  color: "#919EAB",
+                  fontWeight: 700,
+                  "&:hover": { color: "black", cursor: "pointer" },
+                }}
+              >
+                {item.title}
+              </Typography>
+            </ListItem>
+          ) : null;
 
-  const renderNavItems = () =>
-    NAVIGATION.map((item, index) => {
-      if (item?.kind === "header") {
-        return open ? (
-          <ListItem key={index}>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              sx={{
-                fontSize: "12px",
-                color: "#919EAB",
-                fontWeight: 700,
-                "&:hover": {
-                  color: "black",
-                  cursor: "pointer",
-                },
-              }}
-            >
-              {item?.title}
-            </Typography>
-          </ListItem>
-        ) : null;
-      }
+        case "divider":
+          return <Divider key={index} />;
 
-      if (item?.kind === "divider") {
-        return <Divider key={index} />;
-      }
-
-      const hasChildren = !!item?.children?.length;
-      const isExpanded = expandedItems[item?.segment];
-
-      const navItem = (
-        <>
-          <ListItemButton
-            key={item?.title}
-            onClick={() =>
-              hasChildren
-                ? handleExpandToggle(item.segment)
-                : handleDrawerItemClick(item)
-            }
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
-              background:
-                selectedDrawerItem === item?.segment ? "#ECF8F4" : "#FFFFFF",
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? "12px" : "auto",
-                justifyContent: "center",
-              }}
-            >
-              {item?.icon}
-            </ListItemIcon>
-            <ListItemText
-              primary={item?.title}
-              sx={{ opacity: open ? 1 : 0 }}
-              primaryTypographyProps={{
-                fontSize: "14px",
-                fontWeight: 500,
-                color:
-                  selectedDrawerItem === item?.segment ? "#00A76F" : "#637381",
-              }}
+        case "collapsible":
+          return (
+            <CollapsibleNavItem
+              key={index}
+              item={item}
+              open={open}
+              isExpanded={expandedItems[item.segment]}
+              onToggle={() => handleExpandToggle(item.segment)}
+              selectedSegment={selectedDrawerItem}
+              onClick={handleDrawerItemClick}
             />
-            {hasChildren &&
-              open &&
-              (isExpanded ? <ExpandLess /> : <ExpandMore />)}
-          </ListItemButton>
+          );
 
-          {/* Children */}
-          {hasChildren && (
-            <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                {item.children.map((child, childIndex) => (
-                  <ListItemButton
-                    key={childIndex}
-                    sx={{
-                      pl: open ? 4 : 2,
-                      justifyContent: open ? "initial" : "center",
-                    }}
-                    onClick={() => handleDrawerItemClick(child.segment)}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? "12px" : "auto",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {child?.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={child?.title}
-                      sx={{ opacity: open ? 1 : 0 }}
-                      primaryTypographyProps={{
-                        fontSize: "14px",
-                        fontWeight: 500,
-                        color:
-                          selectedDrawerItem === child?.segment
-                            ? "#00A76F"
-                            : "#637381",
-                      }}
-                    />
-                  </ListItemButton>
-                ))}
-              </List>
-            </Collapse>
-          )}
-        </>
-      );
+        case "item":
+          return (
+            <SingleNavItem
+              key={index}
+              item={item}
+              open={open}
+              selectedSegment={selectedDrawerItem}
+              onClick={() => handleDrawerItemClick(item)}
+            />
+          );
 
-      return open ? (
-        <ListItem
-          key={index}
-          disablePadding
-          sx={{ flexDirection: "column", alignItems: "stretch" }}
-        >
-          {navItem}
-        </ListItem>
-      ) : (
-        <Tooltip title={item?.title} placement="right" key={index}>
-          <ListItem disablePadding>{navItem}</ListItem>
-        </Tooltip>
-      );
+        default:
+          return null;
+      }
     });
+  };
 
   const handleCreateProject = async (name) => {
     await createProject(name);
