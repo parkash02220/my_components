@@ -8,6 +8,7 @@ import { useParams } from "next/navigation";
 
 export default function ProjectPage() {
   const { id } = useParams();
+  const { loadingGetProject, getProjectById, projectData } = useGetProject(id);
   return (
     <>
       <Box
@@ -15,7 +16,8 @@ export default function ProjectPage() {
         overflow={"auto"}
         height={"calc(100vh - 100px)"}
       >
-        <KanbanBoard boardId={id} />
+        {/* <KanbanBoard boardId={id} /> */}
+        <BoardSectionList/>
       </Box>
     </>
   );

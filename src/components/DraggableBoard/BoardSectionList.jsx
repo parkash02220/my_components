@@ -39,7 +39,7 @@ const BoardSectionList = () => {
   const inputRef = useRef(null);
   const [boardSections, setBoardSections] = useState({});
   const [columnOrder, setColumnOrder] = useState([]);
-  const [loadingUpdateTask, updateTask] = useMoveTask();
+    const {loadingUpdateTask, moveTask} = useMoveTask();
   const { loadingUpdatingColoumPos, updateColumnPosition } =
     useUpdateColumnPosition(activeProject?.id);
   const {
@@ -211,7 +211,7 @@ const BoardSectionList = () => {
       });
     }
     if (activeContainer !== overContainer || activeIndex !== insertIndex) {
-      updateTask(activeTask.id, overContainer, insertIndex);
+      moveTask(activeTask.id, overContainer, insertIndex);
     }
   };
 
