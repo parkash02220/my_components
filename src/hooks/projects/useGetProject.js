@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 
 const useGetProject = (id) => {
   const [loadingGetProject, setLoadingGetProject] = useState(false);
-  const [projectData, setProjectData] = useState(null);
   const { dispatch } = useAppContext();
 
   const getProjectById = async (id) => {
+    dispatch({ type: "SET_ACTIVE_PROJECT", payload: {} });
     setLoadingGetProject(true);
     const res = await ApiCall({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/get-board-with-details/${id}`,
@@ -21,14 +21,13 @@ const useGetProject = (id) => {
     const formattedIdResponse = convertIdFields(res?.data?.board || {});
     dispatch({ type: "SET_ACTIVE_PROJECT", payload: formattedIdResponse });
 
-    setProjectData(formattedIdResponse);
   };
 
   useEffect(() => {
     if (id) getProjectById(id);
   }, [id]);
 
-  return { loadingGetProject, getProjectById, projectData };
+  return { loadingGetProject, getProjectById };
 };
 
 export default useGetProject;

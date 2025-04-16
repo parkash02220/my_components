@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { ApiCall } from "@/utils/ApiCall";
 import { useAppContext } from "@/context/AppContext";
+import { convertIdFields } from "@/utils";
 
 const useCreateSection = (boardId="", setShowAddColumnButton) => {
   const [newColumnName, setNewColumnName] = useState("");
@@ -46,16 +47,17 @@ const useCreateSection = (boardId="", setShowAddColumnButton) => {
     });
 
     setNewColumnName("");
-
     setLoadingCreateColumn(false);
+    setShowAddColumnButton(true);
+
     if(res.error){
         console.log("::error while creating Column");
         return;
     }
 
     const data = res?.data;
-
-    //  dispatch({type:"ADD_COLUMN_TO_SECTION",payload:{section:res?.data?.section}});
+    const formattedIdResponse = convertIdFields(res?.data?.section);
+     dispatch({type:"ADD_COLUMN_TO_SECTION",payload:{section:formattedIdResponse}});
      setShowAddColumnButton(true);
   };
 

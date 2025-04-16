@@ -7,6 +7,7 @@ const useAllProjects = () => {
   const [loadingProjects, setLoadingProjects] = useState(false);
   const { dispatch } = useAppContext();
   const fetchAllProjects = async () => {
+    dispatch({ type: "SET_PROJECTS", payload: [] });
     setLoadingProjects(true);
     const res = await ApiCall({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/get-board`,
@@ -25,7 +26,7 @@ const useAllProjects = () => {
     fetchAllProjects();
   }, []);
 
-  return [loadingProjects, fetchAllProjects];
+  return {loadingProjects, fetchAllProjects};
 };
 
 export default useAllProjects;

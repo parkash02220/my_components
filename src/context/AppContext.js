@@ -29,10 +29,12 @@ function projectsReducer(state, action) {
 
     case "ADD_COLUMN_TO_SECTION":{
       const {section} = payload;
-      const updatedSections = {
+      console.log("::section in context",section);
+      const updatedSections = [
         ...state?.activeProject?.sections,
         section,
-      }
+      ]
+      console.log("::updated sections",updatedSections);
       return {
         ...state,
         activeProject:{
@@ -60,6 +62,58 @@ function projectsReducer(state, action) {
               sections:updatedSections,
             }
       };
+    }
+    
+    case "CLEAR_SECTION":{
+      const {sectionId} = payload;
+      const updatedSections = state?.activeProject?.sections?.map((section)=>{
+        if(section?.id === sectionId){
+          return {
+            ...section,
+            tasks:[],
+          }
+        }
+        return section;
+      });
+      return {
+        ...state,
+        activeProject:{
+          ...state.activeProject,
+          sections:updatedSections,
+        }
+      }
+    }
+
+    case "DELETE_SECTION":{
+      const {sectionId} = payload;
+      const updatedSections = state?.activeProject?.sections?.filter((section)=>section?.id !== sectionId);
+      return {
+        ...state,
+        activeProject:{
+          ...state.activeProject,
+          sections:updatedSections,
+        }
+      }
+    }
+
+    case "UPDATE_SECTION_NAME":{
+      const {sectionId,newName} = payload;
+      const updatedSections = state?.activeProject?.sections?.map((section)=>{
+        if(section?.id === sectionId){
+          return {
+            ...section,
+            name:newName,
+          }
+        }
+        return section;
+      });
+      return {
+        ...state,
+        activeProject:{
+          ...state.activeProject,
+          sections:updatedSections,
+        }
+      }
     }
 
     default:

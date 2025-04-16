@@ -14,7 +14,9 @@ export const SingleNavItem = ({ item, open, selectedSegment, onClick }) => {
       onClick={onClick}
       sx={{
         minHeight: 48,
+        flexDirection:open?"row":"column",
         justifyContent: open ? "initial" : "center",
+        alignItems:open ? "" : "center",
         px: 2.5,
         background: isSelected ? "#ECF8F4" : "#FFFFFF",
       }}
@@ -30,9 +32,11 @@ export const SingleNavItem = ({ item, open, selectedSegment, onClick }) => {
       </ListItemIcon>
       <ListItemText
         primary={item.title}
-        sx={{ opacity: open ? 1 : 0 }}
+        sx={{
+          //  opacity: open ? 1 : 0 
+          }}
         primaryTypographyProps={{
-          fontSize: "14px",
+          fontSize: open ? "14px" : "10px",
           fontWeight: 500,
           color: isSelected ? "#00A76F" : "#637381",
         }}

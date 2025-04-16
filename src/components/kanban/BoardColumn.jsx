@@ -14,7 +14,35 @@ import AddIcon from "@mui/icons-material/Add";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import useCreateTask from "@/hooks/projects/task/useCreateTask";
 import MyTextField from "../MyTextfield/MyTextfield";
+import { Menu, MenuItem } from "@mui/material";
+import useClearSection from "@/hooks/projects/section/useClearSection";
+import useDeleteSection from "@/hooks/projects/section/useDeleteSection";
+import useUpdateSectionName from "@/hooks/projects/section/useUpdateSectionName";
+
 function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
+  const { loadingClearSection, clearSection } = useClearSection();
+  const { loadingDeleteSection, deleteSection } = useDeleteSection();
+  const editSectionNameRef = useRef(null);
+  const [showEditTextfield, setShowEditTextfield] = useState(false);
+  const {
+    columnName,
+    handleColumnNameInputfieldChange,
+    handleColumnInputKeyDown,
+    handleUpdateColumnName,
+    startEditing,
+    cancelEditing,
+  } = useUpdateSectionName(column?.title,setShowEditTextfield);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(menuAnchorEl);
+  const [isEditingLabel, setIsEditingLabel] = useState(false);
+  const [editedLabel, setEditedLabel] = useState(column?.title || "");
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
   const inputRef = useRef(null);
   const [createTaskOpen, setCreateTaskOpen] = useState(false);
   const { newTaskName, handleTaskInputfieldChange, handleTaskInputKeyDown } =
@@ -61,6 +89,55 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
       inputRef.current.querySelector("input")?.focus();
     }
   }, [createTaskOpen]);
+
+  useEffect(() => {
+    if (showEditTextfield && editSectionNameRef.current) {
+      editSectionNameRef.current.querySelector("input")?.focus();
+    }
+  }, [showEditTextfield]);
+
+  const handleMenuEditButton = () => {
+    handleMenuClose();
+  setTimeout(() => {
+    startEditing(column.title); 
+    setShowEditTextfield(true);
+  }, 100);
+  };
+
+  const handleMenuClearButton = () => {
+    console.log("::entering clear button handleer");
+    clearSection(column?.id);
+    handleMenuClose();
+  };
+
+  const handleMenuDeleteButton = () => {
+    deleteSection(column?.id);
+    handleMenuClose();
+  };
+
+  const menuItems = [
+    {
+      label: "Rename",
+      icon: "/rename.svg",
+      onClick: handleMenuEditButton,
+    },
+    {
+      label: "Clear",
+      icon: "/clear.svg",
+      onClick: handleMenuClearButton,
+    },
+    {
+      label: "Delete",
+      icon: "/delete.svg",
+      onClick: handleMenuDeleteButton,
+      color: "#FF5630",
+    },
+  ];
+
+  const handleBlurUpdateSectionName = () => {
+    cancelEditing();
+    setShowEditTextfield(false);
+  };
 
   return (
     <Paper
@@ -110,12 +187,34 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
           >
             {tasks?.length || 0}
           </Typography>
-          <Typography
-            variant="subtitle1"
-            sx={{ fontWeight: 600, color: "rgb(35, 37, 46)" }}
-          >
-            {column.title}
-          </Typography>
+          {showEditTextfield ? (
+            <Box>
+              <MyTextField
+                ref={editSectionNameRef}
+                placeholder="Untitled"
+                label=""
+                fontWeight={700}
+                borderColor="transparent"
+                background={"white"}
+                value={columnName}
+                onChange={handleColumnNameInputfieldChange}
+                onKeyDown={(e) => handleColumnInputKeyDown(e, column?.id)}
+                onBlur={handleBlurUpdateSectionName}
+                fullWidth={true}
+                minWidth="0px"
+              />
+            </Box>
+          ) : (
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 600,
+                color: "rgb(35, 37, 46)",
+              }}
+            >
+              {column.title}
+            </Typography>
+          )}
         </Box>
         <Box
           display={"flex"}
@@ -165,7 +264,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
             }}
           >
             <IconButton
-              // onClick={handleMenuOpen}
+              onClick={handleMenuOpen}
               sx={{
                 padding: "0px",
                 width: "20px",
@@ -223,6 +322,63 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
           </Box>
         </Box>
       </Box>
+
+      <Menu
+        anchorEl={menuAnchorEl}
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        PaperProps={{
+          sx: {
+            borderRadius: "10px",
+            background: "#FFFFFFE6",
+            boxShadow:
+              "0px 5px 5px -3px rgba(145 158 171 / 0.2),0px 8px 10px 1px rgba(145 158 171 / 0.14),0px 3px 14px 2px rgba(145 158 171 / 0.12)",
+            color: "#1C252E",
+            backgroundColor: "rgba(255,255,255,0.9)",
+          },
+        }}
+      >
+        {menuItems.map((item) => (
+          <MenuItem
+            key={item.label}
+            onClick={item.onClick}
+            sx={{
+              backgroundColor: "transparent",
+              margin: "0px",
+              marginInline:"3px",
+              cursor: "pointer",
+              padding: "6px 8px",
+              borderRadius: "6px",
+            }}
+          >
+            <Box
+              display="flex"
+              gap={2}
+              alignItems="center"
+              minWidth="140px"
+              mb={"4px"}
+            >
+              <img
+                src={item.icon}
+                alt={item.label.toLowerCase()}
+                width={20}
+                height={20}
+              />
+              <Typography fontSize={14} color={item.color || "inherit"}>
+                {item.label}
+              </Typography>
+            </Box>
+          </MenuItem>
+        ))}
+      </Menu>
 
       {createTaskOpen ? (
         <Box className="createTaskBox" mb={2}>

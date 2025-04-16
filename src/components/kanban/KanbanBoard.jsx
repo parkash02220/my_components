@@ -20,48 +20,27 @@ import { BoardColumn } from "./BoardColumn";
 import { TaskCard } from "./TaskCard";
 import useGetProject from "@/hooks/projects/useGetProject";
 import useMoveTask from "@/hooks/projects/task/useMoveTask";
+import useUpdateColumnPosition from "@/hooks/projects/section/useUpdateColumnPosition";
+import useCreateSection from "@/hooks/projects/section/useCreateSection";
+import { Box, Typography } from "@mui/material";
+import MyTextField from "../MyTextfield/MyTextfield";
+import MyButton from "../MyButton/MyButton";
+import { useAppContext } from "@/context/AppContext";
 
-const defaultCols = [
-  { id: "todo", title: "Todo" },
-  { id: "in-progress", title: "In progress" },
-  { id: "done", title: "Done" },
-];
+export default function KanbanBoard({ boardId,activeProject }) {
 
-const initialTasks = [
-  { id: "task1", columnId: "done", content: "Project initiation and planning" },
-  {
-    id: "task2",
-    columnId: "done",
-    content: "Gather requirements from stakeholders",
-  },
-  { id: "task3", columnId: "done", content: "Create wireframes and mockups" },
-  { id: "task4", columnId: "in-progress", content: "Develop homepage layout" },
-  {
-    id: "task5",
-    columnId: "in-progress",
-    content: "Design color scheme and typography",
-  },
-  { id: "task6", columnId: "todo", content: "Implement user authentication" },
-  { id: "task7", columnId: "todo", content: "Build contact us page" },
-  { id: "task8", columnId: "todo", content: "Create product catalog" },
-  { id: "task9", columnId: "todo", content: "Develop about us page" },
-  {
-    id: "task10",
-    columnId: "todo",
-    content: "Optimize website for mobile devices",
-  },
-  { id: "task11", columnId: "todo", content: "Integrate payment gateway" },
-  { id: "task12", columnId: "todo", content: "Perform testing and bug fixing" },
-  {
-    id: "task13",
-    columnId: "todo",
-    content: "Launch website and deploy to server",
-  },
-];
-
-export default function KanbanBoard({ boardId }) {
-  const { loadingGetProject, getProjectById, projectData } =
-    useGetProject(boardId);
+  const inputRef = useRef(null);
+  const [showAddColumnButton, setShowAddColumnButton] = useState(true);
+  const {
+    loadingCreateColumn,
+    errorCreateColumn,
+    helperTextCreateColumn,
+    newColumnName,
+    handleColumnInputfieldChange,
+    handleColumnInputKeyDown,
+  } = useCreateSection(boardId, setShowAddColumnButton);
+  const { loadingUpdatingColoumPos, updateColumnPosition } =
+    useUpdateColumnPosition();
   const { loadingMoveTask, moveTask } = useMoveTask();
   const throttledSetTasks = useRef(
     throttle((updateFn) => {
@@ -73,9 +52,9 @@ export default function KanbanBoard({ boardId }) {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    if (!projectData) return;
+    if (!activeProject) return;
 
-    const sortedSections = [...(projectData?.sections || [])].sort(
+    const sortedSections = [...(activeProject?.sections || [])].sort(
       (a, b) => a?.position - b?.position
     );
 
@@ -95,7 +74,7 @@ export default function KanbanBoard({ boardId }) {
 
     setColumns(columnData);
     setTasks(taskData);
-  }, [projectData]);
+  }, [activeProject]);
   const [activeTask, setActiveTask] = useState(null);
   const [activeColumn, setActiveColumn] = useState(null);
   const pickedUpTaskColumn = useRef(null);
@@ -139,7 +118,11 @@ export default function KanbanBoard({ boardId }) {
         const fromIndex = columns.findIndex((c) => c.id === activeId);
         const toIndex = columns.findIndex((c) => c.id === overId);
         if (fromIndex === -1 || toIndex === -1) return columns;
-        return arrayMove(columns, fromIndex, toIndex);
+        const newColumns = arrayMove(columns, fromIndex, toIndex);
+        if (fromIndex !== toIndex) {
+          updateColumnPosition(activeId, toIndex + 1, boardId);
+        }
+        return newColumns;
       });
       return;
     }
@@ -292,48 +275,98 @@ export default function KanbanBoard({ boardId }) {
     return grouped;
   }, [tasks]);
 
-  return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDragEnd={onDragEnd}
-    >
-      <div
-        style={{
-          display: "flex",
-          gap: "1rem",
-          padding: "1rem",
-          overflowX: "auto",
-          height: "100%",
-        }}
-      >
-        <SortableContext items={columnsId}>
-          {columns.map((col) => (
-            <BoardColumn
-              key={col.id}
-              column={col}
-              tasks={tasksByColumn[col.id] || []}
-              activeColumnId={activeColumn?.id}
-            />
-          ))}
-        </SortableContext>
-      </div>
+  useEffect(() => {
+    if (!showAddColumnButton && inputRef.current) {
+      inputRef.current.querySelector("input")?.focus();
+    }
+  }, [showAddColumnButton]);
 
-      {typeof window !== "undefined" &&
-        createPortal(
-          <DragOverlay>
-            {activeColumn && (
+  return (
+    <>
+      <DndContext
+        sensors={sensors}
+        onDragStart={onDragStart}
+        onDragOver={onDragOver}
+        onDragEnd={onDragEnd}
+      >
+        <div
+          style={{
+            display: "flex",
+            gap: "1rem",
+            padding: "1rem",
+            overflowX: "auto",
+            height: "calc(100% - 35px)",
+          }}
+        >
+          <SortableContext items={columnsId}>
+            {columns.map((col) => (
               <BoardColumn
-                isOverlay
-                column={activeColumn}
-                tasks={tasksByColumn[activeColumn.id] || []}
+                key={col.id}
+                column={col}
+                tasks={tasksByColumn[col.id] || []}
+                activeColumnId={activeColumn?.id}
               />
-            )}
-            {activeTask && <TaskCard task={activeTask} isOverlay />}
-          </DragOverlay>,
-          document.body
+            ))}
+          </SortableContext>
+          {showAddColumnButton ? (
+          <Box height={'100%'} minWidth={336}>
+            <MyButton
+              variant="outlined"
+              color="black"
+              fullWidth={true}
+              size="large"
+              sx={{ borderColor: "#DBE0E4" }}
+              hoverBgColor="whitesmoke"
+              onClick={() => setShowAddColumnButton(false)}
+            >
+              Add Column
+            </MyButton>
+          </Box>
+        ) : (
+          <Box height={'100%'} minWidth={336}>
+            <MyTextField
+              ref={inputRef}
+              id="newColumnName"
+              placeholder="Untitled"
+              label=""
+              fontWeight={700}
+              borderColor="black"
+              background={"white"}
+              value={newColumnName}
+              onChange={handleColumnInputfieldChange}
+              onKeyDown={handleColumnInputKeyDown}
+              onBlur={() => setShowAddColumnButton(true)}
+              inputFontSize="18px"
+            />
+            <Typography
+              sx={{
+                color: "rgb(122,125,161)",
+                fontSize: "12px",
+                mt: 1,
+                ml: 1,
+              }}
+            >
+              Press Enter to create the column.
+            </Typography>
+          </Box>
         )}
-    </DndContext>
+        </div>
+
+        {typeof window !== "undefined" &&
+          createPortal(
+            <DragOverlay>
+              {activeColumn && (
+                <BoardColumn
+                  isOverlay
+                  column={activeColumn}
+                  tasks={tasksByColumn[activeColumn.id] || []}
+                />
+              )}
+              {activeTask && <TaskCard task={activeTask} isOverlay />}
+            </DragOverlay>,
+            document.body
+          )}
+      </DndContext>
+    </>
   );
 }

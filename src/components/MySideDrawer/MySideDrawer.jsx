@@ -1,6 +1,6 @@
 "use client";
 import { v4 as uuidv4 } from "uuid";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Collapse } from "@mui/material";
 import CreateProjectDialog from "@/components/MySideDrawer/CreateProjectDialog.jsx";
@@ -41,26 +41,21 @@ import MyButton from "../MyButton/MyButton";
 import useLogout from "@/hooks/common/useLogout";
 import { SingleNavItem } from "./SingleNavItem";
 import { CollapsibleNavItem } from "./CollapsibleNavItem";
+import Loader from "../Loader/Loader";
 const drawerWidth = 300;
-
+const miniDrawerWidth = 88;
+// const drawerTransitionDuration = 300;
+const drawerTransitionDuration = 120;
+const drawerEasing = 'cubic-bezier(0.4, 0, 0.6, 1)'; 
 const openedMixin = (theme) => ({
   width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
+  transition: `width ${drawerTransitionDuration}ms ${drawerEasing}`,
   overflowX: "hidden",
 });
 
 const closedMixin = (theme) => ({
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
+  width: miniDrawerWidth,
+  transition: `width ${drawerTransitionDuration}ms ${drawerEasing}`,
   overflowX: "hidden",
 });
 
@@ -75,20 +70,17 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
-  width: open ? drawerWidth : `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: open ? drawerWidth : `calc(${theme.spacing(8)} + 1px)`,
-  },
+  width: open ? drawerWidth : miniDrawerWidth,
   left: 0,
   right: "auto",
   position: "fixed",
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.standard,
-  }),
+  transition: `width ${drawerTransitionDuration}ms ${drawerEasing}`,
   overflowX: "hidden",
   boxSizing: "border-box",
   zIndex: theme.zIndex.drawer + 1,
+  backgroundColor:"#FFFFFF",
+  boxShadow:"none",
+  borderRight:"1px solid rgba(145,158,171,0.12)",
 }));
 
 const Drawer = styled(MuiDrawer, {
@@ -100,11 +92,27 @@ const Drawer = styled(MuiDrawer, {
   boxSizing: "border-box",
   ...(open && {
     ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
+    "& .MuiDrawer-paper": {
+      ...openedMixin(theme),
+      overflowY: "auto",
+      "&::-webkit-scrollbar": {
+        display: "none",
+      },
+      scrollbarWidth: "none",
+      msOverflowStyle: "none",
+    },
   }),
   ...(!open && {
     ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
+    "& .MuiDrawer-paper": {
+      ...closedMixin(theme),
+      overflowY: "auto",
+      "&::-webkit-scrollbar": {
+        display: "none",
+      },
+      scrollbarWidth: "none",
+      msOverflowStyle: "none",
+    },
   }),
 }));
 
@@ -113,7 +121,7 @@ export default function MySideDrawer({ children }) {
   const [expandedItems, setExpandedItems] = useState({});
   const [selectedDrawerItem, setSelectedDrawerItem] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [loadingProjects, fetchAllProjects] = useAllProjects();
+  const { loadingProjects, fetchAllProjects } = useAllProjects();
   const { state } = useAppContext();
   const { projects } = state;
   const [loading, isCreated, createProject] = useCreateProject();
@@ -175,54 +183,69 @@ export default function MySideDrawer({ children }) {
   ];
   const renderNavItems = () => {
     return NAVIGATION.map((item, index) => {
-      switch (item.type) {
-        case "header":
-          return open ? (
-            <ListItem key={index}>
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  fontSize: "12px",
-                  color: "#919EAB",
-                  fontWeight: 700,
-                  "&:hover": { color: "black", cursor: "pointer" },
-                }}
-              >
-                {item.title}
-              </Typography>
-            </ListItem>
-          ) : null;
+      if (item.type === "header") {
+        return open ? (
+          <ListItem key={index}>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontSize: "12px",
+                color: "#919EAB",
+                fontWeight: 700,
+                "&:hover": { color: "black", cursor: "pointer" },
+              }}
+            >
+              {item.title}
+            </Typography>
+          </ListItem>
+        ) : null;
+      }
 
-        case "divider":
-          return <Divider key={index} />;
-
-        case "collapsible":
-          return (
-            <CollapsibleNavItem
-              key={index}
-              item={item}
-              open={open}
-              isExpanded={expandedItems[item.segment]}
-              onToggle={() => handleExpandToggle(item.segment)}
-              selectedSegment={selectedDrawerItem}
-              onClick={handleDrawerItemClick}
-            />
-          );
-
-        case "item":
-          return (
+      if (item.type === "item" && item.segment === "addproject") {
+        return (
+          <React.Fragment key={index}>
             <SingleNavItem
-              key={index}
               item={item}
               open={open}
               selectedSegment={selectedDrawerItem}
               onClick={() => handleDrawerItemClick(item)}
             />
-          );
-
-        default:
-          return null;
+            {loadingProjects && (
+              <ListItem key="project-loader" sx={{ justifyContent: "center" }}>
+                <Loader />
+              </ListItem>
+            )}
+          </React.Fragment>
+        );
       }
+
+      if (item.type === "item") {
+        return (
+          <SingleNavItem
+            key={index}
+            item={item}
+            open={open}
+            selectedSegment={selectedDrawerItem}
+            onClick={() => handleDrawerItemClick(item)}
+          />
+        );
+      }
+
+      if (item.type === "collapsible") {
+        return (
+          <CollapsibleNavItem
+            key={index}
+            item={item}
+            open={open}
+            isExpanded={expandedItems[item.segment]}
+            onToggle={() => handleExpandToggle(item.segment)}
+            selectedSegment={selectedDrawerItem}
+            onClick={handleDrawerItemClick}
+          />
+        );
+      }
+
+      return null;
     });
   };
 
@@ -242,25 +265,52 @@ export default function MySideDrawer({ children }) {
           onCreate={handleCreateProject}
         />
       </Box>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", position: "relative" }}>
+        <IconButton
+          color="inherit"
+          onClick={toggleDrawer}
+          edge="start"
+          sx={{
+            position: "absolute",
+            top: 20,
+            left: open ? `${drawerWidth + 12}px` : `${miniDrawerWidth + 12}px`, // Adjust offset to be half out
+            transform: "translateX(-50%)", // Center the icon halfway
+            zIndex: 1300, // Stay on top
+            backgroundColor: "white",
+            cursor:"pointer",
+            color: "#637381",
+            border: "1px solid rgba(145,158,171,0.12)",
+            transition: `left ${drawerTransitionDuration}ms ${drawerEasing},transisiton ${drawerTransitionDuration}ms ${drawerEasing} `,
+            boxShadow: 2,
+            padding:"0px",
+            "&:hover": {
+              backgroundColor: "#f0f0f0",
+            },
+          }}
+        >
+        <img src="/toggleDrawerIcon.svg" alt="drawer toggle icon" style={{
+          transition: `transform ${drawerTransitionDuration}ms ${drawerEasing}`,
+          transform: open ? "rotate(180deg)" : "rotate(0deg)",
+          width:"100%",
+          height:"100%",
+        }} />
+        </IconButton>
+
         <CssBaseline />
         <AppBar position="fixed" open={open}>
           <Toolbar sx={{ justifyContent: open ? "space-between" : "center" }}>
             <IconButton
               sx={{
-                width: "40px",
+                width: open ? "80px" : "50px",
                 height: "40px",
+                padding: "0px",
               }}
             >
               <img
-                src="/drawerLogo.svg"
+                src="/websperoLogo.svg"
                 alt="logo"
-                style={{ height: "100%" }}
+                style={{ height: "100%", width: "100%" }}
               />
-            </IconButton>
-            <IconButton color="inherit" onClick={toggleDrawer} edge="start">
-              {/* {open ? <ChevronLeftIcon /> : <MenuIcon />} */}
-              {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
             {/* {open && (
     <Typography variant="h6" noWrap>
@@ -283,7 +333,7 @@ export default function MySideDrawer({ children }) {
             width={"100%"}
             display={"flex"}
             justifyContent={"end"}
-            height={60}
+            height={50}
             alignItems={"flex-start"}
             className="logout_buttonBox"
           >

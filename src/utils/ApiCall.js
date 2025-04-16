@@ -11,17 +11,20 @@ export async function ApiCall({
     url,
     method,
     headers,
-    data: body,
     signal,
   };
+
+  if (body !== null) {
+    config.data = body;
+  }
 
   try {
     const response = await axiosInstance(config);
     return { data: response.data };
   } catch (error) {
-    const status = error.response?.status || 500;
-    const message = error.response?.data?.message || error.message;
-    const data = error.response?.data || null;
+    const status = error.response?.status;
+    const message = error.response?.data?.message;
+    const data = error.response?.data;
 
     return {
       error: {
