@@ -26,9 +26,9 @@ import { Box, Typography } from "@mui/material";
 import MyTextField from "../MyTextfield/MyTextfield";
 import MyButton from "../MyButton/MyButton";
 import { useAppContext } from "@/context/AppContext";
+import RightDrawer from "../RightDrawer";
 
-export default function KanbanBoard({ boardId,activeProject }) {
-
+export default function KanbanBoard({ boardId, activeProject }) {
   const inputRef = useRef(null);
   const [showAddColumnButton, setShowAddColumnButton] = useState(true);
   const {
@@ -112,6 +112,11 @@ export default function KanbanBoard({ boardId,activeProject }) {
     const overId = over.id;
 
     const activeData = active.data.current;
+
+    if(activeData.type === "Task" && event.delta.x <= 1 && event.delta.y <= 1){
+      handleDrawerOpen();
+      return;
+    }
 
     if (activeData.type === "Column") {
       setColumns((columns) => {
@@ -281,8 +286,18 @@ export default function KanbanBoard({ boardId,activeProject }) {
     }
   }, [showAddColumnButton]);
 
+  const [openDrawer,setOpenDrawer] = useState(false);
+  const handleDrawerOpen = () => {
+    console.log("::entering drawer")
+    setOpenDrawer(true);
+  }
+  const handleDrawerClose = () => {
+    setOpenDrawer(false);
+  }
+
   return (
     <>
+      <RightDrawer open={openDrawer} handleDrawer={handleDrawerClose} />
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}
@@ -309,47 +324,48 @@ export default function KanbanBoard({ boardId,activeProject }) {
             ))}
           </SortableContext>
           {showAddColumnButton ? (
-          <Box height={'100%'} minWidth={336}>
-            <MyButton
-              variant="outlined"
-              color="black"
-              fullWidth={true}
-              size="large"
-              sx={{ borderColor: "#DBE0E4" }}
-              hoverBgColor="whitesmoke"
-              onClick={() => setShowAddColumnButton(false)}
-            >
-              Add Column
-            </MyButton>
-          </Box>
-        ) : (
-          <Box height={'100%'} minWidth={336}>
-            <MyTextField
-              ref={inputRef}
-              id="newColumnName"
-              placeholder="Untitled"
-              label=""
-              fontWeight={700}
-              borderColor="black"
-              background={"white"}
-              value={newColumnName}
-              onChange={handleColumnInputfieldChange}
-              onKeyDown={handleColumnInputKeyDown}
-              onBlur={() => setShowAddColumnButton(true)}
-              inputFontSize="18px"
-            />
-            <Typography
-              sx={{
-                color: "rgb(122,125,161)",
-                fontSize: "12px",
-                mt: 1,
-                ml: 1,
-              }}
-            >
-              Press Enter to create the column.
-            </Typography>
-          </Box>
-        )}
+            <Box height={"100%"} minWidth={336}>
+              <MyButton
+                variant="outlined"
+                color="black"
+                fullWidth={true}
+                size="large"
+                sx={{ borderColor: "#DBE0E4" }}
+                hoverBgColor="whitesmoke"
+                onClick={() => setShowAddColumnButton(false)}
+              >
+                Add Column
+              </MyButton>
+            </Box>
+          ) : (
+            <Box height={"100%"} minWidth={336}>
+              <MyTextField
+                ref={inputRef}
+                id="newColumnName"
+                placeholder="Untitled"
+                label=""
+                fontWeight={700}
+                borderColor="black"
+                background={"white"}
+                value={newColumnName}
+                onChange={handleColumnInputfieldChange}
+                onKeyDown={handleColumnInputKeyDown}
+                onBlur={() => setShowAddColumnButton(true)}
+                inputFontSize="18px"
+                loading={loadingCreateColumn}
+              />
+              <Typography
+                sx={{
+                  color: "rgb(122,125,161)",
+                  fontSize: "12px",
+                  mt: 1,
+                  ml: 1,
+                }}
+              >
+                Press Enter to create the column.
+              </Typography>
+            </Box>
+          )}
         </div>
 
         {typeof window !== "undefined" &&

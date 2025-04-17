@@ -10,36 +10,36 @@ import { CircularProgress } from "@mui/material";
 
 const SearchBox = styled(Box)(
   ({
-    borderColor,
-    borderRadius,
-    backgroundColor,
-    focusedBorderColor,
-    hoverBorderColor,
+    bordercolor,
+    borderradius,
+    backgroundcolor,
+    focusedbordercolor,
+    hoverbordercolor,
     disabled,
   }) => ({
     display: "flex",
     alignItems: "center",
     padding: "4px 8px",
-    border: `1px solid ${borderColor || "#ccc"}`,
-    borderRadius: borderRadius || "4px",
+    border: `1px solid ${bordercolor || "#ccc"}`,
+    borderRadius: borderradius || "4px",
     cursor: disabled ? "not-allowed" : "text",
-    backgroundColor: backgroundColor || "#fff",
+    backgroundColor: backgroundcolor || "#fff",
     transition: "border-color 0.3s ease",
     "&:focus-within": {
-      borderColor: focusedBorderColor || "#1976d2",
+      borderColor: focusedbordercolor || "#1976d2",
     },
     "&:hover": {
-      borderColor: hoverBorderColor || borderColor || "#aaa",
+      borderColor: hoverbordercolor || bordercolor || "#aaa",
     },
   })
 );
 
 const StyledInputBase = styled(InputBase)(
-  ({ inputFontSize, inputTextColor, disabled }) => ({
+  ({ inputfontsize, inputtextcolor, disabled }) => ({
     flex: 1,
     cursor: disabled ? "not-allowed" : "text",
-    fontSize: inputFontSize || "16px",
-    color: inputTextColor || "#000",
+    fontSize: inputfontsize || "16px",
+    color: inputtextcolor || "#000",
     "& input": {
       padding: "8px",
       outline: "none",
@@ -90,12 +90,12 @@ export default function MySearch({
       {...props}
     >
       <SearchBox
-        borderColor={ error ? errorBorderColor || 'red' : borderColor || 'inherit'}
-        borderRadius={borderRadius}
-        backgroundColor={backgroundColor}
-        focusedBorderColor={focusedBorderColor}
+        bordercolor={ error ? errorBorderColor || 'red' : borderColor || 'inherit'}
+        borderradius={borderRadius}
+        backgroundcolor={backgroundColor}
+        focusedbordercolor={focusedBorderColor}
         sx={{ cursor: disabled ? "not-allowed" : "text" }}
-        hoverBorderColor={hoverBorderColor}
+        hoverbordercolor={hoverBorderColor}
       >
         <IconButton
           aria-label="search"
@@ -115,8 +115,8 @@ export default function MySearch({
           placeholder={placeholder}
           inputProps={{ "aria-label": "search", disabled: disabled }}
           disabled={disabled}
-          inputFontSize={inputFontSize}
-          inputTextColor={inputTextColor}
+          inputfontsize={inputFontSize}
+          inputtextcolor={inputTextColor}
         />
         {showClearButton && value && !disabled && (
           <IconButton

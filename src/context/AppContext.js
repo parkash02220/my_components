@@ -116,6 +116,27 @@ function projectsReducer(state, action) {
       }
     }
 
+    case "Move_SECTION":{
+      const {newPosition,columnId} = payload;
+      const updatedSections = [...state.activeProject.sections]?.sort((a,b)=> a.position - b.position);
+      const prePosition = updatedSections?.findIndex((item)=>item?.id === columnId);
+      const [movedSection] = updatedSections?.splice(prePosition,1);
+      updatedSections?.splice(newPosition,0,movedSection);
+      const reOrderedSections =  updatedSections?.map((section,index)=> ({
+        ...section,
+        position:index+1,
+      }))
+      console.log("::section with new position",updatedSections)
+      return {
+        ...state,
+        activeProject:{
+          ...state.activeProject,
+          sections:reOrderedSections,
+        }
+      }
+
+    }
+
     default:
       return state;
   }

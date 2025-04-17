@@ -1,4 +1,5 @@
 import { useAppContext } from "@/context/AppContext";
+import { convertIdFields } from "@/utils";
 
 const { ApiCall } = require("@/utils/ApiCall");
 const { useState, useEffect } = require("react");
@@ -20,7 +21,8 @@ const useAllProjects = () => {
     }
 
     const data = res.data;
-    dispatch({ type: "SET_PROJECTS", payload: data?.boards });
+    const formattedIdResponse = convertIdFields(res?.data?.boards || []);
+    dispatch({ type: "SET_PROJECTS", payload: formattedIdResponse });
   };
   useEffect(() => {
     fetchAllProjects();

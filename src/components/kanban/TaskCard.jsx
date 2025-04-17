@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Card, CardContent, CardHeader, IconButton, Chip } from "@mui/material";
+import { Card, CardContent, CardHeader, IconButton, Chip, Box } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import RightDrawer from "../RightDrawer";
 
 export function TaskCard({ task, isOverlay }) {
   const {
@@ -37,11 +38,12 @@ export function TaskCard({ task, isOverlay }) {
     //   : undefined,
   };
 
-  return (
+  return ( <>
     <Card
       ref={setNodeRef}
       {...attributes}
       {...listeners}
+      onClick={()=>console.log("::::card onclick here")}
       style={style}
       // variant="outlined"
       sx={{
@@ -51,6 +53,7 @@ export function TaskCard({ task, isOverlay }) {
         outline: "none",
         borderRadius: "12px",
       }}
+
     >
       {/* <CardHeader
         sx={{
@@ -88,5 +91,6 @@ export function TaskCard({ task, isOverlay }) {
         {task.content}
       </CardContent>
     </Card>
+    </>
   );
 }

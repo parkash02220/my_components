@@ -17,7 +17,7 @@ export default function ProjectPage() {
       <Box
         className="active_project"
         overflow={"auto"}
-        height={"calc(100vh - 100px)"}
+        height={"calc(100vh - 75px)"}
       >
         <Box>
           <Typography variant="h4" fontSize={'1.5rem'} fontWeight={700} color="iC252E" paddingInline={2}>{activeProject?.name}</Typography>

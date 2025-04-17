@@ -42,6 +42,7 @@ import useLogout from "@/hooks/common/useLogout";
 import { SingleNavItem } from "./SingleNavItem";
 import { CollapsibleNavItem } from "./CollapsibleNavItem";
 import Loader from "../Loader/Loader";
+import SearchNavItem from "./SearchNavItem";
 const drawerWidth = 300;
 const miniDrawerWidth = 88;
 // const drawerTransitionDuration = 300;
@@ -77,7 +78,7 @@ const AppBar = styled(MuiAppBar, {
   transition: `width ${drawerTransitionDuration}ms ${drawerEasing}`,
   overflowX: "hidden",
   boxSizing: "border-box",
-  zIndex: theme.zIndex.drawer + 1,
+  zIndex: 800,
   backgroundColor:"#FFFFFF",
   boxShadow:"none",
   borderRight:"1px solid rgba(145,158,171,0.12)",
@@ -90,6 +91,7 @@ const Drawer = styled(MuiDrawer, {
   flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
+  zIndex:799,
   ...(open && {
     ...openedMixin(theme),
     "& .MuiDrawer-paper": {
@@ -165,7 +167,7 @@ export default function MySideDrawer({ children }) {
     router.push(`/${segment}`);
   };
   const projectNavItems = projects?.map((project) => ({
-    segment: `projects/${project?._id}`,
+    segment: `projects/${project?.id}`,
     title: project?.name,
     icon: <FolderOpenIcon />,
   }));
@@ -173,10 +175,10 @@ export default function MySideDrawer({ children }) {
   const NAVIGATION = [
     { type: "header", title: "Projects" },
     { type: "item", segment: "addproject", title: "+ Project" },
-    // Spread out all project items as top-level items
+    {type:"searchField"},
     ...(projects?.map((project) => ({
       type: "item",
-      segment: `projects/${project?._id}`,
+      segment: `projects/${project?.id}`,
       title: project?.name,
       icon: <FolderOpenIcon />,
     })) || []),
@@ -201,17 +203,12 @@ export default function MySideDrawer({ children }) {
         ) : null;
       }
 
-      if (item.type === "item" && item.segment === "addproject") {
+      if (item.type === "searchField") {
         return (
           <React.Fragment key={index}>
-            <SingleNavItem
-              item={item}
-              open={open}
-              selectedSegment={selectedDrawerItem}
-              onClick={() => handleDrawerItemClick(item)}
-            />
+            <SearchNavItem open={open} />
             {loadingProjects && (
-              <ListItem key="project-loader" sx={{ justifyContent: "center" }}>
+              <ListItem sx={{ justifyContent: "center", py: 1 }}>
                 <Loader />
               </ListItem>
             )}
@@ -225,7 +222,6 @@ export default function MySideDrawer({ children }) {
             key={index}
             item={item}
             open={open}
-            selectedSegment={selectedDrawerItem}
             onClick={() => handleDrawerItemClick(item)}
           />
         );
@@ -273,9 +269,9 @@ export default function MySideDrawer({ children }) {
           sx={{
             position: "absolute",
             top: 20,
-            left: open ? `${drawerWidth + 12}px` : `${miniDrawerWidth + 12}px`, // Adjust offset to be half out
-            transform: "translateX(-50%)", // Center the icon halfway
-            zIndex: 1300, // Stay on top
+            left: open ? `${drawerWidth + 12}px` : `${miniDrawerWidth + 12}px`, 
+            transform: "translateX(-50%)",
+            zIndex: 801,
             backgroundColor: "white",
             cursor:"pointer",
             color: "#637381",
@@ -321,12 +317,13 @@ export default function MySideDrawer({ children }) {
         </AppBar>
         <Drawer variant="permanent" open={open}>
           <DrawerHeader />
-          <List>{renderNavItems()}</List>
+          <List sx={{padding: open ? "8px 16px" : "8px"}}>{renderNavItems()}</List>
         </Drawer>
         <Box
           component="main"
-          sx={{ flexGrow: 1, p: 3 }}
+          sx={{ flexGrow: 1, p: 3,pb:0 }}
           width={"calc(100% - 300px)"}
+          minHeight={'100vh'}
         >
           {/* <DrawerHeader /> */}
           <Box

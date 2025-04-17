@@ -1,9 +1,10 @@
 // hooks/useUpdateColumnPosition.js
+import { useAppContext } from "@/context/AppContext";
 import { ApiCall } from "@/utils/ApiCall";
 import { useCallback, useState } from "react";
 
 const useUpdateColumnPosition = () => {
-
+    const {dispatch} = useAppContext();
     const [loadingUpdatingColoumPos,setLoadingUpdatingColoumPos] = useState(false);
 
     const updateColumnPosition = async (columnId, position,boardId) => {
@@ -22,6 +23,8 @@ const useUpdateColumnPosition = () => {
         }
 
         const data = res?.data;
+        console.log("::newposition in custom hook",position)
+        dispatch({type:"Move_SECTION",payload:{newPosition:position-1,columnId}})
     }
 
   return {loadingUpdatingColoumPos, updateColumnPosition};

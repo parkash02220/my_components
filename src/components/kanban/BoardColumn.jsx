@@ -14,7 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import useCreateTask from "@/hooks/projects/task/useCreateTask";
 import MyTextField from "../MyTextfield/MyTextfield";
-import { Menu, MenuItem } from "@mui/material";
+import { Collapse, Fade, Menu, MenuItem } from "@mui/material";
 import useClearSection from "@/hooks/projects/section/useClearSection";
 import useDeleteSection from "@/hooks/projects/section/useDeleteSection";
 import useUpdateSectionName from "@/hooks/projects/section/useUpdateSectionName";
@@ -26,12 +26,12 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
   const [showEditTextfield, setShowEditTextfield] = useState(false);
   const {
     columnName,
+    loadingUpdateColumnName,
     handleColumnNameInputfieldChange,
     handleColumnInputKeyDown,
-    handleUpdateColumnName,
     startEditing,
     cancelEditing,
-  } = useUpdateSectionName(column?.title,setShowEditTextfield);
+  } = useUpdateSectionName(column?.title, setShowEditTextfield);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const isMenuOpen = Boolean(menuAnchorEl);
   const [isEditingLabel, setIsEditingLabel] = useState(false);
@@ -45,8 +45,12 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
   };
   const inputRef = useRef(null);
   const [createTaskOpen, setCreateTaskOpen] = useState(false);
-  const { newTaskName, handleTaskInputfieldChange, handleTaskInputKeyDown } =
-    useCreateTask(column?.id, setCreateTaskOpen);
+  const {
+    newTaskName,
+    loadingCreateTask,
+    handleTaskInputfieldChange,
+    handleTaskInputKeyDown,
+  } = useCreateTask(column?.id, setCreateTaskOpen);
   const taskIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
   const isActive = column.id === activeColumnId && !isOverlay;
   const sortableData = useMemo(
@@ -98,10 +102,10 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
 
   const handleMenuEditButton = () => {
     handleMenuClose();
-  setTimeout(() => {
-    startEditing(column.title); 
-    setShowEditTextfield(true);
-  }, 100);
+    setTimeout(() => {
+      startEditing(column.title);
+      setShowEditTextfield(true);
+    }, 100);
   };
 
   const handleMenuClearButton = () => {
@@ -138,7 +142,6 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
     cancelEditing();
     setShowEditTextfield(false);
   };
-
   return (
     <Paper
       ref={setNodeRef}
@@ -166,7 +169,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
         // borderBottom="2px solid #ddd"
         height={"50px"}
       >
-        <Box display={"flex"} alignItems={"center"} gap={1}>
+        <Box display={"flex"} alignItems={"center"} gap={1} flex={1}>
           <Typography
             sx={{
               height: "24px",
@@ -188,31 +191,38 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
             {tasks?.length || 0}
           </Typography>
           {showEditTextfield ? (
-            <Box>
-              <MyTextField
-                ref={editSectionNameRef}
-                placeholder="Untitled"
-                label=""
-                fontWeight={700}
-                borderColor="transparent"
-                background={"white"}
-                value={columnName}
-                onChange={handleColumnNameInputfieldChange}
-                onKeyDown={(e) => handleColumnInputKeyDown(e, column?.id)}
-                onBlur={handleBlurUpdateSectionName}
-                fullWidth={true}
-                minWidth="0px"
-              />
-            </Box>
+            <Fade in={showEditTextfield} timeout={600}>
+              <Box>
+                <MyTextField
+                  ref={editSectionNameRef}
+                  placeholder="Untitled"
+                  label=""
+                  fontWeight={600}
+                  borderColor="black"
+                  background={"#F4F6F8"}
+                  value={columnName}
+                  onChange={handleColumnNameInputfieldChange}
+                  onKeyDown={(e) => handleColumnInputKeyDown(e, column?.id)}
+                  onBlur={handleBlurUpdateSectionName}
+                  fullWidth={true}
+                  minWidth="0px"
+                  loading={loadingUpdateColumnName}
+                  inputFontSize="16px"
+                />
+              </Box>
+            </Fade>
           ) : (
             <Typography
               variant="subtitle1"
+              onClick={()=> setShowEditTextfield(true)}
               sx={{
                 fontWeight: 600,
                 color: "rgb(35, 37, 46)",
+                width:'100%',
+                cursor:"text"
               }}
             >
-              {column.title}
+              {columnName}
             </Typography>
           )}
         </Box>
@@ -342,7 +352,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
             boxShadow:
               "0px 5px 5px -3px rgba(145 158 171 / 0.2),0px 8px 10px 1px rgba(145 158 171 / 0.14),0px 3px 14px 2px rgba(145 158 171 / 0.12)",
             color: "#1C252E",
-            backgroundColor: "rgba(255,255,255,0.9)",
+            backgroundColor: "rgba(255,255,255)",
           },
         }}
       >
@@ -353,7 +363,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
             sx={{
               backgroundColor: "transparent",
               margin: "0px",
-              marginInline:"3px",
+              marginInline: "3px",
               cursor: "pointer",
               padding: "6px 8px",
               borderRadius: "6px",
@@ -394,6 +404,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
             onChange={handleTaskInputfieldChange}
             onKeyDown={handleTaskInputKeyDown}
             onBlur={() => setCreateTaskOpen(false)}
+            loading={loadingCreateTask}
           />
           <Typography
             sx={{
@@ -408,7 +419,17 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
         </Box>
       ) : null}
 
-      <Scrollbar style={{ height: "calc(100% - 60px)" }}>
+      <Box
+        sx={{
+          height: "calc(100% - 60px)",
+          width: "100%",
+          overflowY: "auto",
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        }}
+      >
         <Box display="flex" flexDirection="column" gap={2}>
           <SortableContext items={taskIds}>
             {tasks.map((task) => (
@@ -416,7 +437,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
             ))}
           </SortableContext>
         </Box>
-      </Scrollbar>
+      </Box>
     </Paper>
   );
 }
