@@ -47,7 +47,7 @@ const drawerWidth = 300;
 const miniDrawerWidth = 88;
 // const drawerTransitionDuration = 300;
 const drawerTransitionDuration = 120;
-const drawerEasing = 'cubic-bezier(0.4, 0, 0.6, 1)'; 
+const drawerEasing = "cubic-bezier(0.4, 0, 0.6, 1)";
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: `width ${drawerTransitionDuration}ms ${drawerEasing}`,
@@ -79,9 +79,9 @@ const AppBar = styled(MuiAppBar, {
   overflowX: "hidden",
   boxSizing: "border-box",
   zIndex: 800,
-  backgroundColor:"#FFFFFF",
-  boxShadow:"none",
-  borderRight:"1px solid rgba(145,158,171,0.12)",
+  backgroundColor: "#FFFFFF",
+  boxShadow: "none",
+  borderRight: "1px solid rgba(145,158,171,0.12)",
 }));
 
 const Drawer = styled(MuiDrawer, {
@@ -91,7 +91,7 @@ const Drawer = styled(MuiDrawer, {
   flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
-  zIndex:799,
+  zIndex: 799,
   ...(open && {
     ...openedMixin(theme),
     "& .MuiDrawer-paper": {
@@ -175,14 +175,22 @@ export default function MySideDrawer({ children }) {
   const NAVIGATION = [
     { type: "header", title: "Projects" },
     { type: "item", segment: "addproject", title: "+ Project" },
-    {type:"searchField"},
-    ...(projects?.map((project) => ({
-      type: "item",
-      segment: `projects/${project?.id}`,
-      title: project?.name,
-      icon: <FolderOpenIcon />,
-    })) || []),
+    { type: "searchField" },
   ];
+
+  if (loadingProjects && (!projects || projects.length === 0)) {
+  } else if (!loadingProjects && projects?.length === 0) {
+    NAVIGATION.push({ type: "message", title: "No projects found" });
+  } else if (projects?.length > 0) {
+    NAVIGATION.push(
+      ...projects.map((project) => ({
+        type: "item",
+        segment: `projects/${project?.id}`,
+        title: project?.name,
+        icon: <FolderOpenIcon />,
+      }))
+    );
+  }
   const renderNavItems = () => {
     return NAVIGATION.map((item, index) => {
       if (item.type === "header") {
@@ -207,13 +215,32 @@ export default function MySideDrawer({ children }) {
         return (
           <React.Fragment key={index}>
             <SearchNavItem open={open} />
-            {loadingProjects && (
+            {loadingProjects && (!projects || projects.length === 0) && (
               <ListItem sx={{ justifyContent: "center", py: 1 }}>
                 <Loader />
               </ListItem>
             )}
           </React.Fragment>
         );
+      }
+
+      if (item.type === "message") {
+        return open ? (
+          <ListItem key={index}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#919EAB",
+                fontStyle: "italic",
+                px: 2,
+                width: "100%",
+                textAlign: "center",
+              }}
+            >
+              {item.title}
+            </Typography>
+          </ListItem>
+        ) : null;
       }
 
       if (item.type === "item") {
@@ -269,27 +296,31 @@ export default function MySideDrawer({ children }) {
           sx={{
             position: "absolute",
             top: 20,
-            left: open ? `${drawerWidth + 12}px` : `${miniDrawerWidth + 12}px`, 
+            left: open ? `${drawerWidth + 12}px` : `${miniDrawerWidth + 12}px`,
             transform: "translateX(-50%)",
             zIndex: 801,
             backgroundColor: "white",
-            cursor:"pointer",
+            cursor: "pointer",
             color: "#637381",
             border: "1px solid rgba(145,158,171,0.12)",
             transition: `left ${drawerTransitionDuration}ms ${drawerEasing},transisiton ${drawerTransitionDuration}ms ${drawerEasing} `,
             boxShadow: 2,
-            padding:"0px",
+            padding: "0px",
             "&:hover": {
               backgroundColor: "#f0f0f0",
             },
           }}
         >
-        <img src="/toggleDrawerIcon.svg" alt="drawer toggle icon" style={{
-          transition: `transform ${drawerTransitionDuration}ms ${drawerEasing}`,
-          transform: open ? "rotate(180deg)" : "rotate(0deg)",
-          width:"100%",
-          height:"100%",
-        }} />
+          <img
+            src="/toggleDrawerIcon.svg"
+            alt="drawer toggle icon"
+            style={{
+              transition: `transform ${drawerTransitionDuration}ms ${drawerEasing}`,
+              transform: open ? "rotate(180deg)" : "rotate(0deg)",
+              width: "100%",
+              height: "100%",
+            }}
+          />
         </IconButton>
 
         <CssBaseline />
@@ -317,13 +348,15 @@ export default function MySideDrawer({ children }) {
         </AppBar>
         <Drawer variant="permanent" open={open}>
           <DrawerHeader />
-          <List sx={{padding: open ? "8px 16px" : "8px"}}>{renderNavItems()}</List>
+          <List sx={{ padding: open ? "8px 16px" : "8px" }}>
+            {renderNavItems()}
+          </List>
         </Drawer>
         <Box
           component="main"
-          sx={{ flexGrow: 1, p: 3,pb:0 }}
+          sx={{ flexGrow: 1, p: 3, pb: 0 }}
           width={"calc(100% - 300px)"}
-          minHeight={'100vh'}
+          minHeight={"100vh"}
         >
           {/* <DrawerHeader /> */}
           <Box

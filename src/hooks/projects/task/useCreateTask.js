@@ -64,7 +64,7 @@ const useCreateTask = (sectionId="", setCreateTaskOpen) => {
      setCreateTaskOpen(false);
   };
 
-  return {loadingCreateTask,errorCreateTask,helperTextCreateTask,newTaskName,handleTaskInputfieldChange,handleTaskInputKeyDown};
+  return {loadingCreateTask,errorCreateTask,helperTextCreateTask,newTaskName,handleTaskInputfieldChange,handleTaskInputKeyDown,setNewTaskName};
 };
 
 export default useCreateTask;

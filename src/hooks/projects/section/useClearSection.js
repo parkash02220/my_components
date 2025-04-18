@@ -9,7 +9,7 @@ const useClearSection = () => {
         console.log(`${process.env.NEXT_PUBLIC_BASE_URL}/clear-tasks/${sectionId}`)
         setLoadingClearSection(true);
         const res = await ApiCall({
-            url:`${process.env.NEXT_PUBLIC_BASE_URL}/delete-section/${sectionId}`,
+            url:`${process.env.NEXT_PUBLIC_BASE_URL}/clear-section/${sectionId}`,
             method:"DELETE",
         });
         console.log(res,"response1")

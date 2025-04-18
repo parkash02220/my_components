@@ -1,10 +1,11 @@
+import { useAppContext } from "@/context/AppContext";
 import { ApiCall } from "@/utils/ApiCall";
 import { useCallback, useState } from "react";
 
 const useMoveTask = () => {
 
     const [loadingMoveTask,setLoadingMoveTask] = useState(false);
-
+    const {dispatch} = useAppContext();
     const moveTask = async (taskId,toSectionId,newPosition) => {
         setLoadingMoveTask(true);
 
@@ -21,6 +22,7 @@ const useMoveTask = () => {
         }
 
         const data = res?.data;
+        dispatch({type:"MOVE_TASK",payload:{taskId,toSectionId,newPosition}});
 
     }
 

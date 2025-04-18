@@ -22,11 +22,13 @@ import useGetProject from "@/hooks/projects/useGetProject";
 import useMoveTask from "@/hooks/projects/task/useMoveTask";
 import useUpdateColumnPosition from "@/hooks/projects/section/useUpdateColumnPosition";
 import useCreateSection from "@/hooks/projects/section/useCreateSection";
-import { Box, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import MyTextField from "../MyTextfield/MyTextfield";
 import MyButton from "../MyButton/MyButton";
 import { useAppContext } from "@/context/AppContext";
 import RightDrawer from "../RightDrawer";
+import MyTooltip from "../MyTooltip/MyTooltip";
+import { RightDrawerContent, RightDrawerHeader } from "./RightDrawerComponents";
 
 export default function KanbanBoard({ boardId, activeProject }) {
   const inputRef = useRef(null);
@@ -113,10 +115,14 @@ export default function KanbanBoard({ boardId, activeProject }) {
 
     const activeData = active.data.current;
 
-    if(activeData.type === "Task" && event.delta.x <= 1 && event.delta.y <= 1){
-      handleDrawerOpen();
-      return;
-    }
+    // if (
+    //   activeData.type === "Task" &&
+    //   event.delta.x <= 5 &&
+    //   event.delta.y <= 5
+    // ) {
+    //   handleDrawerOpen();
+    //   return;
+    // }
 
     if (activeData.type === "Column") {
       setColumns((columns) => {
@@ -286,18 +292,23 @@ export default function KanbanBoard({ boardId, activeProject }) {
     }
   }, [showAddColumnButton]);
 
-  const [openDrawer,setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const handleDrawerOpen = () => {
-    console.log("::entering drawer")
+    console.log("::entering drawer");
     setOpenDrawer(true);
-  }
+  };
   const handleDrawerClose = () => {
     setOpenDrawer(false);
-  }
+  };
 
   return (
     <>
-      <RightDrawer open={openDrawer} handleDrawer={handleDrawerClose} />
+      <RightDrawer
+        open={openDrawer}
+        handleDrawer={handleDrawerClose}
+        header={<RightDrawerHeader/>}
+        children={<RightDrawerContent/>}
+      />
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}

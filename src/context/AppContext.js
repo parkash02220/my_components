@@ -137,6 +137,52 @@ function projectsReducer(state, action) {
 
     }
 
+    case "MOVE_TASK": {
+      const { taskId, toSectionId, newPosition } = payload;
+    
+      const sectionsCopy = state.activeProject.sections?.map(section => ({
+        ...section,
+        tasks: [...section.tasks],
+      }));
+
+      console.log("::sections copy before changing task position",sectionsCopy);
+    
+      let taskToMove = null;
+      let fromSectionIndex = -1;
+      let taskIndex = -1;
+    
+      sectionsCopy?.forEach((section, sectionIndex) => {
+        const taskIndexInSection = section.tasks?.findIndex(task => task?.id === taskId);
+        if (taskIndexInSection !== -1) {
+          fromSectionIndex = sectionIndex;
+          taskIndex = taskIndexInSection;
+          taskToMove = section.tasks[taskIndexInSection];
+        }
+      });
+    
+      if (!taskToMove || fromSectionIndex === -1) return state;
+    
+      sectionsCopy[fromSectionIndex].tasks.splice(taskIndex, 1);
+    
+      const toSection = sectionsCopy.find(section => section?.id === toSectionId);
+      if (!toSection) return state;
+    
+      const insertAt = Math.max(0, Math.min(newPosition, toSection.tasks.length));
+      toSection.tasks.splice(insertAt, 0, taskToMove);
+
+      console.log("::sections copy after changing task position",sectionsCopy);
+    
+      return {
+        ...state,
+        activeProject: {
+          ...state.activeProject,
+          sections: sectionsCopy,
+        },
+      };
+    }
+    
+    
+
     default:
       return state;
   }
