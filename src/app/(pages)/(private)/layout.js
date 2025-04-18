@@ -14,7 +14,7 @@ export default function HomeLayout({ children }) {
     if (!user) {
       router.push("/signin");
     }
-  }, [user]);
+  }, [user,router]);
 
   return (
     <AppContextProvider>
