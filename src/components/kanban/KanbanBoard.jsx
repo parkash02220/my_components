@@ -28,7 +28,8 @@ import MyButton from "../MyButton/MyButton";
 import { useAppContext } from "@/context/AppContext";
 import RightDrawer from "../RightDrawer";
 import MyTooltip from "../MyTooltip/MyTooltip";
-import { RightDrawerContent, RightDrawerHeader } from "./RightDrawerComponents";
+import { RightDrawerContent } from "./Drawer/RightDrawerComponents";
+import { Header } from "./Drawer/header";
 
 export default function KanbanBoard({ boardId, activeProject }) {
   const inputRef = useRef(null);
@@ -115,14 +116,13 @@ export default function KanbanBoard({ boardId, activeProject }) {
 
     const activeData = active.data.current;
 
-    // if (
-    //   activeData.type === "Task" &&
-    //   event.delta.x <= 5 &&
-    //   event.delta.y <= 5
-    // ) {
-    //   handleDrawerOpen();
-    //   return;
-    // }
+    if (
+      activeData.type === "Task" &&
+      event.delta.x <= 5 &&
+      event.delta.y <= 5
+    ) {
+      handleDrawerOpen();
+    }
 
     if (activeData.type === "Column") {
       setColumns((columns) => {
@@ -305,8 +305,8 @@ export default function KanbanBoard({ boardId, activeProject }) {
     <>
       <RightDrawer
         open={openDrawer}
+        header={<Header/>}
         handleDrawer={handleDrawerClose}
-        header={<RightDrawerHeader/>}
         children={<RightDrawerContent/>}
       />
       <DndContext
