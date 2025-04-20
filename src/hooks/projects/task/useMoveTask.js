@@ -22,7 +22,7 @@ const useMoveTask = () => {
         }
 
         const data = res?.data;
-        dispatch({type:"MOVE_TASK",payload:{taskId,toSectionId,newPosition}});
+        dispatch({type:"MOVE_TASK",payload:{taskId,toSectionId,newPosition:newPosition-1}});
 
     }
 

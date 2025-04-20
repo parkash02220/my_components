@@ -20,11 +20,25 @@ export default function ProjectPage() {
         height={"calc(100vh - 75px)"}
       >
         <Box>
-          <Typography variant="h4" fontSize={'1.5rem'} fontWeight={700} color="iC252E" paddingInline={2}>{activeProject?.name}</Typography>
+          <Typography
+            variant="h4"
+            fontSize={"1.5rem"}
+            fontWeight={700}
+            color="iC252E"
+            paddingInline={2}
+          >
+            {activeProject?.name}
+          </Typography>
         </Box>
         {loadingGetProject ? (
-          <Box display={'flex'} justifyContent={'center'} alignItems={'center'} width={'100%'} height={'calc(100% - 35px)'}>
-            <Loader/>
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            width={"100%"}
+            height={"calc(100% - 35px)"}
+          >
+            <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
           </Box>
         ) : (
           <KanbanBoard boardId={id} activeProject={activeProject} />

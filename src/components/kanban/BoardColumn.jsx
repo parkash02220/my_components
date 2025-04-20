@@ -87,7 +87,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
   );
 
   const handleCreateTaskOpen = () => {
-    setCreateTaskOpen((pre)=>!pre);
+    setCreateTaskOpen((pre) => !pre);
   };
   useEffect(() => {
     if (createTaskOpen && inputRef.current) {
@@ -104,9 +104,9 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
   const handleCreateTaskTextFieldBlur = () => {
     setTimeout(() => {
       setCreateTaskOpen(false);
-    }, 100); 
+    }, 100);
     setNewTaskName("");
-  }
+  };
 
   const handleMenuEditButton = () => {
     handleMenuClose();
@@ -222,12 +222,12 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
           ) : (
             <Typography
               variant="subtitle1"
-              onClick={()=> setShowEditTextfield(true)}
+              onClick={() => setShowEditTextfield(true)}
               sx={{
                 fontWeight: 600,
                 color: "rgb(35, 37, 46)",
-                width:'100%',
-                cursor:"text"
+                width: "100%",
+                cursor: "text",
               }}
             >
               {columnName}
@@ -436,22 +436,29 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
           "&::-webkit-scrollbar": {
             display: "none",
           },
-          display: tasks?.length < 1 ? "flex" : "",
-          alignItems: tasks?.length < 1 ? "center" : ""
         }}
       >
         <Box display="flex" flexDirection="column" gap={2}>
           <SortableContext items={taskIds}>
-            {
-            tasks?.length < 1 ? (
-              <Box className="emptySection" height={'inherit'} display={'flex'} alignItems={'center'}>
-                <Typography fontSize={'14px'} textAlign={'center'} fontWeight={'600'} color="#919EAB">Looks like this section is empty. Let's add some tasks!</Typography>
+            {tasks?.length < 1 ? (
+              <Box
+                className="emptySection"
+                height={"inherit"}
+                display={"flex"}
+                alignItems={"center"}
+              >
+                <Typography
+                  fontSize={"14px"}
+                  textAlign={"center"}
+                  fontWeight={"600"}
+                  color="#919EAB"
+                >
+                  Looks like this section is empty. Let's add some tasks!
+                </Typography>
               </Box>
-            ) : (tasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
-              ))
-            )
-            }
+            ) : (
+              tasks.map((task) => <TaskCard key={task.id} task={task} />)
+            )}
           </SortableContext>
         </Box>
       </Box>

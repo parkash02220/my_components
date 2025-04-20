@@ -217,7 +217,8 @@ export default function MySideDrawer({ children }) {
             <SearchNavItem open={open} />
             {loadingProjects && (!projects || projects.length === 0) && (
               <ListItem sx={{ justifyContent: "center", py: 1 }}>
-                <Loader />
+                {/* <Loader /> */}
+                <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
               </ListItem>
             )}
           </React.Fragment>

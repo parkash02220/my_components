@@ -27,11 +27,10 @@ import MyTextField from "../MyTextfield/MyTextfield";
 import MyButton from "../MyButton/MyButton";
 import { useAppContext } from "@/context/AppContext";
 import RightDrawer from "../RightDrawer";
-import MyTooltip from "../MyTooltip/MyTooltip";
-import { RightDrawerContent } from "./Drawer/RightDrawerComponents";
-import { Header } from "./Drawer/header";
+import KanbanRightDrawer from "./Drawer/KanbanRightDrawer";
 
 export default function KanbanBoard({ boardId, activeProject }) {
+  const [openDrawer, setOpenDrawer] = useState(false);
   const inputRef = useRef(null);
   const [showAddColumnButton, setShowAddColumnButton] = useState(true);
   const {
@@ -292,7 +291,6 @@ export default function KanbanBoard({ boardId, activeProject }) {
     }
   }, [showAddColumnButton]);
 
-  const [openDrawer, setOpenDrawer] = useState(false);
   const handleDrawerOpen = () => {
     console.log("::entering drawer");
     setOpenDrawer(true);
@@ -303,12 +301,7 @@ export default function KanbanBoard({ boardId, activeProject }) {
 
   return (
     <>
-      <RightDrawer
-        open={openDrawer}
-        header={<Header/>}
-        handleDrawer={handleDrawerClose}
-        children={<RightDrawerContent/>}
-      />
+      <KanbanRightDrawer open={openDrawer} handleDrawer={handleDrawerClose} />
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}
