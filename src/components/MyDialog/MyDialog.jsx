@@ -29,8 +29,10 @@ const MyDialog = ({ open, handleClose, title, content, actions, ...props }) => {
         }}
         PaperProps={{
             sx: {
-              minWidth: props.minWidth || '500px',
+              minWidth: props?.minwidth || '500px',
               borderRadius: props.borderRadius || '16px',
+              maxWidth: props?.maxwidth || "600px",
+              boxShadow : props?.boxShadow,
             },
           }}
         {...props}
@@ -42,7 +44,7 @@ const MyDialog = ({ open, handleClose, title, content, actions, ...props }) => {
         >
           {title}
         </BootstrapDialogTitle>
-        <DialogContent>{content}</DialogContent>
+        <DialogContent  sx={{ p: props?.contentpadding || 2 }}>{content}</DialogContent>
         {actions && <DialogActions>{actions}</DialogActions>}
       </BootstrapDialog>
     </div>
@@ -54,7 +56,7 @@ function BootstrapDialogTitle(props) {
   const { children, onClose, ...other } = props;
 
   return (
-    <DialogTitle sx={{ m: 0, p: 2, fontSize: props?.fontSize }} {...other}>
+    <DialogTitle sx={{ m: 0, p: props?.titlepadding || 2, fontSize: props?.fontSize }} {...other}>
       {children}
       {onClose ? (
         <IconButton

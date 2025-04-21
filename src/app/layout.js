@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import MySideDrawer from "@/components/MySideDrawer/MySideDrawer";
 import { Box } from "@mui/material";
+import CustomThemeProvider from '@/theme/CustomThemeProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,9 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
          <AppRouterCacheProvider>
+          <CustomThemeProvider >
         <Box className="main_container">{children}</Box>
+        </CustomThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>

@@ -117,7 +117,6 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
   };
 
   const handleMenuClearButton = () => {
-    console.log("::entering clear button handleer");
     clearSection(column?.id);
     handleMenuClose();
   };

@@ -1,10 +1,10 @@
 import { styled, Tooltip, tooltipClasses } from "@mui/material";
 
-const CustomTooltip = styled(({ className, ...props }) => (
+const CustomTooltip = styled(({ bgcolor,className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
+))(({ theme,bgcolor }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "rgba(0,0,0,0.8)",
+    backgroundColor: bgcolor || "rgba(0,0,0,0.8)",
     color: "white",
     borderRadius: "8px",
     fontSize: "0.687rem",
@@ -13,10 +13,10 @@ const CustomTooltip = styled(({ className, ...props }) => (
   },
 }));
 
-const MyTooltip = ({ children, title = "", placement = "" }) => {
+const MyTooltip = ({ children, title = "", placement = "",bgColor }) => {
   return (
     <>
-      <CustomTooltip title={title} placement={placement}>
+      <CustomTooltip title={title} placement={placement} bgcolor={bgColor}>
         {children}
       </CustomTooltip>
     </>

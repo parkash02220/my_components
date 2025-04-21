@@ -56,7 +56,6 @@ const useCreateTask = (sectionId="", setCreateTaskOpen) => {
     }
 
     const data = res?.data;
-    console.log("::data in create task",data)
 
     const formattedIdResponse = convertIdFields(res?.data?.task || []);
 

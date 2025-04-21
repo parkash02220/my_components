@@ -1,23 +1,31 @@
+import { useAppContext } from "@/context/AppContext";
+import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const useGetTask = () => {
-    const [loadingGetTask,setLoadingGetTask] = useState(false);
-    const getTaskFromBackend = async (taskId) => {
-          setLoadingGetTask(true);
-          const res = await ApiCall({
-            url:`${process.env.NEXT_PUBLIC_BASE_URL}/get-task/${taskId}`,
-            method:"GET",
-          });
+  const {dispatch} = useAppContext();
+  const [loadingGetTask, setLoadingGetTask] = useState(false);
+  
+  const getTaskFromBackend = useCallback(async (taskId) => {
+    setLoadingGetTask(true);
+    const res = await ApiCall({
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/get-task/${taskId}`,
+      method: "GET",
+    });
+    setLoadingGetTask(false);
 
-          setLoadingGetTask(false);
-          if(res.error){
-            console.log("::error while getting task from backend",res);
-          }
+    if (res.error) {
+      console.log("::error while getting task from backend", res);
+    }
 
-          const data = res?.data;
-          console.log("::data in usegettask",data);
-    } 
-    return {loadingGetTask,getTaskFromBackend};
-}
+    const data = res?.data;
+    const formattedIdResponse = convertIdFields(res?.data?.task);
+    dispatch({type:"SET_ACTIVE_TASK",payload:{...formattedIdResponse}});
+    return data;
+  }, []);
+
+  return { loadingGetTask, getTaskFromBackend };
+};
+
 export default useGetTask;

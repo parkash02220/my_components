@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useDebounce from "../common/useDebounce";
 import { ApiCall } from "@/utils/ApiCall";
 import { useAppContext } from "@/context/AppContext";
@@ -11,12 +11,14 @@ const useSearchProject = () => {
     const [searchInputValue,setSearchInputValue] = useState("");
     const debouncedSearchInputValue = useDebounce(searchInputValue,500);
     const {dispatch} = useAppContext();
-    
+    const hasInteracted = useRef(false);
     const handleSearchInputChange = (e) => {
+        hasInteracted.current = true;
         setSearchInputValue(e.target.value);
     }
 
     useEffect(() => {
+        if(!hasInteracted.current) return
         const controller = new AbortController();
         const {signal} = controller;
         const getSearchBoards = async () => {
@@ -37,8 +39,6 @@ const useSearchProject = () => {
                 setErrorSearchProject(true);
                 console.log("::error while getting boards",res);
             }
-
-            console.log("::res in search box",res.data)
             const formattedIdResponse = convertIdFields(res?.data?.boards || []);
             dispatch({type:"SET_PROJECTS",payload:formattedIdResponse});
 

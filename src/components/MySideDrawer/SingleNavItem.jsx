@@ -68,8 +68,6 @@ export const SingleNavItem = ({ item, open, onClick }) => {
     </ListItemButton>
   );
 
-  console.log(":selected segment",selectedDrawerItem);
-
   return open ? (
     <ListItem disablePadding>{content}</ListItem>
   ) : (

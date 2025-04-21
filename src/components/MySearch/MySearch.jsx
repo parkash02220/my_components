@@ -13,6 +13,7 @@ const SearchBox = styled(Box)(
     bordercolor,
     borderradius,
     backgroundcolor,
+    focusedborder,
     focusedbordercolor,
     hoverbordercolor,
     disabled,
@@ -26,7 +27,7 @@ const SearchBox = styled(Box)(
     backgroundColor: backgroundcolor || "#fff",
     transition: "border-color 0.3s ease",
     "&:focus-within": {
-      borderColor: focusedbordercolor || "#1976d2",
+      border : focusedborder || `1px solid ${focusedbordercolor || "#1976d2"}`,
     },
     "&:hover": {
       borderColor: hoverbordercolor || bordercolor || "#aaa",
@@ -77,6 +78,7 @@ export default function MySearch({
   clearIconStyle = {},
   helperTextStyle = {},
   hoverBorderColor,
+  focusedBorder,
   loading,
   ...props
 }) {
@@ -93,6 +95,7 @@ export default function MySearch({
         bordercolor={ error ? errorBorderColor || 'red' : borderColor || 'inherit'}
         borderradius={borderRadius}
         backgroundcolor={backgroundColor}
+        focusedborder={focusedBorder}
         focusedbordercolor={focusedBorderColor}
         sx={{ cursor: disabled ? "not-allowed" : "text" }}
         hoverbordercolor={hoverBorderColor}

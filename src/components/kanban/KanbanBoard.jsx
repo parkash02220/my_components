@@ -32,6 +32,8 @@ import KanbanRightDrawer from "./Drawer/KanbanRightDrawer";
 export default function KanbanBoard({ boardId, activeProject }) {
   const [openDrawer, setOpenDrawer] = useState(false);
   const inputRef = useRef(null);
+  const wasDragged = useRef(false);
+  const {dispatch} = useAppContext();
   const [showAddColumnButton, setShowAddColumnButton] = useState(true);
   const {
     loadingCreateColumn,
@@ -52,6 +54,7 @@ export default function KanbanBoard({ boardId, activeProject }) {
 
   const [columns, setColumns] = useState([]);
   const [tasks, setTasks] = useState([]);
+
 
   useEffect(() => {
     if (!activeProject) return;
@@ -78,6 +81,7 @@ export default function KanbanBoard({ boardId, activeProject }) {
     setTasks(taskData);
   }, [activeProject]);
   const [activeTask, setActiveTask] = useState(null);
+  const [activeTaskId,setActiveTaskId] = useState(null);
   const [activeColumn, setActiveColumn] = useState(null);
   const pickedUpTaskColumn = useRef(null);
 
@@ -90,6 +94,7 @@ export default function KanbanBoard({ boardId, activeProject }) {
   );
 
   const onDragStart = (event) => {
+    wasDragged.current = false;
     const data = event.active?.data?.current;
     if (!hasDraggableData(event.active)) return;
 
@@ -115,12 +120,12 @@ export default function KanbanBoard({ boardId, activeProject }) {
 
     const activeData = active.data.current;
 
-    if (
-      activeData.type === "Task" &&
-      event.delta.x <= 5 &&
-      event.delta.y <= 5
-    ) {
-      handleDrawerOpen();
+    if (!wasDragged.current) {
+      if (activeData.type === "Task") {
+        setActiveTaskId(null);
+        setTimeout(() => setActiveTaskId(activeData?.task?.id), 0);
+      }
+      return;
     }
 
     if (activeData.type === "Column") {
@@ -212,6 +217,9 @@ export default function KanbanBoard({ boardId, activeProject }) {
   };
 
   const onDragOver = (event) => {
+    if (Math.abs(event.delta.x) > 5 || Math.abs(event.delta.y) > 5) {
+      wasDragged.current = true;
+    }
     const { active, over } = event;
     if (!over || !hasDraggableData(active) || !hasDraggableData(over)) return;
 
@@ -292,16 +300,22 @@ export default function KanbanBoard({ boardId, activeProject }) {
   }, [showAddColumnButton]);
 
   const handleDrawerOpen = () => {
-    console.log("::entering drawer");
     setOpenDrawer(true);
   };
   const handleDrawerClose = () => {
+    dispatch({type:"SET_ACTIVE_TASK",payload:{}})
     setOpenDrawer(false);
   };
 
+  useEffect(() => {
+    if(activeTaskId){
+      handleDrawerOpen();
+    }
+  },[activeTaskId])
+
   return (
     <>
-      <KanbanRightDrawer open={openDrawer} handleDrawer={handleDrawerClose} />
+      <KanbanRightDrawer open={openDrawer} handleDrawer={handleDrawerClose} taskId={activeTaskId} />
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}

@@ -23,7 +23,6 @@ const useUpdateColumnPosition = () => {
         }
 
         const data = res?.data;
-        console.log("::newposition in custom hook",position)
         dispatch({type:"Move_SECTION",payload:{newPosition:position-1,columnId}})
     }
 

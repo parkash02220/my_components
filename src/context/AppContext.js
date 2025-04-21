@@ -29,12 +29,10 @@ function projectsReducer(state, action) {
 
     case "ADD_COLUMN_TO_SECTION":{
       const {section} = payload;
-      console.log("::section in context",section);
       const updatedSections = [
         ...state?.activeProject?.sections,
         section,
       ]
-      console.log("::updated sections",updatedSections);
       return {
         ...state,
         activeProject:{
@@ -126,7 +124,6 @@ function projectsReducer(state, action) {
         ...section,
         position:index+1,
       }))
-      console.log("::section with new position",updatedSections)
       return {
         ...state,
         activeProject:{
@@ -145,7 +142,6 @@ function projectsReducer(state, action) {
         tasks: [...section.tasks],
       }));
 
-      console.log("::sections copy before changing task position",sectionsCopy);
     
       let taskToMove = null;
       let fromSectionIndex = -1;
@@ -170,7 +166,6 @@ function projectsReducer(state, action) {
       const insertAt = Math.max(0, Math.min(newPosition, toSection.tasks.length));
       toSection.tasks.splice(insertAt, 0, taskToMove);
 
-      console.log("::sections copy after changing task position",sectionsCopy);
     
       return {
         ...state,
@@ -180,7 +175,12 @@ function projectsReducer(state, action) {
         },
       };
     }
-    
+    case  "SET_ACTIVE_TASK":{
+       return {
+        ...state,
+        activeTask: payload || {},
+       }
+    }
     
 
     default:

@@ -21,7 +21,6 @@ export const Header = () => {
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const isMenuOpen = Boolean(menuAnchorEl);
   const handleMenuOpen = (event) => {
-    console.log("::entring handle menu");
     setMenuAnchorEl(event.currentTarget);
   };
 

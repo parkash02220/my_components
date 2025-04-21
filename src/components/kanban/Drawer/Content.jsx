@@ -2,7 +2,9 @@ import { Box, IconButton, Tab, Tabs, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import MyTextField from "../../MyTextfield/MyTextfield";
 import { motion, AnimatePresence } from "framer-motion";
-export const Content = ({ currentTab, tabValues, handleTabChange }) => {
+import AssignDialog from "./AssignDialog";
+import MyTooltip from "@/components/MyTooltip/MyTooltip";
+export const Content = ({ currentTab, tabValues, handleTabChange,activeTask }) => {
   const containerRef = useRef(null);
 
   const [targetStyle, setTargetStyle] = useState({ left: 0, width: 0 });
@@ -10,10 +12,13 @@ export const Content = ({ currentTab, tabValues, handleTabChange }) => {
   const tabsRef = useRef([]);
   const [motionKey, setMotionKey] = useState(currentTab);
   const [prevTab, setPrevTab] = useState(currentTab);
-
+  const [assignDialogOpen,setAssignDialogOpen] = useState(false);
   const currentIndex = tabValues.findIndex((tab) => tab.value === currentTab);
-  const prevIndex = tabValues.findIndex((tab) => tab.value === prevTab);
-
+  const prevIndex = tabValues.findIndex((tab) => tab.value === prevTab); 
+  const priorityList = [{label:"Low",value:"low",icon:"/lowPriorityIcon.svg"},
+    {label:"Medium",value:"medium",icon:"/meduimPriorityIcon.svg"},
+    {label:"High",value:"high",icon:"/highPriorityIcon.svg"}
+  ];
   useEffect(() => {
     const currentNode = tabsRef.current[currentIndex];
     const prevNode = tabsRef.current[prevIndex];
@@ -32,8 +37,17 @@ export const Content = ({ currentTab, tabValues, handleTabChange }) => {
     setPrevTab(currentTab);
   }, [currentTab]);
 
+  const handleAssignDialogOpen = () => {
+    setAssignDialogOpen(true);
+  }
+
+  const handleAssignDialogClose = () => {
+    setAssignDialogOpen(false);
+  }
+
   return (
     <>
+    <AssignDialog open={assignDialogOpen} handleClose={handleAssignDialogClose}/>
       <Box>
         <Box
           sx={{ width: "100%", background: "#F4F6F8" }}
@@ -114,7 +128,7 @@ export const Content = ({ currentTab, tabValues, handleTabChange }) => {
                 padding={"4px 0px 5px"}
                 color="#1C252E"
               >
-                Title name
+                {activeTask?.title}
               </Typography>
             </Box>
 
@@ -123,14 +137,18 @@ export const Content = ({ currentTab, tabValues, handleTabChange }) => {
             </SectionRow>
 
             <SectionRow label="Assignee" className="editTask__assigneeBox">
-              {[
+              {/* {[
                 "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-17.webp",
                 "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-2.webp",
                 "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-3.webp",
                 "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-4.webp",
               ].map((a, i) => (
                 <AvatarBox key={i} src={`${a}`} />
+              ))} */}
+              {activeTask?.assigned_to?.map((a, i) => (
+                <AvatarBox key={i} src={`https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-2.webp`} />
               ))}
+              <MyTooltip title="Add assignee" placement="bottom">
               <Box
                 width={40}
                 height={40}
@@ -145,7 +163,11 @@ export const Content = ({ currentTab, tabValues, handleTabChange }) => {
                 sx={{
                   cursor: "pointer",
                   background: "rgba(145,158,171,0.08)",
+                  "&:hover":{
+                    background: "rgba(99,115,129,0.08)",
+                  }
                 }}
+                onClick={handleAssignDialogOpen}
               >
                 <img
                   src="/addAssignIcon.svg"
@@ -158,6 +180,7 @@ export const Content = ({ currentTab, tabValues, handleTabChange }) => {
                   }}
                 />
               </Box>
+              </MyTooltip>
             </SectionRow>
             <SectionRow label="Labels" className="editTask__labelsBox">
               {["Technology", "Health and Wellness", "Finance"].map(
@@ -172,13 +195,11 @@ export const Content = ({ currentTab, tabValues, handleTabChange }) => {
               </Typography>
             </SectionRow>
             <SectionRow label="Priority" className="editTask__priorityBox">
-              <PriorityOption label="Low" iconSrc="/lowPriorityIcon.svg" />
-              <PriorityOption
-                label="Medium"
-                iconSrc="/meduimPriorityIcon.svg"
-                isSelected
-              />
-              <PriorityOption label="High" iconSrc="/highPriorityIcon.svg" />
+              {
+                priorityList?.map((priority,index)=> (
+                  <PriorityOption key={index} label={priority?.label} iconSrc={priority?.icon} isSelected={activeTask?.priority === priority?.value}/>
+                ))
+              }
             </SectionRow>
             <SectionRow
               label="Description"

@@ -1,5 +1,4 @@
 "use client";
-import BoardSectionList from "@/components/DraggableBoard/BoardSectionList";
 import KanbanBoard from "@/components/kanban/KanbanBoard";
 import Loader from "@/components/Loader/Loader";
 import { useAppContext } from "@/context/AppContext";

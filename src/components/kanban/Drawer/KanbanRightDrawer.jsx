@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Content } from "./Content";
 import { Header } from "./header";
 import RightDrawer from "@/components/RightDrawer";
 import { Box } from "@mui/material";
+import useGetTask from "@/hooks/projects/task/useGetTask";
+import { useAppContext } from "@/context/AppContext";
 
-function KanbanRightDrawer({ open, handleDrawer }) {
+function KanbanRightDrawer({ open, handleDrawer,taskId }) {
+  const { loadingGetTask, getTaskFromBackend } = useGetTask();
+  const {state} = useAppContext();
+  const {activeTask} = state;
+  console.log("::actve task",activeTask)
   const tabValues = [
     {
       key: 1,
@@ -18,8 +24,8 @@ function KanbanRightDrawer({ open, handleDrawer }) {
     },
     {
       key: 3,
-      value: "Comments (0)",
-      label: "comments",
+      value: "comments",
+      label: "Comments (0)",
     },
   ];
   const [currentTab, setCurrentTab] = useState("overview");
@@ -27,6 +33,12 @@ function KanbanRightDrawer({ open, handleDrawer }) {
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
   };
+
+  useEffect(() => {
+    if (open && taskId) {
+      getTaskFromBackend(taskId);
+    }
+  }, [open,taskId]);
   return (
     <>
       <Box>
@@ -39,6 +51,7 @@ function KanbanRightDrawer({ open, handleDrawer }) {
               tabValues={tabValues}
               currentTab={currentTab}
               handleTabChange={handleTabChange}
+              activeTask={activeTask}
             />
           }
         />

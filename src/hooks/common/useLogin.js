@@ -20,7 +20,7 @@ const useLogin = () => {
       });
     setLoadingLogin(false);
     if (res.error) {
-         const error = res?.error?.data?.error || {};
+         const error = res?.error?.data?.error || "something went wrong";
          setErrorMsg(error);
          return;
        }
