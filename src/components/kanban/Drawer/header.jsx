@@ -3,18 +3,21 @@ import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import { useAppContext } from "@/context/AppContext";
 import useDeleteTask from "@/hooks/projects/task/useDeleteTask";
 import useEditTask from "@/hooks/projects/task/useEditTask";
+import useMoveTask from "@/hooks/projects/task/useMoveTask";
 import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
-export const Header = ({activeTask}) => {
-  const {loadingDeleteTask,errorDeleteTask,deleteTaskFromBackend} = useDeleteTask();
-  const [openDeletePopup,setOpenDeletePopup] = useState(false);
-  const {loadingEditTask,errorEditTask,updateTaskInBackend} = useEditTask();
-  const {state} = useAppContext();
-  const {sections} = state?.activeProject;
-  const [currentTask,setCurrentTask] = useState(activeTask);
-  const [activeSections,setActiveSections] = useState([]);
-  const [sectionOfActiveTask,setSectionOfActiveTask] = useState({});
+export const Header = ({ activeTask }) => {
+  const { loadingMoveTask, moveTask } = useMoveTask();
+  const { loadingDeleteTask, errorDeleteTask, deleteTaskFromBackend } =
+    useDeleteTask();
+  const [openDeletePopup, setOpenDeletePopup] = useState(false);
+  const { loadingEditTask, errorEditTask, updateTaskInBackend } = useEditTask();
+  const { state } = useAppContext();
+  const { sections } = state?.activeProject;
+  const [currentTask, setCurrentTask] = useState(activeTask);
+  const [activeSections, setActiveSections] = useState([]);
+  const [sectionOfActiveTask, setSectionOfActiveTask] = useState({});
 
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const isMenuOpen = Boolean(menuAnchorEl);
@@ -26,51 +29,51 @@ export const Header = ({activeTask}) => {
     setMenuAnchorEl(null);
   };
 
-  console.log("::active task",currentTask);
-  console.log("::active section",sectionOfActiveTask);
-  console.log("::active sectopmssssss",activeSections);
+  console.log("::active task", currentTask);
+  console.log("::active section", sectionOfActiveTask);
+  console.log("::active sectopmssssss", activeSections);
 
   useEffect(() => {
-    setActiveSections(sections?.map((section) => ({
-      id: section?.id,
-      name: section?.name,
-    })));
+    setActiveSections(
+      sections?.map((section) => ({
+        id: section?.id,
+        name: section?.name,
+      }))
+    );
     setCurrentTask(activeTask);
   }, [sections, activeTask]);
-  
+
   useEffect(() => {
     if (activeSections.length && activeTask?.section_id) {
-      const foundSection = activeSections.find(section => section.id === activeTask.section_id);
+      const foundSection = activeSections.find(
+        (section) => section.id === activeTask.section_id
+      );
       setSectionOfActiveTask(foundSection || {});
     }
   }, [activeSections, activeTask]);
-  
 
   const handleMenuItemClick = (section) => {
     setSectionOfActiveTask(section);
-    updateTaskInBackend({
-      section_id:section?.id
-    },currentTask?.id);
 
     handleMenuClose();
-}
+  };
 
-const handleTaskDeletion = () => {
-  console.log("::handle task deletion clicked");
-  deleteTaskFromBackend(currentTask?.id);
-  setOpenDeletePopup(false);
-}
+  const handleTaskDeletion = () => {
+    console.log("::handle task deletion clicked");
+    deleteTaskFromBackend(currentTask?.id);
+    setOpenDeletePopup(false);
+  };
 
   return (
     <>
-    <ConfirmationPopup 
-    type="delete"
-    handleClose={()=> setOpenDeletePopup(false)}
-    open={openDeletePopup}
-    submitAction={handleTaskDeletion}
-    title={"Delete"}
-    message={currentTask?.title || ''}
-    />
+      <ConfirmationPopup
+        type="delete"
+        handleClose={() => setOpenDeletePopup(false)}
+        open={openDeletePopup}
+        submitAction={handleTaskDeletion}
+        title={"Delete"}
+        message={currentTask?.title || ""}
+      />
       <Box
         display={"flex"}
         alignItems={"center"}
@@ -134,7 +137,7 @@ const handleTaskDeletion = () => {
           {activeSections.map((section) => (
             <MenuItem
               key={section.id}
-              onClick={()=>handleMenuItemClick(section)}
+              onClick={() => handleMenuItemClick(section)}
               sx={{
                 backgroundColor: "transparent",
                 margin: "0px",
@@ -183,7 +186,7 @@ const handleTaskDeletion = () => {
           </MyTooltip>
           <MyTooltip title={"Delete task"} placement="bottom">
             <IconButton
-            onClick={()=> setOpenDeletePopup(true)}
+              onClick={() => setOpenDeletePopup(true)}
               sx={{
                 padding: "8px",
                 borderRadius: "50%",

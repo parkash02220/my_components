@@ -29,12 +29,16 @@ import { useAppContext } from "@/context/AppContext";
 import RightDrawer from "../RightDrawer";
 import KanbanRightDrawer from "./Drawer/KanbanRightDrawer";
 
-export default function KanbanBoard({ boardId, activeProject,projectVersion }) {
-  console.log("::active project",activeProject)
+export default function KanbanBoard({
+  boardId,
+  activeProject,
+  projectVersion,
+}) {
+  console.log("::active project", activeProject);
   const [openDrawer, setOpenDrawer] = useState(false);
   const inputRef = useRef(null);
   const wasDragged = useRef(false);
-  const {dispatch} = useAppContext();
+  const { dispatch } = useAppContext();
   const [showAddColumnButton, setShowAddColumnButton] = useState(true);
   const {
     loadingCreateColumn,
@@ -56,10 +60,8 @@ export default function KanbanBoard({ boardId, activeProject,projectVersion }) {
   const [columns, setColumns] = useState([]);
   const [tasks, setTasks] = useState([]);
 
-
   useEffect(() => {
     if (!activeProject) return;
-
     const sortedSections = [...(activeProject?.sections || [])].sort(
       (a, b) => a?.position - b?.position
     );
@@ -73,16 +75,16 @@ export default function KanbanBoard({ boardId, activeProject,projectVersion }) {
     const taskData = sortedSections?.flatMap((section) =>
       (section?.tasks || []).map((task) => ({
         id: task?.id,
-        content: {...task},
+        content: { ...task },
         columnId: section?.id,
       }))
     );
 
     setColumns(columnData);
     setTasks(taskData);
-  }, [activeProject,projectVersion]);
+  }, [activeProject, projectVersion]);
   const [activeTask, setActiveTask] = useState(null);
-  const [activeTaskId,setActiveTaskId] = useState(null);
+  const [activeTaskId, setActiveTaskId] = useState(null);
   const [activeColumn, setActiveColumn] = useState(null);
   const pickedUpTaskColumn = useRef(null);
 
@@ -304,19 +306,23 @@ export default function KanbanBoard({ boardId, activeProject,projectVersion }) {
     setOpenDrawer(true);
   };
   const handleDrawerClose = () => {
-    dispatch({type:"SET_ACTIVE_TASK",payload:{}})
+    dispatch({ type: "SET_ACTIVE_TASK", payload: {} });
     setOpenDrawer(false);
   };
 
   useEffect(() => {
-    if(activeTaskId){
+    if (activeTaskId) {
       handleDrawerOpen();
     }
-  },[activeTaskId])
+  }, [activeTaskId]);
 
   return (
     <>
-      <KanbanRightDrawer open={openDrawer} handleDrawer={handleDrawerClose} taskId={activeTaskId} />
+      <KanbanRightDrawer
+        open={openDrawer}
+        handleDrawer={handleDrawerClose}
+        taskId={activeTaskId}
+      />
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}

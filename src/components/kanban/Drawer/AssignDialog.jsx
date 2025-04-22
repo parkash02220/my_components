@@ -3,8 +3,19 @@ import MyDialog from "@/components/MyDialog/MyDialog";
 import MySearch from "@/components/MySearch/MySearch";
 import useGetAllUsers from "@/hooks/projects/user/useGetAllUsers";
 import { Box, Typography, useTheme } from "@mui/material";
+import { useEffect, useState } from "react";
 
-const AssignDialog = ({ open, handleClose,assignedUsers }) => {
+const assignUserToTaskAPI = async (userId) => {
+  console.log("Assigning user:", userId);
+  await new Promise((resolve) => setTimeout(resolve, 300)); // simulate API delay
+};
+
+const unassignUserFromTaskAPI = async (userId) => {
+  console.log("Unassigning user:", userId);
+  await new Promise((resolve) => setTimeout(resolve, 300)); // simulate API delay
+};
+
+const AssignDialog = ({ open, handleClose, assignedUsers }) => {
   const theme = useTheme();
   const {
     allUsers,
@@ -15,6 +26,31 @@ const AssignDialog = ({ open, handleClose,assignedUsers }) => {
     handleSearchValueChange,
     setSearchValue,
   } = useGetAllUsers();
+
+  const [assignedUserIds, setAssignedUserIds] = useState([]);
+
+  useEffect(() => {
+    if (open && assignedUsers) {
+      setAssignedUserIds(assignedUsers.map((user) => user.id));
+    }
+  }, [open, assignedUsers]);
+
+  const handleAssignToggle = async (userId, isCurrentlyAssigned) => {
+    try {
+      if (isCurrentlyAssigned) {
+        // Unassign user
+        await unassignUserFromTaskAPI(userId); // 🔁 replace with real API call
+        setAssignedUserIds((prev) => prev.filter((id) => id !== userId));
+      } else {
+        // Assign user
+        await assignUserToTaskAPI(userId); // 🔁 replace with real API call
+        setAssignedUserIds((prev) => [...prev, userId]);
+      }
+    } catch (error) {
+      console.error("Assignment failed", error);
+    }
+  };
+
   return (
     <>
       <Box
@@ -45,7 +81,9 @@ const AssignDialog = ({ open, handleClose,assignedUsers }) => {
               >
                 Contacts
               </Typography>
-              <Typography color={theme.palette.primary.main}>{`(${allUsers?.length || 0})`}</Typography>
+              <Typography color={theme.palette.primary.main}>{`(${
+                allUsers?.length || 0
+              })`}</Typography>
             </Box>
           }
           content={
@@ -64,23 +102,24 @@ const AssignDialog = ({ open, handleClose,assignedUsers }) => {
                   loading={loadingAllUsers}
                 />
               </Box>
-              {
-                allUsers?.length > 0 ? (
-                  <Box
+              {allUsers?.length > 0 ? (
+                <Box
                   className="assignDialog__contactListBox"
                   padding={"0px 20px 16px 20px"}
                   display={"flex"}
                   flexDirection={"column"}
                   gap={2}
                   height={384}
-                  sx={{overflowY:"auto",
+                  sx={{
+                    overflowY: "auto",
                     scrollbarWidth: "none",
                     "&::-webkit-scrollbar": {
-                      display: "none",}
-                    }}
+                      display: "none",
+                    },
+                  }}
                 >
                   {allUsers?.map((user) => {
-                    const isAssigned = user?.assigned;
+                    const isAssigned = assignedUserIds.includes(user?.id);
                     return (
                       <Box
                         key={user?.id}
@@ -117,6 +156,9 @@ const AssignDialog = ({ open, handleClose,assignedUsers }) => {
                         </Box>
                         <Box className="cotactBox__actionBox">
                           <MyButton
+                            onClick={() =>
+                              handleAssignToggle(user?.id, isAssigned)
+                            }
                             fontWeight={700}
                             sx={{ height: "30px" }}
                             borderRadius="8px"
@@ -124,19 +166,31 @@ const AssignDialog = ({ open, handleClose,assignedUsers }) => {
                             fontSize={"13px"}
                             minWidth="64px"
                             variant="text"
-                            color={isAssigned ? "#00A76F" : theme.palette.primary.main}
-                            hoverBgColor={isAssigned ? "rgba(0,167,111,0.08)" : "rgba(145,158,171,0.08)"}
+                            color={
+                              isAssigned
+                                ? "#00A76F"
+                                : theme.palette.primary.main
+                            }
+                            hoverBgColor={
+                              isAssigned
+                                ? "rgba(0,167,111,0.08)"
+                                : "rgba(145,158,171,0.08)"
+                            }
                           >
                             <img
-                              src={isAssigned ? "/assingedIcon.svg" : "/assignPlusIcon.svg"}
+                              src={
+                                isAssigned
+                                  ? "/assingedIcon.svg"
+                                  : "/assignPlusIcon.svg"
+                              }
                               alt="assign"
                               style={{
                                 width: "16px",
                                 height: "16px",
                                 marginRight: "4px",
                               }}
-                            />{" "}
-                           {isAssigned ? "Assigned" : "Assign" }
+                            />
+                            {isAssigned ? "Assigned" : "Assign"}
                           </MyButton>
                         </Box>
                       </Box>
@@ -150,7 +204,11 @@ const AssignDialog = ({ open, handleClose,assignedUsers }) => {
                     alignItems={"center"}
                     justifyContent={"space-between"}
                   >
-                    <Box className="cotactBox__avatarBox" width={40} height={40}>
+                    <Box
+                      className="cotactBox__avatarBox"
+                      width={40}
+                      height={40}
+                    >
                       <AvatarBox src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-17.webp" />
                     </Box>
                     <Box
@@ -197,53 +255,57 @@ const AssignDialog = ({ open, handleClose,assignedUsers }) => {
                     </Box>
                   </Box>
                 </Box>
-                ) : (
-                  !loadingAllUsers ? ( <Box
-                    className="assignDialog__emptyBox"
-                    display={"flex"}
-                    flexDirection={"column"}
-                    gap={1}
-                    mt={3}
-                    mb={10}
-                    alignItems={"center"}
+              ) : !loadingAllUsers ? (
+                <Box
+                  className="assignDialog__emptyBox"
+                  display={"flex"}
+                  flexDirection={"column"}
+                  gap={1}
+                  mt={3}
+                  mb={10}
+                  alignItems={"center"}
+                >
+                  <Typography
+                    variant="h6"
+                    fontSize={"18px"}
+                    color={theme.palette.primary.main}
+                    fontWeight={600}
                   >
-                    <Typography
-                      variant="h6"
-                      fontSize={"18px"}
-                      color={theme.palette.primary.main}
-                      fontWeight={600}
-                    >
-                      Not found
-                    </Typography>
-                    <Box display={"flex"} gap={1}>
-                      <Typography
-                        fontSize={"14px"}
-                        color={theme.palette.primary.main}
-                      >
-                        No results found for
-                      </Typography>
-                      <Typography
-                        fontSize={"14px"}
-                        fontWeight={700}
-                        color={theme.palette.primary.main}
-                      >
-                        {`"${searchValue}".`}
-                      </Typography>
-                    </Box>
+                    Not found
+                  </Typography>
+                  <Box display={"flex"} gap={1}>
                     <Typography
                       fontSize={"14px"}
                       color={theme.palette.primary.main}
                     >
-                      Try checking for typos or using complete words.
+                      No results found for
                     </Typography>
-                  </Box>) : (
-                    <Box className="assignDialog__loadingBox" display={'flex'} alignItems={'center'} justifyContent={'center'} minHeight={200}>
-  <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
-                    </Box>
-                  )
-                )
-              }
-            
+                    <Typography
+                      fontSize={"14px"}
+                      fontWeight={700}
+                      color={theme.palette.primary.main}
+                    >
+                      {`"${searchValue}".`}
+                    </Typography>
+                  </Box>
+                  <Typography
+                    fontSize={"14px"}
+                    color={theme.palette.primary.main}
+                  >
+                    Try checking for typos or using complete words.
+                  </Typography>
+                </Box>
+              ) : (
+                <Box
+                  className="assignDialog__loadingBox"
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  minHeight={200}
+                >
+                  <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
+                </Box>
+              )}
             </Box>
           }
         />
