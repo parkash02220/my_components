@@ -45,6 +45,7 @@ const MyTextField = ({
   background,
   placeholderColor,
   fontWeight,
+  acitveBorder,
   ...props
 }) => {
   const shrinkTypes = [
@@ -138,6 +139,7 @@ const MyTextField = ({
             },
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
               borderColor: error ? errorBorderColor : borderColor,
+              border: acitveBorder ? acitveBorder : `1px solid ${borderColor || 'black'}`,
             },
           },
           "& .MuiInputLabel-root": {

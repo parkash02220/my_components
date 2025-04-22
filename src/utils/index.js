@@ -35,3 +35,27 @@ export function convertIdFields(data) {
     return data;
   }
   
+  import debounce from "lodash.debounce";
+
+const uploadImage = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  try {
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (data?.url) {
+      setAllImages((prev) =>
+        prev.map((img) => (img.tempId === file.tempId ? data.url : img))
+      );
+    }
+  } catch (error) {
+    console.error("Upload failed", error);
+  }
+};
+
+const debouncedUpload = debounce(uploadImage, 1000);

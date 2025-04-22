@@ -29,7 +29,8 @@ import { useAppContext } from "@/context/AppContext";
 import RightDrawer from "../RightDrawer";
 import KanbanRightDrawer from "./Drawer/KanbanRightDrawer";
 
-export default function KanbanBoard({ boardId, activeProject }) {
+export default function KanbanBoard({ boardId, activeProject,projectVersion }) {
+  console.log("::active project",activeProject)
   const [openDrawer, setOpenDrawer] = useState(false);
   const inputRef = useRef(null);
   const wasDragged = useRef(false);
@@ -72,14 +73,14 @@ export default function KanbanBoard({ boardId, activeProject }) {
     const taskData = sortedSections?.flatMap((section) =>
       (section?.tasks || []).map((task) => ({
         id: task?.id,
-        content: task?.title,
+        content: {...task},
         columnId: section?.id,
       }))
     );
 
     setColumns(columnData);
     setTasks(taskData);
-  }, [activeProject]);
+  }, [activeProject,projectVersion]);
   const [activeTask, setActiveTask] = useState(null);
   const [activeTaskId,setActiveTaskId] = useState(null);
   const [activeColumn, setActiveColumn] = useState(null);

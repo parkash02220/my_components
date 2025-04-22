@@ -9,7 +9,7 @@ import { useParams } from "next/navigation";
 export default function ProjectPage() {
   const { id } = useParams();
   const { state } = useAppContext();
-  const { activeProject } = state;
+  const { activeProject,projectVersion } = state;
   const { loadingGetProject, getProjectById } = useGetProject(id);
   return (
     <>
@@ -40,7 +40,7 @@ export default function ProjectPage() {
             <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
           </Box>
         ) : (
-          <KanbanBoard boardId={id} activeProject={activeProject} />
+          <KanbanBoard boardId={id} activeProject={activeProject} projectVersion={projectVersion} />
         )}
         {/* <BoardSectionList/> */}
       </Box>

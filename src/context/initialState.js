@@ -23,4 +23,5 @@ export const initialState = {
   activeProject: {},
   activeProjectId: "project1",
   activeTask:{},
+  projectVersion:0,
 };

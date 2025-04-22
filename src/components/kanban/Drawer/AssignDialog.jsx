@@ -4,7 +4,7 @@ import MySearch from "@/components/MySearch/MySearch";
 import useGetAllUsers from "@/hooks/projects/user/useGetAllUsers";
 import { Box, Typography, useTheme } from "@mui/material";
 
-const AssignDialog = ({ open, handleClose }) => {
+const AssignDialog = ({ open, handleClose,assignedUsers }) => {
   const theme = useTheme();
   const {
     allUsers,

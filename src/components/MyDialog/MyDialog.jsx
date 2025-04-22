@@ -45,7 +45,7 @@ const MyDialog = ({ open, handleClose, title, content, actions, ...props }) => {
           {title}
         </BootstrapDialogTitle>
         <DialogContent  sx={{ p: props?.contentpadding || 2 }}>{content}</DialogContent>
-        {actions && <DialogActions>{actions}</DialogActions>}
+        {actions && <DialogActions sx={{p: props?.actionpadding || 1}}>{actions}</DialogActions>}
       </BootstrapDialog>
     </div>
   );
@@ -56,7 +56,7 @@ function BootstrapDialogTitle(props) {
   const { children, onClose, ...other } = props;
 
   return (
-    <DialogTitle sx={{ m: 0, p: props?.titlepadding || 2, fontSize: props?.fontSize }} {...other}>
+    <DialogTitle sx={{ m: 0, p: props?.titlepadding || 2, fontSize: props?.fontsize }} {...other}>
       {children}
       {onClose ? (
         <IconButton

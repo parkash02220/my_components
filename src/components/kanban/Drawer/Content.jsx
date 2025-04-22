@@ -1,10 +1,15 @@
 import { Box, IconButton, Tab, Tabs, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import MyTextField from "../../MyTextfield/MyTextfield";
 import { motion, AnimatePresence } from "framer-motion";
-import AssignDialog from "./AssignDialog";
-import MyTooltip from "@/components/MyTooltip/MyTooltip";
-export const Content = ({ currentTab, tabValues, handleTabChange,activeTask }) => {
+import OverviewTab from "./OverviewTab";
+import SubTasksTab from "./SubtasksTab";
+import CommentsTab from "./CommentsTab";
+export const Content = ({
+  currentTab,
+  tabValues,
+  handleTabChange,
+  activeTask,
+}) => {
   const containerRef = useRef(null);
 
   const [targetStyle, setTargetStyle] = useState({ left: 0, width: 0 });
@@ -12,13 +17,13 @@ export const Content = ({ currentTab, tabValues, handleTabChange,activeTask }) =
   const tabsRef = useRef([]);
   const [motionKey, setMotionKey] = useState(currentTab);
   const [prevTab, setPrevTab] = useState(currentTab);
-  const [assignDialogOpen,setAssignDialogOpen] = useState(false);
+
   const currentIndex = tabValues.findIndex((tab) => tab.value === currentTab);
-  const prevIndex = tabValues.findIndex((tab) => tab.value === prevTab); 
-  const priorityList = [{label:"Low",value:"low",icon:"/lowPriorityIcon.svg"},
-    {label:"Medium",value:"medium",icon:"/meduimPriorityIcon.svg"},
-    {label:"High",value:"high",icon:"/highPriorityIcon.svg"}
-  ];
+  const prevIndex = tabValues.findIndex((tab) => tab.value === prevTab);
+
+
+
+
   useEffect(() => {
     const currentNode = tabsRef.current[currentIndex];
     const prevNode = tabsRef.current[prevIndex];
@@ -37,17 +42,21 @@ export const Content = ({ currentTab, tabValues, handleTabChange,activeTask }) =
     setPrevTab(currentTab);
   }, [currentTab]);
 
-  const handleAssignDialogOpen = () => {
-    setAssignDialogOpen(true);
-  }
+console.log("::current tab",currentTab)
 
-  const handleAssignDialogClose = () => {
-    setAssignDialogOpen(false);
+const getContentForCurrentTab = (tab) => {
+  if(tab==="subtasks"){
+    return  <SubTasksTab  activeTask={activeTask}/>
+  }else if(tab==="comments"){
+    return  <CommentsTab  activeTask={activeTask}/>
+  }else{
+    return  <OverviewTab  activeTask={activeTask}/>
   }
+}
 
   return (
     <>
-    <AssignDialog open={assignDialogOpen} handleClose={handleAssignDialogClose}/>
+ 
       <Box>
         <Box
           sx={{ width: "100%", background: "#F4F6F8" }}
@@ -119,232 +128,9 @@ export const Content = ({ currentTab, tabValues, handleTabChange,activeTask }) =
             </Tabs>
           </Box>
         </Box>
-        <Box padding={"24px 20px"}>
-          <Box display={"flex"} flexDirection={"column"} gap={3}>
-            <Box>
-              <Typography
-                fontSize={18}
-                fontWeight={600}
-                padding={"4px 0px 5px"}
-                color="#1C252E"
-              >
-                {activeTask?.title}
-              </Typography>
-            </Box>
-
-            <SectionRow label="Reporter" className="editTask__reporterBox">
-              <AvatarBox src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-17.webp" />
-            </SectionRow>
-
-            <SectionRow label="Assignee" className="editTask__assigneeBox">
-              {/* {[
-                "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-17.webp",
-                "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-2.webp",
-                "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-3.webp",
-                "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-4.webp",
-              ].map((a, i) => (
-                <AvatarBox key={i} src={`${a}`} />
-              ))} */}
-              {activeTask?.assigned_to?.map((a, i) => (
-                <AvatarBox key={i} src={`https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-2.webp`} />
-              ))}
-              <MyTooltip title="Add assignee" placement="bottom">
-              <Box
-                width={40}
-                height={40}
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"center"}
-                borderRadius={"50%"}
-                fontSize={"1.25rem"}
-                overflow={"hidden"}
-                padding={"8px"}
-                border={"1px dashed rgba(145 158 171 / 0.2)"}
-                sx={{
-                  cursor: "pointer",
-                  background: "rgba(145,158,171,0.08)",
-                  "&:hover":{
-                    background: "rgba(99,115,129,0.08)",
-                  }
-                }}
-                onClick={handleAssignDialogOpen}
-              >
-                <img
-                  src="/addAssignIcon.svg"
-                  alt="add assignee"
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    color: "transparent",
-                    objectFit: "cover",
-                  }}
-                />
-              </Box>
-              </MyTooltip>
-            </SectionRow>
-            <SectionRow label="Labels" className="editTask__labelsBox">
-              {["Technology", "Health and Wellness", "Finance"].map(
-                (label, i) => (
-                  <LabelTag key={i} text={label} />
-                )
-              )}
-            </SectionRow>
-            <SectionRow label="Due date" className="editTask__dueDateBox">
-              <Typography fontWeight={700} color="#1C252E" fontSize="13px">
-                23-24 Apr 2025
-              </Typography>
-            </SectionRow>
-            <SectionRow label="Priority" className="editTask__priorityBox">
-              {
-                priorityList?.map((priority,index)=> (
-                  <PriorityOption key={index} label={priority?.label} iconSrc={priority?.icon} isSelected={activeTask?.priority === priority?.value}/>
-                ))
-              }
-            </SectionRow>
-            <SectionRow
-              label="Description"
-              className="editTask__descriptionBox"
-            >
-              <Box width="100%">
-                <MyTextField
-                  label=""
-                  multiline
-                  rows={4}
-                  boxShadow="inset 0 0 0 1px rgba(145,158,171,0.24)"
-                  borderColor="transparent"
-                  fullWidth
-                  hoverBorderColor="#1C252E"
-                />
-              </Box>
-            </SectionRow>
-            <SectionRow
-              label="Attachments"
-              className="editTask__attachmentsBox"
-            >
-              <Box
-                sx={{
-                  width: "64px",
-                  height: "64px",
-                  flexShrink: 0,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  color: "#919EAB",
-                  background: "rgba(145,158,171,0.08)",
-                  border: "rgba(145,158,171,0.16)",
-                }}
-              >
-                <img
-                  src="/attachmentsIcon.svg"
-                  alt="attachments"
-                  style={{ widows: "28px", height: "28px" }}
-                />
-              </Box>
-            </SectionRow>
-          </Box>
-        </Box>
+        {getContentForCurrentTab(currentTab)}
       </Box>
     </>
   );
 };
 
-const SectionRow = ({ label, children, className = "" }) => (
-  <Box display="flex" alignItems="center" className={className}>
-    <Typography
-      fontWeight={600}
-      fontSize="0.75rem"
-      width="100px"
-      flexShrink={0}
-      color="#637381"
-    >
-      {label}
-    </Typography>
-    <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
-      {children}
-    </Box>
-  </Box>
-);
-
-const AvatarBox = ({ src, alt = "user" }) => (
-  <Box
-    width={40}
-    height={40}
-    display="flex"
-    alignItems="center"
-    justifyContent="center"
-    borderRadius="50%"
-    overflow="hidden"
-    fontSize="1.25rem"
-  >
-    <img
-      src={src}
-      alt={alt}
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        color: "transparent",
-      }}
-    />
-  </Box>
-);
-
-const LabelTag = ({ text }) => (
-  <Box
-    sx={{
-      height: "24px",
-      display: "inline-flex",
-      justifyContent: "center",
-      alignItems: "center",
-      background: "rgba(0,184,217,0.16)",
-      padding: "0px",
-      borderRadius: "8px",
-    }}
-  >
-    <Typography
-      sx={{
-        fontWeight: 500,
-        paddingInline: "8px",
-        fontSize: "13px",
-        color: "#006C9C",
-        whiteSpace: "nowrap",
-      }}
-    >
-      {text}
-    </Typography>
-  </Box>
-);
-
-const PriorityOption = ({ label, iconSrc, isSelected = false }) => (
-  <Box
-    display="flex"
-    justifyContent="center"
-    alignItems="center"
-    sx={{
-      padding: "4px 10px 4px 6px",
-      borderRadius: "8px",
-      boxShadow: "inset 0 0 0 1px rgba(145,158,171,0.24)",
-      border: isSelected ? "2px solid black" : "none",
-    }}
-  >
-    <Box sx={{ width: "20px", height: "20px", marginRight: "4px" }}>
-      <img
-        src={iconSrc}
-        alt={label}
-        style={{ width: "100%", height: "100%" }}
-      />
-    </Box>
-    <Typography
-      sx={{
-        fontSize: "12px",
-        fontWeight: 700,
-        textTransform: "capitalize",
-        color: "#1C252E",
-      }}
-    >
-      {label}
-    </Typography>
-  </Box>
-);

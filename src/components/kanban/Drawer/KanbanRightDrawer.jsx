@@ -44,7 +44,7 @@ function KanbanRightDrawer({ open, handleDrawer,taskId }) {
       <Box>
         <RightDrawer
           open={open}
-          header={<Header />}
+          header={<Header activeTask={activeTask}/>}
           handleDrawer={handleDrawer}
           children={
             <Content

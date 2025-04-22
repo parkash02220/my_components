@@ -1,23 +1,21 @@
+import ConfirmationPopup from "@/components/ConfirmationPopup";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
+import { useAppContext } from "@/context/AppContext";
+import useDeleteTask from "@/hooks/projects/task/useDeleteTask";
+import useEditTask from "@/hooks/projects/task/useEditTask";
 import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export const Header = () => {
-  const menuItems = [
-    {
-      label: "Rename",
-      onClick: () => {},
-    },
-    {
-      label: "Clear",
-      onClick: () => {},
-    },
-    {
-      label: "Delete",
-      onClick: () => {},
-      color: "#FF5630",
-    },
-  ];
+export const Header = ({activeTask}) => {
+  const {loadingDeleteTask,errorDeleteTask,deleteTaskFromBackend} = useDeleteTask();
+  const [openDeletePopup,setOpenDeletePopup] = useState(false);
+  const {loadingEditTask,errorEditTask,updateTaskInBackend} = useEditTask();
+  const {state} = useAppContext();
+  const {sections} = state?.activeProject;
+  const [currentTask,setCurrentTask] = useState(activeTask);
+  const [activeSections,setActiveSections] = useState([]);
+  const [sectionOfActiveTask,setSectionOfActiveTask] = useState({});
+
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const isMenuOpen = Boolean(menuAnchorEl);
   const handleMenuOpen = (event) => {
@@ -27,8 +25,52 @@ export const Header = () => {
   const handleMenuClose = () => {
     setMenuAnchorEl(null);
   };
+
+  console.log("::active task",currentTask);
+  console.log("::active section",sectionOfActiveTask);
+  console.log("::active sectopmssssss",activeSections);
+
+  useEffect(() => {
+    setActiveSections(sections?.map((section) => ({
+      id: section?.id,
+      name: section?.name,
+    })));
+    setCurrentTask(activeTask);
+  }, [sections, activeTask]);
+  
+  useEffect(() => {
+    if (activeSections.length && activeTask?.section_id) {
+      const foundSection = activeSections.find(section => section.id === activeTask.section_id);
+      setSectionOfActiveTask(foundSection || {});
+    }
+  }, [activeSections, activeTask]);
+  
+
+  const handleMenuItemClick = (section) => {
+    setSectionOfActiveTask(section);
+    updateTaskInBackend({
+      section_id:section?.id
+    },currentTask?.id);
+
+    handleMenuClose();
+}
+
+const handleTaskDeletion = () => {
+  console.log("::handle task deletion clicked");
+  deleteTaskFromBackend(currentTask?.id);
+  setOpenDeletePopup(false);
+}
+
   return (
     <>
+    <ConfirmationPopup 
+    type="delete"
+    handleClose={()=> setOpenDeletePopup(false)}
+    open={openDeletePopup}
+    submitAction={handleTaskDeletion}
+    title={"Delete"}
+    message={currentTask?.title || ''}
+    />
       <Box
         display={"flex"}
         alignItems={"center"}
@@ -58,7 +100,7 @@ export const Header = () => {
               color: "#1C252E",
             }}
           >
-            In progress
+            {sectionOfActiveTask?.name}
           </Typography>{" "}
           <img
             src="/dropdown-arrow.svg"
@@ -89,10 +131,10 @@ export const Header = () => {
             },
           }}
         >
-          {menuItems.map((item) => (
+          {activeSections.map((section) => (
             <MenuItem
-              key={item.label}
-              onClick={item.onClick}
+              key={section.id}
+              onClick={()=>handleMenuItemClick(section)}
               sx={{
                 backgroundColor: "transparent",
                 margin: "0px",
@@ -109,8 +151,8 @@ export const Header = () => {
                 minWidth="140px"
                 mb={"4px"}
               >
-                <Typography fontSize={14} color={item.color || "inherit"}>
-                  {item.label}
+                <Typography fontSize={14} color={"inherit"}>
+                  {section?.name || ""}
                 </Typography>
               </Box>
             </MenuItem>
@@ -141,6 +183,7 @@ export const Header = () => {
           </MyTooltip>
           <MyTooltip title={"Delete task"} placement="bottom">
             <IconButton
+            onClick={()=> setOpenDeletePopup(true)}
               sx={{
                 padding: "8px",
                 borderRadius: "50%",

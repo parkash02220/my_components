@@ -181,6 +181,29 @@ function projectsReducer(state, action) {
         activeTask: payload || {},
        }
     }
+
+    case "EDIT_TASK":{
+      const updatedTask = payload;
+      console.log("::updated task in context",updatedTask)
+      const updatedSections = state.activeProject?.sections?.map((section)=> {
+        if(section?.id === updatedTask?.section_id){
+          return {
+            ...section,
+            tasks:section?.tasks?.map((task)=> task?.id === updatedTask?.id ? updatedTask : task)
+          }
+        }
+        return section;
+      })
+      return{
+        ...state,
+        activeProject:{
+          ...state.activeProject,
+          sections:updatedSections
+        },
+        activeTask:updatedTask,
+        projectVersion: (state.projectVersion || 0) + 1,
+      }
+    }
     
 
     default:

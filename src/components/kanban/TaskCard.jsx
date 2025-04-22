@@ -17,6 +17,19 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import RightDrawer from "../RightDrawer";
 
 export function TaskCard({ task, isOverlay }) {
+  console.log("::task in taskcard compoonent",task);
+  const priorityList = [
+    { label: "Low", value: "low", icon: "/lowPriorityIcon.svg" },
+    { label: "Medium", value: "medium", icon: "/meduimPriorityIcon.svg" },
+    { label: "High", value: "high", icon: "/highPriorityIcon.svg" },
+  ];
+
+  const getPriorityIcon = (priority) => {
+    const match = priorityList.find((p) => p.value === priority);
+    return match ? match.icon : null;
+  };
+
+  const taskData = task?.content;
   const theme = useTheme();
   const {
     setNodeRef,
@@ -99,18 +112,21 @@ export function TaskCard({ task, isOverlay }) {
           }}
         >
           <Box className="taskCard__contentBox">
-            <Box className="taskCard__imageBox" padding={"8px 8px 0px 8px"}>
-              <img
-                src="https://api-prod-minimal-v700.pages.dev/assets/images/cover/cover-12.webp"
-                alt="card image"
-                style={{
-                  width: "320px",
-                  objectFit: "cover",
-                  borderRadius: "12px",
-                  aspectRatio: 4 / 3,
-                }}
-              />
-            </Box>
+         { taskData?.images && taskData?.images?.length > 0 ? (
+           <Box className="taskCard__imageBox" padding={"8px 8px 0px 8px"}>
+           <img
+             src="https://api-prod-minimal-v700.pages.dev/assets/images/cover/cover-12.webp"
+             alt="card image"
+             style={{
+               width: "320px",
+               objectFit: "cover",
+               borderRadius: "12px",
+               aspectRatio: 4 / 3,
+             }}
+           />
+         </Box>
+         ) : null
+        }
             <Box
               className="taskCard__dataBox"
               fontWeight={600}
@@ -118,7 +134,8 @@ export function TaskCard({ task, isOverlay }) {
               padding={"20px 16px"}
               position={"relative"}
             >
-              <Box
+              {taskData?.priority && (
+                <Box
                 sx={{
                   width: "20px",
                   height: "20px",
@@ -132,11 +149,13 @@ export function TaskCard({ task, isOverlay }) {
                 }}
               >
                 <img
-                  src="/lowPriorityIcon.svg"
+                  src={getPriorityIcon(taskData?.priority)}
                   alt="priority"
                   style={{ width: "100%", height: "100%" }}
                 />
               </Box>
+              )}
+  
               <Box>
                 <Typography
                   color={theme?.palette?.primary?.main}
@@ -145,7 +164,7 @@ export function TaskCard({ task, isOverlay }) {
                   whiteSpace={"pre-wrap"}
                   textAlign={"left"}
                 >
-                  {task.content}
+                  {taskData?.title}
                 </Typography>
               </Box>
               <Box
@@ -160,19 +179,25 @@ export function TaskCard({ task, isOverlay }) {
                   display={"flex"}
                   gap={1}
                 >
-                  <Box display={"flex"} gap={"2px"}>
-                    <Box width={16} height={16}>
-                      <img
-                        src="/taskCardCommentIcon.svg"
-                        alt="comments"
-                        style={{ width: "100%", height: "100%" }}
-                      />
+                  {
+                    taskData?.subComments &&  taskData?.subComments?.length > 0 ? (
+                      <Box display={"flex"} gap={"2px"}>
+                      <Box width={16} height={16}>
+                        <img
+                          src="/taskCardCommentIcon.svg"
+                          alt="comments"
+                          style={{ width: "100%", height: "100%" }}
+                        />
+                      </Box>
+                      <Typography fontSize={12} color="#919EAB">
+                        {taskData?.subComments?.length}
+                      </Typography>
                     </Box>
-                    <Typography fontSize={12} color="#919EAB">
-                      1
-                    </Typography>
-                  </Box>
-                  <Box display={"flex"} gap={"2px"}>
+                    ) : null
+                  }
+                 {
+                  taskData?.images && taskData?.images?.length > 0 ? (
+                    <Box display={"flex"} gap={"2px"}>
                     <Box width={16} height={16}>
                       <img
                         src="/taskCardAttachmentsIcon.svg"
@@ -181,9 +206,12 @@ export function TaskCard({ task, isOverlay }) {
                       />
                     </Box>
                     <Typography fontSize={12} color="#919EAB">
-                      4
+                      {taskData?.images?.length}
                     </Typography>
                   </Box>
+                  ) : null
+                 }
+                  
                 </Box>
                 <Box
                   className="taskCard__footer--right"
