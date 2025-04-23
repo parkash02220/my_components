@@ -17,6 +17,7 @@ const useGetTask = () => {
 
     if (res.error) {
       console.log("::error while getting task from backend", res);
+      return;
     }
 
     const data = res?.data;

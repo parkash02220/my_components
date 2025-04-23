@@ -38,6 +38,7 @@ const useSearchProject = () => {
             if(res.error){
                 setErrorSearchProject(true);
                 console.log("::error while getting boards",res);
+                return;
             }
             const formattedIdResponse = convertIdFields(res?.data?.boards || []);
             dispatch({type:"SET_PROJECTS",payload:formattedIdResponse});

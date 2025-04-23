@@ -14,6 +14,7 @@ const useDeleteSection = () => {
         setLoadingDeleteSection(false);
          if(res.error){
              console.log("::error while deleting the section",res);
+             return;
          }
         dispatch({type:"DELETE_SECTION",payload:{sectionId}});
     } 

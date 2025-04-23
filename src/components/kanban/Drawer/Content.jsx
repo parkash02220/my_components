@@ -42,7 +42,6 @@ export const Content = ({
     setPrevTab(currentTab);
   }, [currentTab]);
 
-console.log("::current tab",currentTab)
 
 const getContentForCurrentTab = (tab) => {
   if(tab==="subtasks"){

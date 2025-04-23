@@ -31,12 +31,12 @@ const useGetAllUsers = () => {
     if(res.error){
         setErrorAllUsers(true);
         console.log("::errro while getting all users from backend");
+        return;
     }
 
     const data = res?.data;
 
     const formattedIdResponse = convertIdFields(data?.users || []);
-    console.log("::data in get all users hook",formattedIdResponse);
     const uniqueUsers = Array.from(
         new Map(formattedIdResponse?.map(user => [user?.id,user])).values()
     )
@@ -59,7 +59,7 @@ const useGetAllUsers = () => {
         getAllUsersFromBackend();
     },[])
 
-    return {allUsers,loadingAllUsers,errorAllUsers,helperTextAllUsers,searchValue,handleSearchValueChange,setSearchValue};
+    return {allUsers,loadingAllUsers,errorAllUsers,helperTextAllUsers,searchValue,handleSearchValueChange,setSearchValue,getAllUsersFromBackend};
 }
 
 export default useGetAllUsers;

@@ -6,8 +6,11 @@ import AssignDialog from "./AssignDialog";
 import { Box, IconButton, Typography } from "@mui/material";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
+import { useAppContext } from "@/context/AppContext";
 
-const OverviewTab = ({activeTask}) => {
+const OverviewTab = () => {
+  const {state} = useAppContext();
+  const {activeTask} = state || {};
     const { uploadImage, progressUploadAttachments, errorUploadAttachments, successUploadAttachments,loadingUploadAttachments } = useUploadAttachments();
     const {loadingEditTask,errorEditTask,updateTaskInBackend} = useEditTask();
     const [assignDialogOpen, setAssignDialogOpen] = useState(false);
@@ -18,7 +21,6 @@ const OverviewTab = ({activeTask}) => {
         { label: "High", value: "high", icon: "/highPriorityIcon.svg" },
       ];
     
-    
       const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -28,12 +30,11 @@ const OverviewTab = ({activeTask}) => {
           assigned_to: activeTask?.assigned_to || [],
         },
         onSubmit: async (values) => {
-         console.log("::formik in edit task",values);
           updateTaskInBackend(values,activeTask?.id);
         },
       });
 
-      const [attachments,setAttachments] = useState(activeTask?.attachments || []);
+      const [attachments,setAttachments] = useState(activeTask?.images || []);
 
       const handleAssignDialogOpen = () => {
         setAssignDialogOpen(true);
@@ -44,17 +45,29 @@ const OverviewTab = ({activeTask}) => {
       };
 
       useEffect(() => {
+        const backendImages = Array.isArray(activeTask?.images)
+          ? activeTask.images
+          : [];
+      
+        setAttachments(backendImages);
+      }, [activeTask?.images]);
+
+      useEffect(() => {
         return () => {
           attachments.forEach((file) => {
-            if (file instanceof File) URL.revokeObjectURL(file.preview);
+            if (file instanceof File && file.preview) {
+              URL.revokeObjectURL(file.preview);
+            }
           });
         };
       }, [attachments]);
+
     return <>
          <AssignDialog
         open={assignDialogOpen}
         handleClose={handleAssignDialogClose}
         assignedUsers = {formik.values.assigned_to}
+        taskId={activeTask?.id}
       />
      <Box padding={"24px 20px"}>
           <Box display={"flex"} flexDirection={"column"} gap={3}>

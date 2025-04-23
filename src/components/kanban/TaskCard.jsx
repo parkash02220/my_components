@@ -17,7 +17,7 @@ import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import RightDrawer from "../RightDrawer";
 
 export function TaskCard({ task, isOverlay }) {
-  console.log("::task in taskcard compoonent",task);
+
   const priorityList = [
     { label: "Low", value: "low", icon: "/lowPriorityIcon.svg" },
     { label: "Medium", value: "medium", icon: "/meduimPriorityIcon.svg" },
@@ -115,7 +115,7 @@ export function TaskCard({ task, isOverlay }) {
          { taskData?.images && taskData?.images?.length > 0 ? (
            <Box className="taskCard__imageBox" padding={"8px 8px 0px 8px"}>
            <img
-             src="https://api-prod-minimal-v700.pages.dev/assets/images/cover/cover-12.webp"
+             src={taskData?.images[0]}
              alt="card image"
              style={{
                width: "320px",

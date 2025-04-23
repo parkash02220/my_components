@@ -46,6 +46,7 @@ const MyTextField = ({
   placeholderColor,
   fontWeight,
   acitveBorder,
+  border,
   ...props
 }) => {
   const shrinkTypes = [
@@ -125,22 +126,34 @@ const MyTextField = ({
             fontWeight:fontWeight,
           },
           "& .MuiOutlinedInput-root": {
+            border:border,
             borderRadius,
             boxShadow,
             background: background,
             fontWeight:fontWeight,
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: error ? errorBorderColor : borderColor,
-            },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: error
-                ? errorBorderColor
-                : hoverBorderColor || borderColor,
-            },
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: error ? errorBorderColor : borderColor,
-              border: acitveBorder ? acitveBorder : `1px solid ${borderColor || 'black'}`,
-            },
+            ...(border === "none"
+            ? {
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+            }
+          : {
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: error ? errorBorderColor : borderColor,
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: error ? errorBorderColor : hoverBorderColor || borderColor,
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                border: acitveBorder || `1px solid ${borderColor}`,
+              },
+            }),
           },
           "& .MuiInputLabel-root": {
             color: disabled ? "#a9a9a9" : labelColor,

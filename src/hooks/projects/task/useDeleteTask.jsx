@@ -1,10 +1,12 @@
+import { useAppContext } from "@/context/AppContext";
 import { ApiCall } from "@/utils/ApiCall";
 import { useState } from "react";
 
 const useDeleteTask = () => {
+    const {dispatch} = useAppContext();
     const [loadingDeleteTask,setLoadingDeleteTask] = useState(false);
     const [errorDeleteTask,setErrorDeleteTask] = useState(false);
-    const deleteTaskFromBackend = async (taskId) => {
+    const deleteTaskFromBackend = async (taskId,columnId) => {
         setErrorDeleteTask(false);
         setLoadingDeleteTask(true);
         const res = await ApiCall({
@@ -15,8 +17,10 @@ const useDeleteTask = () => {
         if(res.error){
             console.log("::error while deleting the task",res);
             setErrorDeleteTask(true);
+            return;
         }
-        console.log("::data in use delete task",res);
+        dispatch({type:"DELETE_TASK",payload:{taskId,columnId}});
+
     }
     return {loadingDeleteTask,errorDeleteTask,deleteTaskFromBackend}
 } 

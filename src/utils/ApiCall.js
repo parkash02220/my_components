@@ -21,13 +21,7 @@ export async function ApiCall({
   if (body !== null) {
     config.data = body;
   }
-if(isFormData){
-  for (let pair of body.entries()) {
-    console.log("config key:", pair[0]);
-    console.log("config value:", pair[1]);
-  }
 
-}
 
   try {
     const response = await axiosInstance(config);

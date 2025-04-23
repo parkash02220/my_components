@@ -15,7 +15,6 @@ const useEditTask = () => {
         controllerRef.current = controller;
         setLoadingEditTask(true);
         setErrorEditTask(false);
-        console.log("::formdata in edit task",formData)
         const res = await ApiCall({
             url:`${process.env.NEXT_PUBLIC_BASE_URL}/edit-task/${taskId}`,
             method:"PUT",
@@ -26,6 +25,7 @@ const useEditTask = () => {
         if(res.error){
             console.log("::error while editing task",true);
             setErrorEditTask(true);
+            return;
         }
 
         

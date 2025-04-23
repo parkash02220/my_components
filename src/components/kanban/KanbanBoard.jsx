@@ -34,7 +34,6 @@ export default function KanbanBoard({
   activeProject,
   projectVersion,
 }) {
-  console.log("::active project", activeProject);
   const [openDrawer, setOpenDrawer] = useState(false);
   const inputRef = useRef(null);
   const wasDragged = useRef(false);

@@ -59,3 +59,19 @@ const uploadImage = async (file) => {
 };
 
 const debouncedUpload = debounce(uploadImage, 1000);
+
+
+export function getTimeAgo(updatedAt) {
+  const updatedDate = new Date(updatedAt);
+  const now = new Date();
+  const diffMs = now - updatedDate;
+
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+  if (diffMinutes < 1) return "Just now";
+  if (diffHours < 1) {
+    return `${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""} before`;
+  }
+  return `${diffHours} hour${diffHours !== 1 ? "s" : ""} before`;
+}

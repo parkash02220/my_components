@@ -7,7 +7,8 @@ import useMoveTask from "@/hooks/projects/task/useMoveTask";
 import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
-export const Header = ({ activeTask }) => {
+export const Header = ({ activeTask,handleDrawer }) => {
+  const {dispatch} = useAppContext();
   const { loadingMoveTask, moveTask } = useMoveTask();
   const { loadingDeleteTask, errorDeleteTask, deleteTaskFromBackend } =
     useDeleteTask();
@@ -29,10 +30,6 @@ export const Header = ({ activeTask }) => {
     setMenuAnchorEl(null);
   };
 
-  console.log("::active task", currentTask);
-  console.log("::active section", sectionOfActiveTask);
-  console.log("::active sectopmssssss", activeSections);
-
   useEffect(() => {
     setActiveSections(
       sections?.map((section) => ({
@@ -53,15 +50,21 @@ export const Header = ({ activeTask }) => {
   }, [activeSections, activeTask]);
 
   const handleMenuItemClick = (section) => {
+    const updatedActiveTask = {
+      ...currentTask,
+      section_id:section?.id,
+      position:1,
+    }
+    dispatch({type:"SET_ACTIVE_TASK",payload:updatedActiveTask});
     setSectionOfActiveTask(section);
-
+    moveTask(currentTask?.id,section?.id,1);
     handleMenuClose();
   };
 
   const handleTaskDeletion = () => {
-    console.log("::handle task deletion clicked");
-    deleteTaskFromBackend(currentTask?.id);
+    deleteTaskFromBackend(currentTask?.id,currentTask?.section_id);
     setOpenDeletePopup(false);
+    handleDrawer();
   };
 
   return (

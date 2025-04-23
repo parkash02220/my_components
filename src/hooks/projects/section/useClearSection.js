@@ -14,6 +14,7 @@ const useClearSection = () => {
         setLoadingClearSection(false);
          if(res.error){
              console.log("::error while clearing the section",res);
+             return;
          }
         dispatch({type:"CLEAR_SECTION",payload:{sectionId}});
     } 

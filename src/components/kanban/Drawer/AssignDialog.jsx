@@ -1,21 +1,12 @@
 import MyButton from "@/components/MyButton/MyButton";
 import MyDialog from "@/components/MyDialog/MyDialog";
 import MySearch from "@/components/MySearch/MySearch";
+import useToggleAssignTask from "@/hooks/projects/task/useToggleAssignTask";
 import useGetAllUsers from "@/hooks/projects/user/useGetAllUsers";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
-
-const assignUserToTaskAPI = async (userId) => {
-  console.log("Assigning user:", userId);
-  await new Promise((resolve) => setTimeout(resolve, 300)); // simulate API delay
-};
-
-const unassignUserFromTaskAPI = async (userId) => {
-  console.log("Unassigning user:", userId);
-  await new Promise((resolve) => setTimeout(resolve, 300)); // simulate API delay
-};
-
-const AssignDialog = ({ open, handleClose, assignedUsers }) => {
+const AssignDialog = ({ open, handleClose, assignedUsers,taskId }) => {
+  const {loadingAssignTaskIds,errorAssignTask,toggleAssignTask} = useToggleAssignTask();
   const theme = useTheme();
   const {
     allUsers,
@@ -35,21 +26,21 @@ const AssignDialog = ({ open, handleClose, assignedUsers }) => {
     }
   }, [open, assignedUsers]);
 
-  const handleAssignToggle = async (userId, isCurrentlyAssigned) => {
-    try {
-      if (isCurrentlyAssigned) {
-        // Unassign user
-        await unassignUserFromTaskAPI(userId); // 🔁 replace with real API call
-        setAssignedUserIds((prev) => prev.filter((id) => id !== userId));
-      } else {
-        // Assign user
-        await assignUserToTaskAPI(userId); // 🔁 replace with real API call
-        setAssignedUserIds((prev) => [...prev, userId]);
-      }
-    } catch (error) {
-      console.error("Assignment failed", error);
+  const handleAssignToggle = async (userId,isAssigned) => {
+    let assignedUsers = [];
+    if(isAssigned){
+      assignedUsers = assignedUserIds?.filter((id)=> id !== userId);
+    }else{
+      assignedUsers = [...assignedUserIds,userId];
     }
-  };
+    setAssignedUserIds(assignedUsers);
+    await toggleAssignTask(taskId,assignedUsers,userId);
+  }
+
+  const handleSearchClear = () => {
+    setSearchValue("");
+  }
+
 
   return (
     <>
@@ -100,6 +91,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers }) => {
                   value={searchValue}
                   onChange={handleSearchValueChange}
                   loading={loadingAllUsers}
+                  onClear={handleSearchClear}
                 />
               </Box>
               {allUsers?.length > 0 ? (
@@ -156,6 +148,8 @@ const AssignDialog = ({ open, handleClose, assignedUsers }) => {
                         </Box>
                         <Box className="cotactBox__actionBox">
                           <MyButton
+                          backgroundColor="inherit"
+                          loading={loadingAssignTaskIds?.includes(user?.id)}
                             onClick={() =>
                               handleAssignToggle(user?.id, isAssigned)
                             }
@@ -196,64 +190,6 @@ const AssignDialog = ({ open, handleClose, assignedUsers }) => {
                       </Box>
                     );
                   })}
-                  <Box
-                    className="assignDialog__contactBox"
-                    display={"flex"}
-                    gap={2}
-                    height={64}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                  >
-                    <Box
-                      className="cotactBox__avatarBox"
-                      width={40}
-                      height={40}
-                    >
-                      <AvatarBox src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-17.webp" />
-                    </Box>
-                    <Box
-                      className="cotactBox__dataBox"
-                      flex={"1 1 auto"}
-                      minWidth={0}
-                      margin={0}
-                    >
-                      <Typography
-                        color={theme.palette.primary.main}
-                        fontWeight={600}
-                        fontSize={"14px"}
-                      >
-                        Javion Simon
-                      </Typography>
-                      <Typography color="#637381" fontSize={"14px"}>
-                        nannie.abernathy70@yahoo.com
-                      </Typography>
-                    </Box>
-                    <Box className="cotactBox__actionBox">
-                      <MyButton
-                        fontWeight={700}
-                        sx={{ height: "30px" }}
-                        borderRadius="8px"
-                        padding={"4px"}
-                        fontSize={"13px"}
-                        minWidth="64px"
-                        variant="text"
-                        color="#00A76F"
-                        hoverBgColor="rgba(0,167,111,0.08)"
-                      >
-                        {" "}
-                        <img
-                          src="/assingedIcon.svg"
-                          alt="assign"
-                          style={{
-                            width: "16px",
-                            height: "16px",
-                            marginRight: "4px",
-                          }}
-                        />{" "}
-                        Assigned
-                      </MyButton>
-                    </Box>
-                  </Box>
                 </Box>
               ) : !loadingAllUsers ? (
                 <Box

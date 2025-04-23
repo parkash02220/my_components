@@ -184,7 +184,6 @@ function projectsReducer(state, action) {
 
     case "EDIT_TASK":{
       const updatedTask = payload;
-      console.log("::updated task in context",updatedTask)
       const updatedSections = state.activeProject?.sections?.map((section)=> {
         if(section?.id === updatedTask?.section_id){
           return {
@@ -203,6 +202,42 @@ function projectsReducer(state, action) {
         activeTask:updatedTask,
         projectVersion: (state.projectVersion || 0) + 1,
       }
+    }
+
+    case "DELETE_TASK":{
+      const {taskId,columnId} = payload;
+      const updatedSections = state.activeProject?.sections?.map((section)=> {
+        if(section?.id === columnId){
+          return {
+            ...section,
+             tasks :  section?.tasks?.filter((task)=> task?.id !== taskId)
+          }
+        }
+        return section;
+      });
+
+      return{
+        ...state,
+        activeProject:{
+          ...state.activeProject,
+          sections:updatedSections
+        },
+        projectVersion: (state.projectVersion) + 1,
+      }
+    }
+
+    case "ADD_SUBTASK":{
+      const newSubTask = payload;
+        return {
+          ...state,
+          activeTask:{
+            ...state.activeTask,
+            subtasks:[
+              ...state.activeTask.subtasks,
+              newSubTask
+            ]
+          }
+        }
     }
     
 

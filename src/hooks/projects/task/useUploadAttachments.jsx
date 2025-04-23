@@ -17,10 +17,6 @@ const useUploadAttachments = () => {
       files.forEach((file) => {
         formData.append("images", file);
       });
-      for (let pair of formData.entries()) {
-        console.log("FormData key:", pair[0]);
-        console.log("FormData value:", pair[1]);
-      }
       const res = await ApiCall({
         url:`${process.env.NEXT_PUBLIC_BASE_URL}/upload-task-image/${taskId}`,
         method:"POST",
@@ -36,10 +32,10 @@ const useUploadAttachments = () => {
       if(res.error){
         console.log("::errro while uploading image",res.error)
         setErrorUploadAttachments(true);
+        return;
       }
 
       setSuccessUploadAttachments(true);
-      console.log("::response in upload attachmetns ",res);
     },
     []
   );
