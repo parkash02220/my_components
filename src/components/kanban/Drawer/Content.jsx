@@ -9,6 +9,7 @@ export const Content = ({
   tabValues,
   handleTabChange,
   activeTask,
+  loadingGetTask,
 }) => {
   const containerRef = useRef(null);
 
@@ -55,7 +56,8 @@ const getContentForCurrentTab = (tab) => {
 
   return (
     <>
- 
+   {
+     !loadingGetTask ? (
       <Box>
         <Box
           sx={{ width: "100%", background: "#F4F6F8" }}
@@ -129,6 +131,18 @@ const getContentForCurrentTab = (tab) => {
         </Box>
         {getContentForCurrentTab(currentTab)}
       </Box>
+     ) : (
+      <Box
+      display={"flex"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      width={"100%"}
+      height={'100%'}
+    >
+      <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
+    </Box>
+     )
+   }
     </>
   );
 };

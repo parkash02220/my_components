@@ -218,7 +218,6 @@ const AddSubTaskDialog = ({ open, onClose, taskId }) => {
               error={error}
               helperText={helperText}
               onKeyDown={handleKeyDownInAddSubTask}
-              loading={loadingCreateSubTask}
             />
           </Box>
         }

@@ -24,7 +24,7 @@ function KanbanRightDrawer({ open, handleDrawer,taskId }) {
     {
       key: 3,
       value: "comments",
-      label: "Comments (0)",
+      label: "Comments",
     },
   ];
   const [currentTab, setCurrentTab] = useState("overview");
@@ -58,6 +58,7 @@ function KanbanRightDrawer({ open, handleDrawer,taskId }) {
               currentTab={currentTab}
               handleTabChange={handleTabChange}
               activeTask={activeTask}
+              loadingGetTask={loadingGetTask}
             />
           }
         />

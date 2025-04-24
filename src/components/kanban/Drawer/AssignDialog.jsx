@@ -19,10 +19,9 @@ const AssignDialog = ({ open, handleClose, assignedUsers,taskId }) => {
   } = useGetAllUsers();
 
   const [assignedUserIds, setAssignedUserIds] = useState([]);
-
   useEffect(() => {
     if (open && assignedUsers) {
-      setAssignedUserIds(assignedUsers.map((user) => user.id));
+      setAssignedUserIds(assignedUsers.map((user) => user));
     }
   }, [open, assignedUsers]);
 

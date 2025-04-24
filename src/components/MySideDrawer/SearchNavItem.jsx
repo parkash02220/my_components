@@ -14,7 +14,7 @@ const SearchNavItem = ({ open }) => {
   return (
     <>
       {open ? (
-        <ListItem>
+        <ListItem sx={{p:0, py:2}}>
           <MySearch
             fullWidth
             minWidth="100px"

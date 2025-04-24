@@ -32,7 +32,7 @@ export const SingleNavItem = ({ item, open, onClick }) => {
     <ListItemButton
       onClick={onClick}
       sx={{
-        minHeight: 48,
+        minHeight: 40,
         flexDirection:open?"row":"column",
         justifyContent: open ? "initial" : "center",
         alignItems:open ? "" : "center",
@@ -44,15 +44,19 @@ export const SingleNavItem = ({ item, open, onClick }) => {
         }
       }}
     >
+   {
+    item?.icon ? (
       <ListItemIcon
-        sx={{
-          minWidth: 0,
-          mr: open ? "12px" : "0px",
-          justifyContent: "center",
-        }}
-      >
-        {item.icon}
-      </ListItemIcon>
+      sx={{
+        minWidth: 0,
+        mr: open ? "12px" : "0px",
+        justifyContent: "center",
+      }}
+    >
+      {item.icon}
+    </ListItemIcon>
+    ) : null
+   }
       <ListItemText
         primary={titleName || ""}
         sx={{
@@ -69,7 +73,7 @@ export const SingleNavItem = ({ item, open, onClick }) => {
   );
 
   return open ? (
-    <ListItem disablePadding>{content}</ListItem>
+    <ListItem disablePadding sx={{pt:"4px"}}>{content}</ListItem>
   ) : (
     <Tooltip title={item.title} placement="right">
       <ListItem disablePadding>{content}</ListItem>

@@ -61,8 +61,8 @@ export const Header = ({ activeTask,handleDrawer }) => {
     handleMenuClose();
   };
 
-  const handleTaskDeletion = () => {
-    deleteTaskFromBackend(currentTask?.id,currentTask?.section_id);
+  const handleTaskDeletion = async () => {
+   await deleteTaskFromBackend(currentTask?.id,currentTask?.section_id);
     setOpenDeletePopup(false);
     handleDrawer();
   };
@@ -76,6 +76,7 @@ export const Header = ({ activeTask,handleDrawer }) => {
         submitAction={handleTaskDeletion}
         title={"Delete"}
         message={currentTask?.title || ""}
+        loading={loadingDeleteTask}
       />
       <Box
         display={"flex"}

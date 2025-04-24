@@ -32,147 +32,78 @@ const CommentsTab = ({ activeTask }) => {
      position:"relative",
      height:'calc(100vh - 145px)',
   }}>
-    <Box sx={{
-      display:"flex",
-      flexDirection:"column",
-      gap:3,
-      height:"calc(100% - 130px)",
-      overflowY:"auto",
-      scrollbarWidth:"none",
-      "&::-webkit-scrollbar":{
-        display:"none",
-      }
-    }}> 
-    <Box display={'flex'} gap={2} className = "comments__commentBox">
-    <Box className="commentBox__left"
-    sx={{
-      position:"relative",
-      display:"flex",
-      justifyContent:'center',
-      alignItems:"center",
-      flexShrink:0,
-      width:40,
-      height:40,
-      borderRadius:"50%",
-      overflow:"hidden",
-    }}
-    >
-      <img src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-1.webp" alt="avatar" style={{width:"100%",height:"100%",objectFit:"cover",color:"transparent",textIndent:"10000px"}} />
-      
-    </Box>
-    <Box className = "commentBox__right"
-    sx={{
-      display:"flex",
-      flex:"1 1 auto",
-      flexDirection:"column",
-      gap:"4px",
-    }}
-    >
-     <Box sx={{
-      display:"flex",
-      gap:1,
-      alignItems:'center',
-      justifyContent:"space-between",
-     }}>
-     <Typography variant="h6" fontWeight={600} fontSize={14} color={theme?.palette?.primary?.main}>Jayvion Simon</Typography>
-     <Typography fontSize={12} color="#919EAB" >4 hours</Typography>
-     </Box>
-     <Box>
-      <Typography fontSize={14} color={theme?.palette?.primary?.main}>The sun slowly set over the horizon, painting the sky in vibrant hues of orange and pink.</Typography>
-     </Box>
-    </Box>
-    </Box>
-     <Box display={'flex'} gap={2} className = "comments__commentBox">
-    <Box className="commentBox__left"
-    sx={{
-      position:"relative",
-      display:"flex",
-      justifyContent:'center',
-      alignItems:"center",
-      flexShrink:0,
-      width:40,
-      height:40,
-      borderRadius:"50%",
-      overflow:"hidden",
-    }}
-    >
-      <img src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-1.webp" alt="avatar" style={{width:"100%",height:"100%",objectFit:"cover",color:"transparent",textIndent:"10000px"}} />
-      
-    </Box>
-    <Box className = "commentBox__right"
-    sx={{
-      display:"flex",
-      flex:"1 1 auto",
-      flexDirection:"column",
-      gap:"4px",
-    }}
-    >
-     <Box sx={{
-      display:"flex",
-      gap:1,
-      alignItems:'center',
-      justifyContent:"space-between",
-     }}>
-     <Typography variant="h6" fontWeight={600} fontSize={14} color={theme?.palette?.primary?.main}>Jayvion Simon</Typography>
-     <Typography fontSize={12} color="#919EAB" >4 hours</Typography>
-     </Box>
-     <Box sx={{
-      position:'relative',
-      display:'inline-block',
-      cursor:'pointer',
-      overflow:'hidden',
-      borderRadius:"12px",
-      maxWidth:"100%",
-
-     }}>
-     <img src="	https://api-prod-minimal-v700.pages.dev/assets/images/cover/cover-7.webp" alt="image" style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"inherit",filter:"blur(0px)"}} />
-     </Box>
-    </Box>
-    </Box>
     {
-      allComments?.map((comment)=> {
-        return  <Box display={'flex'} gap={2} className = "comments__commentBox" key={comment?.id}>
-        <Box className="commentBox__left"
-        sx={{
-          position:"relative",
+      !loadingAllTaskComments ? (
+        <Box sx={{
           display:"flex",
-          justifyContent:'center',
-          alignItems:"center",
-          flexShrink:0,
-          width:40,
-          height:40,
-          borderRadius:"50%",
-          overflow:"hidden",
-        }}
-        >
-          <img src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-1.webp" alt="avatar" style={{width:"100%",height:"100%",objectFit:"cover",color:"transparent",textIndent:"10000px"}} />
-          
-        </Box>
-        <Box className = "commentBox__right"
-        sx={{
-          display:"flex",
-          flex:"1 1 auto",
           flexDirection:"column",
-          gap:"4px",
+          gap:3,
+          height:"calc(100% - 130px)",
+          overflowY:"auto",
+          scrollbarWidth:"none",
+          "&::-webkit-scrollbar":{
+            display:"none",
+          }
+        }}> 
+        {
+          allComments?.map((comment)=> {
+            return  <Box display={'flex'} gap={2} className = "comments__commentBox" key={comment?.id}>
+            <Box className="commentBox__left"
+            sx={{
+              position:"relative",
+              display:"flex",
+              justifyContent:'center',
+              alignItems:"center",
+              flexShrink:0,
+              width:40,
+              height:40,
+              borderRadius:"50%",
+              overflow:"hidden",
+            }}
+            >
+              <img src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-1.webp" alt="avatar" style={{width:"100%",height:"100%",objectFit:"cover",color:"transparent",textIndent:"10000px"}} />
+              
+            </Box>
+            <Box className = "commentBox__right"
+            sx={{
+              display:"flex",
+              flex:"1 1 auto",
+              flexDirection:"column",
+              gap:"4px",
+            }}
+            >
+             <Box sx={{
+              display:"flex",
+              gap:1,
+              alignItems:'center',
+              justifyContent:"space-between",
+             }}>
+             <Typography variant="h6" fontWeight={600} fontSize={14} color={theme?.palette?.primary?.main}>{`${comment?.user?.firstName || ""} ${comment?.user?.lastName || ""}`}</Typography>
+             <Typography fontSize={12} color="#919EAB" >{getTimeAgo(comment?.updatedAt || 0)}</Typography>
+             </Box>
+             <Box>
+              <Typography fontSize={14} color={theme?.palette?.primary?.main}>{comment?.text || ''}</Typography>
+             </Box>
+            </Box>
+            </Box>
+          })
+        }
+        </Box>
+      ) : (
+        <Box
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        width={"100%"}
+        sx={{
+          height:"calc(100% - 130px)",
         }}
-        >
-         <Box sx={{
-          display:"flex",
-          gap:1,
-          alignItems:'center',
-          justifyContent:"space-between",
-         }}>
-         <Typography variant="h6" fontWeight={600} fontSize={14} color={theme?.palette?.primary?.main}>{`${comment?.user?.firstName || ""} ${comment?.user?.lastName || ""}`}</Typography>
-         <Typography fontSize={12} color="#919EAB" >{getTimeAgo(comment?.updatedAt || 0)}</Typography>
-         </Box>
-         <Box>
-          <Typography fontSize={14} color={theme?.palette?.primary?.main}>{comment?.text || ''}</Typography>
-         </Box>
-        </Box>
-        </Box>
-      })
+      >
+        <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
+      </Box>
+      )
     }
-    </Box>
+   
 
     <Box className="comments__InputContainer" sx={{
       padding:"24px 20px 20px 24px",

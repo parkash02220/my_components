@@ -1,7 +1,13 @@
+import { useAppContext } from "@/context/AppContext";
+import useToast from "@/hooks/common/useToast";
+import toast from "react-hot-toast";
+
 const { ApiCall } = require("@/utils/ApiCall");
 const { useState } = require("react")
 
 const useToggleAssignTask = () => {
+    const {showToast} = useToast();
+    const {dispatch} = useAppContext();
     const [loadingAssignTaskIds,setLoadingAssignTaskIds] = useState([]);
     const [errorAssignTask,setErrorAssignTask] =  useState(false);
     const toggleAssignTask = async (taskId,assignedUserIds,userId) => {
@@ -22,6 +28,10 @@ const useToggleAssignTask = () => {
             setErrorAssignTask(true);
             return;
         }
+
+        showToast({type:"success",message:"Success !"});
+
+        dispatch({type:"UPDATE_ASSIGNED_USERS_IN_TASK",payload:assignedUserIds})
  
     }
     return {loadingAssignTaskIds,errorAssignTask,toggleAssignTask};

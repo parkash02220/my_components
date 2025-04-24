@@ -43,6 +43,7 @@ import { SingleNavItem } from "./SingleNavItem";
 import { CollapsibleNavItem } from "./CollapsibleNavItem";
 import Loader from "../Loader/Loader";
 import SearchNavItem from "./SearchNavItem";
+import ConfirmationPopup from "../ConfirmationPopup";
 const drawerWidth = 300;
 const miniDrawerWidth = 88;
 // const drawerTransitionDuration = 300;
@@ -119,6 +120,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MySideDrawer({ children }) {
+  const [logoutPopupOpen,setLogoutPopupOpen] = useState(false);
   const [open, setOpen] = useState(true);
   const [expandedItems, setExpandedItems] = useState({});
   const [selectedDrawerItem, setSelectedDrawerItem] = useState(null);
@@ -195,7 +197,7 @@ export default function MySideDrawer({ children }) {
     return NAVIGATION.map((item, index) => {
       if (item.type === "header") {
         return open ? (
-          <ListItem key={index}>
+          <ListItem key={index} sx={{pl:1}}>
             <Typography
               variant="subtitle2"
               sx={{
@@ -278,10 +280,30 @@ export default function MySideDrawer({ children }) {
     fetchAllProjects();
   };
 
+
+  const handleLogoutPopupOpen = () => {
+    setLogoutPopupOpen(true);
+  }
+
+  const handleLogoutPopupClose = () => {
+    setLogoutPopupOpen(false);
+  }
+  const handleUserLogout = async () => {
+    await logoutUser();
+    handleLogoutPopupClose();
+  }
   if (!hasMounted) return null;
 
   return (
     <>
+    <ConfirmationPopup 
+    title={'Logout'}
+    handleClose={handleLogoutPopupClose}
+    open={logoutPopupOpen}
+    submitAction={handleUserLogout}
+    loading={loadingLogout}
+
+    />
       <Box className="createProjectDialog">
         <CreateProjectDialog
           open={dialogOpen}
@@ -368,7 +390,7 @@ export default function MySideDrawer({ children }) {
             alignItems={"flex-start"}
             className="logout_buttonBox"
           >
-            <MyButton onClick={logoutUser} loading={loadingLogout}>
+            <MyButton onClick={handleLogoutPopupOpen} backgroundColor="#1C252E">
               Logout
             </MyButton>
           </Box>

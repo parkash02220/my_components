@@ -1,20 +1,23 @@
 import useEditTask from "@/hooks/projects/task/useEditTask";
 import useUploadAttachments from "@/hooks/projects/task/useUploadAttachments";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AssignDialog from "./AssignDialog";
 import { Box, IconButton, Typography } from "@mui/material";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import { useAppContext } from "@/context/AppContext";
+import useDeleteAttachments from "@/hooks/projects/task/useDeleteAttachments";
 
 const OverviewTab = () => {
   const {state} = useAppContext();
   const {activeTask} = state || {};
     const { uploadImage, progressUploadAttachments, errorUploadAttachments, successUploadAttachments,loadingUploadAttachments } = useUploadAttachments();
+    const {loadingDeleteAttachment,errorDeleteAttachment,deleteAttachment} = useDeleteAttachments();
     const {loadingEditTask,errorEditTask,updateTaskInBackend} = useEditTask();
     const [assignDialogOpen, setAssignDialogOpen] = useState(false);
     const [showEditTextfield,setShowEditTextfield] = useState(false);
+    const inputRef = useRef(null);
     const priorityList = [
         { label: "Low", value: "low", icon: "/lowPriorityIcon.svg" },
         { label: "Medium", value: "medium", icon: "/meduimPriorityIcon.svg" },
@@ -62,6 +65,17 @@ const OverviewTab = () => {
         };
       }, [attachments]);
 
+      const handleAttachmentDelete = async (index) => {
+        const image = attachments?.filter((_,i)=> i===index)[0];
+       await deleteAttachment(image,activeTask?.id,activeTask?.section_id);
+      } 
+
+      useEffect(()=> {
+          if(showEditTextfield && inputRef.current){
+            inputRef.current.focus();
+          }
+      },[showEditTextfield]);
+
     return <>
          <AssignDialog
         open={assignDialogOpen}
@@ -75,6 +89,7 @@ const OverviewTab = () => {
               {
                 showEditTextfield ? (
                   <MyTextField 
+                  inputRef={inputRef}
                   name="title"
                   label=""
                   fontWeight={600}
@@ -229,12 +244,8 @@ const OverviewTab = () => {
                       }}
                     />
                      <IconButton
-                    onClick={() => {
-                      const newList = attachments.filter(
-                        (_, i) => i !== index
-                      );
-                      setAttachments(newList);
-                    }}
+                    onClick={() => handleAttachmentDelete(index)}
+                    disabled={loadingDeleteAttachment}
                     sx={{
                       position:'absolute',
                       top:'4px',
@@ -272,7 +283,7 @@ const OverviewTab = () => {
                       onChange={(e) => {
                         const files = Array.from(e.target.files);
                         setAttachments((attachments)=> [...attachments,...files]);
-                           uploadImage(files,activeTask?.id);
+                           uploadImage(files,activeTask?.id,activeTask?.section_id);
                       }}
                     />
                     <img

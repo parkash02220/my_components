@@ -74,7 +74,7 @@ export default function SignIn() {
               {errorMsg && (
                 <div style={{ fontSize: "13px", color: "red" }}>{errorMsg}</div>
               )}
-              <MyButton type="submit" fullWidth={true} loading={loadingLogin}>
+              <MyButton type="submit" fullWidth={true} loading={loadingLogin} backgroundColor="#1C252E">
                 Login
               </MyButton>
             </Box>
