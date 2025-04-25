@@ -33,6 +33,10 @@ const MyDialog = ({ open, handleClose, title, content, actions, ...props }) => {
               borderRadius: props.borderRadius || '16px',
               maxWidth: props?.maxwidth || "600px",
               boxShadow : props?.boxShadow,
+              width:props?.width,
+              maxHeight:props?.maxheight,
+              height:props?.height,
+              minHeight:props?.minheight,
             },
           }}
         {...props}

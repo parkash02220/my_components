@@ -42,6 +42,7 @@ const useUpdateProjectName = (
       setErrorUpdateProjectName(true);
       setIsNameAvailable(false);
       setLoadingUpdateProjectName(false);
+      setHelperTextUpdateProjectName(res?.error?.message)
       return;
     }
     setErrorUpdateProjectName(false);

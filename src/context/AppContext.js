@@ -323,6 +323,45 @@ function projectsReducer(state, action) {
       };
     }
 
+    case "ADD_COMMENTS_TO_TASK":{
+      const {subComments, taskId,columnId} = payload;
+      const updatedSections = state?.activeProject?.sections?.map((section)=> {
+        if(section?.id === columnId){
+          return {
+            ...section,
+            tasks: section?.tasks?.map((task)=> {
+              if(task?.id === taskId){
+                return {
+                  ...task,
+                  subComments:subComments,
+                }
+              }
+              return task;
+            })
+          }
+        }
+        return section;
+      })
+        return {
+          ...state,
+          activeProject:{
+            ...state.activeProject,
+            sections: updatedSections,
+          },
+         activeTask:{
+          ...state.activeTask,
+          subComments:subComments || state.activeTask.subComments,
+         }
+        }
+    }
+
+    case "SET_ACTIVE_USER":{
+       return {
+        ...state,
+        activeUser:payload || {}
+       }
+    }
+
     default:
       return state;
   }

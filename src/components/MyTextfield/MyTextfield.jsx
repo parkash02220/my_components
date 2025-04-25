@@ -47,6 +47,8 @@ const MyTextField = ({
   fontWeight,
   acitveBorder,
   border,
+  activeLabelColor,
+  labelFontWeight,
   ...props
 }) => {
   const shrinkTypes = [
@@ -111,7 +113,7 @@ const MyTextField = ({
           shrink: shrink || shouldShrink,
           style: {
             fontSize: labelFontSize,
-            color: error ? errorBorderColor : disabled ? "#a9a9a9" : labelColor,
+            fontWeight:labelFontWeight,
           },
         }}
         sx={{
@@ -159,7 +161,7 @@ const MyTextField = ({
             color: disabled ? "#a9a9a9" : labelColor,
           },
           "& .MuiInputLabel-root.Mui-focused": {
-            color: error ? errorBorderColor : labelColor,
+            color: error ? errorBorderColor : activeLabelColor || labelColor,
           },
           "& .MuiFormHelperText-root": {
             fontSize: helperTextFontSize,

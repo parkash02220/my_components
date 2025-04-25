@@ -19,7 +19,7 @@ const CommentsTab = ({ activeTask }) => {
     }
   })
   const handleAddComment = async (values) => {
-   const updatedComments =  await addCommentToTask(activeTask?.id,values?.comment);
+   const updatedComments =  await addCommentToTask(activeTask?.id,values?.comment,activeTask?.section_id);
     setAllComments((pre)=> updatedComments ? updatedComments : pre);
     formik.setFieldValue("comment","");
   }
@@ -157,7 +157,7 @@ const CommentsTab = ({ activeTask }) => {
          multiline={true}
          rows={2}
          border={'none'}
-         loading={loadingAddCommnet}
+         disabled={loadingAddCommnet}
          />
        </Box>
        <Box display={'flex'} alignItems={'space-between'}>

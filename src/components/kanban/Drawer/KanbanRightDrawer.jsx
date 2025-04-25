@@ -59,6 +59,7 @@ function KanbanRightDrawer({ open, handleDrawer,taskId }) {
               handleTabChange={handleTabChange}
               activeTask={activeTask}
               loadingGetTask={loadingGetTask}
+              open={open}
             />
           }
         />

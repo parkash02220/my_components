@@ -17,7 +17,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers,taskId }) => {
     handleSearchValueChange,
     setSearchValue,
   } = useGetAllUsers();
-
+   const [hasMounted,setHasMounted] = useState(true);
   const [assignedUserIds, setAssignedUserIds] = useState([]);
   useEffect(() => {
     if (open && assignedUsers) {

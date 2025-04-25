@@ -33,6 +33,7 @@ export default function MyButton({
   disabledBgColor,
   disabledTextColor,
   iconOnly = false,
+  border,
   sx,
   ...props
 }) {
@@ -94,7 +95,7 @@ export default function MyButton({
           fontWeight,
           backgroundColor:
             variant === "contained" ? backgroundColor : 'transparent',
-          border: variant === "outlined" ? `1px solid ${color}` : "none",
+          border: variant === "outlined" ? `1px solid ${color}` : border,
           "&:hover": {
             backgroundColor: disabled || loading ? undefined : hoverBgColor,
           },

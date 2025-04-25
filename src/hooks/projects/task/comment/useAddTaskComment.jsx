@@ -1,12 +1,14 @@
+import { useAppContext } from "@/context/AppContext";
 import { convertIdFields } from "@/utils";
 
 const { ApiCall } = require("@/utils/ApiCall");
 const { useState } = require("react")
 
 const useAddTaskComment = () => {
+    const {dispatch} = useAppContext();
     const [loadingAddCommnet,setLoadingAddComment] = useState(false);
     const [errorAddComment,setErrorAddComment] = useState(false);
-    const addCommentToTask = async (taskId,comment) => {
+    const addCommentToTask = async (taskId,comment,columnId) => {
         setLoadingAddComment(true);
         setErrorAddComment(false);
         const res = await ApiCall({
@@ -24,6 +26,8 @@ const useAddTaskComment = () => {
         }
 
         const formattedIdResponse = convertIdFields(res?.data?.comments);
+        console.log("::formated id repsonse",formattedIdResponse)
+        dispatch({type:"ADD_COMMENTS_TO_TASK",payload:{subComments : formattedIdResponse, taskId,columnId}})
         return formattedIdResponse || [];
     }
     return {loadingAddCommnet,errorAddComment,addCommentToTask};

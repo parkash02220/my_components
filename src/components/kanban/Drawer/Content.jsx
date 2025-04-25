@@ -10,15 +10,15 @@ export const Content = ({
   handleTabChange,
   activeTask,
   loadingGetTask,
+  open
 }) => {
   const containerRef = useRef(null);
-
   const [targetStyle, setTargetStyle] = useState({ left: 0, width: 0 });
   const [prevStyle, setPrevStyle] = useState({ left: 0, width: 0 });
   const tabsRef = useRef([]);
   const [motionKey, setMotionKey] = useState(currentTab);
   const [prevTab, setPrevTab] = useState(currentTab);
-
+  const [shouldAnimate, setShouldAnimate] = useState(false);
   const currentIndex = tabValues.findIndex((tab) => tab.value === currentTab);
   const prevIndex = tabValues.findIndex((tab) => tab.value === prevTab);
 
@@ -28,20 +28,35 @@ export const Content = ({
   useEffect(() => {
     const currentNode = tabsRef.current[currentIndex];
     const prevNode = tabsRef.current[prevIndex];
-
+  
     if (currentNode && prevNode) {
-      const { offsetLeft: currentLeft, offsetWidth: currentWidth } =
-        currentNode;
+      const { offsetLeft: currentLeft, offsetWidth: currentWidth } = currentNode;
       const { offsetLeft: prevLeft } = prevNode;
-
+  
       setPrevStyle({ left: prevLeft });
       setTargetStyle({ left: currentLeft, width: currentWidth });
-
-      setMotionKey(currentTab);
+  
+      if (prevTab !== currentTab) {
+        setShouldAnimate(true);
+        setMotionKey(currentTab);
+      } else {
+        setShouldAnimate(false);
+      }
+  
+      setPrevTab(currentTab);
     }
-
-    setPrevTab(currentTab);
   }, [currentTab]);
+  
+
+  useEffect(() => {
+    if (!loadingGetTask && open) {
+      const currentNode = tabsRef.current[currentIndex];
+      if (currentNode) {
+        const { offsetLeft, offsetWidth } = currentNode;
+        setTargetStyle({ left: offsetLeft, width: offsetWidth });
+      }
+    }
+  }, [loadingGetTask, open]);
 
 
 const getContentForCurrentTab = (tab) => {
@@ -53,7 +68,10 @@ const getContentForCurrentTab = (tab) => {
     return  <OverviewTab  activeTask={activeTask}/>
   }
 }
-
+console.log("::active task in conetnt",activeTask)
+useEffect(()=> {
+  console.log("::this is first rendor")
+},[])
   return (
     <>
    {
@@ -67,17 +85,17 @@ const getContentForCurrentTab = (tab) => {
           <Box sx={{ position: "relative" }} ref={containerRef}>
             <motion.div
               key={motionKey}
-              initial={{
-                left: prevStyle.left,
-                width: targetStyle.width,
-                opacity: 0.5,
-              }}
+              initial={
+                shouldAnimate
+                  ? { left: prevStyle.left, width: targetStyle.width, opacity: 0.5 }
+                  : false
+              }
               animate={{
                 left: targetStyle.left,
                 width: targetStyle.width,
                 opacity: 1,
               }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+              transition={{ duration: shouldAnimate ? 0.4 : 0, ease: "easeInOut" }}
               style={{
                 position: "absolute",
                 height: "100%",
@@ -107,8 +125,8 @@ const getContentForCurrentTab = (tab) => {
                 <Tab
                   disableRipple
                   key={tab?.key}
-                  value={tab?.value}
-                  label={tab?.label}
+                  value={ tab?.value}
+                  label={ tab?.value !== "comments" ? tab?.label : `${tab?.label} (${activeTask?.subComments?.length || 0})`}
                   sx={{
                     color: "#637381 !important",
                     fontWeight: "600",

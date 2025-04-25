@@ -60,6 +60,7 @@ export function TaskCard({ task, isOverlay }) {
     //   ? "2px solid rgba(0,0,0,0.2)"
     //   : undefined,
   };
+  
 
   return (
     <>
@@ -219,78 +220,59 @@ export function TaskCard({ task, isOverlay }) {
                   flexDirection={"row-reverse"}
                   justifyContent={"flex-end"}
                 >
-                   <Box
-                    fontSize={12}
-                    color={"#007867"}
-                    width={24}
-                    height={24}
-                    fontWeight={600}
-                    ml={"-8px"}
-                    position={"relative"}
-                    boxSizing={'content-box'}
-                    border={"2px solid #FFFFFF"}
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    borderRadius={"50%"}
-                    overflow={"hidden"}
-                  >5</Box>
-                  <Box
-                    width={24}
-                    height={24}
-                    fontSize={16}
-                    fontWeight={600}
-                    border={"2px solid #FFFFFF"}
-                    boxSizing={'content-box'}
-                    ml={"-8px"}
-                    position={"relative"}
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    borderRadius={"50%"}
-                    overflow={"hidden"}
-                  >
-                    <img
-                      src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-1.webp"
-                      alt="avatar"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        color: "transparent",
-                        textIndent: "100000px",
-                        maxWidth: "100%",
-                      }}
-                    />
-                  </Box>
-                  <Box
-                    width={24}
-                    height={24}
-                    fontSize={16}
-                    fontWeight={600}
-                    border={"2px solid #FFFFFF"}
-                    boxSizing={"content-box"}
-                    ml={"-8px"}
-                    position={"relative"}
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    borderRadius={"50%"}
-                    overflow={"hidden"}
-                  >
-                    <img
-                      src="	https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-2.webp"
-                      alt="avatar"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        color: "transparent",
-                        textIndent: "100000px",
-                        maxWidth: "100%",
-                      }}
-                    />
-                  </Box>
+                  {
+                      taskData?.subComments?.length > 4 && (
+                        <Box
+                        fontSize={12}
+                        color={"#007867"}
+                        width={24}
+                        height={24}
+                        fontWeight={600}
+                        ml={"-8px"}
+                        position={"relative"}
+                        boxSizing={'content-box'}
+                        border={"2px solid #FFFFFF"}
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                        borderRadius={"50%"}
+                        overflow={"hidden"}
+                      >{taskData?.subComments?.length - 3}</Box>
+                      )
+                  }
+                  {
+                    taskData?.subComments?.length > 0 && taskData?.subComments?.slice(0,taskData?.subComments?.length > 4 ? 3 : 4)?.map((subComment,index)=> {
+                      return <Box
+                      key={index}
+                      width={24}
+                      height={24}
+                      fontSize={16}
+                      fontWeight={600}
+                      border={"2px solid #FFFFFF"}
+                      boxSizing={'content-box'}
+                      ml={"-8px"}
+                      position={"relative"}
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                      borderRadius={"50%"}
+                      overflow={"hidden"}
+                    >
+                      <img
+                        src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-1.webp"
+                        alt="avatar"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          color: "transparent",
+                          textIndent: "100000px",
+                          maxWidth: "100%",
+                        }}
+                      />
+                    </Box>
+                    }) 
+                  }
                 </Box>
               </Box>
             </Box>

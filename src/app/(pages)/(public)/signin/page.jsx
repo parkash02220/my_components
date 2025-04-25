@@ -1,31 +1,59 @@
 "use client";
 
-import { Box, Typography } from "@mui/material";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
-import { setAuthTokenToCookies } from "@/utils";
-import { ApiCall } from "@/utils/ApiCall";
 import { useState } from "react";
 import useLogin from "@/hooks/common/useLogin";
+import { useFormik } from "formik";
+import * as Yup from 'yup';
+import Link from "next/link";
 export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-  const { loadingLogin, loginUser } = useLogin();
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!password || !email) {
-      setErrorMsg("all fields are necessary");
-      return;
-    }
-    loginUser(email, password, setErrorMsg);
-  };
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [errorMsg, setErrorMsg] = useState("");
+  // const { loadingLogin, loginUser } = useLogin();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!password || !email) {
+  //     setErrorMsg("all fields are necessary");
+  //     return;
+  //   }
+  //   loginUser(email, password, setErrorMsg);
+  // };
+  const {loadingLogin,loginUser,errorMsg,errorLogin} = useLogin();
+  const [showPasswrod,setShowPassword] = useState(false);
+const formik = useFormik({
+  initialValues: {
+    email: "",
+    password: "",
+  },
+  validationSchema: Yup.object({
+    email: Yup.string()
+      .email("invalid email address")
+      .required("This field is required"),
+    password: Yup.string()
+      .min(6, "Password must be greater than 6 chars")
+      .max(20, "Password must be less than 21 char")
+      .required(),
+  }),
+  onSubmit:async (values) => {
+          handleUserSignIn(values);
+  },
+});
+const handleShowPasswrod= () => {
+  setShowPassword(true);
+}
+const handleHidePasswrod= () => {
+  setShowPassword(false);
+}
+const handleUserSignIn = async (userData) => {
+       await loginUser(userData);
+}
 
   return (
     <>
-      <Box
+      {/* <Box
         className="loginContainer"
         width={"100%"}
         minHeight={"100vh"}
@@ -79,13 +107,247 @@ export default function SignIn() {
               </MyButton>
             </Box>
           </form>
-          <Link href={"/register"}>
+          <Link href={"/signup"}>
             <Typography width={"100%"} textAlign={"end"}>
               {" "}
               Don't have an account?{" "}
               <span style={{ color: "blue" }}>Register here</span>.
             </Typography>
           </Link>
+        </Box>
+      </Box> */}
+       <Box className="signInContainer" display={"flex"} minHeight={"100vh"}>
+        <Box
+          className="signInContainer__leftBox"
+          display={"flex"}
+          flexDirection={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          gap={8}
+          sx={{
+            backgroundImage: `linear-gradient(0deg,rgba(255,255,255,0.92),rgba(255,255,255,0.92)),url(/backgroundBlur.webp)`,
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center center",
+            padding: "72px 24px 24px 24px",
+            width: "100%",
+            maxWidth: "480px",
+            position: "relative",
+          }}
+        >
+          <Box className="leftBox__headingBox">
+            <Typography
+              variant="h3"
+              fontSize={30}
+              color="#1C252E"
+              fontWeight={700}
+              textAlign={"center"}
+            >
+             Hi, Welcome back
+            </Typography>
+            <Typography margin={0} mt={2} color="#637381" textAlign={"center"}>
+              More effectively with optimized workflows.
+            </Typography>
+          </Box>
+          <img
+            src="/signUpLeftImage.webp"
+            alt="signin image"
+            style={{ objectFit: "cover", aspectRatio: "4/3" }}
+          />
+          <Box display={"flex"} gap={2} alignItems={"center"}>
+            <Box color={"#00A76F"}>
+              <img
+                src="/signUpFooterIcon1.svg"
+                alt="icons"
+                style={{ width: "32px", height: "32px" }}
+              />
+            </Box>
+
+            <Box color={"#00A76F"}>
+              <img
+                src="/signUpFooterIconFirebase2.svg"
+                alt="icons"
+                style={{ width: "32px", height: "32px" }}
+              />
+            </Box>
+
+            <Box color={"#00A76F"}>
+              <img
+                src="/signUpFooterIcon3.svg"
+                alt="icons"
+                style={{ width: "32px", height: "32px" }}
+              />
+            </Box>
+
+            <Box color={"#00A76F"}>
+              <img
+                src="/signUpFooterIcon4.svg"
+                alt="icons"
+                style={{ width: "32px", height: "32px" }}
+              />
+            </Box>
+
+            <Box color={"#00A76F"}>
+              <img
+                src="/signUpFooterIcon5.svg"
+                alt="icons"
+                style={{ width: "32px", height: "32px" }}
+              />
+            </Box>
+          </Box>
+        </Box>
+        <Box
+          className="signInContainer__rightBox"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "80px 16px 80px 16px",
+            flex: "1 1 auto",
+            flexDirection: "column",
+          }}
+        >
+          <Box
+            width={"100%"}
+            display={"flex"}
+            flexDirection={"column"}
+            maxWidth={420}
+          >
+            <Box
+              mb={5}
+              display={"flex"}
+              flexDirection={"column"}
+              whiteSpace={"pre-line"}
+              gap={"12px"}
+              textAlign={"left"}
+            >
+              <Typography
+                variant="h5"
+                fontSize={19}
+                fontWeight={700}
+                color="#1C252E"
+              >
+                Sign in to your account
+              </Typography>
+              <Box display={"flex"} gap={1}>
+                <Typography fontSize={14} color="#637381">
+                Don’t have an account?
+                </Typography>
+                <Link href="/signup">
+                <Typography fontSize={14} color="#00A76F" fontWeight={600} sx={{
+                  cursor:'pointer',
+                  '&:hover':{
+                    textDecoration:'underline',
+                  }
+                }}>
+                  Get started
+                </Typography>
+                </Link>
+              </Box>
+            </Box>
+            <form onSubmit={formik.handleSubmit}>
+              <Box display={"flex"} flexDirection={"column"}>
+                <Grid container spacing={3}>
+                  <Grid size={12}>
+                    <MyTextField
+                      name="email"
+                      value={formik?.values?.email}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched?.email && Boolean(formik.errors?.email)
+                      }
+                      helperText={formik.errors?.email}
+                      label="Email address"
+                      minWidth="50px"
+                      fullWidth={true}
+                      borderRadius="8px"
+                      borderColor="rgba(145,158,171,0.2)"
+                      hoverBorderColor={"#1C252E"}
+                      acitveBorder={"2px solid #1C252E"}
+                      shrink={true}
+                      labelColor="#637381"
+                      activeLabelColor={"#1C252E"}
+                      labelFontWeight={600}
+                    />
+                  </Grid>
+                  <Grid size={12}>
+                    <Box display={'flex'} justifyContent={'flex-end'} mb={'12px'}>
+                      <Typography color="#1C252E" fontSize={14} onClick={()=> alert("forgot password button clicked")} sx={{
+                        cursor:'pointer',
+                        '&:hover':{
+                          textDecoration:'underline',
+                        }
+                      }}>Forgot password?</Typography>
+                    </Box>
+                    <MyTextField
+                    type={showPasswrod ? "text" : "password"}
+                      name="password"
+                      value={formik?.values?.password}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched?.password &&
+                        Boolean(formik.errors?.password)
+                      }
+                      helperText={formik.errors?.password}
+                      label="Password"
+                      minWidth="50px"
+                      fullWidth={true}
+                      borderRadius="8px"
+                      borderColor="rgba(145,158,171,0.2)"
+                      hoverBorderColor={"#1C252E"}
+                      acitveBorder={"2px solid #1C252E"}
+                      shrink={true}
+                      labelColor="#637381"
+                      activeLabelColor={"#1C252E"}
+                      labelFontWeight={600}
+                      placeholder="Password 6+"
+                      customEndAdornment={
+                        showPasswrod ? (
+                            <IconButton onClick={handleHidePasswrod}>
+                            <img
+                              src="/passwordShow.svg"
+                              alt="hide pass"
+                              style={{ width: "20px", height: "20px" }}
+                            ></img>
+                          </IconButton>
+                        ) : (
+                            <IconButton onClick={handleShowPasswrod}>
+                            <img
+                              src="/passwordHide.svg"
+                              alt="hide pass"
+                              style={{ width: "20px", height: "20px" }}
+                            ></img>
+                          </IconButton>
+                        )
+                      }
+                    />
+                  </Grid>
+                  <Grid size={12}>
+                    <MyButton
+                      minWidth="50px"
+                      fullWidth={true}
+                      backgroundColor="#1C252E"
+                      type="submit"
+                      loading={loadingLogin}
+                      loadingText={"Signing in..."}
+                      padding={'8px 16px'}
+                      borderRadius="8px"
+                      fontSize={15}
+                      fontWeight={700}
+                      sx={{
+                        height:"48px",
+                      }}
+                    >
+                      Sign in
+                    </MyButton>
+                    {
+                        errorLogin && <Typography color="red" mt={1} ml={1} fontSize={12}>{errorMsg}</Typography>
+                    }
+                  </Grid>
+                </Grid>
+              </Box>
+            </form>
+          </Box>
         </Box>
       </Box>
     </>
