@@ -6,10 +6,10 @@ import { Box } from "@mui/material";
 import useGetTask from "@/hooks/projects/task/useGetTask";
 import { useAppContext } from "@/context/AppContext";
 
-function KanbanRightDrawer({ open, handleDrawer,taskId }) {
+function KanbanRightDrawer({ open, handleDrawer, taskId }) {
   const { loadingGetTask, getTaskFromBackend } = useGetTask();
-  const {state} = useAppContext();
-  const {activeTask} = state;
+  const { state } = useAppContext();
+  const { activeTask } = state;
   const tabValues = [
     {
       key: 1,
@@ -37,20 +37,25 @@ function KanbanRightDrawer({ open, handleDrawer,taskId }) {
     if (open && taskId) {
       getTaskFromBackend(taskId);
     }
-  }, [open,taskId]);
+  }, [open, taskId]);
 
   const handleRightDrawerClose = () => {
     handleDrawer();
     setTimeout(() => {
       setCurrentTab("overview");
     }, 0);
-  }
+  };
   return (
     <>
       <Box>
         <RightDrawer
           open={open}
-          header={<Header activeTask={activeTask} handleDrawer={handleRightDrawerClose}/>}
+          header={
+            <Header
+              activeTask={activeTask}
+              handleDrawer={handleRightDrawerClose}
+            />
+          }
           handleDrawer={handleRightDrawerClose}
           children={
             <Content

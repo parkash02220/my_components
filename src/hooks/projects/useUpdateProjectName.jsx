@@ -20,7 +20,7 @@ const useUpdateProjectName = (
   const [isNameAvailable, setIsNameAvailable] = useState(true);
   const [hasMount, setHasMount] = useState(false);
   const abortControllerRef = useRef(null);
-  const checkAvailability = async () => {
+  const checkAvailability = async (projectName) => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
@@ -33,16 +33,15 @@ const useUpdateProjectName = (
     const res = await ApiCall({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/check-boardName-duplicates`,
       method: "POST",
-      body: { name: debouncedProjectName },
+      body: { name: projectName },
       signal: controller.signal,
     });
 
     if (res.error) {
-      if (res.error.message.includes("abort")) return;
       setErrorUpdateProjectName(true);
       setIsNameAvailable(false);
       setLoadingUpdateProjectName(false);
-      setHelperTextUpdateProjectName(res?.error?.message)
+      setHelperTextUpdateProjectName(res?.error?.message);
       return;
     }
     setErrorUpdateProjectName(false);
@@ -83,9 +82,9 @@ const useUpdateProjectName = (
 
   const handleProjectInputKeyDown = (e, projectId) => {
     if (e.key === "Enter") {
-        if(isNameAvailable){
-            handleUpdateProjectName(projectId);
-        }
+      if (isNameAvailable) {
+        handleUpdateProjectName(projectId);
+      }
     } else if (e.key === "Esc") {
       cancelEditing();
     }
@@ -120,7 +119,10 @@ const useUpdateProjectName = (
     setOriginalProjectName(trimmedProjectName);
     setProjectName(trimmedProjectName);
     setShowProjectNameTextfield(false);
-    dispatch({ type: "UPDATE_PROJECT_NAME", payload: {newName:trimmedProjectName,projectId} });
+    dispatch({
+      type: "UPDATE_PROJECT_NAME",
+      payload: { newName: trimmedProjectName, projectId },
+    });
   };
 
   useEffect(() => {

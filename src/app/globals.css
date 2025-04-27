@@ -1,11 +1,22 @@
 @import "tailwindcss";
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-.componentContainer{
+.componentContainer {
   height: calc(100vh - 50px);
+}
+
+@keyframes shrinkAndFade {
+  0% {
+    width: 100%;
+    opacity: 1;
+  }
+  100% {
+    width: 0%;
+    opacity: 0.2;
+  }
 }

@@ -2,13 +2,13 @@ import useEditTask from "@/hooks/projects/task/useEditTask";
 import useUploadAttachments from "@/hooks/projects/task/useUploadAttachments";
 import { useFormik } from "formik";
 import { useEffect, useRef, useState } from "react";
-import AssignDialog from "./AssignDialog";
+import AssignDialog from "./AssignDialog.jsx";
 import { Box, IconButton, Typography } from "@mui/material";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import { useAppContext } from "@/context/AppContext";
 import useDeleteAttachments from "@/hooks/projects/task/useDeleteAttachments";
-import DueDateDialog from "./DueDateDialog";
+import DueDateDialog from "./DueDateDialog.jsx";
 const OverviewTab = () => {
   const { state } = useAppContext();
   const { activeTask } = state || {};
@@ -91,7 +91,6 @@ const OverviewTab = () => {
       inputRef.current.focus();
     }
   }, [showEditTextfield]);
-
 
   return (
     <>
@@ -201,8 +200,9 @@ const OverviewTab = () => {
               fontSize="13px"
               onClick={handleDueDateDialogOpen}
               sx={{
-                cursor:'pointer', 
-                "&:hover": { background: "rgba(145,158,171,0.08)" } }}
+                cursor: "pointer",
+                "&:hover": { background: "rgba(145,158,171,0.08)" },
+              }}
             >
               23-24 Apr 2025
             </Typography>

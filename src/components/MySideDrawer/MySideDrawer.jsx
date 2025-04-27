@@ -1,8 +1,15 @@
 "use client";
-import { v4 as uuidv4 } from "uuid";
+import {
+  AppBar,
+  Drawer,
+  DrawerHeader,
+  drawerWidth,
+  miniDrawerWidth,
+  drawerTransitionDuration,
+  drawerEasing,
+} from "@/components/MySideDrawer/MySideDrawerStyleComponents.jsx";
+
 import React, { useEffect, useState } from "react";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { Collapse } from "@mui/material";
 import CreateProjectDialog from "@/components/MySideDrawer/CreateProjectDialog.jsx";
 import {
   Drawer as MuiDrawer,
@@ -11,117 +18,25 @@ import {
   Toolbar,
   Typography,
   IconButton,
-  Divider,
   List,
   ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Tooltip,
   Box,
 } from "@mui/material";
-import {
-  Menu as MenuIcon,
-  ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
-  Dashboard as DashboardIcon,
-  ShoppingCart as ShoppingCartIcon,
-  BarChart as BarChartIcon,
-  Description as DescriptionIcon,
-  Layers as LayersIcon,
-} from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { usePathname, useRouter } from "next/navigation";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import { ApiCall } from "@/utils/ApiCall";
 import useAllProjects from "@/hooks/projects/useAllProjects";
 import useCreateProject from "@/hooks/projects/useCreateProject";
 import { useAppContext } from "@/context/AppContext";
-import MyButton from "../MyButton/MyButton";
 import useLogout from "@/hooks/common/useLogout";
 import { SingleNavItem } from "./SingleNavItem";
 import { CollapsibleNavItem } from "./CollapsibleNavItem";
-import Loader from "../Loader/Loader";
 import SearchNavItem from "./SearchNavItem";
 import ConfirmationPopup from "../ConfirmationPopup";
-const drawerWidth = 300;
-const miniDrawerWidth = 88;
-// const drawerTransitionDuration = 300;
-const drawerTransitionDuration = 120;
-const drawerEasing = "cubic-bezier(0.4, 0, 0.6, 1)";
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: `width ${drawerTransitionDuration}ms ${drawerEasing}`,
-  overflowX: "hidden",
-});
 
-const closedMixin = (theme) => ({
-  width: miniDrawerWidth,
-  transition: `width ${drawerTransitionDuration}ms ${drawerEasing}`,
-  overflowX: "hidden",
-});
+export default function MySideDrawer({ open, setOpen }) {
+  const [logoutPopupOpen, setLogoutPopupOpen] = useState(false);
 
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-}));
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: open ? drawerWidth : miniDrawerWidth,
-  left: 0,
-  right: "auto",
-  position: "fixed",
-  transition: `width ${drawerTransitionDuration}ms ${drawerEasing}`,
-  overflowX: "hidden",
-  boxSizing: "border-box",
-  zIndex: 800,
-  backgroundColor: "#FFFFFF",
-  boxShadow: "none",
-  borderRight: "1px solid rgba(145,158,171,0.12)",
-}));
-
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  zIndex: 799,
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": {
-      ...openedMixin(theme),
-      overflowY: "auto",
-      "&::-webkit-scrollbar": {
-        display: "none",
-      },
-      scrollbarWidth: "none",
-      msOverflowStyle: "none",
-    },
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": {
-      ...closedMixin(theme),
-      overflowY: "auto",
-      "&::-webkit-scrollbar": {
-        display: "none",
-      },
-      scrollbarWidth: "none",
-      msOverflowStyle: "none",
-    },
-  }),
-}));
-
-export default function MySideDrawer({ children }) {
-  const [logoutPopupOpen,setLogoutPopupOpen] = useState(false);
-  const [open, setOpen] = useState(true);
   const [expandedItems, setExpandedItems] = useState({});
   const [selectedDrawerItem, setSelectedDrawerItem] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -197,7 +112,7 @@ export default function MySideDrawer({ children }) {
     return NAVIGATION.map((item, index) => {
       if (item.type === "header") {
         return open ? (
-          <ListItem key={index} sx={{pl:1}}>
+          <ListItem key={index} sx={{ pl: 1 }}>
             <Typography
               variant="subtitle2"
               sx={{
@@ -280,30 +195,28 @@ export default function MySideDrawer({ children }) {
     fetchAllProjects();
   };
 
-
   const handleLogoutPopupOpen = () => {
     setLogoutPopupOpen(true);
-  }
+  };
 
   const handleLogoutPopupClose = () => {
     setLogoutPopupOpen(false);
-  }
+  };
   const handleUserLogout = async () => {
     await logoutUser();
     handleLogoutPopupClose();
-  }
+  };
   if (!hasMounted) return null;
 
   return (
     <>
-    <ConfirmationPopup 
-    title={'Logout'}
-    handleClose={handleLogoutPopupClose}
-    open={logoutPopupOpen}
-    submitAction={handleUserLogout}
-    loading={loadingLogout}
-
-    />
+      <ConfirmationPopup
+        title={"Logout"}
+        handleClose={handleLogoutPopupClose}
+        open={logoutPopupOpen}
+        submitAction={handleUserLogout}
+        loading={loadingLogout}
+      />
       <Box className="createProjectDialog">
         <CreateProjectDialog
           open={dialogOpen}
@@ -362,11 +275,6 @@ export default function MySideDrawer({ children }) {
                 style={{ height: "100%", width: "100%" }}
               />
             </IconButton>
-            {/* {open && (
-    <Typography variant="h6" noWrap>
-      Combined Dashboard
-    </Typography>
-  )} */}
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -375,32 +283,6 @@ export default function MySideDrawer({ children }) {
             {renderNavItems()}
           </List>
         </Drawer>
-        <Box
-          component="main"
-          sx={{ flexGrow: 1, p: 3, pb: 0 }}
-          width={"calc(100% - 300px)"}
-          minHeight={"100vh"}
-        >
-          {/* <DrawerHeader /> */}
-          <Box
-            width={"100%"}
-            display={"flex"}
-            justifyContent={"end"}
-            height={50}
-            alignItems={"flex-start"}
-            className="logout_buttonBox"
-          >
-            <MyButton onClick={handleLogoutPopupOpen} backgroundColor="#1C252E">
-              Logout
-            </MyButton>
-          </Box>
-          {children || (
-            <Typography>
-              This is the main content area. You can replace this with routes or
-              other layout content.
-            </Typography>
-          )}
-        </Box>
       </Box>
     </>
   );

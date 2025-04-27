@@ -5,8 +5,9 @@ import useToggleAssignTask from "@/hooks/projects/task/useToggleAssignTask";
 import useGetAllUsers from "@/hooks/projects/user/useGetAllUsers";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
-const AssignDialog = ({ open, handleClose, assignedUsers,taskId }) => {
-  const {loadingAssignTaskIds,errorAssignTask,toggleAssignTask} = useToggleAssignTask();
+const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
+  const { loadingAssignTaskIds, errorAssignTask, toggleAssignTask } =
+    useToggleAssignTask();
   const theme = useTheme();
   const {
     allUsers,
@@ -17,7 +18,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers,taskId }) => {
     handleSearchValueChange,
     setSearchValue,
   } = useGetAllUsers();
-   const [hasMounted,setHasMounted] = useState(true);
+  const [hasMounted, setHasMounted] = useState(true);
   const [assignedUserIds, setAssignedUserIds] = useState([]);
   useEffect(() => {
     if (open && assignedUsers) {
@@ -25,21 +26,26 @@ const AssignDialog = ({ open, handleClose, assignedUsers,taskId }) => {
     }
   }, [open, assignedUsers]);
 
-  const handleAssignToggle = async (userId,isAssigned) => {
-    let assignedUsers = [];
-    if(isAssigned){
-      assignedUsers = assignedUserIds?.filter((id)=> id !== userId);
-    }else{
-      assignedUsers = [...assignedUserIds,userId];
+  const handleAssignToggle = async (userId, isAssigned) => {
+    const previousAssignedUserIds = [...assignedUserIds];
+    let updatedAssignedUsers;
+    if (isAssigned) {
+      updatedAssignedUsers = assignedUserIds.filter((id) => id !== userId);
+    } else {
+      updatedAssignedUsers = [...assignedUserIds, userId];
     }
-    setAssignedUserIds(assignedUsers);
-    await toggleAssignTask(taskId,assignedUsers,userId);
-  }
+    setAssignedUserIds(updatedAssignedUsers);
+
+    const result = await toggleAssignTask(taskId, updatedAssignedUsers, userId);
+
+    if (result?.error) {
+      setAssignedUserIds(previousAssignedUserIds);
+    }
+  };
 
   const handleSearchClear = () => {
     setSearchValue("");
-  }
-
+  };
 
   return (
     <>
@@ -147,8 +153,8 @@ const AssignDialog = ({ open, handleClose, assignedUsers,taskId }) => {
                         </Box>
                         <Box className="cotactBox__actionBox">
                           <MyButton
-                          backgroundColor="inherit"
-                          loading={loadingAssignTaskIds?.includes(user?.id)}
+                            backgroundColor="inherit"
+                            loading={loadingAssignTaskIds?.includes(user?.id)}
                             onClick={() =>
                               handleAssignToggle(user?.id, isAssigned)
                             }
