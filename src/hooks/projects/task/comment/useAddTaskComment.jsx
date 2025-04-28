@@ -26,7 +26,6 @@ const useAddTaskComment = () => {
         }
 
         const formattedIdResponse = convertIdFields(res?.data?.comments);
-        console.log("::formated id repsonse",formattedIdResponse)
         dispatch({type:"ADD_COMMENTS_TO_TASK",payload:{subComments : formattedIdResponse, taskId,columnId}})
         return formattedIdResponse || [];
     }

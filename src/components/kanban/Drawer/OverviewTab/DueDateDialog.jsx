@@ -5,15 +5,15 @@ import { Box, Typography, useTheme } from "@mui/material";
 import MyDialog from "@/components/MyDialog/MyDialog";
 import { useState } from "react";
 import MyButton from "@/components/MyButton/MyButton";
-const DueDateDialog = ({ open, handleClose }) => {
+import dayjs from "dayjs";
+const DueDateDialog = ({ open, handleClose,updateDueDate,taskEndDate,loadingEditTask }) => {
   const theme = useTheme();
   const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [endDate, setEndDate] = useState(taskEndDate ? dayjs(taskEndDate) : null);
   const [dateError, setDateError] = useState("");
   const formattedStartDate = startDate ? startDate.format("DD-MMM") : "";
   const formattedEndDate = endDate ? endDate.format("DD-MMM YYYY") : "";
-  console.log("::date",formattedStartDate,formattedEndDate)
-
+  
 
   const handleStartDateChange = (newValue) => {
     setStartDate(newValue);
@@ -30,6 +30,12 @@ const DueDateDialog = ({ open, handleClose }) => {
     } else {
       setDateError("");
     }
+  }
+  const handleDueDateApplyButton = async () => {
+    const startD = startDate ? startDate.format("YYYY-MM-DD") : ""
+     const endD = endDate ? endDate.format("YYYY-MM-DD") : ""
+   await  updateDueDate(endD);
+     handleClose();
   }
   return (
     <>
@@ -155,6 +161,7 @@ const DueDateDialog = ({ open, handleClose }) => {
                 Cancel
               </MyButton>
               <MyButton
+              onClick={handleDueDateApplyButton}
                 fontWeight={700}
                 minWidth="'64px"
                 fontSize={14}
@@ -164,6 +171,8 @@ const DueDateDialog = ({ open, handleClose }) => {
                 padding={"5px 12px"}
                 border={"1px solid rgba(145,158,171,0.32)"}
                 disabled={!!dateError || !startDate || !endDate}
+                loading={loadingEditTask}
+                loadingText={'Applying...'}
               >
                 Apply
               </MyButton>

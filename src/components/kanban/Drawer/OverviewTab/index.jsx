@@ -39,6 +39,7 @@ const OverviewTab = () => {
       description: activeTask?.description || "",
       priority: activeTask?.priority || "medium",
       assigned_to: activeTask?.assigned_to || [],
+      due_date:activeTask?.due_date?.slice(0,10) || "",
     },
     onSubmit: async (values) => {
       updateTaskInBackend(values, activeTask?.id);
@@ -92,6 +93,11 @@ const OverviewTab = () => {
     }
   }, [showEditTextfield]);
 
+  const updateDueDate = async (date) => {
+    if(!date) return;
+      await updateTaskInBackend({due_date:date},activeTask?.id)
+  }
+
   return (
     <>
       <AssignDialog
@@ -99,10 +105,14 @@ const OverviewTab = () => {
         handleClose={handleAssignDialogClose}
         assignedUsers={formik.values.assigned_to}
         taskId={activeTask?.id}
+        taskEndDate={formik?.values?.due_date}
       />
       <DueDateDialog
         handleClose={handleDueDateDialogClose}
         open={dueDateDialogOpen}
+        updateDueDate={updateDueDate}
+        taskEndDate={formik?.values?.due_date}
+        loadingEditTask={loadingEditTask}
       />
       <Box padding={"24px 20px"}>
         <Box display={"flex"} flexDirection={"column"} gap={3}>
@@ -138,14 +148,6 @@ const OverviewTab = () => {
           </SectionRow>
 
           <SectionRow label="Assignee" className="editTask__assigneeBox">
-            {/* {[
-                "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-17.webp",
-                "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-2.webp",
-                "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-3.webp",
-                "https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-4.webp",
-              ].map((a, i) => (
-                <AvatarBox key={i} src={`${a}`} />
-              ))} */}
             {activeTask?.assigned_to?.map((a, i) => (
               <AvatarBox
                 key={i}
@@ -204,7 +206,7 @@ const OverviewTab = () => {
                 "&:hover": { background: "rgba(145,158,171,0.08)" },
               }}
             >
-              23-24 Apr 2025
+             {formik?.values?.due_date || 'select due date'}
             </Typography>
           </SectionRow>
           <SectionRow label="Priority" className="editTask__priorityBox">
@@ -319,10 +321,10 @@ const OverviewTab = () => {
                     hidden
                     onChange={(e) => {
                       const files = Array.from(e.target.files);
-                      setAttachments((attachments) => [
-                        ...attachments,
-                        ...files,
-                      ]);
+                      // setAttachments((attachments) => [
+                      //   ...attachments,
+                      //   ...files,
+                      // ]);
                       uploadImage(
                         files,
                         activeTask?.id,

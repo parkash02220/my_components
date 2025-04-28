@@ -49,6 +49,8 @@ const MyTextField = ({
   border,
   activeLabelColor,
   labelFontWeight,
+  maxHeight,
+  boxMargin,
   ...props
 }) => {
   const shrinkTypes = [
@@ -62,7 +64,7 @@ const MyTextField = ({
   ];
   const shouldShrink = shrinkTypes.includes(type) ? undefined : true;
   return (
-    <Box sx={{ width: fullWidth ? "100%" : width || "fit-content" }}>
+    <Box sx={{ width: fullWidth ? "100%" : width || "fit-content" }} m={boxMargin || 0}>
       {/* {label && (
         <Typography
           variant="body2"
@@ -100,6 +102,7 @@ const MyTextField = ({
             borderRadius,
             padding,
             fontSize: inputFontSize,
+            maxHeight:maxHeight,
           },
           startAdornment: customStartAdornment,
           endAdornment: loading ? (

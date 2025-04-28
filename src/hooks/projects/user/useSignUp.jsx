@@ -1,6 +1,4 @@
 
-
-import { useAppContext } from "@/context/AppContext";
 import { setAuthTokenToCookies } from "@/utils";
 import { useRouter } from "next/navigation";
 
@@ -9,7 +7,6 @@ const { useState } = require("react")
 
 const useSignUp = () => {
     const router = useRouter();
-    const {dispatch} = useAppContext();
     const [loadingSignUp,setLoadingSignUp] = useState(false);
     const [errorSignUp,setErrorSignUp] = useState(false);
     const [responseMsg,setResponseMsg] = useState('');
@@ -32,9 +29,7 @@ const useSignUp = () => {
             return;
         }
           
-        const { token,user } = res?.data;
-
-       dispatch({type:"SET_ACTIVE_USER",payload:user})
+        const { token } = res?.data;
        if (token) {
          setAuthTokenToCookies(token);
          router.push("/home");

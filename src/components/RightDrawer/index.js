@@ -1,7 +1,7 @@
 import React from 'react';
 import { Drawer, Paper, Box } from '@mui/material';
 
-const RightDrawer = ({ open, handleDrawer, header, children, footer, className }) => {
+const RightDrawer = ({ open, handleDrawer, header, children, footer, className,width }) => {
 
   return (
     <Drawer
@@ -21,7 +21,7 @@ const RightDrawer = ({ open, handleDrawer, header, children, footer, className }
       <Paper
         className="right_drawer_paper"
         sx={{
-          width: 480,
+          width: width || 480,
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
@@ -37,7 +37,7 @@ const RightDrawer = ({ open, handleDrawer, header, children, footer, className }
         </Box>
 
         {footer && (
-          <Box sx={{ p: 2, borderTop: '1px solid #eee' }}>
+          <Box sx={{ borderTop: '1px solid #eee' }}>
             {footer}
           </Box>
         )}

@@ -64,10 +64,6 @@ export const Content = ({
       return <OverviewTab activeTask={activeTask} />;
     }
   };
-  console.log("::active task in conetnt", activeTask);
-  useEffect(() => {
-    console.log("::this is first rendor");
-  }, []);
   return (
     <>
       {!loadingGetTask ? (

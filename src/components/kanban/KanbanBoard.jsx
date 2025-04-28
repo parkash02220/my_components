@@ -334,7 +334,7 @@ export default function KanbanBoard({
             gap: "1rem",
             padding: "1rem",
             overflowX: "auto",
-            height: "calc(100% - 35px)",
+            height: "100%",
           }}
         >
           <SortableContext items={columnsId}>

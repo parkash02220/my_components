@@ -1,200 +1,500 @@
 "use client";
 
-import { AppBar, Box, IconButton, Typography } from "@mui/material";
+import { AppBar, Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import ProfileDrawer from "./ProfileDrawer";
+import { useEffect, useRef, useState } from "react";
+import useUpdateProjectName from "@/hooks/projects/useUpdateProjectName";
+import { useAppContext } from "@/context/AppContext";
+import MyTextField from "../MyTextfield/MyTextfield";
+import ConfirmationPopup from "../ConfirmationPopup";
+import useDeleteProject from "@/hooks/projects/useDeleteProject";
+import { useRouter } from "next/navigation";
+import useGetActiveUser from "@/hooks/projects/user/useGetActiveUser";
 
-export default function Header() {
+export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
+  const { state } = useAppContext();
+  const { activeProject } = state;
+  const inputRef = useRef();
+  const [showProjectNameTextfield, setShowProjectNameTextfield] =
+    useState(false);
+    const [deletePopupOpen, setDeletePopupOpen] = useState(false);
+  const {
+    loadingUpdateProjectName,
+    errorUpdateProjectName,
+    helperTextUpdateProjectName,
+    startEditing,
+    cancelEditing,
+    handleProjectInputChange,
+    handleUpdateProjectName,
+    handleProjectInputKeyDown,
+    projectName,
+  } = useUpdateProjectName(activeProject?.name, setShowProjectNameTextfield);
+
+  const {loadingActiveUser,errorActiveUser,fetchActiveUser} = useGetActiveUser();
+
+  const { loadingDeleteProject, errorDeleteProject, deleteProject } =
+  useDeleteProject();
+  const router = useRouter();
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(menuAnchorEl);
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
   const navigationItems = [
     { image: { path: "/notificationIcon.svg", alt: "notification" } },
     { image: { path: "/userIcon.svg", alt: "user" } },
-    { image: { path: "/settingsIcon.svg", alt: "settings" } },
+    {
+      image: {
+        path: "/settingsIcon.svg",
+        alt: "settings",
+        animation: "rotateClockwise 5s linear infinite",
+      },
+    },
+  ];
+
+  const OpenProfileDrawer = () => {
+    setProfileDrawerOpen(true);
+  };
+  const CloseProfileDrawer = () => {
+    setProfileDrawerOpen(false);
+  };
+
+  const handleProjectNameStartEdidting = () => {
+    handleMenuClose();
+    startEditing(activeProject?.name);
+    setShowProjectNameTextfield(true);
+  };
+  const handleDeletePopupOpen = () => {
+    handleMenuClose();
+    setDeletePopupOpen(true);
+  };
+  const handleDeletePopupClose = () => {
+    setDeletePopupOpen(false);
+  };
+  const handleProjectNameBlur = () => {
+    cancelEditing();
+    setShowProjectNameTextfield(false);
+  };
+  const handleDeleteProject = async () => {
+    await deleteProject(activeProject?.id);
+    setDeletePopupOpen(false);
+    router.push("/");
+  };
+  useEffect(() => {
+    if (showProjectNameTextfield && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showProjectNameTextfield]);
+
+  const menuItems = [
+    {
+      label: "Rename",
+      icon: "/rename.svg",
+      onClick: handleProjectNameStartEdidting,
+    },
+    {
+      label: "Delete",
+      icon: "/delete.svg",
+      onClick: handleDeletePopupOpen,
+      color: "#FF5630",
+    },
   ];
   return (
-    <AppBar
-      position="static"
-      elevation={0}
-      color="transparent"
-      sx={{ borderBottom: "1px solid #eee" }}
-    >
-      <Box
-        sx={{
-          pl: 5,
-          pr: 5,
-          height: "64px",
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
+    <>
+     <ConfirmationPopup
+        title={"Delete Project"}
+        handleClose={handleDeletePopupClose}
+        open={deletePopupOpen}
+        message={activeProject?.name}
+        type={"delete"}
+        submitAction={handleDeleteProject}
+        loading={loadingDeleteProject}
+      />
+      <ProfileDrawer
+        open={profileDrawerOpen}
+        handleDrawer={CloseProfileDrawer}
+      />
+      <AppBar
+        position="sticky"
+        elevation={0}
+        color="transparent"
+        sx={{ borderBottom: "1px solid #eee", zIndex: 1101 }}
       >
         <Box
           sx={{
-            display: "inline-flex",
-            alignItems: "center",
+            pl: 5,
+            pr: 5,
+            height: "75px",
+            width: "100%",
+            display: "flex",
             justifyContent: "center",
-            position: "relative",
-            backgroundColor: "transparent",
-            m: 0,
-            p: 0,
-            cursor: "pointer",
-            gap: 1,
+            alignItems: "center",
           }}
         >
-          <Typography fontWeight={600} fontSize={14} color="#1C252E">
-            Team 1
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flex: "1 1 auto",
-            justifyContent: "center",
-          }}
-        ></Box>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "6px",
-          }}
-        >
+          {
+            activeProject?.name ? (
+              <Box display={"flex"} gap={1} alignItems={"center"}>
+              <Box>
+                {showProjectNameTextfield ? (
+                  <MyTextField
+                    inputRef={inputRef}
+                    label=""
+                    name="projectName"
+                    value={projectName || ""}
+                    onChange={handleProjectInputChange}
+                    onBlur={handleProjectNameBlur}
+                    onKeyDown={(e) =>
+                      handleProjectInputKeyDown(e, activeProject?.id)
+                    }
+                    minWidth="300px"
+                    maxHeight={'44px'}
+                    loading={loadingUpdateProjectName}
+                    error={errorUpdateProjectName}
+                    helperText={helperTextUpdateProjectName}
+                    acitveBorder={"2px solid #1C252E"}
+                    boxMargin={'8px 0px 0px 0px'}
+                  />
+                ) : (
+                  <Typography
+                    variant="h4"
+                    fontSize={"1.5rem"}
+                    fontWeight={700}
+                    color="1C252E"
+                    paddingLeft={2}
+                    onClick={handleProjectNameStartEdidting}
+                  >
+                    {activeProject?.name}
+                  </Typography>
+                )}
+              </Box>
+              <Box display={"flex"} gap={"2px"} alignItems={"center"}>
+              <IconButton
+                  onClick={handleMenuOpen}
+                  sx={{
+                    padding: "0px",
+                    width: "20px",
+                    height: "20px",
+                    "&:hover": {
+                      background: "transparent",
+                    },
+                  }}
+                >
+                  <img
+                    src="/columnMenuIcon.svg"
+                    alt="column menu icon"
+                    width={"100%"}
+                    height={"100%"}
+                  />
+                </IconButton>
+                </Box>
+              </Box>
+            ) : null
+          }
+          <Menu
+        anchorEl={menuAnchorEl}
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        PaperProps={{
+          sx: {
+            borderRadius: "10px",
+            background: "#FFFFFFE6",
+            boxShadow:
+              "0px 5px 5px -3px rgba(145 158 171 / 0.2),0px 8px 10px 1px rgba(145 158 171 / 0.14),0px 3px 14px 2px rgba(145 158 171 / 0.12)",
+            color: "#1C252E",
+            backgroundColor: "rgba(255,255,255)",
+          },
+        }}
+      >
+        {menuItems.map((item) => (
+          <MenuItem
+            key={item.label}
+            onClick={item.onClick}
+            sx={{
+              backgroundColor: "transparent",
+              margin: "0px",
+              marginInline: "3px",
+              cursor: "pointer",
+              padding: "6px 8px",
+              borderRadius: "6px",
+            }}
+          >
+            <Box
+              display="flex"
+              gap={2}
+              alignItems="center"
+              minWidth="140px"
+              mb={"4px"}
+            >
+              <img
+                src={item.icon}
+                alt={item.label.toLowerCase()}
+                width={20}
+                height={20}
+              />
+              <Typography fontSize={14} color={item.color || "inherit"}>
+                {item.label}
+              </Typography>
+            </Box>
+          </MenuItem>
+        ))}
+      </Menu>
+          <Box
+            sx={{
+              display: "flex",
+              flex: "1 1 auto",
+              justifyContent: "center",
+            }}
+          ></Box>
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              pr: 1,
-              cursor: "pointer",
-              backgroundColor: "rgba(145,158,171,0.08)",
-              borderRadius: "12px",
+              gap: "6px",
             }}
           >
             <Box
               sx={{
-                p: 1,
-                display: "inline-flex",
-                color: "#637381",
-                cursor: "pointer1",
-              }}
-            >
-              <img
-                src="/searchIcon.svg"
-                alt="search"
-                style={{ width: "20px", height: "20px", flexShrink: "0px" }}
-              />
-            </Box>
-            {navigationItems?.map((item, index) => {
-              return (
-                <IconButton
-                  key={index}
-                  sx={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    position: "relative",
-                    boxSizing: "border-box",
-                    backgroundColor: "transparent",
-                    cursor: "pointer",
-                    textAlign: "center",
-                    fontSize: "24px",
-                    color: "#637381",
-                    outline: "0px",
-                    borderWidth: "0px",
-                    margin: "0px",
-                    textDecoration: "none",
-                    flex: "0 0 auto",
-                    padding: "8px",
-                    borderRadius: "50%",
-                    transition:
-                      "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)",
-                    "&:hover": {
-                      background: "rgba(99,115,129,0.08)",
-                    },
-                  }}
-                >
-                  <img
-                    src={item?.image?.path}
-                    alt={item?.image?.alt}
-                    style={{
-                      width: "24px",
-                      height: "24px",
-                      flexShrink: 0,
-                      display: "inline-flex",
-                    }}
-                  />
-                </IconButton>
-              );
-            })}
-            <IconButton
-              sx={{
-                display: "inline-flex",
+                display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                position: "relative",
-                boxSizing: "border-box",
-                backgroundColor: "transparent",
+                pr: 1,
                 cursor: "pointer",
-                textAlign: "center",
-                fontSize: "24px",
-                color: "#637381",
-                outline: "0px",
-                borderWidth: "0px",
-                margin: "0px",
-                textDecoration: "none",
-                flex: "0 0 auto",
-                padding: "8px",
-                borderRadius: "50%",
-                transition:
-                  "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)",
-                "&:hover": {
-                  background: "rgba(99,115,129,0.08)",
-                },
+                // backgroundColor: "rgba(145,158,171,0.08)",
+                borderRadius: "12px",
+                gap: 1,
               }}
             >
               <Box
                 sx={{
-                  minWidth: "unset",
-                  minHeight: "unset",
-                  overflow: "hidden",
+                  p: 1,
+                  display: "inline-flex",
+                  color: "#637381",
+                  cursor: "pointer1",
+                  backgroundColor: "rgba(145,158,171,0.08)",
+                  borderRadius: "inherit",
+                }}
+              >
+                <img
+                  src="/searchIcon.svg"
+                  alt="search"
+                  style={{ width: "20px", height: "20px", flexShrink: "0px" }}
+                />
+              </Box>
+              {navigationItems?.map((item, index) => {
+                return (
+                  <IconButton
+                    key={index}
+                    sx={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      position: "relative",
+                      boxSizing: "border-box",
+                      backgroundColor: "transparent",
+                      cursor: "pointer",
+                      textAlign: "center",
+                      fontSize: "24px",
+                      color: "#637381",
+                      outline: "0px",
+                      borderWidth: "0px",
+                      margin: "0px",
+                      textDecoration: "none",
+                      flex: "0 0 auto",
+                      padding: "8px",
+                      borderRadius: "50%",
+                      animation: item?.image?.animation,
+                      transition:
+                        "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)",
+                      "&:hover": {
+                        background: "rgba(99,115,129,0.08)",
+                        scale: 1.2,
+                      },
+                    }}
+                  >
+                    <img
+                      src={item?.image?.path}
+                      alt={item?.image?.alt}
+                      style={{
+                        width: "24px",
+                        height: "24px",
+                        flexShrink: 0,
+                        display: "inline-flex",
+                      }}
+                    />
+                  </IconButton>
+                );
+              })}
+              <IconButton
+                onClick={OpenProfileDrawer}
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   position: "relative",
-                  padding: "3px",
+                  boxSizing: "border-box",
+                  backgroundColor: "transparent",
+                  cursor: "pointer",
+                  textAlign: "center",
+                  fontSize: "24px",
+                  color: "#637381",
+                  outline: "0px",
+                  borderWidth: "0px",
+                  margin: "0px",
+                  textDecoration: "none",
+                  flex: "0 0 auto",
+                  padding: "8px",
                   borderRadius: "50%",
-                  width: "40px",
-                  height: "40px",
+                  transition:
+                    "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)",
+                  "&:hover": {
+                    background: "rgba(99,115,129,0.08)",
+                  },
                 }}
               >
                 <Box
                   sx={{
-                    position: "relative",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    fontSize: "20px",
-                    lineHeight: 1,
-                    borderRadius: "50%",
+                    minWidth: "unset",
+                    minHeight: "unset",
                     overflow: "hidden",
-                    userSelect: "none",
-                    width: "100%",
-                    height: "100%",
+                    position: "relative",
+                    padding: "3px",
+                    borderRadius: "50%",
+                    width: "40px",
+                    height: "40px",
                   }}
                 >
-                  <img
-                    src="	https://pub-c5e31b5cdafb419fb247a8ac2e78df7a.r2.dev/public/assets/images/mock/avatar/avatar-25.webp"
-                    alt="avatar"
-                    style={{
+                  <Box
+                    sx={{
+                      textAlign: "initial",
                       width: "100%",
                       height: "100%",
-                      objectFit: "cover",
-                      textIndent: "1000px",
+                      position: "absolute",
+                      color: "#00A76F",
+                      padding: "1px",
+                      inset: "0px",
+                      margin: "auto",
+                      borderRadius: "inherit",
+                      animation: "rotateClockwise 5s linear infinite",
+                      WebkitMaskImage:
+                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                      WebkitMaskComposite: "xor", // for WebKit browsers (Chrome/Safari)
+                      maskImage:
+                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                      maskComposite: "exclude", // Firefox supports 'exclude' instead of 'xor'
                     }}
-                  />
+                  >
+                    <img
+                      src="/animationSvgWrapper.svg"
+                      alt="wrapper"
+                      style={{
+                        position: "absolute",
+                        height: "100%",
+                        width: "100%",
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        transform:
+                          "translateX(32.1081px) translateY(0.725105px) translateX(-50%) translateY(-50%)",
+                        width: "60px",
+                        height: "60px",
+                        filter: "blur(8px)",
+                        position: "absolute",
+                        background:
+                          "radial-gradient(#00A76F 40%, transparent 80%)",
+                      }}
+                    ></Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      textAlign: "initial",
+                      width: "100%",
+                      height: "100%",
+                      position: "absolute",
+                      transform: "scale(-1, -1)",
+                      color: "#FFABOO",
+                      padding: "1px",
+                      inset: "0px",
+                      margin: "auto",
+                      borderRadius: "50%",
+                      animation: "rotateCounterClockwise 7s linear infinite",
+                      WebkitMaskImage:
+                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                      WebkitMaskComposite: "xor", // for WebKit browsers (Chrome/Safari)
+                      maskImage:
+                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                      maskComposite: "exclude", // Firefox supports 'exclude' instead of 'xor'
+                    }}
+                  >
+                    <img
+                      src="/animationSvgWrapper.svg"
+                      alt="wrapper"
+                      style={{
+                        position: "absolute",
+                        height: "100%",
+                        width: "100%",
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        transform:
+                          "translateX(32.1081px) translateY(0.725105px) translateX(-50%) translateY(-50%)",
+                        width: "60px",
+                        height: "60px",
+                        filter: "blur(8px)",
+                        position: "absolute",
+                        background:
+                          "radial-gradient(#FFABOO 40%, transparent 80%)",
+                      }}
+                    ></Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      fontSize: "20px",
+                      lineHeight: 1,
+                      borderRadius: "50%",
+                      overflow: "hidden",
+                      userSelect: "none",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  >
+                    <img
+                      src="	https://pub-c5e31b5cdafb419fb247a8ac2e78df7a.r2.dev/public/assets/images/mock/avatar/avatar-25.webp"
+                      alt="avatar"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        textIndent: "1000px",
+                      }}
+                    />
+                  </Box>
                 </Box>
-              </Box>
-            </IconButton>
+              </IconButton>
+            </Box>
           </Box>
         </Box>
-      </Box>
-    </AppBar>
+      </AppBar>
+    </>
   );
 }
