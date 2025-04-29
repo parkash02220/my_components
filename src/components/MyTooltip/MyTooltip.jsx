@@ -13,10 +13,21 @@ const CustomTooltip = styled(({ bgcolor,className, ...props }) => (
   },
 }));
 
-const MyTooltip = ({ children, title = "", placement = "",bgColor }) => {
+const MyTooltip = ({ children, title = "",content, placement = "bottom",bgColor }) => {
+  console.log(":title",title)
+  if ((!title || title.trim() === "") && !content) return children;
   return (
     <>
-      <CustomTooltip title={title} placement={placement} bgcolor={bgColor}>
+      <CustomTooltip title={content || title} placement={placement} bgcolor={bgColor} PopperProps={{
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, -6],
+            },
+          },
+        ],
+      }}>
         {children}
       </CustomTooltip>
     </>

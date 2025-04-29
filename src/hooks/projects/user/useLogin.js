@@ -1,15 +1,19 @@
+import useToast from "@/hooks/common/useToast";
 import { setAuthTokenToCookies } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
+import toast from "react-hot-toast";
 const useLogin = () => {
+  const toastId = "login_toast";
+  const { showToast } = useToast();
    const [loadingLogin,setLoadingLogin] = useState(false);
    const [errorLogin,setErrorLogin] = useState(false);
    const [errorMsg,setErrorMsg] = useState('');
    const router = useRouter();
    const loginUser = async (userData) => {
+     showToast({message:"Authenticating your account...",type:"loading",toastId,duration:Infinity});
     setLoadingLogin(true);
     setErrorLogin(false);
     setErrorMsg("");
@@ -20,13 +24,19 @@ const useLogin = () => {
       });
     setLoadingLogin(false);
     if (res.error) {
+      toast.dismiss(toastId);
+      showToast({message:"Login failed please try again...",type:"error",toastId});
       setErrorLogin(true);
          const error = res?.error?.data?.error || "something went wrong";
          setErrorMsg(error);
          return;
        }
+
+
        const { token } = res?.data;
        if (token) {
+        toast.dismiss(toastId);
+        showToast({message:"Welcome back! You have logged in successfully.",type:"success",toastId});
          setAuthTokenToCookies(token);
          router.push("/home");
        }

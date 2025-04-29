@@ -35,9 +35,11 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
+    "react-intersection-observer": "^9.16.0",
     "react-redux": "^9.2.0",
     "react-scrollbars-custom": "^4.1.1",
     "storybook": "^8.6.12",
+    "swiper": "^11.2.6",
     "yup": "^1.6.1"
   },
   "devDependencies": {

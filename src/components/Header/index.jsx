@@ -13,7 +13,7 @@ import useGetActiveUser from "@/hooks/projects/user/useGetActiveUser";
 
 export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
   const { state } = useAppContext();
-  const { activeProject } = state;
+  const { activeProject,activeUser } = state;
   const inputRef = useRef();
   const [showProjectNameTextfield, setShowProjectNameTextfield] =
     useState(false);
@@ -46,15 +46,15 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
   };
 
   const navigationItems = [
-    { image: { path: "/notificationIcon.svg", alt: "notification" } },
-    { image: { path: "/userIcon.svg", alt: "user" } },
-    {
-      image: {
-        path: "/settingsIcon.svg",
-        alt: "settings",
-        animation: "rotateClockwise 5s linear infinite",
-      },
-    },
+    // { image: { path: "/notificationIcon.svg", alt: "notification" } },
+    // { image: { path: "/userIcon.svg", alt: "user" } },
+    // {
+    //   image: {
+    //     path: "/settingsIcon.svg",
+    //     alt: "settings",
+    //     animation: "rotateClockwise 5s linear infinite",
+    //   },
+    // },
   ];
 
   const OpenProfileDrawer = () => {
@@ -164,7 +164,7 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                     variant="h4"
                     fontSize={"1.5rem"}
                     fontWeight={700}
-                    color="1C252E"
+                    color="#1C252E"
                     paddingLeft={2}
                     onClick={handleProjectNameStartEdidting}
                   >
@@ -278,7 +278,7 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                 gap: 1,
               }}
             >
-              <Box
+              {/* <Box
                 sx={{
                   p: 1,
                   display: "inline-flex",
@@ -293,7 +293,7 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                   alt="search"
                   style={{ width: "20px", height: "20px", flexShrink: "0px" }}
                 />
-              </Box>
+              </Box> */}
               {navigationItems?.map((item, index) => {
                 return (
                   <IconButton
@@ -479,7 +479,7 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                     }}
                   >
                     <img
-                      src="	https://pub-c5e31b5cdafb419fb247a8ac2e78df7a.r2.dev/public/assets/images/mock/avatar/avatar-25.webp"
+                      src={activeUser?.avatar || "/dummyUser.svg"}
                       alt="avatar"
                       style={{
                         width: "100%",

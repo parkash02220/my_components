@@ -75,3 +75,43 @@ export function getTimeAgo(updatedAt) {
   }
   return `${diffHours} hour${diffHours !== 1 ? "s" : ""} before`;
 }
+
+export function formatDueDateRange(due_start_date, due_end_date) {
+  if(!due_start_date && !due_end_date) return "Select due date";
+  const start = new Date(due_start_date);
+  const end = new Date(due_end_date);
+
+  const optionsDay = { day: 'numeric' };
+  const optionsMonth = { month: 'short' };
+  const optionsMonthDay = { month: 'short', day: 'numeric' };
+  const optionsFull = { month: 'short', day: 'numeric', year: 'numeric' };
+
+  const sameYear = start.getFullYear() === end.getFullYear();
+  const sameMonth = start.getMonth() === end.getMonth() && sameYear;
+
+  if (sameMonth) {
+    const startDay = start.toLocaleDateString(undefined, optionsDay);
+    const endFull = end.toLocaleDateString(undefined, optionsFull);
+    return `${startDay}-${endFull}`;
+  } else if (sameYear) {
+    const startPart = start.toLocaleDateString(undefined, optionsMonthDay);
+    const endPart = end.toLocaleDateString(undefined, optionsFull);
+    return `${startPart} - ${endPart}`;
+  } else {
+    const startFull = start.toLocaleDateString(undefined, optionsFull);
+    const endFull = end.toLocaleDateString(undefined, optionsFull);
+    return `${startFull} - ${endFull}`;
+  }
+}
+
+export function getFullName(firstName,lastName){
+  if(!firstName && !lastName) return "";
+  const name = `${firstName?.trim()} ${lastName.trim()}`;
+  return name || '';
+}
+export function capitalizeFirstLetter(string){
+    if(typeof(string) !== "string") return string;
+    if(string?.trim() === "") return "";
+    const formattedString = string?.charAt(0)?.toUpperCase() + string?.slice(1);
+    return formattedString;
+}

@@ -240,8 +240,8 @@ const SignUp = () => {
                       }
                       sx={{
                         display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
+                        flexDirection: "column",
+                        alignItems: "flex-start",
                       }}
                     >
                       {/* <FormLabel
@@ -262,7 +262,7 @@ const SignUp = () => {
                         onChange={formik.handleChange}
                         sx={{ display: "flex", flexDirection: "row" }}
                       >
-                        <Box display={'flex'} alignItems={'center'} ml={2} mr={2}>
+                        <Box display={'flex'} alignItems={'center'} mr={2}>
                             <Typography  sx={{
                           color: "#637381",
                           fontWeight: 600,

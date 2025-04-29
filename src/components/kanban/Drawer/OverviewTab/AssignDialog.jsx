@@ -10,6 +10,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
     useToggleAssignTask();
   const theme = useTheme();
   const {
+    loadMoreRef,
     allUsers,
     loadingAllUsers,
     errorAllUsers,
@@ -47,6 +48,11 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
     setSearchValue("");
   };
 
+  const handleAssignDialogClose = () => {
+    setSearchValue("");
+    handleClose();
+  }
+
   return (
     <>
       <Box
@@ -61,7 +67,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
           maxwidth={"444px"}
           titlepadding="24px 24px 0px"
           contentpadding="0px !important"
-          handleClose={handleClose}
+          handleClose={handleAssignDialogClose}
           title={
             <Box
               className="assignDialog__title"
@@ -123,7 +129,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
                         className="assignDialog__contactBox"
                         display={"flex"}
                         gap={2}
-                        height={64}
+                        // height={64}
                         alignItems={"center"}
                         justifyContent={"space-between"}
                       >
@@ -195,6 +201,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
                       </Box>
                     );
                   })}
+                    <Box ref={loadMoreRef} style={{ height: 1 }} />
                 </Box>
               ) : !loadingAllUsers ? (
                 <Box

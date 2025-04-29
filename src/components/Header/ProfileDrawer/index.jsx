@@ -2,7 +2,7 @@ import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useState } from "react";
 
 import RightDrawer from "@/components/RightDrawer";
-import useLogout from "@/hooks/common/useLogout";
+import useLogout from "@/hooks/projects/user/useLogout";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import { useAppContext } from "@/context/AppContext";
@@ -57,6 +57,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
     open={logoutPopupOpen}
     type={'logout'}
      loading={loadingLogout}
+     submitAction={logoutUser}
     />
       <Box>
         <RightDrawer
@@ -215,7 +216,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     }}
                   >
                     <img
-                      src="	https://pub-c5e31b5cdafb419fb247a8ac2e78df7a.r2.dev/public/assets/images/mock/avatar/avatar-25.webp"
+                    src={activeUser?.avatar || "/dummyUser.svg"}
                       alt="avatar"
                       style={{
                         width: "100%",

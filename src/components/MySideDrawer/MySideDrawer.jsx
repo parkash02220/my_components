@@ -28,7 +28,7 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import useAllProjects from "@/hooks/projects/useAllProjects";
 import useCreateProject from "@/hooks/projects/useCreateProject";
 import { useAppContext } from "@/context/AppContext";
-import useLogout from "@/hooks/common/useLogout";
+import useLogout from "@/hooks/projects/user/useLogout";
 import { SingleNavItem } from "./SingleNavItem";
 import { CollapsibleNavItem } from "./CollapsibleNavItem";
 import SearchNavItem from "./SearchNavItem";

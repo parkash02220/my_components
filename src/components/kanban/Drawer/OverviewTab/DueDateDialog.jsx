@@ -3,13 +3,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { Box, Typography, useTheme } from "@mui/material";
 import MyDialog from "@/components/MyDialog/MyDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MyButton from "@/components/MyButton/MyButton";
 import dayjs from "dayjs";
-const DueDateDialog = ({ open, handleClose,updateDueDate,taskEndDate,loadingEditTask }) => {
+const DueDateDialog = ({ open, handleClose,updateDueDate,taskStartDate,taskEndDate,loadingEditTask }) => {
   const theme = useTheme();
   const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(taskEndDate ? dayjs(taskEndDate) : null);
+  const [endDate, setEndDate] = useState(null);
   const [dateError, setDateError] = useState("");
   const formattedStartDate = startDate ? startDate.format("DD-MMM") : "";
   const formattedEndDate = endDate ? endDate.format("DD-MMM YYYY") : "";
@@ -34,9 +34,13 @@ const DueDateDialog = ({ open, handleClose,updateDueDate,taskEndDate,loadingEdit
   const handleDueDateApplyButton = async () => {
     const startD = startDate ? startDate.format("YYYY-MM-DD") : ""
      const endD = endDate ? endDate.format("YYYY-MM-DD") : ""
-   await  updateDueDate(endD);
+   await  updateDueDate(startD,endD);
      handleClose();
   }
+  useEffect(() => {
+    if (taskStartDate) setStartDate(dayjs(taskStartDate));
+    if (taskEndDate) setEndDate(dayjs(taskEndDate));
+  }, [taskStartDate, taskEndDate]);
   return (
     <>
       <Box

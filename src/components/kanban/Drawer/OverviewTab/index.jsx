@@ -3,12 +3,14 @@ import useUploadAttachments from "@/hooks/projects/task/useUploadAttachments";
 import { useFormik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import AssignDialog from "./AssignDialog.jsx";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import { useAppContext } from "@/context/AppContext";
 import useDeleteAttachments from "@/hooks/projects/task/useDeleteAttachments";
 import DueDateDialog from "./DueDateDialog.jsx";
+import AttachmentViewer from "./AttachmentViewer.jsx";
+import { formatDueDateRange } from "@/utils/index.js";
 const OverviewTab = () => {
   const { state } = useAppContext();
   const { activeTask } = state || {};
@@ -24,8 +26,10 @@ const OverviewTab = () => {
   const { loadingEditTask, errorEditTask, updateTaskInBackend } = useEditTask();
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [dueDateDialogOpen, setDueDateDialogOpen] = useState(false);
+  const [attachmentViewerOpen,setAttachmentViewerOpen] = useState({open:false,selectedImage:0}); 
   const [showEditTextfield, setShowEditTextfield] = useState(false);
   const inputRef = useRef(null);
+  const [deleteImagePath, setDeleteImagePath] = useState([]);
   const priorityList = [
     { label: "Low", value: "low", icon: "/lowPriorityIcon.svg" },
     { label: "Medium", value: "medium", icon: "/meduimPriorityIcon.svg" },
@@ -39,7 +43,8 @@ const OverviewTab = () => {
       description: activeTask?.description || "",
       priority: activeTask?.priority || "medium",
       assigned_to: activeTask?.assigned_to || [],
-      due_date:activeTask?.due_date?.slice(0,10) || "",
+      due_start_date: activeTask?.due_start_date?.slice(0, 10) || "",
+      due_end_date: activeTask?.due_end_date?.slice(0, 10) || "",
     },
     onSubmit: async (values) => {
       updateTaskInBackend(values, activeTask?.id);
@@ -64,6 +69,14 @@ const OverviewTab = () => {
     setDueDateDialogOpen(false);
   };
 
+  const handleAttachmentViewerOpen = (index) => {
+    setAttachmentViewerOpen({open:true,selectedImage:index});
+  };
+
+  const handleAttachmentViewerClose = () => {
+    setAttachmentViewerOpen({open:false,selectedImage:0});
+  };
+
   useEffect(() => {
     const backendImages = Array.isArray(activeTask?.images)
       ? activeTask.images
@@ -83,8 +96,11 @@ const OverviewTab = () => {
   }, [attachments]);
 
   const handleAttachmentDelete = async (index) => {
-    const image = attachments?.filter((_, i) => i === index)[0];
+    const image = attachments[index];
+    const imagePath = typeof image === "string" ? image : image?.name;
+    setDeleteImagePath((prev) => [...prev, imagePath]);
     await deleteAttachment(image, activeTask?.id, activeTask?.section_id);
+    setDeleteImagePath((pre) => pre?.filter((path) => path !== imagePath));
   };
 
   useEffect(() => {
@@ -93,10 +109,10 @@ const OverviewTab = () => {
     }
   }, [showEditTextfield]);
 
-  const updateDueDate = async (date) => {
-    if(!date) return;
-      await updateTaskInBackend({due_date:date},activeTask?.id)
-  }
+  const updateDueDate = async (startDate,endDate) => {
+    if (!startDate || !endDate) return;
+    await updateTaskInBackend({ due_start_date: startDate,due_end_date: endDate }, activeTask?.id);
+  };
 
   return (
     <>
@@ -105,14 +121,20 @@ const OverviewTab = () => {
         handleClose={handleAssignDialogClose}
         assignedUsers={formik.values.assigned_to}
         taskId={activeTask?.id}
-        taskEndDate={formik?.values?.due_date}
       />
       <DueDateDialog
         handleClose={handleDueDateDialogClose}
         open={dueDateDialogOpen}
         updateDueDate={updateDueDate}
-        taskEndDate={formik?.values?.due_date}
+        taskStartDate={formik?.values?.due_start_date}
+        taskEndDate={formik?.values?.due_end_date}
         loadingEditTask={loadingEditTask}
+      />
+      <AttachmentViewer 
+      open={attachmentViewerOpen?.open}
+      selectedImage = {attachmentViewerOpen?.selectedImage}
+      attachments={attachments}
+       handleClose={handleAttachmentViewerClose}
       />
       <Box padding={"24px 20px"}>
         <Box display={"flex"} flexDirection={"column"} gap={3}>
@@ -206,7 +228,7 @@ const OverviewTab = () => {
                 "&:hover": { background: "rgba(145,158,171,0.08)" },
               }}
             >
-             {formik?.values?.due_date || 'select due date'}
+              {formatDueDateRange(formik?.values?.due_start_date,formik?.values?.due_end_date)}
             </Typography>
           </SectionRow>
           <SectionRow label="Priority" className="editTask__priorityBox">
@@ -255,9 +277,70 @@ const OverviewTab = () => {
             labelStyle={{ alignSelf: "flex-start" }}
           >
             <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
-              {attachments.map((file, index) => (
+              {attachments.map((file, index) => {
+                const imagePath = typeof file === "string" ? file : file.name;
+                const isDeleting = deleteImagePath?.includes(imagePath);
+
+                return (
+                  <Box
+                    key={imagePath}
+                    sx={{
+                      width: "64px",
+                      height: "64px",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      position: "relative",
+                      backgroundColor: "#eee",
+                    }}
+                  >
+                    <img
+                      src={
+                        file instanceof File ? URL.createObjectURL(file) : file
+                      }
+                      onClick={()=>handleAttachmentViewerOpen(index)}
+                      alt="preview"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        cursor:"pointer",
+                      }}
+                    />
+                    <IconButton
+                      onClick={() => handleAttachmentDelete(index)}
+                      disabled={isDeleting}
+                      sx={{
+                        position: "absolute",
+                        top: "4px",
+                        right: "4px",
+                        backgroundColor: "rgba(20,26,33,0.48)",
+                        borderRadius: "50%",
+                        padding: "2.8px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {isDeleting ? (
+                        <CircularProgress
+                          sx={{
+                            width: "16px !important",
+                            height: "16px !important",
+                            color: "#637381",
+                          }}
+                        />
+                      ) : (
+                        <img
+                          src="/removeAttachmentIcon.svg"
+                          alt="remove attachment"
+                          style={{ width: "100%", height: "100%" }}
+                        />
+                      )}
+                    </IconButton>
+                  </Box>
+                );
+              })}
+
+              {loadingUploadAttachments && (
                 <Box
-                  key={index}
                   sx={{
                     width: "64px",
                     height: "64px",
@@ -265,40 +348,29 @@ const OverviewTab = () => {
                     overflow: "hidden",
                     position: "relative",
                     backgroundColor: "#eee",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    padding: "8px",
+                    pb: "2px",
+                    gap: "4px",
                   }}
                 >
-                  <img
-                    src={
-                      file instanceof File ? URL.createObjectURL(file) : file
-                    }
-                    alt="preview"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
+                  <CircularProgress
+                    variant="determinate"
+                    value={progressUploadAttachments}
+                    sx={{
+                      width: "28px !important",
+                      height: "28px !important",
+                      color: "#637381",
                     }}
                   />
-                  <IconButton
-                    onClick={() => handleAttachmentDelete(index)}
-                    disabled={loadingDeleteAttachment}
-                    sx={{
-                      position: "absolute",
-                      top: "4px",
-                      right: "4px",
-                      backgroundColor: "rgba(20,26,33,0.48)",
-                      borderRadius: "50%",
-                      padding: "2.8px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <img
-                      src="/removeAttachmentIcon.svg"
-                      alt="remove attachment"
-                      style={{ width: "100%", height: "100%" }}
-                    />
-                  </IconButton>
+                  <Typography variant="body2" fontSize={11}>
+                    {progressUploadAttachments}%
+                  </Typography>
                 </Box>
-              ))}
+              )}
 
               <Box
                 sx={{

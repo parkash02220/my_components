@@ -15,9 +15,10 @@ import {
 } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import RightDrawer from "../RightDrawer";
+import MyTooltip from "../MyTooltip/MyTooltip";
+import { getFullName } from "@/utils";
 
 export function TaskCard({ task, isOverlay }) {
-
   const priorityList = [
     { label: "Low", value: "low", icon: "/lowPriorityIcon.svg" },
     { label: "Medium", value: "medium", icon: "/meduimPriorityIcon.svg" },
@@ -60,7 +61,7 @@ export function TaskCard({ task, isOverlay }) {
     //   ? "2px solid rgba(0,0,0,0.2)"
     //   : undefined,
   };
-  
+  console.log("::task data in taskcard", taskData);
 
   return (
     <>
@@ -113,21 +114,20 @@ export function TaskCard({ task, isOverlay }) {
           }}
         >
           <Box className="taskCard__contentBox">
-         { taskData?.images && taskData?.images?.length > 0 ? (
-           <Box className="taskCard__imageBox" padding={"8px 8px 0px 8px"}>
-           <img
-             src={taskData?.images[0]}
-             alt="card image"
-             style={{
-               width: "320px",
-               objectFit: "cover",
-               borderRadius: "12px",
-               aspectRatio: 4 / 3,
-             }}
-           />
-         </Box>
-         ) : null
-        }
+            {taskData?.images && taskData?.images?.length > 0 ? (
+              <Box className="taskCard__imageBox" padding={"8px 8px 0px 8px"}>
+                <img
+                  src={taskData?.images[0]}
+                  alt="card image"
+                  style={{
+                    width: "320px",
+                    objectFit: "cover",
+                    borderRadius: "12px",
+                    aspectRatio: 4 / 3,
+                  }}
+                />
+              </Box>
+            ) : null}
             <Box
               className="taskCard__dataBox"
               fontWeight={600}
@@ -137,26 +137,26 @@ export function TaskCard({ task, isOverlay }) {
             >
               {taskData?.priority && (
                 <Box
-                sx={{
-                  width: "20px",
-                  height: "20px",
-                  position: "absolute",
-                  top: "4px",
-                  right: "4px",
-                  color: "red",
-                  display: "inline-flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <img
-                  src={getPriorityIcon(taskData?.priority)}
-                  alt="priority"
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </Box>
+                  sx={{
+                    width: "20px",
+                    height: "20px",
+                    position: "absolute",
+                    top: "4px",
+                    right: "4px",
+                    color: "red",
+                    display: "inline-flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <img
+                    src={getPriorityIcon(taskData?.priority)}
+                    alt="priority"
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                </Box>
               )}
-  
+
               <Box>
                 <Typography
                   color={theme?.palette?.primary?.main}
@@ -180,9 +180,9 @@ export function TaskCard({ task, isOverlay }) {
                   display={"flex"}
                   gap={1}
                 >
-                  {
-                    taskData?.subComments &&  taskData?.subComments?.length > 0 ? (
-                      <Box display={"flex"} gap={"2px"}>
+                  {taskData?.subComments &&
+                  taskData?.subComments?.length > 0 ? (
+                    <Box display={"flex"} gap={"2px"}>
                       <Box width={16} height={16}>
                         <img
                           src="/taskCardCommentIcon.svg"
@@ -194,25 +194,21 @@ export function TaskCard({ task, isOverlay }) {
                         {taskData?.subComments?.length}
                       </Typography>
                     </Box>
-                    ) : null
-                  }
-                 {
-                  taskData?.images && taskData?.images?.length > 0 ? (
+                  ) : null}
+                  {taskData?.images && taskData?.images?.length > 0 ? (
                     <Box display={"flex"} gap={"2px"}>
-                    <Box width={16} height={16}>
-                      <img
-                        src="/taskCardAttachmentsIcon.svg"
-                        alt="comments"
-                        style={{ width: "100%", height: "100%" }}
-                      />
+                      <Box width={16} height={16}>
+                        <img
+                          src="/taskCardAttachmentsIcon.svg"
+                          alt="comments"
+                          style={{ width: "100%", height: "100%" }}
+                        />
+                      </Box>
+                      <Typography fontSize={12} color="#919EAB">
+                        {taskData?.images?.length}
+                      </Typography>
                     </Box>
-                    <Typography fontSize={12} color="#919EAB">
-                      {taskData?.images?.length}
-                    </Typography>
-                  </Box>
-                  ) : null
-                 }
-                  
+                  ) : null}
                 </Box>
                 <Box
                   className="taskCard__footer--right"
@@ -220,9 +216,42 @@ export function TaskCard({ task, isOverlay }) {
                   flexDirection={"row-reverse"}
                   justifyContent={"flex-end"}
                 >
-                  {
-                      taskData?.subComments?.length > 4 && (
-                        <Box
+                  {taskData?.assigned_to?.length > 4 && (
+                    <MyTooltip
+                      content={
+                        <Box sx={{
+                          display:'flex',
+                          flexDirection:'column',
+                          gap:1,
+                          padding:1,
+                        }}>
+                          {taskData.assigned_to.map((user, index) => {
+                            const name = getFullName(user?.firstName,user?.lastName);
+                            return  (
+                              <Box
+                                key={index}
+                                display="flex"
+                                alignItems="center"
+                                gap={1}
+                              >
+                                <img
+                                  src={user.avatar}
+                                  alt={name}
+                                  style={{
+                                    width: 24,
+                                    height: 24,
+                                    borderRadius: "50%",
+                                    objectFit: "cover",
+                                  }}
+                                />
+                                <Typography fontSize={12} fontWeight={500}>{name}</Typography>
+                              </Box>
+                            )
+                          })}
+                        </Box>
+                      }
+                    >
+                      <Box
                         fontSize={12}
                         color={"#007867"}
                         width={24}
@@ -230,49 +259,62 @@ export function TaskCard({ task, isOverlay }) {
                         fontWeight={600}
                         ml={"-8px"}
                         position={"relative"}
-                        boxSizing={'content-box'}
+                        boxSizing={"content-box"}
                         border={"2px solid #FFFFFF"}
                         display={"flex"}
                         justifyContent={"center"}
                         alignItems={"center"}
                         borderRadius={"50%"}
                         overflow={"hidden"}
-                      >{taskData?.subComments?.length - 3}</Box>
-                      )
-                  }
-                  {
-                    taskData?.subComments?.length > 0 && taskData?.subComments?.slice(0,taskData?.subComments?.length > 4 ? 3 : 4)?.map((subComment,index)=> {
-                      return <Box
-                      key={index}
-                      width={24}
-                      height={24}
-                      fontSize={16}
-                      fontWeight={600}
-                      border={"2px solid #FFFFFF"}
-                      boxSizing={'content-box'}
-                      ml={"-8px"}
-                      position={"relative"}
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
-                      borderRadius={"50%"}
-                      overflow={"hidden"}
-                    >
-                      <img
-                        src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-1.webp"
-                        alt="avatar"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          color: "transparent",
-                          textIndent: "100000px",
-                          maxWidth: "100%",
-                        }}
-                      />
-                    </Box>
-                    }) 
-                  }
+                      >
+                        {taskData?.assigned_to?.length - 3}
+                      </Box>
+                    </MyTooltip>
+                  )}
+                  {taskData?.assigned_to?.length > 0 &&
+                    taskData?.assigned_to
+                      ?.slice(0, taskData?.assigned_to?.length > 4 ? 3 : 4)
+                      ?.map((item, index) => {
+                        const name = `${item?.firstName || ""} ${
+                          item?.lastName || ""
+                        }`;
+                        return (
+                          <MyTooltip
+                            key={index}
+                            title={name}
+                            placement="bottom"
+                          >
+                            <Box
+                              width={24}
+                              height={24}
+                              fontSize={16}
+                              fontWeight={600}
+                              border={"2px solid #FFFFFF"}
+                              boxSizing={"content-box"}
+                              ml={"-8px"}
+                              position={"relative"}
+                              display={"flex"}
+                              justifyContent={"center"}
+                              alignItems={"center"}
+                              borderRadius={"50%"}
+                              overflow={"hidden"}
+                            >
+                              <img
+                                src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-1.webp"
+                                alt="avatar"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                  color: "transparent",
+                                  textIndent: "100000px",
+                                  maxWidth: "100%",
+                                }}
+                              />
+                            </Box>
+                          </MyTooltip>
+                        );
+                      })}
                 </Box>
               </Box>
             </Box>

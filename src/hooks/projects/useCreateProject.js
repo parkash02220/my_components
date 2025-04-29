@@ -21,6 +21,7 @@ const useCreateProject = () => {
       return;
     }
     setIsCreated(true);
+    console.log("::res for create project",res)
   };
 
   return [loading, isCreated, createProject];

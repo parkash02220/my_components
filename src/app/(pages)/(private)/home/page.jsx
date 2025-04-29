@@ -10,7 +10,7 @@ export default function Home() {
         sx={{ display: "flex", justifyContent: "center" }}
         className="homePage__container"
       >
-        select or create project
+        Select or create project
       </Box>
     </>
   );

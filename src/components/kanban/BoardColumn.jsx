@@ -18,6 +18,7 @@ import { Collapse, Fade, Menu, MenuItem } from "@mui/material";
 import useClearSection from "@/hooks/projects/section/useClearSection";
 import useDeleteSection from "@/hooks/projects/section/useDeleteSection";
 import useUpdateSectionName from "@/hooks/projects/section/useUpdateSectionName";
+import ConfirmationPopup from "../ConfirmationPopup";
 
 function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
   const { loadingClearSection, clearSection } = useClearSection();
@@ -39,7 +40,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
   const handleMenuOpen = (event) => {
     setMenuAnchorEl(event.currentTarget);
   };
-
+  const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const handleMenuClose = () => {
     setMenuAnchorEl(null);
   };
@@ -108,6 +109,14 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
     setNewTaskName("");
   };
 
+  const handleDeletePopupOpen = () => {
+    handleMenuClose();
+    setDeletePopupOpen(true);
+  };
+  const handleDeletePopupClose = () => {
+    setDeletePopupOpen(false);
+  };
+
   const handleMenuEditButton = () => {
     handleMenuClose();
     setTimeout(() => {
@@ -121,9 +130,9 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
     handleMenuClose();
   };
 
-  const handleMenuDeleteButton = () => {
-    deleteSection(column?.id);
-    handleMenuClose();
+  const handleMenuDeleteButton = async () => {
+   await deleteSection(column?.id);
+    handleDeletePopupClose();
   };
 
   const menuItems = [
@@ -140,7 +149,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
     {
       label: "Delete",
       icon: "/delete.svg",
-      onClick: handleMenuDeleteButton,
+      onClick: handleDeletePopupOpen,
       color: "#FF5630",
     },
   ];
@@ -149,7 +158,18 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
     cancelEditing();
     setShowEditTextfield(false);
   };
+
   return (
+    <>
+    <ConfirmationPopup
+        title={"Delete Section"}
+        handleClose={handleDeletePopupClose}
+        open={deletePopupOpen}
+        message={columnName}
+        type={"delete"}
+        submitAction={handleMenuDeleteButton}
+        loading={loadingDeleteSection}
+      />
     <Paper
       ref={setNodeRef}
       elevation={isOverlay ? 6 : 3}
@@ -462,6 +482,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
         </Box>
       </Box>
     </Paper>
+    </>
   );
 }
 

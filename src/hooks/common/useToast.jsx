@@ -23,17 +23,18 @@ const toastStyles = {
 
 const useToast = () => {
   const showToast = useCallback(
-    ({ type = "success", message = "", duration = 3000 }) => {
+    ({ type = "success", message = "", duration = 3000,toastId=null }) => {
+
       toast.custom(
         (t) => {
           const style = { ...toastStyles.base, ...toastStyles[type] };
 
           return (
             <motion.div
-              initial={{ opacity: 0, y: -50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
             >
               <Box
                 sx={{
@@ -88,13 +89,20 @@ const useToast = () => {
                       alt="success"
                       style={{ width: "24px", height: "24px", flexShrink: 0 }}
                     />
-                  ) : (
+                  ) : type === "error" ? (
                     <img
                       src="/errorToastIcon.png"
                       alt="error"
                       style={{ width: "24px", height: "24px", flexShrink: 0 }}
                     />
-                  )}
+                  ) : (
+                    <img
+                      src="/iosLoader.gif"
+                      alt="loading"
+                      style={{ width: "24px", height: "24px", flexShrink: 0 }}
+                    />
+                  )
+                }
                 </Box>
 
                 {/* Message */}
@@ -111,9 +119,9 @@ const useToast = () => {
                     {message}
                   </Typography>
                 </Box>
-
-                {/* Progress Line */}
-                <Box
+             
+                {type !== "loading" ? (
+                  <Box
                   className="progressLine"
                   sx={{
                     position: "absolute",
@@ -128,11 +136,12 @@ const useToast = () => {
                     transformOrigin: "left",
                   }}
                 />
+                ) : null}
               </Box>
             </motion.div>
           );
         },
-        { duration }
+        { duration,id:toastId }
       );
     },
     []

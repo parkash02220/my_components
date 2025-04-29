@@ -8,7 +8,7 @@ const useClearSection = () => {
     const clearSection = async (sectionId) => {
         setLoadingClearSection(true);
         const res = await ApiCall({
-            url:`${process.env.NEXT_PUBLIC_BASE_URL}/clear-section/${sectionId}`,
+            url:`${process.env.NEXT_PUBLIC_BASE_URL}/clear-tasks/${sectionId}`,
             method:"DELETE",
         });
         setLoadingClearSection(false);

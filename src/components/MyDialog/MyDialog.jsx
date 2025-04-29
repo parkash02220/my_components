@@ -44,7 +44,7 @@ const MyDialog = ({ open, handleClose, title, content, actions, ...props }) => {
         <BootstrapDialogTitle
           id="customized-dialog-title"
           onClose={handleClose}
-          {...props}
+          // {...props}
         >
           {title}
         </BootstrapDialogTitle>
