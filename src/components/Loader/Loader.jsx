@@ -3,26 +3,22 @@ import { Box } from "@mui/material";
 
 const Loader = () => {
   return (
+    <Box sx={{
+      width:"100%",
+      height:"100%",
+      display:"flex",
+      justifyContent:"center",
+      alignItems:"center",
+    }}>
     <Box
       sx={{
         width: 60,
         height: 60,
         borderRadius: "50%",
-        border: "6px solid transparent",
-        borderTop: "6px solid",
-        borderImage: "linear-gradient(45deg, #42a5f5, #7e57c2) 1",
-        animation: "spin 1s linear infinite",
-        "@keyframes spin": {
-          "0%": {
-            transform: "rotate(0deg)",
-          },
-          "100%": {
-            transform: "rotate(360deg)",
-          },
-        },
-        margin: "auto",
-      }}
-    />
+        border: "6px solid transparent",}}>
+          <img src="/iosLoader.gif" alt="loader" style={{width:"100%",height:"100%",objectFit:'cover',textIndent:"10000px"}} />
+    </Box>
+    </Box>
   );
 };
 

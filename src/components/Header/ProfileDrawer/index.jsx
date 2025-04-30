@@ -6,41 +6,49 @@ import useLogout from "@/hooks/projects/user/useLogout";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import { useAppContext } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
 const ProfileDrawer = ({ open, handleDrawer }) => {
   const {state} = useAppContext();
   const {activeUser} = state;
   const [logoutPopupOpen,setLogoutPopupOpen] = useState(false);
   const { loadingLogout, logoutUser } = useLogout();
+  const router = useRouter();
   const navigationItems = [
     {
       name: "Home",
       alt: "home",
       icon: "/homeIcon.svg",
+      path:"/home",
     },
     {
       name: "Profile",
       alt: "profile",
       icon: "/profileIcon.svg",
+      path:"/profile"
     },
     {
       name: "Projects",
       alt: "projects",
       icon: "/profileIcon.svg",
+      path:"/projects",
     },
     {
       name: "Subscription",
       alt: "subscription",
       icon: "/subscriptionIcon.svg",
+      path:"/subscription",
     },
     {
       name: "Security",
       alt: "security",
       icon: "/securityIcon.svg",
+      path:"/security",
     },
     {
       name: "Account settings",
       alt: "settings",
       icon: "/settingIcon.svg",
+      path:"/settings",
     },
   ];
   const handleLogoutOpen = () => {
@@ -48,6 +56,10 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
 }
   const handleLogoutClose = () => {
     setLogoutPopupOpen(false);
+}
+const handleNavigation = (path) => {
+  if(!path) return;
+        router.push(path);
 }
   return (
     <>
@@ -339,6 +351,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                 {navigationItems?.map((item, index) => {
                   return (
                     <Box
+                    onClick={()=> handleNavigation(item?.path)}
                       mb={"4px"}
                       p={1}
                       display={"flex"}

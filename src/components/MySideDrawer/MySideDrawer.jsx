@@ -222,6 +222,7 @@ export default function MySideDrawer({ open, setOpen }) {
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           onCreate={handleCreateProject}
+          loadingCreateProject={loading}
         />
       </Box>
       <Box sx={{ display: "flex", position: "relative" }}>

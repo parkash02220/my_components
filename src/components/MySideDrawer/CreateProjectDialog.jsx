@@ -6,7 +6,7 @@ import MyDialog from "../MyDialog/MyDialog";
 import { ApiCall } from "@/utils/ApiCall";
 import useProjectNameAvailability from "@/hooks/projects/useProjectNameAvailability";
 
-const CreateProjectDialog = ({ open, onClose, onCreate }) => {
+const CreateProjectDialog = ({ open, onClose, onCreate,loadingCreateProject }) => {
   const [projectName, setProjectName] = useState("");
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("");
@@ -36,9 +36,9 @@ const CreateProjectDialog = ({ open, onClose, onCreate }) => {
     setHelperText(helperText);
   };
 
-  const handleCreateProject = () => {
+  const handleCreateProject = async () => {
     const trimmedName = projectName.trim();
-    onCreate(trimmedName);
+    await onCreate(trimmedName);
     handleDialogClose();
   };
 
@@ -84,7 +84,7 @@ const CreateProjectDialog = ({ open, onClose, onCreate }) => {
           </MyButton>
           <MyButton
             onClick={handleCreateProject}
-            disabled={error || !available}
+            disabled={error || !available || loadingCreateProject}
             variant="contained"
             loading={loading}
             loadingText={"checking..."}

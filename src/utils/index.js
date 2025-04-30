@@ -106,7 +106,7 @@ export function formatDueDateRange(due_start_date, due_end_date) {
 
 export function getFullName(firstName,lastName){
   if(!firstName && !lastName) return "";
-  const name = `${firstName?.trim()} ${lastName.trim()}`;
+  const name = `${firstName?.trim() || ''} ${lastName.trim() || ''}`;
   return name || '';
 }
 export function capitalizeFirstLetter(string){

@@ -14,7 +14,6 @@ const CustomTooltip = styled(({ bgcolor,className, ...props }) => (
 }));
 
 const MyTooltip = ({ children, title = "",content, placement = "bottom",bgColor }) => {
-  console.log(":title",title)
   if ((!title || title.trim() === "") && !content) return children;
   return (
     <>

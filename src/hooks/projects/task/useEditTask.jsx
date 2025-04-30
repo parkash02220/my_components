@@ -8,8 +8,9 @@ const useEditTask = () => {
     const [loadingEditTask,setLoadingEditTask] = useState(false);
     const [errorEditTask,setErrorEditTask] = useState(false);
     const controllerRef = useRef(new AbortController());
-
+    
     const updateTaskInBackend = async (formData,taskId) => {
+        console.log("::formadata",formData)
         controllerRef.current.abort();
         const controller = new AbortController();
         controllerRef.current = controller;
@@ -28,8 +29,9 @@ const useEditTask = () => {
             return;
         }
 
-        
-        const formattedIdResponse = convertIdFields(res?.data?.task || {});
+         
+        const formattedIdResponse = convertIdFields(res?.data?.updatedTask || {});
+        console.log("::res in formdata",formattedIdResponse)
         dispatch({type:"EDIT_TASK",payload:{...formattedIdResponse}})
     }
     return {loadingEditTask,errorEditTask,updateTaskInBackend}

@@ -3,7 +3,7 @@ import { initialState } from "./initialState";
 
 const AppContext = createContext();
 
-function projectsReducer(state, action) {
+function projectsReducer(state=initialState, action) {
   const { type, payload } = action;
   switch (type) {
     case "SET_PROJECTS": {
@@ -62,7 +62,7 @@ function projectsReducer(state, action) {
 
     case "ADD_COLUMN_TO_SECTION": {
       const { section } = payload;
-      const updatedSections = [...state?.activeProject?.sections, section];
+      const updatedSections = [...(state?.activeProject?.sections || []), section];
       return {
         ...state,
         activeProject: {

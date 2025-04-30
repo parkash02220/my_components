@@ -43,9 +43,7 @@ const useUploadAttachments = () => {
       setSuccessUploadAttachments(true);
       console.log("::response image uploaded",res.data)
        const images = res?.data?.images;
-       if(images){
          dispatch({type:"ADD_IMAGE_TO_TASK",payload:{images,taskId,columnId}});
-       }
     },
     []
   );

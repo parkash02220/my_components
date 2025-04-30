@@ -23,7 +23,7 @@ const toastStyles = {
 
 const useToast = () => {
   const showToast = useCallback(
-    ({ type = "success", message = "", duration = 3000,toastId=null }) => {
+    ({ type = "success", message = "", duration = 3000,toastId=null,refetchMsg=false }) => {
 
       toast.custom(
         (t) => {
@@ -118,6 +118,7 @@ const useToast = () => {
                   >
                     {message}
                   </Typography>
+                  {refetchMsg && <Typography  sx={{ fontSize: 14, fontWeight: 500, color: "#1C252E" }}>Please refresh page.</Typography>}
                 </Box>
              
                 {type !== "loading" ? (

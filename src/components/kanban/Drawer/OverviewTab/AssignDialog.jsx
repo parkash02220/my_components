@@ -10,6 +10,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
     useToggleAssignTask();
   const theme = useTheme();
   const {
+    setPage,
     loadMoreRef,
     allUsers,
     loadingAllUsers,
@@ -23,7 +24,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
   const [assignedUserIds, setAssignedUserIds] = useState([]);
   useEffect(() => {
     if (open && assignedUsers) {
-      setAssignedUserIds(assignedUsers.map((user) => user));
+      setAssignedUserIds(assignedUsers.map((user) => user?.id));
     }
   }, [open, assignedUsers]);
 
@@ -46,13 +47,14 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
 
   const handleSearchClear = () => {
     setSearchValue("");
+    setPage(1);
   };
 
   const handleAssignDialogClose = () => {
     setSearchValue("");
     handleClose();
-  }
-
+  };
+console.log("::all user",allUsers)
   return (
     <>
       <Box
@@ -95,17 +97,27 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
                 padding={"24px 24px 20px 20px"}
               >
                 <MySearch
-                  fullWidth={true}
+                  fullWidth
                   borderRadius="8px"
                   hoverBorderColor={theme.palette.primary.main}
                   focusedBorder={`2px solid ${theme.palette.primary.main}`}
                   value={searchValue}
                   onChange={handleSearchValueChange}
-                  loading={loadingAllUsers}
                   onClear={handleSearchClear}
                 />
               </Box>
-              {allUsers?.length > 0 ? (
+              {  loadingAllUsers ? (
+                <Box
+                  className="assignDialog__loadingBox"
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  minHeight={200}
+                >
+                  <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
+                </Box>
+              ) : 
+              allUsers?.length > 0 ? (
                 <Box
                   className="assignDialog__contactListBox"
                   padding={"0px 20px 16px 20px"}
@@ -138,7 +150,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
                           width={40}
                           height={40}
                         >
-                          <AvatarBox src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-17.webp" />
+                          <AvatarBox src={user?.avatar} />
                         </Box>
                         <Box
                           className="cotactBox__dataBox"
@@ -201,7 +213,17 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
                       </Box>
                     );
                   })}
-                    <Box ref={loadMoreRef} style={{ height: 1 }} />
+                  {loadingAllUsers && (
+                    <Box display="flex" justifyContent="center" py={2}>
+                      <img
+                        src="/iosLoader.gif"
+                        width={32}
+                        height={32}
+                        alt="Loading more..."
+                      />
+                    </Box>
+                  )}
+                  <Box ref={loadMoreRef} style={{ height: 1 }} />
                 </Box>
               ) : !loadingAllUsers ? (
                 <Box
@@ -243,17 +265,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
                     Try checking for typos or using complete words.
                   </Typography>
                 </Box>
-              ) : (
-                <Box
-                  className="assignDialog__loadingBox"
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  minHeight={200}
-                >
-                  <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
-                </Box>
-              )}
+              ) : null}
             </Box>
           }
         />

@@ -10,7 +10,7 @@ import { useAppContext } from "@/context/AppContext";
 import useDeleteAttachments from "@/hooks/projects/task/useDeleteAttachments";
 import DueDateDialog from "./DueDateDialog.jsx";
 import AttachmentViewer from "./AttachmentViewer.jsx";
-import { formatDueDateRange } from "@/utils/index.js";
+import { formatDueDateRange, getFullName } from "@/utils/index.js";
 const OverviewTab = () => {
   const { state } = useAppContext();
   const { activeTask } = state || {};
@@ -26,7 +26,10 @@ const OverviewTab = () => {
   const { loadingEditTask, errorEditTask, updateTaskInBackend } = useEditTask();
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [dueDateDialogOpen, setDueDateDialogOpen] = useState(false);
-  const [attachmentViewerOpen,setAttachmentViewerOpen] = useState({open:false,selectedImage:0}); 
+  const [attachmentViewerOpen, setAttachmentViewerOpen] = useState({
+    open: false,
+    selectedImage: 0,
+  });
   const [showEditTextfield, setShowEditTextfield] = useState(false);
   const inputRef = useRef(null);
   const [deleteImagePath, setDeleteImagePath] = useState([]);
@@ -70,11 +73,11 @@ const OverviewTab = () => {
   };
 
   const handleAttachmentViewerOpen = (index) => {
-    setAttachmentViewerOpen({open:true,selectedImage:index});
+    setAttachmentViewerOpen({ open: true, selectedImage: index });
   };
 
   const handleAttachmentViewerClose = () => {
-    setAttachmentViewerOpen({open:false,selectedImage:0});
+    setAttachmentViewerOpen({ open: false, selectedImage: 0 });
   };
 
   useEffect(() => {
@@ -109,11 +112,14 @@ const OverviewTab = () => {
     }
   }, [showEditTextfield]);
 
-  const updateDueDate = async (startDate,endDate) => {
+  const updateDueDate = async (startDate, endDate) => {
     if (!startDate || !endDate) return;
-    await updateTaskInBackend({ due_start_date: startDate,due_end_date: endDate }, activeTask?.id);
+    await updateTaskInBackend(
+      { due_start_date: startDate, due_end_date: endDate },
+      activeTask?.id
+    );
   };
-
+  console.log("::active task in overview tab ", activeTask);
   return (
     <>
       <AssignDialog
@@ -130,11 +136,11 @@ const OverviewTab = () => {
         taskEndDate={formik?.values?.due_end_date}
         loadingEditTask={loadingEditTask}
       />
-      <AttachmentViewer 
-      open={attachmentViewerOpen?.open}
-      selectedImage = {attachmentViewerOpen?.selectedImage}
-      attachments={attachments}
-       handleClose={handleAttachmentViewerClose}
+      <AttachmentViewer
+        open={attachmentViewerOpen?.open}
+        selectedImage={attachmentViewerOpen?.selectedImage}
+        attachments={attachments}
+        handleClose={handleAttachmentViewerClose}
       />
       <Box padding={"24px 20px"}>
         <Box display={"flex"} flexDirection={"column"} gap={3}>
@@ -166,16 +172,98 @@ const OverviewTab = () => {
           </Box>
 
           <SectionRow label="Reporter" className="editTask__reporterBox">
-            <AvatarBox src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-17.webp" />
+            <AvatarBox
+              src={activeTask?.reporter?.avatar}
+              user={activeTask?.reporter}
+              withToolTip
+            />
           </SectionRow>
 
           <SectionRow label="Assignee" className="editTask__assigneeBox">
-            {activeTask?.assigned_to?.map((a, i) => (
-              <AvatarBox
-                key={i}
-                src={`https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-2.webp`}
-              />
-            ))}
+            <Box display={"flex"} flexDirection={"row-reverse"} gap={1}>
+              {activeTask?.assigned_to?.length > 6 && (
+                <MyTooltip
+                  content={
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                        padding: 1,
+                      }}
+                    >
+                      {activeTask?.assigned_to.map((user, index) => {
+                        const name = getFullName(
+                          user?.firstName,
+                          user?.lastName
+                        );
+                        return (
+                          <Box
+                            key={index}
+                            display="flex"
+                            alignItems="center"
+                            gap={1}
+                          >
+                            <img
+                              src={user.avatar}
+                              alt={name}
+                              style={{
+                                width: 24,
+                                height: 24,
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }}
+                            />
+                            <Typography fontSize={12} fontWeight={500}>
+                              {name}
+                            </Typography>
+                          </Box>
+                        );
+                      })}
+                    </Box>
+                  }
+                >
+                  <Box
+                    width={40}
+                    height={40}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    borderRadius="50%"
+                    overflow="hidden"
+                    fontSize="14px"
+                    sx={{
+                      cursor: "pointer",
+                      background: "#C8FAD6",
+                    }}
+                    color={"#007867"}
+                    fontWeight={600}
+                    position={"relative"}
+                    boxSizing={"content-box"}
+                    border={"2px solid #FFFFFF"}
+                  >
+                    +{activeTask?.assigned_to?.length - 5}
+                  </Box>
+                </MyTooltip>
+              )}
+              <Box display={"flex"} gap={1}>
+                {activeTask?.assigned_to?.length > 0 &&
+                  activeTask?.assigned_to
+                    ?.slice(0, activeTask?.assigned_to?.length > 6 ? 5 : 6)
+                    ?.map((item, index) => {
+                      return (
+                        <MyTooltip key={index} title={name} placement="bottom">
+                          <AvatarBox
+                            key={index}
+                            src={item?.avatar}
+                            user={item}
+                            withToolTip
+                          />
+                        </MyTooltip>
+                      );
+                    })}
+              </Box>
+            </Box>
             <MyTooltip title="Add assignee" placement="bottom">
               <Box
                 width={40}
@@ -211,7 +299,7 @@ const OverviewTab = () => {
             </MyTooltip>
           </SectionRow>
           <SectionRow label="Labels" className="editTask__labelsBox">
-            {["Technology", "Health and Wellness", "Finance"].map(
+            {["Technology", "Health and wellness", "Finance"].map(
               (label, i) => (
                 <LabelTag key={i} text={label} />
               )
@@ -228,7 +316,10 @@ const OverviewTab = () => {
                 "&:hover": { background: "rgba(145,158,171,0.08)" },
               }}
             >
-              {formatDueDateRange(formik?.values?.due_start_date,formik?.values?.due_end_date)}
+              {formatDueDateRange(
+                formik?.values?.due_start_date,
+                formik?.values?.due_end_date
+              )}
             </Typography>
           </SectionRow>
           <SectionRow label="Priority" className="editTask__priorityBox">
@@ -297,13 +388,13 @@ const OverviewTab = () => {
                       src={
                         file instanceof File ? URL.createObjectURL(file) : file
                       }
-                      onClick={()=>handleAttachmentViewerOpen(index)}
+                      onClick={() => handleAttachmentViewerOpen(index)}
                       alt="preview"
                       style={{
                         width: "100%",
                         height: "100%",
                         objectFit: "cover",
-                        cursor:"pointer",
+                        cursor: "pointer",
                       }}
                     />
                     <IconButton
@@ -442,29 +533,60 @@ const SectionRow = ({ label, labelStyle = {}, children, className = "" }) => (
   </Box>
 );
 
-const AvatarBox = ({ src, alt = "user" }) => (
-  <Box
-    width={40}
-    height={40}
-    display="flex"
-    alignItems="center"
-    justifyContent="center"
-    borderRadius="50%"
-    overflow="hidden"
-    fontSize="1.25rem"
-  >
-    <img
-      src={src}
-      alt={alt}
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        color: "transparent",
-      }}
-    />
-  </Box>
-);
+const AvatarBox = ({ src, alt = "user", user, withToolTip }) =>
+  withToolTip ? (
+    <MyTooltip
+      title={getFullName(user?.firstName, user?.lastName)}
+      placement="bottom"
+    >
+      <Box
+        width={40}
+        height={40}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        borderRadius="50%"
+        overflow="hidden"
+        fontSize="1.25rem"
+        sx={{
+          cursor: "pointer",
+        }}
+      >
+        <img
+          src={src}
+          alt={alt}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            color: "transparent",
+          }}
+        />
+      </Box>
+    </MyTooltip>
+  ) : (
+    <Box
+      width={40}
+      height={40}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      borderRadius="50%"
+      overflow="hidden"
+      fontSize="1.25rem"
+    >
+      <img
+        src={src}
+        alt={alt}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          color: "transparent",
+        }}
+      />
+    </Box>
+  );
 
 const LabelTag = ({ text }) => (
   <Box

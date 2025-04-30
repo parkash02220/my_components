@@ -61,7 +61,6 @@ export function TaskCard({ task, isOverlay }) {
     //   ? "2px solid rgba(0,0,0,0.2)"
     //   : undefined,
   };
-  console.log("::task data in taskcard", taskData);
 
   return (
     <>
@@ -266,11 +265,15 @@ export function TaskCard({ task, isOverlay }) {
                         alignItems={"center"}
                         borderRadius={"50%"}
                         overflow={"hidden"}
+                        sx={{
+                          background:"#C8FAD6"
+                        }}
                       >
-                        {taskData?.assigned_to?.length - 3}
+                        +{taskData?.assigned_to?.length - 3}
                       </Box>
                     </MyTooltip>
                   )}
+                  <Box display={'flex'}>
                   {taskData?.assigned_to?.length > 0 &&
                     taskData?.assigned_to
                       ?.slice(0, taskData?.assigned_to?.length > 4 ? 3 : 4)
@@ -300,7 +303,7 @@ export function TaskCard({ task, isOverlay }) {
                               overflow={"hidden"}
                             >
                               <img
-                                src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-1.webp"
+                                src={item?.avatar}
                                 alt="avatar"
                                 style={{
                                   width: "100%",
@@ -315,6 +318,7 @@ export function TaskCard({ task, isOverlay }) {
                           </MyTooltip>
                         );
                       })}
+                      </Box>
                 </Box>
               </Box>
             </Box>

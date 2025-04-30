@@ -5,23 +5,25 @@ import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 const useGetAllUsers = () => {
-  const [loadingAllUsers, setLoadingAllUsers] = useState(false);
+  const [loadingAllUsers,setLoadingAllUsers] = useState(false);
   const [errorAllUsers, setErrorAllUsers] = useState(false);
   const [helperTextAllUsers, setHelperTextAllUsers] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const [hasMore,setHasMore] = useState(false);
-  const [page,setPage] = useState(1);
-  const [pageSize,setPageSize] = useState(10);
+  const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
   const debouncedSearchValue = useDebounce(searchValue, 500);
   const hasInteracted = useRef(false);
   const [allUsers, setAllUsers] = useState([]);
   const { ref: loadMoreRef, inView } = useInView();
+
   const handleSearchValueChange = (e) => {
     hasInteracted.current = true;
     setSearchValue(e.target.value);
+    setPage(1); 
   };
 
-  const getAllUsersFromBackend = async (signal, search = "") => {
+  const getAllUsersFromBackend = async (signal, search = "",type="pagination") => {
     setLoadingAllUsers(true);
     setErrorAllUsers(false);
     setHelperTextAllUsers("");
@@ -34,40 +36,57 @@ const useGetAllUsers = () => {
 
     setLoadingAllUsers(false);
 
-    if (res.error) {
+    if (res?.error) {
+      
       setErrorAllUsers(true);
-      console.log("::error while getting all users from backend");
+      // console.error("::error while getting all users from backend");
       return;
     }
 
     const data = res?.data;
-    const hasMoreUser =  (data?.page * data?.limit) < data?.totalUsers ? true :false;
+    const hasMoreUser = (data?.page * data?.limit) < data?.totalUsers;
     setHasMore(hasMoreUser);
-    const formattedIdResponse = convertIdFields(data?.users || []);
+
+    const formattedUsers = convertIdFields(data?.users || []);
     const uniqueUsers = Array.from(
-      new Map(formattedIdResponse?.map((user) => [user?.id, user])).values()
+      new Map(formattedUsers.map((user) => [user?.id, user])).values()
     );
-    setAllUsers(uniqueUsers);
+
+    setAllUsers((prev) =>
+      type === "search" ? uniqueUsers : [...prev, ...uniqueUsers]
+    );
   };
 
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
 
-    getAllUsersFromBackend(signal, debouncedSearchValue);
+    setPage(1);
+    getAllUsersFromBackend(signal, debouncedSearchValue, "search");
 
-    return () => {
-      controller.abort();
-    };
-  }, [debouncedSearchValue,page]);
+    return () => controller.abort();
+  }, [debouncedSearchValue]);
 
+  useEffect(() => {
+    if (page > 1) {
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      getAllUsersFromBackend(signal, debouncedSearchValue, "pagination");
+
+      return () => controller.abort();
+    }
+  }, [page]);
+
+ 
   useEffect(() => {
     if (inView && hasMore && !loadingAllUsers) {
       setPage((prev) => prev + 1);
     }
   }, [inView, hasMore, loadingAllUsers]);
-console.log("::page",page)
+
   return {
+    setPage,
     loadMoreRef,
     allUsers,
     loadingAllUsers,
@@ -76,7 +95,6 @@ console.log("::page",page)
     searchValue,
     handleSearchValueChange,
     setSearchValue,
-    getAllUsersFromBackend,
   };
 };
 

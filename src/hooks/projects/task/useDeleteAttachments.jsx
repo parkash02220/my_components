@@ -27,9 +27,8 @@ const useDeleteAttachments = () => {
         }
 
         const images = res?.data?.images;
-        if(images){
           dispatch({type:"ADD_IMAGE_TO_TASK",payload:{images,taskId,columnId}});
-        }
+
     } 
     return {loadingDeleteAttachment,errorDeleteAttachment,deleteAttachment};
 }

@@ -262,13 +262,6 @@ const SignUp = () => {
                         onChange={formik.handleChange}
                         sx={{ display: "flex", flexDirection: "row" }}
                       >
-                        <Box display={'flex'} alignItems={'center'} mr={2}>
-                            <Typography  sx={{
-                          color: "#637381",
-                          fontWeight: 600,
-                          fontSize: 14,
-                        }}>Gender</Typography>
-                        </Box>
                         <FormControlLabel
                           value="male"
                           control={<Radio sx={{ fontSize: 18,transform: "scale(0.8)" }} />}
