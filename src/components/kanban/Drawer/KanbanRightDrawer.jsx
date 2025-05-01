@@ -7,9 +7,10 @@ import useGetTask from "@/hooks/projects/task/useGetTask";
 import { useAppContext } from "@/context/AppContext";
 
 function KanbanRightDrawer({ open, handleDrawer, taskId }) {
-  const { loadingGetTask, getTaskFromBackend } = useGetTask();
+  const { getTaskFromBackend } = useGetTask();
   const { state } = useAppContext();
-  const { activeTask } = state;
+  const { activeTask, loading } = state;
+  const loadingGetTask = loading.activeTask;
   const tabValues = [
     {
       key: 1,

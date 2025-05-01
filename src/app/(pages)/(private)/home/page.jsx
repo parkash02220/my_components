@@ -1,6 +1,6 @@
 "use client";
 
-import useAllProjects from "@/hooks/projects/useAllProjects";
+import useAllProjects from "@/hooks/projects/useGetAllProjects";
 import { Box } from "@mui/material";
 
 export default function Home() {

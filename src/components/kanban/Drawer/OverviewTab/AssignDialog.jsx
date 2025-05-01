@@ -19,6 +19,9 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
     searchValue,
     handleSearchValueChange,
     setSearchValue,
+    setAllUsers,
+    debouncedSearchValue,
+    totalUsers,
   } = useGetAllUsers();
   const [hasMounted, setHasMounted] = useState(true);
   const [assignedUserIds, setAssignedUserIds] = useState([]);
@@ -54,7 +57,15 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
     setSearchValue("");
     handleClose();
   };
-console.log("::all user",allUsers)
+  console.log("::all user", allUsers);
+
+  useEffect(() => {
+    if (!open) {
+      setSearchValue("");
+      setAllUsers([]); // Clear loaded users
+      setPage(1);
+    }
+  }, [open]);
   return (
     <>
       <Box
@@ -86,7 +97,7 @@ console.log("::all user",allUsers)
                 Contacts
               </Typography>
               <Typography color={theme.palette.primary.main}>{`(${
-                allUsers?.length || 0
+                totalUsers || 0
               })`}</Typography>
             </Box>
           }
@@ -106,18 +117,8 @@ console.log("::all user",allUsers)
                   onClear={handleSearchClear}
                 />
               </Box>
-              {  loadingAllUsers ? (
-                <Box
-                  className="assignDialog__loadingBox"
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  minHeight={200}
-                >
-                  <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
-                </Box>
-              ) : 
-              allUsers?.length > 0 ? (
+
+              {allUsers?.length > 0 ? (
                 <Box
                   className="assignDialog__contactListBox"
                   padding={"0px 20px 16px 20px"}
@@ -133,7 +134,7 @@ console.log("::all user",allUsers)
                     },
                   }}
                 >
-                  {allUsers?.map((user) => {
+                  {allUsers.map((user) => {
                     const isAssigned = assignedUserIds.includes(user?.id);
                     return (
                       <Box
@@ -141,7 +142,6 @@ console.log("::all user",allUsers)
                         className="assignDialog__contactBox"
                         display={"flex"}
                         gap={2}
-                        // height={64}
                         alignItems={"center"}
                         justifyContent={"space-between"}
                       >
@@ -213,19 +213,20 @@ console.log("::all user",allUsers)
                       </Box>
                     );
                   })}
+
                   {loadingAllUsers && (
                     <Box display="flex" justifyContent="center" py={2}>
                       <img
                         src="/iosLoader.gif"
                         width={32}
                         height={32}
-                        alt="Loading more..."
+                        alt="Loading..."
                       />
                     </Box>
                   )}
                   <Box ref={loadMoreRef} style={{ height: 1 }} />
                 </Box>
-              ) : !loadingAllUsers ? (
+              ) : !loadingAllUsers && debouncedSearchValue ? (
                 <Box
                   className="assignDialog__emptyBox"
                   display={"flex"}
@@ -265,7 +266,17 @@ console.log("::all user",allUsers)
                     Try checking for typos or using complete words.
                   </Typography>
                 </Box>
-              ) : null}
+              ) : (
+                <Box
+                  className="assignDialog__loadingBox"
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  minHeight={200}
+                >
+                  <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
+                </Box>
+              )}
             </Box>
           }
         />

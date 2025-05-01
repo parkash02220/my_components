@@ -1,20 +1,11 @@
 import { ListItem } from "@mui/material";
 import MySearch from "../MySearch/MySearch";
-import useSearchProject from "@/hooks/projects/useSearchProject";
 
-const SearchNavItem = ({ open }) => {
-  const {
-    loadingSearchProject,
-    errorSearchProject,
-    helperTextSearchProject,
-    searchInputValue,
-    handleSearchInputChange,
-    setSearchInputValue,
-  } = useSearchProject();
+const SearchNavItem = ({ open, value, onChange, handleSearchClear }) => {
   return (
     <>
       {open ? (
-        <ListItem sx={{p:0, py:2}}>
+        <ListItem sx={{ p: 0, py: 2 }}>
           <MySearch
             fullWidth
             minWidth="100px"
@@ -22,10 +13,9 @@ const SearchNavItem = ({ open }) => {
             placeholder="Search projects..."
             hoverBorderColor={"#1C252E"}
             focusedBorder="2px solid #1C252E"
-            value={searchInputValue}
-            onChange={handleSearchInputChange}
-            onClear={() => setSearchInputValue("")}
-            loading={loadingSearchProject}
+            value={value}
+            onChange={onChange}
+            onClear={() => handleSearchClear()}
           />
         </ListItem>
       ) : null}

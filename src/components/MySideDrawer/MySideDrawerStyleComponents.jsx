@@ -58,11 +58,11 @@ export const Drawer = styled(MuiDrawer, {
     "& .MuiDrawer-paper": {
       ...openedMixin(theme),
       overflowY: "auto",
-      "&::-webkit-scrollbar": {
-        display: "none",
-      },
-      scrollbarWidth: "none",
-      msOverflowStyle: "none",
+      // "&::-webkit-scrollbar": {
+      //   display: "none",
+      // },
+      // scrollbarWidth: "none",
+      // msOverflowStyle: "none",
     },
   }),
   ...(!open && {

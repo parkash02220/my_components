@@ -1,32 +1,38 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Box, CircularProgress } from "@mui/material";
 import KanbanBoardWrapper from "@/components/kanban/KanbanBoardWrapper";
 import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
-import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
+import { useRouter } from "next/navigation";
+import useGetProject from "@/hooks/projects/useGetProject";
+import { useAppContext } from "@/context/AppContext";
 
-export default async function ProjectPageContent({ params }) {
-  const id = params.id;
-  const cookieStore = cookies();
-  const token = cookieStore.get("auth_token")?.value;
+export default function ProjectPageContent({ id }) {
+  const { state } = useAppContext();
+  const { activeProject, loading, projectVersion } = state;
+  const loadingActiveProject = loading?.activeProject;
+  const { getProjectById } = useGetProject(id);
 
-  const res = await ApiCall({
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/get-board-with-details/${id}`,
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (res.error || !res.data?.board) {
-    notFound();
+  if (loadingActiveProject || !activeProject) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
-
-  const formattedProject = convertIdFields(res.data.board);
 
   return (
     <KanbanBoardWrapper
       boardId={id}
-      currentProject={formattedProject}
+      activeProject={activeProject}
+      projectVersion={projectVersion}
     />
   );
 }

@@ -1,12 +1,7 @@
-import { Suspense } from "react";
 import ProjectPageContent from "./ProjectPageContent";
-import Loader from "@/components/Loader/Loader";
 
+export default async function ProjectPage({ params }) {
+  const { id } = await params;
 
-export default function ProjectPage({ params }) {
-  return (
-    <Suspense fallback={<Loader />}>
-      <ProjectPageContent params={params} />
-    </Suspense>
-  );
+  return <ProjectPageContent id={id} />;
 }

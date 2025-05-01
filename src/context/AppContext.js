@@ -1,24 +1,65 @@
 import React, { createContext, useReducer, useContext, useState } from "react";
 import { initialState } from "./initialState";
-
+import * as actions from './action';
 const AppContext = createContext();
+
+function setLoading(state, key, value) {
+  return { ...state.loading, [key]: value };
+}
+
+function setError(state, key, value) {
+  return { ...state.error, [key]: value };
+}
 
 function projectsReducer(state=initialState, action) {
   const { type, payload } = action;
   switch (type) {
-    case "SET_PROJECTS": {
-      return {
-        ...state,
-        projects: payload || [],
-      };
-    }
+    case actions.SET_PROJECTS_REQUEST:
+  return {
+    ...state,
+    loading: setLoading(state, "projects", true),
+    error: setError(state, "projects", null),
+  };
 
-    case "SET_ACTIVE_PROJECT": {
-      return {
-        ...state,
-        activeProject: payload || {},
-      };
+case actions.SET_PROJECTS_SUCCESS:
+  return {
+    ...state,
+    projects: payload,
+    loading: setLoading(state, "projects", false),
+  };
+
+case actions.SET_PROJECTS_FAILURE:
+  return {
+    ...state,
+    loading: setLoading(state, "projects", false),
+    error: setError(state, "projects", payload),
+  };
+  case "CREATE_PROJECT" : {
+    return {
+      ...state,
+      projects:[payload,...state?.projects]
     }
+  }
+  case actions.SET_ACTIVE_PROJECT_REQUEST:
+    return {
+      ...state,
+      loading: setLoading(state, "activeProject", true),
+      error: setError(state, "activeProject", null),
+    };
+  
+  case actions.SET_ACTIVE_PROJECT_SUCCESS:
+    return {
+      ...state,
+      activeProject: payload,
+      loading: setLoading(state, "activeProject", false),
+    };
+  
+  case actions.SET_ACTIVE_PROJECT_FAILURE:
+    return {
+      ...state,
+      loading: setLoading(state, "activeProject", false),
+      error: setError(state, "activeProject", payload),
+    };
 
     case "UPDATE_PROJECT_NAME": {
       const { newName, projectId } = payload;
@@ -215,12 +256,27 @@ function projectsReducer(state=initialState, action) {
         },
       };
     }
-    case "SET_ACTIVE_TASK": {
+    case actions.SET_ACTIVE_TASK_REQUEST:
       return {
         ...state,
-        activeTask: payload || {},
+        loading: setLoading(state, "activeTask", true),
+        error: setError(state, "activeTask", null),
       };
-    }
+    
+    case actions.SET_ACTIVE_TASK_SUCCESS:
+      return {
+        ...state,
+        activeTask: payload,
+        loading: setLoading(state, "activeTask", false),
+      };
+    
+    case actions.SET_ACTIVE_TASK_FAILURE:
+      return {
+        ...state,
+        loading: setLoading(state, "activeTask", false),
+        error: setError(state, "activeTask", payload),
+      };
+    
 
     case "EDIT_TASK": {
       const updatedTask = payload;
@@ -355,12 +411,26 @@ function projectsReducer(state=initialState, action) {
         }
     }
 
-    case "SET_ACTIVE_USER":{
-       return {
+    case actions.SET_ACTIVE_USER_REQUEST:
+      return {
         ...state,
-        activeUser:payload || {}
-       }
-    }
+        loading: setLoading(state, "activeUser", true),
+        error: setError(state, "activeUser", null),
+      };
+    
+    case actions.SET_ACTIVE_USER_SUCCESS:
+      return {
+        ...state,
+        activeUser: payload,
+        loading: setLoading(state, "activeUser", false),
+      };
+    
+    case actions.SET_ACTIVE_USER_FAILURE:
+      return {
+        ...state,
+        loading: setLoading(state, "activeUser", false),
+        error: setError(state, "activeUser", payload),
+      };
 
     default:
       return state;

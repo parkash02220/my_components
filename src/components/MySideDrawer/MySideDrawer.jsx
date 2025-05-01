@@ -25,7 +25,6 @@ import {
 import { styled } from "@mui/material/styles";
 import { usePathname, useRouter } from "next/navigation";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import useAllProjects from "@/hooks/projects/useAllProjects";
 import useCreateProject from "@/hooks/projects/useCreateProject";
 import { useAppContext } from "@/context/AppContext";
 import useLogout from "@/hooks/projects/user/useLogout";
@@ -33,14 +32,26 @@ import { SingleNavItem } from "./SingleNavItem";
 import { CollapsibleNavItem } from "./CollapsibleNavItem";
 import SearchNavItem from "./SearchNavItem";
 import ConfirmationPopup from "../ConfirmationPopup";
+import useGetAllProjects from "@/hooks/projects/useGetAllProjects";
 
 export default function MySideDrawer({ open, setOpen }) {
   const [logoutPopupOpen, setLogoutPopupOpen] = useState(false);
-
+  const {
+    allProjects,
+    isSearchLoading,
+    isLoadMoreLoading,
+    searchValue,
+    handleSearchValueChange,
+    loadMoreRef,
+    loadingAllProjects,
+    getAllProjectsFromBackend,
+    hasMore,
+    handleSearchClear,
+    isInitialFetchDone,
+  } = useGetAllProjects();
   const [expandedItems, setExpandedItems] = useState({});
   const [selectedDrawerItem, setSelectedDrawerItem] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { loadingProjects, fetchAllProjects } = useAllProjects();
   const { state } = useAppContext();
   const { projects } = state;
   const [loading, isCreated, createProject] = useCreateProject();
@@ -88,15 +99,18 @@ export default function MySideDrawer({ open, setOpen }) {
     title: project?.name,
     icon: <FolderOpenIcon />,
   }));
-
+  console.log("::projectssssssss", projects);
   const NAVIGATION = [
     { type: "header", title: "Projects" },
     { type: "item", segment: "addproject", title: "+ Project" },
     { type: "searchField" },
   ];
 
-  if (loadingProjects && (!projects || projects.length === 0)) {
-  } else if (!loadingProjects && projects?.length === 0) {
+  const shouldShowNoProjects =
+    isInitialFetchDone && !loadingAllProjects && projects?.length === 0;
+
+  if (isSearchLoading) {
+  } else if (shouldShowNoProjects) {
     NAVIGATION.push({ type: "message", title: "No projects found" });
   } else if (projects?.length > 0) {
     NAVIGATION.push(
@@ -131,11 +145,15 @@ export default function MySideDrawer({ open, setOpen }) {
       if (item.type === "searchField") {
         return (
           <React.Fragment key={index}>
-            <SearchNavItem open={open} />
-            {loadingProjects && (!projects || projects.length === 0) && (
+            <SearchNavItem
+              open={open}
+              value={searchValue}
+              onChange={handleSearchValueChange}
+              handleSearchClear={handleSearchClear}
+            />
+            {(!isInitialFetchDone || isSearchLoading || loadingAllProjects) && (
               <ListItem sx={{ justifyContent: "center", py: 1 }}>
-                {/* <Loader /> */}
-                <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
+                <img src="/iosLoader.gif" width="30px" height="30px" />
               </ListItem>
             )}
           </React.Fragment>
@@ -192,7 +210,6 @@ export default function MySideDrawer({ open, setOpen }) {
 
   const handleCreateProject = async (name) => {
     await createProject(name);
-    fetchAllProjects();
   };
 
   const handleLogoutPopupOpen = () => {
@@ -282,6 +299,14 @@ export default function MySideDrawer({ open, setOpen }) {
           <DrawerHeader />
           <List sx={{ padding: open ? "8px 16px" : "8px" }}>
             {renderNavItems()}
+            {isLoadMoreLoading && !isSearchLoading && (
+              <ListItem sx={{ justifyContent: "center", py: 1 }}>
+                <img src="/iosLoader.gif" width="30px" height="30px" />
+              </ListItem>
+            )}
+            {projects?.length > 0 && hasMore && !isLoadMoreLoading && (
+              <Box ref={loadMoreRef} style={{ height: 1 }} />
+            )}
           </List>
         </Drawer>
       </Box>

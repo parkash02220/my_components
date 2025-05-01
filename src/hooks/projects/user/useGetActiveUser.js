@@ -1,36 +1,35 @@
 import { useAppContext } from "@/context/AppContext";
 import { convertIdFields } from "@/utils";
-
+import * as actions from '@/context/action';
 const { ApiCall } = require("@/utils/ApiCall");
 const { useState, useEffect } = require("react")
 
 const useGetActiveUser = () => {
     const {dispatch} = useAppContext();
-    const [loadingActiveUser,setLoadingActiveUser] = useState(false);
-    const [errorActiveUser,setErrorActiveUser] = useState(false);
     
     const fetchActiveUser = async () => {
-        setLoadingActiveUser(true);
-        setErrorActiveUser(false);
-        const res = await ApiCall({
-            url:`${process.env.NEXT_PUBLIC_BASE_URL}/get-user`,
-            method:"GET",
-        });
-
-        setLoadingActiveUser(false);
-        if(res.error){
-            console.log("::error while getting active user",res);
-            setErrorActiveUser(true);
-            return;
+        dispatch({type:actions.SET_ACTIVE_USER_REQUEST});
+        try {
+            const res = await ApiCall({
+                url:`${process.env.NEXT_PUBLIC_BASE_URL}/get-user`,
+                method:"GET",
+            });
+    
+            if(res.error){
+                dispatch({type:actions.SET_ACTIVE_PROJECT_FAILURE,payload:res.error});
+                return;
+            }
+    
+            const formattedIdResponse = convertIdFields(res?.data?.user || {});
+            dispatch({type:actions.SET_ACTIVE_USER_SUCCESS,payload:formattedIdResponse});
+        } catch (error) {
+            dispatch({type:actions.SET_ACTIVE_PROJECT_FAILURE,payload:error});
         }
-
-        const formattedIdResponse = convertIdFields(res?.data?.user || {});
-        dispatch({type:"SET_ACTIVE_USER",payload:formattedIdResponse});
     }
     useEffect(()=>{
         fetchActiveUser();
     },[])
-    return {loadingActiveUser,errorActiveUser,fetchActiveUser};
+    return {fetchActiveUser};
 }
 
 export default useGetActiveUser;
