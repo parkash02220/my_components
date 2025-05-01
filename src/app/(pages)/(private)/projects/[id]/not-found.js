@@ -28,7 +28,7 @@ export default function NotFound() {
           ></Box>
           <Box>
             <Typography variant="h1" fontSize={48} color="#1C252E">
-              404 Project not found
+              {`404 Project not found`}
             </Typography>
           </Box>
           <Box
@@ -38,10 +38,10 @@ export default function NotFound() {
             flexDirection={"column"}
           >
             <Typography color="#1C252E">
-              Looks like something's broken.It's not you its us.
+            {` Looks like something's broken.It's not you its us.`}
             </Typography>
             <Typography color="#1C252E">
-              How about selecting other page?.
+              {`  How about selecting other page?.`}
             </Typography>
           </Box>
           <Box>
