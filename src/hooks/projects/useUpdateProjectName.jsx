@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import useDebounce from "../common/useDebounce";
 import { ApiCall } from "@/utils/ApiCall";
-import useProjectNameAvailability from "./useProjectNameAvailability";
 import { useAppContext } from "@/context/AppContext";
+import useToast from "../common/useToast";
 
 const useUpdateProjectName = (
   initialName = "",
   setShowProjectNameTextfield
 ) => {
+  const toastId = "update_project_name";
+  const { showToast } = useToast();
   const { dispatch } = useAppContext();
   const [loadingUpdateProjectName, setLoadingUpdateProjectName] =
     useState(false);
@@ -111,6 +113,11 @@ const useUpdateProjectName = (
 
     setLoadingUpdateProjectName(false);
     if (res.error) {
+      showToast({
+        toastId,
+        type: "error",
+        message: "Failed to update project name. Please try again.",
+      });
       console.log("::error while changing project name", res);
       setErrorUpdateProjectName(true);
       return;

@@ -7,10 +7,8 @@ import useGetTask from "@/hooks/projects/task/useGetTask";
 import { useAppContext } from "@/context/AppContext";
 
 function KanbanRightDrawer({ open, handleDrawer, taskId }) {
-  const { getTaskFromBackend } = useGetTask();
-  const { state } = useAppContext();
-  const { activeTask, loading } = state;
-  const loadingGetTask = loading.activeTask;
+  const { activeTask, loadingActiveTask, errorActiveTask, getTaskFromBackend } =
+    useGetTask();
   const tabValues = [
     {
       key: 1,
@@ -52,21 +50,41 @@ function KanbanRightDrawer({ open, handleDrawer, taskId }) {
         <RightDrawer
           open={open}
           header={
-            <Header
-              activeTask={activeTask}
-              handleDrawer={handleRightDrawerClose}
-            />
+            !loadingActiveTask ? (
+              <Header
+                activeTask={activeTask}
+                handleDrawer={handleRightDrawerClose}
+              />
+            ) : null
           }
           handleDrawer={handleRightDrawerClose}
           children={
-            <Content
-              tabValues={tabValues}
-              currentTab={currentTab}
-              handleTabChange={handleTabChange}
-              activeTask={activeTask}
-              loadingGetTask={loadingGetTask}
-              open={open}
-            />
+            !loadingActiveTask ? (
+              <Content
+                tabValues={tabValues}
+                currentTab={currentTab}
+                handleTabChange={handleTabChange}
+                activeTask={activeTask}
+                loadingGetTask={loadingActiveTask}
+                open={open}
+              />
+            ) : (
+              <Box
+                sx={{
+                  minHeight: "100%",
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <img
+                  src="/iosLoader.gif"
+                  alt="loading"
+                  style={{ width: "40px", height: "40px" }}
+                />
+              </Box>
+            )
           }
         />
       </Box>

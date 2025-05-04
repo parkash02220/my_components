@@ -17,22 +17,22 @@ function projectsReducer(state=initialState, action) {
     case actions.SET_PROJECTS_REQUEST:
   return {
     ...state,
-    loading: setLoading(state, "projects", true),
-    error: setError(state, "projects", null),
+    loading: setLoading(state, "loadingProjects", true),
+    error: setError(state, "errorProjects", null),
   };
 
 case actions.SET_PROJECTS_SUCCESS:
   return {
     ...state,
     projects: payload,
-    loading: setLoading(state, "projects", false),
+    loading: setLoading(state, "loadingProjects", false),
   };
 
 case actions.SET_PROJECTS_FAILURE:
   return {
     ...state,
-    loading: setLoading(state, "projects", false),
-    error: setError(state, "projects", payload),
+    loading: setLoading(state, "loadingProjects", false),
+    error: setError(state, "errorProjects", payload),
   };
   case "CREATE_PROJECT" : {
     return {
@@ -43,22 +43,22 @@ case actions.SET_PROJECTS_FAILURE:
   case actions.SET_ACTIVE_PROJECT_REQUEST:
     return {
       ...state,
-      loading: setLoading(state, "activeProject", true),
-      error: setError(state, "activeProject", null),
+      loading: setLoading(state, "loadingActiveProject", true),
+      error: setError(state, "errorActiveProject", null),
     };
   
   case actions.SET_ACTIVE_PROJECT_SUCCESS:
     return {
       ...state,
       activeProject: payload,
-      loading: setLoading(state, "activeProject", false),
+      loading: setLoading(state, "loadingActiveProject", false),
     };
   
   case actions.SET_ACTIVE_PROJECT_FAILURE:
     return {
       ...state,
-      loading: setLoading(state, "activeProject", false),
-      error: setError(state, "activeProject", payload),
+      loading: setLoading(state, "loadingActiveProject", false),
+      error: setError(state, "errorActiveProject", payload),
     };
 
     case "UPDATE_PROJECT_NAME": {
@@ -259,22 +259,22 @@ case actions.SET_PROJECTS_FAILURE:
     case actions.SET_ACTIVE_TASK_REQUEST:
       return {
         ...state,
-        loading: setLoading(state, "activeTask", true),
-        error: setError(state, "activeTask", null),
+        loading: setLoading(state, "loadingActiveTask", true),
+        error: setError(state, "errorActiveTask", null),
       };
     
     case actions.SET_ACTIVE_TASK_SUCCESS:
       return {
         ...state,
         activeTask: payload,
-        loading: setLoading(state, "activeTask", false),
+        loading: setLoading(state, "loadingActiveTask", false),
       };
     
     case actions.SET_ACTIVE_TASK_FAILURE:
       return {
         ...state,
-        loading: setLoading(state, "activeTask", false),
-        error: setError(state, "activeTask", payload),
+        loading: setLoading(state, "loadingActiveTask", false),
+        error: setError(state, "errorActiveTask", payload),
       };
     
 
@@ -414,22 +414,22 @@ case actions.SET_PROJECTS_FAILURE:
     case actions.SET_ACTIVE_USER_REQUEST:
       return {
         ...state,
-        loading: setLoading(state, "activeUser", true),
-        error: setError(state, "activeUser", null),
+        loading: setLoading(state, "loadingActiveUser", true),
+        error: setError(state, "errorActiveUser", null),
       };
     
     case actions.SET_ACTIVE_USER_SUCCESS:
       return {
         ...state,
         activeUser: payload,
-        loading: setLoading(state, "activeUser", false),
+        loading: setLoading(state, "loadingActiveUser", false),
       };
     
     case actions.SET_ACTIVE_USER_FAILURE:
       return {
         ...state,
-        loading: setLoading(state, "activeUser", false),
-        error: setError(state, "activeUser", payload),
+        loading: setLoading(state, "loadingActiveUser", false),
+        error: setError(state, "errorActiveUser", payload),
       };
 
     default:

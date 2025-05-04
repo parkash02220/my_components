@@ -3,8 +3,11 @@ import axios from "axios";
 import { ApiCall } from "@/utils/ApiCall";
 import { useAppContext } from "@/context/AppContext";
 import { convertIdFields } from "@/utils";
+import useToast from "@/hooks/common/useToast";
 
 const useCreateTask = (sectionId="", setCreateTaskOpen) => {
+  const toastId = "create_task";
+  const {showToast} = useToast();
   const [newTaskName, setNewTaskName] = useState("");
   const [loadingCreateTask,setLoadingCreateTask] = useState(false);
   const [errorCreateTask,setErrorCreateTask] = useState(false);
@@ -51,15 +54,16 @@ const useCreateTask = (sectionId="", setCreateTaskOpen) => {
 
     setLoadingCreateTask(false);
     if(res.error){
+        showToast({toastId,type:"error",message:"Failed to create the task. Please try again."});
         console.log("::error while creating task");
         return;
     }
 
     const data = res?.data;
 
-    const formattedIdResponse = convertIdFields(res?.data?.task || []);
-
+    const formattedIdResponse = convertIdFields(data?.task || []);
      dispatch({type:"ADD_TASK_TO_SECTION",payload:{sectionId,task:formattedIdResponse}});
+     showToast({toastId,type:"success",message:"Task created successfully."});
      setCreateTaskOpen(false);
   };
 

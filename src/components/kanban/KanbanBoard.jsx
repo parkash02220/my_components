@@ -46,6 +46,7 @@ export default function KanbanBoard({
     newColumnName,
     handleColumnInputfieldChange,
     handleColumnInputKeyDown,
+    setNewColumnName,
   } = useCreateSection(boardId, setShowAddColumnButton);
   const { loadingUpdatingColoumPos, updateColumnPosition } =
     useUpdateColumnPosition();
@@ -309,6 +310,11 @@ export default function KanbanBoard({
     setOpenDrawer(false);
   };
 
+  const handleCreateSectionBlur = () => {
+    setNewColumnName("");
+    setShowAddColumnButton(true);
+  };
+
   useEffect(() => {
     if (activeTaskId) {
       handleDrawerOpen();
@@ -374,7 +380,7 @@ export default function KanbanBoard({
                 value={newColumnName}
                 onChange={handleColumnInputfieldChange}
                 onKeyDown={handleColumnInputKeyDown}
-                onBlur={() => setShowAddColumnButton(true)}
+                onBlur={handleCreateSectionBlur}
                 inputFontSize="18px"
                 loading={loadingCreateColumn}
               />

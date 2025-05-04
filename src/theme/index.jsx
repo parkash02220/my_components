@@ -1,43 +1,16 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles";
+import palette from "./palette";
+import typography from "./typography";
+import components from "./components";
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1C252E',
-      contrastText: '#fff',
-    },
-    secondary: {
-      main: '#637381',
-    },
-    error: {
-      main: '#f44336',
-    },
-    background: {
-      default: '#FFFFFF',
-    },
-  },
+  palette,
+  typography,
   spacing: 8,
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    h1: {
-      fontSize: '2rem',
-      fontWeight: 600,
-    },
-  },
   shape: {
     borderRadius: 8,
   },
-  components: {
-
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-          borderRadius: 8,
-        },
-      },
-    },
-  },
+  components,
 });
 
 export default theme;

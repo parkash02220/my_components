@@ -1,6 +1,13 @@
 "use client";
 
-import { AppBar, Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import ProfileDrawer from "./ProfileDrawer";
 import { useEffect, useRef, useState } from "react";
 import useUpdateProjectName from "@/hooks/projects/useUpdateProjectName";
@@ -13,11 +20,11 @@ import useGetActiveUser from "@/hooks/projects/user/useGetActiveUser";
 
 export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
   const { state } = useAppContext();
-  const { activeProject,activeUser } = state;
+  const { activeProject } = state;
   const inputRef = useRef();
   const [showProjectNameTextfield, setShowProjectNameTextfield] =
     useState(false);
-    const [deletePopupOpen, setDeletePopupOpen] = useState(false);
+  const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const {
     loadingUpdateProjectName,
     errorUpdateProjectName,
@@ -30,10 +37,11 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
     projectName,
   } = useUpdateProjectName(activeProject?.name, setShowProjectNameTextfield);
 
-  const {loadingActiveUser,errorActiveUser,fetchActiveUser} = useGetActiveUser();
+  const { activeUser, loadingActiveUser, errorActiveUser, fetchActiveUser } =
+    useGetActiveUser();
 
   const { loadingDeleteProject, errorDeleteProject, deleteProject } =
-  useDeleteProject();
+    useDeleteProject();
   const router = useRouter();
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const isMenuOpen = Boolean(menuAnchorEl);
@@ -106,7 +114,7 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
   ];
   return (
     <>
-     <ConfirmationPopup
+      <ConfirmationPopup
         title={"Delete Project"}
         handleClose={handleDeletePopupClose}
         open={deletePopupOpen}
@@ -136,9 +144,8 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
             alignItems: "center",
           }}
         >
-          {
-            activeProject?.name ? (
-              <Box display={"flex"} gap={1} alignItems={"center"}>
+          {activeProject?.name ? (
+            <Box display={"flex"} gap={1} alignItems={"center"}>
               <Box>
                 {showProjectNameTextfield ? (
                   <MyTextField
@@ -152,12 +159,12 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                       handleProjectInputKeyDown(e, activeProject?.id)
                     }
                     minWidth="300px"
-                    maxHeight={'44px'}
+                    maxHeight={"44px"}
                     loading={loadingUpdateProjectName}
                     error={errorUpdateProjectName}
                     helperText={helperTextUpdateProjectName}
                     acitveBorder={"2px solid #1C252E"}
-                    boxMargin={'8px 0px 0px 0px'}
+                    boxMargin={"8px 0px 0px 0px"}
                   />
                 ) : (
                   <Typography
@@ -173,7 +180,7 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                 )}
               </Box>
               <Box display={"flex"} gap={"2px"} alignItems={"center"}>
-              <IconButton
+                <IconButton
                   onClick={handleMenuOpen}
                   sx={{
                     padding: "0px",
@@ -191,66 +198,65 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                     height={"100%"}
                   />
                 </IconButton>
-                </Box>
               </Box>
-            ) : null
-          }
+            </Box>
+          ) : null}
           <Menu
-        anchorEl={menuAnchorEl}
-        open={isMenuOpen}
-        onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        PaperProps={{
-          sx: {
-            borderRadius: "10px",
-            background: "#FFFFFFE6",
-            boxShadow:
-              "0px 5px 5px -3px rgba(145 158 171 / 0.2),0px 8px 10px 1px rgba(145 158 171 / 0.14),0px 3px 14px 2px rgba(145 158 171 / 0.12)",
-            color: "#1C252E",
-            backgroundColor: "rgba(255,255,255)",
-          },
-        }}
-      >
-        {menuItems.map((item) => (
-          <MenuItem
-            key={item.label}
-            onClick={item.onClick}
-            sx={{
-              backgroundColor: "transparent",
-              margin: "0px",
-              marginInline: "3px",
-              cursor: "pointer",
-              padding: "6px 8px",
-              borderRadius: "6px",
+            anchorEl={menuAnchorEl}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            PaperProps={{
+              sx: {
+                borderRadius: "10px",
+                background: "#FFFFFFE6",
+                boxShadow:
+                  "0px 5px 5px -3px rgba(145 158 171 / 0.2),0px 8px 10px 1px rgba(145 158 171 / 0.14),0px 3px 14px 2px rgba(145 158 171 / 0.12)",
+                color: "#1C252E",
+                backgroundColor: "rgba(255,255,255)",
+              },
             }}
           >
-            <Box
-              display="flex"
-              gap={2}
-              alignItems="center"
-              minWidth="140px"
-              mb={"4px"}
-            >
-              <img
-                src={item.icon}
-                alt={item.label.toLowerCase()}
-                width={20}
-                height={20}
-              />
-              <Typography fontSize={14} color={item.color || "inherit"}>
-                {item.label}
-              </Typography>
-            </Box>
-          </MenuItem>
-        ))}
-      </Menu>
+            {menuItems.map((item) => (
+              <MenuItem
+                key={item.label}
+                onClick={item.onClick}
+                sx={{
+                  backgroundColor: "transparent",
+                  margin: "0px",
+                  marginInline: "3px",
+                  cursor: "pointer",
+                  padding: "6px 8px",
+                  borderRadius: "6px",
+                }}
+              >
+                <Box
+                  display="flex"
+                  gap={2}
+                  alignItems="center"
+                  minWidth="140px"
+                  mb={"4px"}
+                >
+                  <img
+                    src={item.icon}
+                    alt={item.label.toLowerCase()}
+                    width={20}
+                    height={20}
+                  />
+                  <Typography fontSize={14} color={item.color || "inherit"}>
+                    {item.label}
+                  </Typography>
+                </Box>
+              </MenuItem>
+            ))}
+          </Menu>
           <Box
             sx={{
               display: "flex",
@@ -365,121 +371,149 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                   },
                 }}
               >
-                <Box
-                  sx={{
-                    minWidth: "unset",
-                    minHeight: "unset",
-                    overflow: "hidden",
-                    position: "relative",
-                    padding: "3px",
-                    borderRadius: "50%",
-                    width: "40px",
-                    height: "40px",
-                  }}
-                >
+                {!loadingActiveUser ? (
                   <Box
                     sx={{
-                      textAlign: "initial",
-                      width: "100%",
-                      height: "100%",
-                      position: "absolute",
-                      color: "#00A76F",
-                      padding: "1px",
-                      inset: "0px",
-                      margin: "auto",
-                      borderRadius: "inherit",
-                      animation: "rotateClockwise 5s linear infinite",
-                      WebkitMaskImage:
-                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
-                      WebkitMaskComposite: "xor", // for WebKit browsers (Chrome/Safari)
-                      maskImage:
-                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
-                      maskComposite: "exclude", // Firefox supports 'exclude' instead of 'xor'
-                    }}
-                  >
-                    <img
-                      src="/animationSvgWrapper.svg"
-                      alt="wrapper"
-                      style={{
-                        position: "absolute",
-                        height: "100%",
-                        width: "100%",
-                      }}
-                    />
-                    <Typography
-                      sx={{
-                        transform:
-                          "translateX(32.1081px) translateY(0.725105px) translateX(-50%) translateY(-50%)",
-                        width: "60px",
-                        height: "60px",
-                        filter: "blur(8px)",
-                        position: "absolute",
-                        background:
-                          "radial-gradient(#00A76F 40%, transparent 80%)",
-                      }}
-                    ></Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      textAlign: "initial",
-                      width: "100%",
-                      height: "100%",
-                      position: "absolute",
-                      transform: "scale(-1, -1)",
-                      color: "#FFABOO",
-                      padding: "1px",
-                      inset: "0px",
-                      margin: "auto",
-                      borderRadius: "50%",
-                      animation: "rotateCounterClockwise 7s linear infinite",
-                      WebkitMaskImage:
-                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
-                      WebkitMaskComposite: "xor", // for WebKit browsers (Chrome/Safari)
-                      maskImage:
-                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
-                      maskComposite: "exclude", // Firefox supports 'exclude' instead of 'xor'
-                    }}
-                  >
-                    <img
-                      src="/animationSvgWrapper.svg"
-                      alt="wrapper"
-                      style={{
-                        position: "absolute",
-                        height: "100%",
-                        width: "100%",
-                      }}
-                    />
-                    <Typography
-                      sx={{
-                        transform:
-                          "translateX(32.1081px) translateY(0.725105px) translateX(-50%) translateY(-50%)",
-                        width: "60px",
-                        height: "60px",
-                        filter: "blur(8px)",
-                        position: "absolute",
-                        background:
-                          "radial-gradient(#FFABOO 40%, transparent 80%)",
-                      }}
-                    ></Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      position: "relative",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      fontSize: "20px",
-                      lineHeight: 1,
-                      borderRadius: "50%",
+                      minWidth: "unset",
+                      minHeight: "unset",
                       overflow: "hidden",
-                      userSelect: "none",
-                      width: "100%",
-                      height: "100%",
+                      position: "relative",
+                      padding: "3px",
+                      borderRadius: "50%",
+                      width: "40px",
+                      height: "40px",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        textAlign: "initial",
+                        width: "100%",
+                        height: "100%",
+                        position: "absolute",
+                        color: "#00A76F",
+                        padding: "1px",
+                        inset: "0px",
+                        margin: "auto",
+                        borderRadius: "inherit",
+                        animation: "rotateClockwise 5s linear infinite",
+                        WebkitMaskImage:
+                          "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                        WebkitMaskComposite: "xor", // for WebKit browsers (Chrome/Safari)
+                        maskImage:
+                          "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                        maskComposite: "exclude", // Firefox supports 'exclude' instead of 'xor'
+                      }}
+                    >
+                      <img
+                        src="/animationSvgWrapper.svg"
+                        alt="wrapper"
+                        style={{
+                          position: "absolute",
+                          height: "100%",
+                          width: "100%",
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          transform:
+                            "translateX(32.1081px) translateY(0.725105px) translateX(-50%) translateY(-50%)",
+                          width: "60px",
+                          height: "60px",
+                          filter: "blur(8px)",
+                          position: "absolute",
+                          background:
+                            "radial-gradient(#00A76F 40%, transparent 80%)",
+                        }}
+                      ></Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        textAlign: "initial",
+                        width: "100%",
+                        height: "100%",
+                        position: "absolute",
+                        transform: "scale(-1, -1)",
+                        color: "#FFABOO",
+                        padding: "1px",
+                        inset: "0px",
+                        margin: "auto",
+                        borderRadius: "50%",
+                        animation: "rotateCounterClockwise 7s linear infinite",
+                        WebkitMaskImage:
+                          "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                        WebkitMaskComposite: "xor", // for WebKit browsers (Chrome/Safari)
+                        maskImage:
+                          "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                        maskComposite: "exclude", // Firefox supports 'exclude' instead of 'xor'
+                      }}
+                    >
+                      <img
+                        src="/animationSvgWrapper.svg"
+                        alt="wrapper"
+                        style={{
+                          position: "absolute",
+                          height: "100%",
+                          width: "100%",
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          transform:
+                            "translateX(32.1081px) translateY(0.725105px) translateX(-50%) translateY(-50%)",
+                          width: "60px",
+                          height: "60px",
+                          filter: "blur(8px)",
+                          position: "absolute",
+                          background:
+                            "radial-gradient(#FFABOO 40%, transparent 80%)",
+                        }}
+                      ></Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        position: "relative",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                        fontSize: "20px",
+                        lineHeight: 1,
+                        borderRadius: "50%",
+                        overflow: "hidden",
+                        userSelect: "none",
+                        width: "100%",
+                        height: "100%",
+                      }}
+                    >
+                      <img
+                        src={activeUser?.avatar}
+                        alt="avatar"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          textIndent: "1000px",
+                        }}
+                      />
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      minWidth: "unset",
+                      minHeight: "unset",
+                      overflow: "hidden",
+                      position: "relative",
+                      padding: "3px",
+                      borderRadius: "50%",
+                      width: "40px",
+                      height: "40px",
+                      background: "#F4F4F4",
+                      border: "1px dotted #1C252E",
                     }}
                   >
                     <img
-                      src={activeUser?.avatar || "/dummyUser.svg"}
+                      src={"/dummyUser.svg"}
                       alt="avatar"
                       style={{
                         width: "100%",
@@ -489,7 +523,7 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                       }}
                     />
                   </Box>
-                </Box>
+                )}
               </IconButton>
             </Box>
           </Box>

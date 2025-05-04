@@ -1,3 +1,4 @@
+import useToast from "@/hooks/common/useToast";
 import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 
@@ -5,6 +6,8 @@ const { useAppContext } = require("@/context/AppContext");
 const { useState } = require("react");
 
 const useUpdateSectionName = (initialName = "",setShowEditTextfield) => {
+  const toastId = 'update_section_name';
+  const {showToast} = useToast();
     const [columnName, setColumnName] = useState(initialName);
     const [originalName, setOriginalName] = useState(initialName);
     const [loadingUpdateColumnName, setLoadingUpdateColumnName] = useState(false);
@@ -64,6 +67,7 @@ const useUpdateSectionName = (initialName = "",setShowEditTextfield) => {
       setLoadingUpdateColumnName(false);
   
       if (res.error) {
+        showToast({toastId,type:"error",message:"Failed to update section name. Please try again."})
         console.log("::error while renaming column", res.error);
         return;
       }

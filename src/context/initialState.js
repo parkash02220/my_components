@@ -5,16 +5,17 @@ export const initialState = {
   activeTask: {},
   activeUser: {},
   loading: {
-    projects: false,
-    activeProject: false,
-    activeTask: false,
-    activeUser: false,
+    loadingProjects: false,
+    loadingActiveProject: false,
+    loadingActiveTask: false,
+    loadingActiveUser: false,
+
   },
   error: {
-    projects: null,
-    activeProject: null,
-    activeTask: null,
-    activeUser: null,
+    errorProjects: null,
+    errorActiveProject: null,
+    errorActiveTask: null,
+    errorActiveUser: null,
   },
   projectVersion: 0,
 };

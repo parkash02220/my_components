@@ -3,19 +3,25 @@ import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 import { useCallback, useState } from "react";
 import * as actions from '@/context/action';
+import useToast from "@/hooks/common/useToast";
 const useGetTask = () => {
-  const {dispatch} = useAppContext();
-  
+  const toastId = 'get_task';
+  const {showToast} = useToast();
+  const {dispatch,state} = useAppContext();
+  const {activeTask,loading,error} = state;
+  const {loadingActiveTask} = loading;
+  const {errorActiveTask} = error;
   const getTaskFromBackend = useCallback(async (taskId) => {
     dispatch({type:actions.SET_ACTIVE_TASK_REQUEST});
-    try {
+
       const res = await ApiCall({
         url: `${process.env.NEXT_PUBLIC_BASE_URL}/get-task/${taskId}`,
         method: "GET",
       });
   
       if (res.error) {
-        dispatch({type:actions.SET_ACTIVE_TASK_FAILURE});
+        showToast({toastId,type:"error",message:"Failed to fetch task. Please try again."})
+        dispatch({type:actions.SET_ACTIVE_TASK_FAILURE,payload:res.error});
         return;
       }
   
@@ -23,12 +29,9 @@ const useGetTask = () => {
       const formattedIdResponse = convertIdFields(res?.data?.task);
       dispatch({type:actions.SET_ACTIVE_TASK_SUCCESS,payload:{...formattedIdResponse}});
       return data;
-    } catch (error) {
-      dispatch({type:actions.SET_ACTIVE_TASK_FAILURE});
-    }
   }, []);
 
-  return {getTaskFromBackend };
+  return {activeTask,loadingActiveTask,errorActiveTask,getTaskFromBackend };
 };
 
 export default useGetTask;

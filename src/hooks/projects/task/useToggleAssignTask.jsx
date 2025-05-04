@@ -6,7 +6,7 @@ const { ApiCall } = require("@/utils/ApiCall");
 const { useState } = require("react");
 
 const useToggleAssignTask = () => {
-  const {showToast} = useToast();
+  const { showToast } = useToast();
   const { dispatch } = useAppContext();
   const [loadingAssignTaskIds, setLoadingAssignTaskIds] = useState([]);
   const [errorAssignTask, setErrorAssignTask] = useState(false);
@@ -24,18 +24,21 @@ const useToggleAssignTask = () => {
     setLoadingAssignTaskIds((pre) => pre?.filter((id) => id !== userId));
 
     if (res.error) {
-      showToast({type:"error",message:"Request failed."})
+      showToast({ type: "error", message: "Request failed." });
       console.log("::error while changing state of assign task", res);
       setErrorAssignTask(true);
       return;
     }
     const formattedIdResponse = convertIdFields(res?.data?.updatedTask || {});
-    console.log("::res in toggle assign task",formattedIdResponse)
+    console.log("::res in toggle assign task", formattedIdResponse);
     dispatch({
       type: "EDIT_TASK",
       payload: formattedIdResponse,
     });
-    showToast({type:"success",message:"Request successfull."})
+    showToast({
+      type: "success",
+      message: "Changes saved and synced with the server.",
+    });
   };
   return { loadingAssignTaskIds, errorAssignTask, toggleAssignTask };
 };

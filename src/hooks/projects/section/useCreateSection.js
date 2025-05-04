@@ -3,8 +3,11 @@ import axios from "axios";
 import { ApiCall } from "@/utils/ApiCall";
 import { useAppContext } from "@/context/AppContext";
 import { convertIdFields } from "@/utils";
+import useToast from "@/hooks/common/useToast";
 
 const useCreateSection = (boardId="", setShowAddColumnButton) => {
+  const toastId = 'create_section';
+  const {showToast} = useToast();
   const [newColumnName, setNewColumnName] = useState("");
   const [loadingCreateColumn,setLoadingCreateColumn] = useState(false);
   const [errorCreateColumn,setErrorCreateColumn] = useState(false);
@@ -51,6 +54,11 @@ const useCreateSection = (boardId="", setShowAddColumnButton) => {
     setShowAddColumnButton(true);
 
     if(res.error){
+      showToast({
+        toastId,
+        type: "error",
+        message: "Failed to create the section. Please try again.",
+      });
         console.log("::error while creating Column");
         return;
     }
@@ -59,9 +67,14 @@ const useCreateSection = (boardId="", setShowAddColumnButton) => {
     const formattedIdResponse = convertIdFields(res?.data?.section);
      dispatch({type:"ADD_COLUMN_TO_SECTION",payload:{section:formattedIdResponse}});
      setShowAddColumnButton(true);
+     showToast({
+      toastId,
+      type: "success",
+      message: "Section created successfully.",
+    });
   };
 
-  return {loadingCreateColumn,errorCreateColumn,helperTextCreateColumn,newColumnName,handleColumnInputfieldChange,handleColumnInputKeyDown};
+  return {loadingCreateColumn,errorCreateColumn,helperTextCreateColumn,newColumnName,handleColumnInputfieldChange,handleColumnInputKeyDown,setNewColumnName};
 };
 
 export default useCreateSection;
