@@ -7,12 +7,14 @@ import { isUserLoggedIn } from "@/utils";
 import { AppContextProvider } from "@/context/AppContext";
 import { Box } from "@mui/material";
 import Header from "@/components/Header";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 
 export default function HomeLayout({ children }) {
   const router = useRouter();
   const [isClientUser, setIsClientUser] = useState(null);
+  const { isLg } = useBreakpointFlags();
   const [open, setOpen] = useState(true);
-  const [profileDrawerOpen,setProfileDrawerOpen] = useState(false);
+  const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
   useEffect(() => {
     const user = isUserLoggedIn();
     if (!user) {
@@ -23,17 +25,35 @@ export default function HomeLayout({ children }) {
 
   if (isClientUser === null || !isClientUser) {
     return null;
-  } 
+  }
 
   return (
     <AppContextProvider>
       <Box sx={{ display: "flex" }} className="privateLayout__container">
         <MySideDrawer open={open} setOpen={setOpen} />
-        <Box display={'flex'} flexDirection={'column'} width={open ? 'calc(100% - 300px)' : 'calc(100% - 88px)'} position={'relative'} height={'100vh'}>
-          <Header profileDrawerOpen={profileDrawerOpen} setProfileDrawerOpen={setProfileDrawerOpen}/>
-        <main style={{ flexGrow: 1, padding: "24px",height:'calc(100vh - 75px',paddingBottom:"4px" }}>
-          {children}
-        </main>
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          width={
+            isLg ? "100%" : open ? "calc(100% - 300px)" : "calc(100% - 88px)"
+          }
+          position={"relative"}
+          height={"100vh"}
+        >
+          <Header
+            profileDrawerOpen={profileDrawerOpen}
+            setProfileDrawerOpen={setProfileDrawerOpen}
+          />
+          <main
+            style={{
+              flexGrow: 1,
+              padding: "24px",
+              height: "calc(100vh - 75px",
+              paddingBottom: "4px",
+            }}
+          >
+            {children}
+          </main>
         </Box>
       </Box>
     </AppContextProvider>

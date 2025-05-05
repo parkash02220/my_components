@@ -10,10 +10,10 @@ const useGetAllProjects = () => {
   const [page, setPage] = useState(1);
   const [pageSize,setPageSize] = useState(15);
   const [isInitialFetchDone,setIsInitialFetchDone] = useState(false);
-  const isSearchLoading = state.loading.projects && page === 1;
-  const isLoadMoreLoading = state.loading.projects && page > 1;
-  const loadingAllProjects = state.loading.projects;
-  const errorAllProjects = !!state.error.projects;
+  const isSearchLoading = state.loading.loadingProjects && page === 1;
+  const isLoadMoreLoading = state.loading.loadingProjects && page > 1;
+  const loadingAllProjects = state.loading.loadingProjects;
+  const errorAllProjects = !!state.error.errorProjects;
   const [searchValue, setSearchValue] = useState("");
   const [hasMore, setHasMore] = useState(false);
   const [allProjects, setAllProjects] = useState([]);

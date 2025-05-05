@@ -30,9 +30,9 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: open ? drawerWidth : miniDrawerWidth,
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "islg",
+})(({ theme, open, islg }) => ({
+  width: islg ? '60px ' : open ? drawerWidth : miniDrawerWidth,
   left: 0,
   right: "auto",
   position: "fixed",

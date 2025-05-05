@@ -33,6 +33,8 @@ import { CollapsibleNavItem } from "./CollapsibleNavItem";
 import SearchNavItem from "./SearchNavItem";
 import ConfirmationPopup from "../ConfirmationPopup";
 import useGetAllProjects from "@/hooks/projects/useGetAllProjects";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
+import MobileSideDrawer from "./MobileSideDrawer";
 
 export default function MySideDrawer({ open, setOpen }) {
   const [logoutPopupOpen, setLogoutPopupOpen] = useState(false);
@@ -59,7 +61,14 @@ export default function MySideDrawer({ open, setOpen }) {
   const router = useRouter();
   const pathname = usePathname();
   const [hasMounted, setHasMounted] = useState(false);
-
+  const {isLg} = useBreakpointFlags();
+  const [mobileDrawerOpen,setMobileDrawerOpen] = useState(false);
+  const handleMobileDrawerOpen = () => {
+    setMobileDrawerOpen(true);
+  }
+  const handleMobileDrawerClose = () => {
+    setMobileDrawerOpen(false);
+  }
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -99,7 +108,7 @@ export default function MySideDrawer({ open, setOpen }) {
     title: project?.name,
     icon: <FolderOpenIcon />,
   }));
-  console.log("::projectssssssss", projects);
+
   const NAVIGATION = [
     { type: "header", title: "Projects" },
     { type: "item", segment: "addproject", title: "+ Project" },
@@ -224,7 +233,7 @@ export default function MySideDrawer({ open, setOpen }) {
     handleLogoutPopupClose();
   };
   if (!hasMounted) return null;
-
+  console.log("isLoadMoreLoading:", isLoadMoreLoading);
   return (
     <>
       <ConfirmationPopup
@@ -243,7 +252,8 @@ export default function MySideDrawer({ open, setOpen }) {
         />
       </Box>
       <Box sx={{ display: "flex", position: "relative" }}>
-        <IconButton
+      {
+        !isLg ? ( <IconButton
           color="inherit"
           onClick={toggleDrawer}
           edge="start"
@@ -275,40 +285,64 @@ export default function MySideDrawer({ open, setOpen }) {
               height: "100%",
             }}
           />
-        </IconButton>
+        </IconButton>) : null
+      }
 
         <CssBaseline />
-        <AppBar position="fixed" open={open}>
+        <AppBar position="fixed" open={open} islg={isLg}>
           <Toolbar sx={{ justifyContent: open ? "space-between" : "center" }}>
-            <IconButton
-              sx={{
-                width: open ? "80px" : "50px",
-                height: "40px",
-                padding: "0px",
-              }}
-            >
-              <img
-                src="/websperoLogo.svg"
-                alt="logo"
-                style={{ height: "100%", width: "100%" }}
-              />
-            </IconButton>
+            {
+              !isLg ? (
+                <IconButton
+                sx={{
+                  width: open ? "80px" : "50px",
+                  height: "40px",
+                  padding: "0px",
+                }}
+              >
+                <img
+                  src="/websperoLogo.svg"
+                  alt="logo"
+                  style={{ height: "100%", width: "100%" }}
+                />
+              </IconButton>
+              ) : (
+                <IconButton
+                onClick={handleMobileDrawerOpen}
+                sx={{
+                  width: "24px",
+                  height: "24px",
+                  padding: "0px",
+                }}
+              >
+                <img
+                  src="/hamburger.svg"
+                  alt="logo"
+                  style={{ height: "100%", width: "100%" }}
+                />
+              </IconButton>
+              )
+            }
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
-          <DrawerHeader />
-          <List sx={{ padding: open ? "8px 16px" : "8px" }}>
-            {renderNavItems()}
-            {isLoadMoreLoading && !isSearchLoading && (
-              <ListItem sx={{ justifyContent: "center", py: 1 }}>
-                <img src="/iosLoader.gif" width="30px" height="30px" />
-              </ListItem>
-            )}
-            {projects?.length > 0 && hasMore && !isLoadMoreLoading && (
-              <Box ref={loadMoreRef} style={{ height: 1 }} />
-            )}
-          </List>
-        </Drawer>
+        {
+          !isLg ? (   <Drawer variant="permanent" open={open}>
+            <DrawerHeader />
+            <List sx={{ padding: open ? "8px 16px" : "8px" }}>
+              {renderNavItems()}
+              {isLoadMoreLoading && !isSearchLoading && (
+                <ListItem sx={{ justifyContent: "center", py: 1 }}>
+                  <img src="/iosLoader.gif" width="30px" height="30px" />
+                </ListItem>
+              )}
+              {projects?.length > 0 && hasMore && !isLoadMoreLoading && (
+                <Box ref={loadMoreRef} style={{ height: 1 }} />
+              )}
+            </List>
+          </Drawer>) : (
+            <MobileSideDrawer open={mobileDrawerOpen} handleDrawer={handleMobileDrawerClose} width={300} projects = {projects} isLoadMoreLoading={isLoadMoreLoading} hasMore={hasMore}/>
+          )
+        }
       </Box>
     </>
   );

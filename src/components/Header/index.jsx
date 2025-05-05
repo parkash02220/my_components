@@ -17,9 +17,11 @@ import ConfirmationPopup from "../ConfirmationPopup";
 import useDeleteProject from "@/hooks/projects/useDeleteProject";
 import { useRouter } from "next/navigation";
 import useGetActiveUser from "@/hooks/projects/user/useGetActiveUser";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 
 export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
   const { state } = useAppContext();
+  const {isLg} = useBreakpointFlags();
   const { activeProject } = state;
   const inputRef = useRef();
   const [showProjectNameTextfield, setShowProjectNameTextfield] =
@@ -131,7 +133,7 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
         position="sticky"
         elevation={0}
         color="transparent"
-        sx={{ borderBottom: "1px solid #eee", zIndex: 1101 }}
+        sx={{ borderBottom: "1px solid #eee", zIndex: 1101,width:isLg ? 'calc(100% - 60px)' : '100%',alignSelf:'flex-end' }}
       >
         <Box
           sx={{
