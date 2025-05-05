@@ -243,7 +243,7 @@ export function TaskCard({ task, isOverlay }) {
                                     objectFit: "cover",
                                   }}
                                 />
-                                <Typography fontSize={12} fontWeight={500}>{name}</Typography>
+                                <Typography fontSize={12} fontWeight={500} color="white">{name}</Typography>
                               </Box>
                             )
                           })}

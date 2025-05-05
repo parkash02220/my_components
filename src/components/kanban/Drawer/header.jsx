@@ -1,6 +1,7 @@
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import { useAppContext } from "@/context/AppContext";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import useDeleteTask from "@/hooks/projects/task/useDeleteTask";
 import useEditTask from "@/hooks/projects/task/useEditTask";
 import useMoveTask from "@/hooks/projects/task/useMoveTask";
@@ -8,6 +9,7 @@ import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export const Header = ({ activeTask,handleDrawer }) => {
+  const {isXs} = useBreakpointFlags();
   const {dispatch} = useAppContext();
   const { loadingMoveTask, moveTask } = useMoveTask();
   const { loadingDeleteTask, errorDeleteTask, deleteTaskFromBackend } =
@@ -84,8 +86,26 @@ export const Header = ({ activeTask,handleDrawer }) => {
         justifyContent={"space-between"}
         padding={"20px 8px 20px 20px"}
         borderBottom={"1px solid rgba(145 158 171 / 0.2)"}
+        pl={isXs ? '8px' : ''}
       >
-        <IconButton
+        <Box display={'flex'} gap={1} alignItems={'center'}>
+        {
+          isXs ? (
+            <IconButton
+            onClick={handleDrawer}
+            sx={{
+              color:'#637381',
+              padding:"8px",
+              borderRadius:"50%",
+              display:'flex',
+              alignItems:'center',
+              justifyContent:"center",
+            }}>
+              <img src="/closeSideBarArrow.svg" alt="close" style={{width:"20px",height:"20px"}}/>
+            </IconButton>
+        ) : null
+        }
+         <IconButton
           onClick={handleMenuOpen}
           sx={{
             display: "flex",
@@ -165,6 +185,7 @@ export const Header = ({ activeTask,handleDrawer }) => {
             </MenuItem>
           ))}
         </Menu>
+        </Box>
         <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
           <MyTooltip title={"Like"} placement="bottom">
             <IconButton

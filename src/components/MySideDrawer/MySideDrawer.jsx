@@ -61,14 +61,14 @@ export default function MySideDrawer({ open, setOpen }) {
   const router = useRouter();
   const pathname = usePathname();
   const [hasMounted, setHasMounted] = useState(false);
-  const {isLg} = useBreakpointFlags();
-  const [mobileDrawerOpen,setMobileDrawerOpen] = useState(false);
+  const { isXs,isLg,isMd } = useBreakpointFlags();
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const handleMobileDrawerOpen = () => {
     setMobileDrawerOpen(true);
-  }
+  };
   const handleMobileDrawerClose = () => {
     setMobileDrawerOpen(false);
-  }
+  };
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -102,6 +102,7 @@ export default function MySideDrawer({ open, setOpen }) {
 
     setSelectedDrawerItem(segment);
     router.push(`/${segment}`);
+    {isMd ? handleMobileDrawerClose() : null}
   };
   const projectNavItems = projects?.map((project) => ({
     segment: `projects/${project?.id}`,
@@ -160,11 +161,6 @@ export default function MySideDrawer({ open, setOpen }) {
               onChange={handleSearchValueChange}
               handleSearchClear={handleSearchClear}
             />
-            {(!isInitialFetchDone || isSearchLoading || loadingAllProjects) && (
-              <ListItem sx={{ justifyContent: "center", py: 1 }}>
-                <img src="/iosLoader.gif" width="30px" height="30px" />
-              </ListItem>
-            )}
           </React.Fragment>
         );
       }
@@ -252,48 +248,49 @@ export default function MySideDrawer({ open, setOpen }) {
         />
       </Box>
       <Box sx={{ display: "flex", position: "relative" }}>
-      {
-        !isLg ? ( <IconButton
-          color="inherit"
-          onClick={toggleDrawer}
-          edge="start"
-          sx={{
-            position: "absolute",
-            top: 20,
-            left: open ? `${drawerWidth + 12}px` : `${miniDrawerWidth + 12}px`,
-            transform: "translateX(-50%)",
-            zIndex: 801,
-            backgroundColor: "white",
-            cursor: "pointer",
-            color: "#637381",
-            border: "1px solid rgba(145,158,171,0.12)",
-            transition: `left ${drawerTransitionDuration}ms ${drawerEasing},transisiton ${drawerTransitionDuration}ms ${drawerEasing} `,
-            boxShadow: 2,
-            padding: "0px",
-            "&:hover": {
-              backgroundColor: "#f0f0f0",
-            },
-          }}
-        >
-          <img
-            src="/toggleDrawerIcon.svg"
-            alt="drawer toggle icon"
-            style={{
-              transition: `transform ${drawerTransitionDuration}ms ${drawerEasing}`,
-              transform: open ? "rotate(180deg)" : "rotate(0deg)",
-              width: "100%",
-              height: "100%",
+        {!isMd ? (
+          <IconButton
+            color="inherit"
+            onClick={toggleDrawer}
+            edge="start"
+            sx={{
+              position: "absolute",
+              top: 20,
+              left: open
+                ? `${drawerWidth + 12}px`
+                : `${miniDrawerWidth + 12}px`,
+              transform: "translateX(-50%)",
+              zIndex: 801,
+              backgroundColor: "white",
+              cursor: "pointer",
+              color: "#637381",
+              border: "1px solid rgba(145,158,171,0.12)",
+              transition: `left ${drawerTransitionDuration}ms ${drawerEasing},transisiton ${drawerTransitionDuration}ms ${drawerEasing} `,
+              boxShadow: 2,
+              padding: "0px",
+              "&:hover": {
+                backgroundColor: "#f0f0f0",
+              },
             }}
-          />
-        </IconButton>) : null
-      }
+          >
+            <img
+              src="/toggleDrawerIcon.svg"
+              alt="drawer toggle icon"
+              style={{
+                transition: `transform ${drawerTransitionDuration}ms ${drawerEasing}`,
+                transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                width: "100%",
+                height: "100%",
+              }}
+            />
+          </IconButton>
+        ) : null}
 
         <CssBaseline />
-        <AppBar position="fixed" open={open} islg={isLg}>
+        <AppBar position="fixed" open={open} ismd={isMd} isxs={isXs}>
           <Toolbar sx={{ justifyContent: open ? "space-between" : "center" }}>
-            {
-              !isLg ? (
-                <IconButton
+            {!isMd ? (
+              <IconButton
                 sx={{
                   width: open ? "80px" : "50px",
                   height: "40px",
@@ -306,8 +303,8 @@ export default function MySideDrawer({ open, setOpen }) {
                   style={{ height: "100%", width: "100%" }}
                 />
               </IconButton>
-              ) : (
-                <IconButton
+            ) : (
+              <IconButton
                 onClick={handleMobileDrawerOpen}
                 sx={{
                   width: "24px",
@@ -321,28 +318,39 @@ export default function MySideDrawer({ open, setOpen }) {
                   style={{ height: "100%", width: "100%" }}
                 />
               </IconButton>
-              )
-            }
+            )}
           </Toolbar>
         </AppBar>
-        {
-          !isLg ? (   <Drawer variant="permanent" open={open}>
+        {!isMd ? (
+          <Drawer variant="permanent" open={open}>
             <DrawerHeader />
             <List sx={{ padding: open ? "8px 16px" : "8px" }}>
               {renderNavItems()}
-              {isLoadMoreLoading && !isSearchLoading && (
+              {(!isInitialFetchDone || loadingAllProjects) && (
                 <ListItem sx={{ justifyContent: "center", py: 1 }}>
                   <img src="/iosLoader.gif" width="30px" height="30px" />
                 </ListItem>
               )}
-              {projects?.length > 0 && hasMore && !isLoadMoreLoading && (
+              {projects?.length > 0 && hasMore && !loadingAllProjects && (
                 <Box ref={loadMoreRef} style={{ height: 1 }} />
               )}
             </List>
-          </Drawer>) : (
-            <MobileSideDrawer open={mobileDrawerOpen} handleDrawer={handleMobileDrawerClose} width={300} projects = {projects} isLoadMoreLoading={isLoadMoreLoading} hasMore={hasMore}/>
-          )
-        }
+          </Drawer>
+        ) : (
+           <MobileSideDrawer open={mobileDrawerOpen} handleDrawer={handleMobileDrawerClose} width={300}>
+             <List sx={{ padding: "16px" }}>
+              {renderNavItems()}
+              {(!isInitialFetchDone || loadingAllProjects) && (
+                <ListItem sx={{ justifyContent: "center", py: 1 }}>
+                  <img src="/iosLoader.gif" width="30px" height="30px" />
+                </ListItem>
+              )}
+              {projects?.length > 0 && hasMore && !loadingAllProjects && (
+                <Box ref={loadMoreRef} style={{ height: 1 }} />
+              )}
+            </List>
+           </MobileSideDrawer>
+        )}
       </Box>
     </>
   );

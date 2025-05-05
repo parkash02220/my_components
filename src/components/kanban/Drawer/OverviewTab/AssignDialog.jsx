@@ -78,6 +78,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
           open={open}
           minwidth={"444px"}
           maxwidth={"444px"}
+          width={'100%'}
           titlepadding="24px 24px 0px"
           contentpadding="0px !important"
           handleClose={handleAssignDialogClose}

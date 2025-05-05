@@ -87,7 +87,7 @@ const useUpdateProjectName = (
       if (isNameAvailable) {
         handleUpdateProjectName(projectId);
       }
-    } else if (e.key === "Esc") {
+    } else if (e.key === "Escape") {
       cancelEditing();
     }
   };

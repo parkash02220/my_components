@@ -32,6 +32,7 @@ import MyButton from "@/components/MyButton/MyButton";
 import MyDialog from "@/components/MyDialog/MyDialog";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import useCreateSubTask from "@/hooks/projects/task/subtask/useCreateSubTask";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 const SubTasksTab = () => {
   const { state } = useAppContext();
   const { activeTask } = state || {};
@@ -160,6 +161,7 @@ const SubTasksTab = () => {
 export default SubTasksTab;
 
 const AddSubTaskDialog = ({ open, onClose, taskId }) => {
+  const {isXs} = useBreakpointFlags();
   const { loadingCreateSubTask, addSubTaskToBackend } = useCreateSubTask();
   const [subtaskName, setSubtaskName] = useState("");
   const [error, setError] = useState(false);
@@ -206,8 +208,9 @@ const AddSubTaskDialog = ({ open, onClose, taskId }) => {
         open={open}
         handleClose={handleDialogClose}
         title="Add New Subtask"
+        width={isXs ? '100%' : 'auto'}
         content={
-          <Box pt={2} paddingInline={1}>
+          <Box pt={2}>
             <MyTextField
               fullWidth
               label="Subtask Name"
@@ -224,17 +227,19 @@ const AddSubTaskDialog = ({ open, onClose, taskId }) => {
         actions={
           <Box
             display="flex"
+            flexDirection={isXs ? 'column-reverse' : 'row'}
             justifyContent="space-between"
             gap={2}
             width="100%"
-            p={2}
-            pt={0}
+            p={isXs ? 1 : 2}
           >
             <MyButton
               onClick={handleDialogClose}
               color="black"
               variant="outlined"
               hoverBgColor="whitesmoke"
+              padding={'8px 16px'}
+              fullWidth={true}
             >
               Cancel
             </MyButton>
@@ -244,6 +249,8 @@ const AddSubTaskDialog = ({ open, onClose, taskId }) => {
               variant="contained"
               loading={loadingCreateSubTask}
               loadingText={"Adding..."}
+              padding={'8px 16px'}
+              fullWidth={true}
             >
               Add
             </MyButton>

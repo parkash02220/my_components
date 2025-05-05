@@ -173,97 +173,101 @@ const OverviewTab = () => {
 
           <SectionRow label="Reporter" className="editTask__reporterBox">
             <AvatarBox
-              src={activeTask?.reporter?.avatar}
+              src={activeTask?.reporter?.avatar || "/dummyUser.svg"}
               user={activeTask?.reporter}
               withToolTip
             />
           </SectionRow>
 
           <SectionRow label="Assignee" className="editTask__assigneeBox">
-            <Box display={"flex"} flexDirection={"row-reverse"} gap={1}>
-              {activeTask?.assigned_to?.length > 6 && (
-                <MyTooltip
-                  content={
+            {
+              activeTask?.assigned_to?.length > 0 ? (
+                <Box display={"flex"} flexDirection={"row-reverse"} gap={1}>
+                {activeTask?.assigned_to?.length > 6 && (
+                  <MyTooltip
+                    content={
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 1,
+                          padding: 1,
+                        }}
+                      >
+                        {activeTask?.assigned_to.map((user, index) => {
+                          const name = getFullName(
+                            user?.firstName,
+                            user?.lastName
+                          );
+                          return (
+                            <Box
+                              key={index}
+                              display="flex"
+                              alignItems="center"
+                              gap={1}
+                            >
+                              <img
+                                src={user.avatar}
+                                alt={name}
+                                style={{
+                                  width: 24,
+                                  height: 24,
+                                  borderRadius: "50%",
+                                  objectFit: "cover",
+                                }}
+                              />
+                              <Typography fontSize={12} fontWeight={500} color="white">
+                                {name}
+                              </Typography>
+                            </Box>
+                          );
+                        })}
+                      </Box>
+                    }
+                  >
                     <Box
+                      width={40}
+                      height={40}
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      borderRadius="50%"
+                      overflow="hidden"
+                      fontSize="14px"
                       sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 1,
-                        padding: 1,
+                        cursor: "pointer",
+                        background: "#C8FAD6",
                       }}
+                      color={"#007867"}
+                      fontWeight={600}
+                      position={"relative"}
+                      boxSizing={"content-box"}
+                      border={"2px solid #FFFFFF"}
                     >
-                      {activeTask?.assigned_to.map((user, index) => {
-                        const name = getFullName(
-                          user?.firstName,
-                          user?.lastName
-                        );
+                      +{activeTask?.assigned_to?.length - 5}
+                    </Box>
+                  </MyTooltip>
+                )}
+                <Box display={"flex"} gap={1}>
+                  {activeTask?.assigned_to?.length > 0 &&
+                    activeTask?.assigned_to
+                      ?.slice(0, activeTask?.assigned_to?.length > 6 ? 5 : 6)
+                      ?.map((item, index) => {
                         return (
-                          <Box
-                            key={index}
-                            display="flex"
-                            alignItems="center"
-                            gap={1}
-                          >
-                            <img
-                              src={user.avatar}
-                              alt={name}
-                              style={{
-                                width: 24,
-                                height: 24,
-                                borderRadius: "50%",
-                                objectFit: "cover",
-                              }}
+                          <MyTooltip key={index} title={name} placement="bottom">
+                            <AvatarBox
+                              key={index}
+                              src={item?.avatar}
+                              user={item}
+                              withToolTip
                             />
-                            <Typography fontSize={12} fontWeight={500}>
-                              {name}
-                            </Typography>
-                          </Box>
+                          </MyTooltip>
                         );
                       })}
-                    </Box>
-                  }
-                >
-                  <Box
-                    width={40}
-                    height={40}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    borderRadius="50%"
-                    overflow="hidden"
-                    fontSize="14px"
-                    sx={{
-                      cursor: "pointer",
-                      background: "#C8FAD6",
-                    }}
-                    color={"#007867"}
-                    fontWeight={600}
-                    position={"relative"}
-                    boxSizing={"content-box"}
-                    border={"2px solid #FFFFFF"}
-                  >
-                    +{activeTask?.assigned_to?.length - 5}
-                  </Box>
-                </MyTooltip>
-              )}
-              <Box display={"flex"} gap={1}>
-                {activeTask?.assigned_to?.length > 0 &&
-                  activeTask?.assigned_to
-                    ?.slice(0, activeTask?.assigned_to?.length > 6 ? 5 : 6)
-                    ?.map((item, index) => {
-                      return (
-                        <MyTooltip key={index} title={name} placement="bottom">
-                          <AvatarBox
-                            key={index}
-                            src={item?.avatar}
-                            user={item}
-                            withToolTip
-                          />
-                        </MyTooltip>
-                      );
-                    })}
+                </Box>
               </Box>
-            </Box>
+              ) : null
+            }
             <MyTooltip title="Add assignee" placement="bottom">
               <Box
                 width={40}
@@ -356,7 +360,7 @@ const OverviewTab = () => {
                 rows={4}
                 boxShadow="inset 0 0 0 1px rgba(145,158,171,0.24)"
                 borderColor="transparent"
-                fullWidth
+                fullWidth={true}
                 hoverBorderColor="#1C252E"
                 acitveBorder={"2px solid #000000"}
               />
@@ -527,7 +531,7 @@ const SectionRow = ({ label, labelStyle = {}, children, className = "" }) => (
     >
       {label}
     </Typography>
-    <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
+    <Box display="flex" alignItems="center" gap={1} flexWrap="wrap" width={'100%'}>
       {children}
     </Box>
   </Box>

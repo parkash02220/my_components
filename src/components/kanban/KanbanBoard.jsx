@@ -370,6 +370,7 @@ export default function KanbanBoard({
           ) : (
             <Box height={"100%"} minWidth={336}>
               <MyTextField
+              fullWidth={true}
                 ref={inputRef}
                 id="newColumnName"
                 placeholder="Untitled"

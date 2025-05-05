@@ -2,6 +2,7 @@
 
 import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import useSignUp from "@/hooks/projects/user/useSignUp";
 import {
   Box,
@@ -17,9 +18,11 @@ import {
 import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 const SignUp = () => {
+  const router = useRouter();
+  const {isXs,isMd,isLg} = useBreakpointFlags();
     const {loadingSignUp,errorSignUp,responseMsg,signUpUser} = useSignUp();
     const [showPasswrod,setShowPassword] = useState(false);
   const formik = useFormik({
@@ -57,9 +60,14 @@ const SignUp = () => {
   const handleUserSignUp = async (userData) => {
     await signUpUser(userData);
   }
+  useEffect(()=>{
+    router.prefetch("/signin");
+  },[]);
   return (
     <>
       <Box className="signUpContainer" display={"flex"} minHeight={"100vh"}>
+     {
+      !isMd ? (
         <Box
           className="signUpContainer__leftBox"
           display={"flex"}
@@ -139,6 +147,8 @@ const SignUp = () => {
             </Box>
           </Box>
         </Box>
+      ) : null
+     }
         <Box
           className="signUpContainer__rightBox"
           sx={{
@@ -162,7 +172,7 @@ const SignUp = () => {
               flexDirection={"column"}
               whiteSpace={"pre-line"}
               gap={"12px"}
-              textAlign={"left"}
+              textAlign={isMd ? "center" : "left"}
             >
               <Typography
                 variant="h5"
@@ -172,7 +182,7 @@ const SignUp = () => {
               >
                 Get started absolutely free
               </Typography>
-              <Box display={"flex"} gap={1}>
+              <Box display={"flex"} gap={1} justifyContent={isMd ? 'center' : ''}>
                 <Typography fontSize={14} color="#637381">
                   Already have an account?
                 </Typography>
@@ -185,7 +195,7 @@ const SignUp = () => {
             </Box>
             <form onSubmit={formik.handleSubmit}>
               <Box display={"flex"} flexDirection={"column"}>
-                <Grid container spacing={3}>
+                <Grid container spacing={isXs ? 2 : 3}>
                   <Grid size={6}>
                     <MyTextField
                       name="firstName"
@@ -207,6 +217,7 @@ const SignUp = () => {
                       labelColor="#637381"
                       activeLabelColor={"#1C252E"}
                       labelFontWeight={600}
+                      color={"#1C252E"}
                     />
                   </Grid>
                   <Grid size={6}>
@@ -230,6 +241,7 @@ const SignUp = () => {
                       labelColor="#637381"
                       activeLabelColor={"#1C252E"}
                       labelFontWeight={600}
+                      color={"#1C252E"}
                     />
                   </Grid>
                   <Grid size={12}>
@@ -325,6 +337,7 @@ const SignUp = () => {
                       labelColor="#637381"
                       activeLabelColor={"#1C252E"}
                       labelFontWeight={600}
+                      color={"#1C252E"}
                     />
                   </Grid>
                   <Grid size={12}>
@@ -350,6 +363,7 @@ const SignUp = () => {
                       activeLabelColor={"#1C252E"}
                       labelFontWeight={600}
                       placeholder="Password 6+"
+                      color={"#1C252E"}
                       customEndAdornment={
                         showPasswrod ? (
                             <IconButton onClick={handleHidePasswrod}>

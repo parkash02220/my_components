@@ -5,8 +5,10 @@ import RightDrawer from "@/components/RightDrawer";
 import { Box } from "@mui/material";
 import useGetTask from "@/hooks/projects/task/useGetTask";
 import { useAppContext } from "@/context/AppContext";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 
 function KanbanRightDrawer({ open, handleDrawer, taskId }) {
+  const {isXs} = useBreakpointFlags();
   const { activeTask, loadingActiveTask, errorActiveTask, getTaskFromBackend } =
     useGetTask();
   const tabValues = [
@@ -48,6 +50,7 @@ function KanbanRightDrawer({ open, handleDrawer, taskId }) {
     <>
       <Box>
         <RightDrawer
+        width={isXs ? '100vw' : ''}
           open={open}
           header={
             !loadingActiveTask ? (

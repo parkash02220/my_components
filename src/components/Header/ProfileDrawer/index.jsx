@@ -7,7 +7,9 @@ import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import { useAppContext } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 const ProfileDrawer = ({ open, handleDrawer }) => {
+  const {isXs} = useBreakpointFlags();
   const {state} = useAppContext();
   const {activeUser} = state;
   const [logoutPopupOpen,setLogoutPopupOpen] = useState(false);

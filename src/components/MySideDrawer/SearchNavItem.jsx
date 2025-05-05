@@ -1,11 +1,13 @@
 import { ListItem } from "@mui/material";
 import MySearch from "../MySearch/MySearch";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 
 const SearchNavItem = ({ open, value, onChange, handleSearchClear }) => {
+  const {isXs} = useBreakpointFlags();
   return (
     <>
       {open ? (
-        <ListItem sx={{ p: 0, py: 2 }}>
+        <ListItem sx={{ p: 0, py: isXs ? 1 : 2 }}>
           <MySearch
             fullWidth
             minWidth="100px"

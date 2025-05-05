@@ -10,7 +10,7 @@ const MyTextField = ({
   variant = "outlined",
   fullWidth = false,
   width,
-  minWidth = "300px",
+  minWidth = "100px",
   size = "medium",
   disabled = false,
   loading = false,
@@ -51,6 +51,7 @@ const MyTextField = ({
   labelFontWeight,
   maxHeight,
   boxMargin,
+  color,
   ...props
 }) => {
   const shrinkTypes = [
@@ -131,6 +132,7 @@ const MyTextField = ({
             fontWeight:fontWeight,
           },
           "& .MuiOutlinedInput-root": {
+            color:color || "black",
             border:border,
             borderRadius,
             boxShadow,
@@ -173,6 +175,11 @@ const MyTextField = ({
           "& .Mui-disabled": {
             cursor: "not-allowed !important",
           },
+          '& input:-webkit-autofill': {
+            WebkitBoxShadow: '0 0 0 1000px white inset',
+            WebkitTextFillColor: color || 'black',
+            transition: 'background-color 5000s ease-in-out 0s',
+          },
         }}
         className={`myTextField ${className}`}
         {...props}
@@ -197,7 +204,7 @@ MyTextField.defaultProps = {
   helperTextFontSize: "12px",
   requiredColor: "black",
   shrink: "",
-  minWidth: "300px",
+  minWidth: "100px",
 };
 
 export default MyTextField;

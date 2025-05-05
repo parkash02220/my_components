@@ -21,8 +21,9 @@ import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 
 export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
   const { state } = useAppContext();
-  const {isLg} = useBreakpointFlags();
-  const { activeProject } = state;
+  const {isMd,isSm,isXs} = useBreakpointFlags();
+  const { activeProject,loading } = state;
+  const {loadingActiveProject} = loading;
   const inputRef = useRef();
   const [showProjectNameTextfield, setShowProjectNameTextfield] =
     useState(false);
@@ -93,7 +94,7 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
   const handleDeleteProject = async () => {
     await deleteProject(activeProject?.id);
     setDeletePopupOpen(false);
-    router.push("/");
+    router.push("/home");
   };
   useEffect(() => {
     if (showProjectNameTextfield && inputRef.current) {
@@ -133,20 +134,20 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
         position="sticky"
         elevation={0}
         color="transparent"
-        sx={{ borderBottom: "1px solid #eee", zIndex: 1101,width:isLg ? 'calc(100% - 60px)' : '100%',alignSelf:'flex-end' }}
+        sx={{ borderBottom: "1px solid #eee", zIndex: 1101,width:isMd ? 'calc(100% - 60px)' : '100%',alignSelf:'flex-end' }}
       >
         <Box
           sx={{
-            pl: 5,
-            pr: 5,
-            height: "75px",
+            pl: isXs ? 0 : isMd ? 3 : 5,
+            pr: isXs ? 0 : isMd ? 3 : 5,
+            height: isXs ? "64px" : "75px",
             width: "100%",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          {activeProject?.name ? (
+          {activeProject?.name && !loadingActiveProject ? (
             <Box display={"flex"} gap={1} alignItems={"center"}>
               <Box>
                 {showProjectNameTextfield ? (
@@ -171,10 +172,9 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                 ) : (
                   <Typography
                     variant="h4"
-                    fontSize={"1.5rem"}
+                    fontSize={isXs ? "1.125rem" : isSm ? "1.25rem" : "1.5rem"}
                     fontWeight={700}
                     color="#1C252E"
-                    paddingLeft={2}
                     onClick={handleProjectNameStartEdidting}
                   >
                     {activeProject?.name}
@@ -209,11 +209,11 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
             onClose={handleMenuClose}
             anchorOrigin={{
               vertical: "bottom",
-              horizontal: "left",
+              horizontal: isXs ? "right" : "left",
             }}
             transformOrigin={{
               vertical: "top",
-              horizontal: "left",
+              horizontal:isXs ? "right" : "left",
             }}
             PaperProps={{
               sx: {
@@ -237,22 +237,23 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                   cursor: "pointer",
                   padding: "6px 8px",
                   borderRadius: "6px",
+                  minHeight: isXs ? 40 : 48,
                 }}
               >
                 <Box
                   display="flex"
                   gap={2}
                   alignItems="center"
-                  minWidth="140px"
-                  mb={"4px"}
+                  minWidth= {isXs ? "130px" : "140px"}
+                  mb={isXs ? "" : "4px"}
                 >
                   <img
                     src={item.icon}
                     alt={item.label.toLowerCase()}
-                    width={20}
-                    height={20}
+                    width={isXs ? 16 : 20}
+                    height={isXs ? 16 : 20}
                   />
-                  <Typography fontSize={14} color={item.color || "inherit"}>
+                  <Typography fontSize={isXs ? 13 : 14} color={item.color || "inherit"}>
                     {item.label}
                   </Typography>
                 </Box>
@@ -373,7 +374,7 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                   },
                 }}
               >
-                {!loadingActiveUser ? (
+                {!loadingActiveUser && activeUser ? (
                   <Box
                     sx={{
                       minWidth: "unset",
@@ -382,8 +383,8 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
                       position: "relative",
                       padding: "3px",
                       borderRadius: "50%",
-                      width: "40px",
-                      height: "40px",
+                      width: isXs ? "36px" : "40px",
+                      height: isXs ? "36px" : "40px",
                     }}
                   >
                     <Box

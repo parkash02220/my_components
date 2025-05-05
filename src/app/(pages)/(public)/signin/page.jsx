@@ -3,24 +3,16 @@
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useLogin from "@/hooks/projects/user/useLogin";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 import Link from "next/link";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
+import { useRouter } from "next/navigation";
 export default function SignIn() {
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [errorMsg, setErrorMsg] = useState("");
-  // const { loadingLogin, loginUser } = useLogin();
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (!password || !email) {
-  //     setErrorMsg("all fields are necessary");
-  //     return;
-  //   }
-  //   loginUser(email, password, setErrorMsg);
-  // };
+  const router = useRouter();
+  const {isXs,isMd,isLg} = useBreakpointFlags();
   const {loadingLogin,loginUser,errorMsg,errorLogin} = useLogin();
   const [showPasswrod,setShowPassword] = useState(false);
 const formik = useFormik({
@@ -50,73 +42,14 @@ const handleHidePasswrod= () => {
 const handleUserSignIn = async (userData) => {
        await loginUser(userData);
 }
-
+useEffect(()=>{
+  router.prefetch("/signup");
+},[]);
   return (
     <>
-      {/* <Box
-        className="loginContainer"
-        width={"100%"}
-        minHeight={"100vh"}
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        <Box
-          className="loginBox"
-          width={"100%"}
-          maxWidth={"700px"}
-          display={"flex"}
-          flexDirection={"column"}
-          gap={"8px"}
-          p={2}
-          sx={{
-            boxShadow: "0px 8px 32px rgba(31, 38, 135, 0.2)",
-            borderRadius: "20px",
-          }}
-        >
-          <Typography width={"100%"} textAlign={"center"}>
-            LOGIN
-          </Typography>
-          <form className="loginForm" onSubmit={handleSubmit}>
-            <Box display={"flex"} flexDirection={"column"} gap={2}>
-              <MyTextField
-                fullWidth={true}
-                id="email"
-                type="email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                label="Email"
-              />
-              <MyTextField
-                fullWidth={true}
-                id="password"
-                type="password"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                label="Password"
-              />
-              {errorMsg && (
-                <div style={{ fontSize: "13px", color: "red" }}>{errorMsg}</div>
-              )}
-              <MyButton type="submit" fullWidth={true} loading={loadingLogin} backgroundColor="#1C252E">
-                Login
-              </MyButton>
-            </Box>
-          </form>
-          <Link href={"/signup"}>
-            <Typography width={"100%"} textAlign={"end"}>
-              {" "}
-              Don't have an account?{" "}
-              <span style={{ color: "blue" }}>Register here</span>.
-            </Typography>
-          </Link>
-        </Box>
-      </Box> */}
        <Box className="signInContainer" display={"flex"} minHeight={"100vh"}>
+    {
+      !isMd ? (
         <Box
           className="signInContainer__leftBox"
           display={"flex"}
@@ -196,13 +129,15 @@ const handleUserSignIn = async (userData) => {
             </Box>
           </Box>
         </Box>
+      ) : null
+    } 
         <Box
           className="signInContainer__rightBox"
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "80px 16px 80px 16px",
+            padding: isMd ? "24px 16px 80px 16px" : "80px 16px 80px 16px",
             flex: "1 1 auto",
             flexDirection: "column",
           }}
@@ -219,7 +154,7 @@ const handleUserSignIn = async (userData) => {
               flexDirection={"column"}
               whiteSpace={"pre-line"}
               gap={"12px"}
-              textAlign={"left"}
+              textAlign={ isMd ? 'center' : "left"}
             >
               <Typography
                 variant="h5"
@@ -229,7 +164,7 @@ const handleUserSignIn = async (userData) => {
               >
                 Sign in to your account
               </Typography>
-              <Box display={"flex"} gap={1}>
+              <Box display={"flex"} gap={1} justifyContent={isMd ? 'center' : ''}>
                 <Typography fontSize={14} color="#637381">
                 Don’t have an account?
                 </Typography>
@@ -247,7 +182,7 @@ const handleUserSignIn = async (userData) => {
             </Box>
             <form onSubmit={formik.handleSubmit}>
               <Box display={"flex"} flexDirection={"column"}>
-                <Grid container spacing={3}>
+                <Grid container spacing={isXs ? 2 : 3}>
                   <Grid size={12}>
                     <MyTextField
                       name="email"
@@ -268,6 +203,7 @@ const handleUserSignIn = async (userData) => {
                       labelColor="#637381"
                       activeLabelColor={"#1C252E"}
                       labelFontWeight={600}
+                      color={"#1C252E"}
                     />
                   </Grid>
                   <Grid size={12}>
@@ -301,6 +237,7 @@ const handleUserSignIn = async (userData) => {
                       activeLabelColor={"#1C252E"}
                       labelFontWeight={600}
                       placeholder="Password 6+"
+                      color={"#1C252E"}
                       customEndAdornment={
                         showPasswrod ? (
                             <IconButton onClick={handleHidePasswrod}>

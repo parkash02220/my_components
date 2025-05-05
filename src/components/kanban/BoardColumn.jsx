@@ -19,8 +19,10 @@ import useClearSection from "@/hooks/projects/section/useClearSection";
 import useDeleteSection from "@/hooks/projects/section/useDeleteSection";
 import useUpdateSectionName from "@/hooks/projects/section/useUpdateSectionName";
 import ConfirmationPopup from "../ConfirmationPopup";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 
 function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
+  const {isXs} = useBreakpointFlags();
   const { loadingClearSection, clearSection } = useClearSection();
   const { loadingDeleteSection, deleteSection } = useDeleteSection();
   const editSectionNameRef = useRef(null);
@@ -394,6 +396,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
               cursor: "pointer",
               padding: "6px 8px",
               borderRadius: "6px",
+              minHeight:isXs ? '40px' : '48px',
             }}
           >
             <Box
@@ -420,6 +423,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
       {createTaskOpen ? (
         <Box className="createTaskBox" mb={2}>
           <MyTextField
+          fullWidth={true}
             ref={inputRef}
             id="newTaskName"
             placeholder="Untitled"

@@ -5,8 +5,10 @@ import MyTextField from "../MyTextfield/MyTextfield";
 import MyDialog from "../MyDialog/MyDialog";
 import { ApiCall } from "@/utils/ApiCall";
 import useProjectNameAvailability from "@/hooks/projects/useProjectNameAvailability";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 
 const CreateProjectDialog = ({ open, onClose, onCreate,loadingCreateProject }) => {
+  const {isXs} = useBreakpointFlags();
   const [projectName, setProjectName] = useState("");
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("");
@@ -47,6 +49,7 @@ const CreateProjectDialog = ({ open, onClose, onCreate,loadingCreateProject }) =
       open={open}
       handleClose={handleDialogClose}
       title="Create New Project"
+      width={isXs ? '100%' : 'auto'}
       content={
         <Box pt={2} paddingInline={1}>
           <MyTextField
@@ -74,15 +77,17 @@ const CreateProjectDialog = ({ open, onClose, onCreate,loadingCreateProject }) =
         <Box
           display="flex"
           justifyContent="space-between"
+          flexDirection={isXs ? 'column-reverse' : 'row'}
           gap={2}
           width="100%"
           p={2}
           pt={0}
         >
-          <MyButton onClick={handleDialogClose} color="black" variant="outlined" hoverBgColor="whitesmoke">
+          <MyButton onClick={handleDialogClose} color="black" variant="outlined" hoverBgColor="whitesmoke"  fullWidth={true}>
             Cancel
           </MyButton>
           <MyButton
+          fullWidth={true}
             onClick={handleCreateProject}
             disabled={error || !available || loadingCreateProject}
             variant="contained"

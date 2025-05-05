@@ -1,3 +1,4 @@
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import {
   ListItem,
   ListItemButton,
@@ -5,10 +6,12 @@ import {
   ListItemText,
   Tooltip,
 } from "@mui/material";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export const SingleNavItem = ({ item, open, onClick }) => {
+  const router = useRouter();
+  const {isXs} = useBreakpointFlags();
   const pathname = usePathname();
   const [selectedDrawerItem, setSelectedDrawerItem] = useState(null);
   const {title}  = item;
@@ -30,6 +33,11 @@ export const SingleNavItem = ({ item, open, onClick }) => {
   const isAddProject = item.segment === "addproject"
   const content = (
     <ListItemButton
+    onMouseEnter={() => {
+      if (item.segment !== "addproject") {
+        router.prefetch(`/${item.segment}`);
+      }
+    }}
       onClick={onClick}
       sx={{
         minHeight: 40,

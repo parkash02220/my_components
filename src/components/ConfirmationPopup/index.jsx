@@ -1,6 +1,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import MyDialog from "../MyDialog/MyDialog";
 import MyButton from "../MyButton/MyButton";
+import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 
 const ConfirmationPopup = ({
   title,
@@ -15,6 +16,7 @@ const ConfirmationPopup = ({
   loading,
   loadingText,
 }) => {
+  const {isXs} = useBreakpointFlags();
   const theme = useTheme();
   if (type === "delete") {
     return (
@@ -27,6 +29,7 @@ const ConfirmationPopup = ({
           titlepadding="24px 24px 16px"
           contentpadding="0px 24px !important"
           actionpadding="24px !important"
+          width={isXs ? '100%':'auto'} 
           content={
             <Box>
               <Typography fontSize={14} color={theme?.palette?.primary?.main}>
@@ -47,7 +50,7 @@ const ConfirmationPopup = ({
                 variant="contained"
                 loadingText={loadingText || "Deleting"}
                 padding={"6px 12px"}
-                minWidth="64p"
+                minWidth="64px"
                 fontWeight={700}
                 fontSize={14}
                 color="#FFFFFF"
@@ -61,7 +64,7 @@ const ConfirmationPopup = ({
               <MyButton
                 onClick={cancelAction ? cancelAction : handleClose}
                 padding={"6px 12px"}
-                minWidth="64p"
+                minWidth="64px"
                 fontWeight={700}
                 color={theme?.palette?.primary?.main}
                 borderRadius="8px"
@@ -87,6 +90,7 @@ const ConfirmationPopup = ({
           titlepadding="24px 24px 16px"
           contentpadding="0px 24px !important"
           actionpadding="24px !important"
+          width={isXs ? '100%':'auto'} 
           content={
             <Box>
               <Typography fontSize={14} color={theme?.palette?.primary?.main}>
@@ -107,7 +111,7 @@ const ConfirmationPopup = ({
                 variant="contained"
                 loadingText={loadingText || "Logging out"}
                 padding={"6px 12px"}
-                minWidth="64p"
+                minWidth="64px"
                 fontWeight={700}
                 fontSize={14}
                 borderRadius="8px"
@@ -119,7 +123,7 @@ const ConfirmationPopup = ({
               <MyButton
                 onClick={cancelAction ? cancelAction : handleClose}
                 padding={"6px 12px"}
-                minWidth="64p"
+                minWidth="64px"
                 fontWeight={700}
                 color={theme?.palette?.primary?.main}
                 borderRadius="8px"

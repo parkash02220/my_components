@@ -1,9 +1,9 @@
 import { useAppContext } from "@/context/AppContext";
 import useToast from "@/hooks/common/useToast";
 import { convertIdFields } from "@/utils";
+import { ApiCall } from "@/utils/ApiCall";
+import { useState } from "react";
 
-const { ApiCall } = require("@/utils/ApiCall");
-const { useState } = require("react");
 
 const useToggleAssignTask = () => {
   const { showToast } = useToast();

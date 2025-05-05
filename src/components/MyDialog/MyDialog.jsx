@@ -7,6 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import useBreakpointFlags from '@/hooks/common/useBreakpointsFlag';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -18,6 +19,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const MyDialog = ({ open, handleClose, title, content, actions, ...props }) => {
+  const {isXs} = useBreakpointFlags();
   return (
     <div>
       <BootstrapDialog
@@ -29,9 +31,9 @@ const MyDialog = ({ open, handleClose, title, content, actions, ...props }) => {
         }}
         PaperProps={{
             sx: {
-              minWidth: props?.minwidth || '500px',
+              minWidth: isXs ? "300px" : props?.minwidth || "500px",
               borderRadius: props.borderRadius || '16px',
-              maxWidth: props?.maxwidth || "600px",
+              maxWidth: isXs ? "calc(100% - 16px)" : props?.maxwidth || "600px",
               boxShadow : props?.boxShadow,
               width:props?.width,
               maxHeight:props?.maxheight,

@@ -30,9 +30,9 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open" && prop !== "islg",
-})(({ theme, open, islg }) => ({
-  width: islg ? '60px ' : open ? drawerWidth : miniDrawerWidth,
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "ismd" && prop !== "isxs",
+})(({ theme, open, ismd,isxs }) => ({
+  width: ismd ? '60px ' : open ? drawerWidth : miniDrawerWidth,
   left: 0,
   right: "auto",
   position: "fixed",
@@ -42,7 +42,9 @@ export const AppBar = styled(MuiAppBar, {
   zIndex: 800,
   backgroundColor: "#FFFFFF",
   boxShadow: "none",
-  borderRight: "1px solid rgba(145,158,171,0.12)",
+  borderRight: ismd ? "" : "1px solid rgba(145,158,171,0.12)",
+  borderBottom : ismd ? "1px solid #eee" : "",
+  height: isxs ? "65px" : ismd ? '76px' : 'auto',
 }));
 
 export const Drawer = styled(MuiDrawer, {
@@ -63,6 +65,19 @@ export const Drawer = styled(MuiDrawer, {
       },
       scrollbarWidth: "none",
       msOverflowStyle: "none",
+      // "&:hover": {
+      //   scrollbarWidth: "thin", // Firefox
+      //   "&::-webkit-scrollbar": {
+      //     width: "8px",
+      //   },
+      //   "&::-webkit-scrollbar-thumb": {
+      //     backgroundColor: "rgba(0, 0, 0, 0.2)",
+      //     borderRadius: "4px",
+      //   },
+      //   "&::-webkit-scrollbar-track": {
+      //     backgroundColor: "transparent",
+      //   },
+      // },
     },
   }),
   ...(!open && {
