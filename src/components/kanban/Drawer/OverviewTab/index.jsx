@@ -11,7 +11,7 @@ import useDeleteAttachments from "@/hooks/projects/task/useDeleteAttachments";
 import DueDateDialog from "./DueDateDialog.jsx";
 import AttachmentViewer from "./AttachmentViewer.jsx";
 import { formatDueDateRange, getFullName } from "@/utils/index.js";
-const OverviewTab = () => {
+const OverviewTab = ({isDrawerOpen}) => {
   const { state } = useAppContext();
   const { activeTask } = state || {};
   const {
@@ -127,6 +127,7 @@ const OverviewTab = () => {
         handleClose={handleAssignDialogClose}
         assignedUsers={formik.values.assigned_to}
         taskId={activeTask?.id}
+        isDrawerOpen={isDrawerOpen}
       />
       <DueDateDialog
         handleClose={handleDueDateDialogClose}

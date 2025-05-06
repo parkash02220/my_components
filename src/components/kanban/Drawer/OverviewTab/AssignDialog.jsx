@@ -5,7 +5,7 @@ import useToggleAssignTask from "@/hooks/projects/task/useToggleAssignTask";
 import useGetAllUsers from "@/hooks/projects/user/useGetAllUsers";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
-const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
+const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen }) => {
   const { loadingAssignTaskIds, errorAssignTask, toggleAssignTask } =
     useToggleAssignTask();
   const theme = useTheme();
@@ -60,9 +60,15 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId }) => {
   console.log("::all user", allUsers);
 
   useEffect(() => {
-    if (!open) {
+    if (!open && !isDrawerOpen) {
       setSearchValue("");
-      setAllUsers([]); // Clear loaded users
+      setAllUsers([]);
+      setPage(1);
+    }
+  }, [open, isDrawerOpen]);
+
+  useEffect(() => {
+    if (open && allUsers.length === 0) {
       setPage(1);
     }
   }, [open]);
