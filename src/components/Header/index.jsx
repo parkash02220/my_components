@@ -19,7 +19,11 @@ import { useRouter } from "next/navigation";
 import useGetActiveUser from "@/hooks/projects/user/useGetActiveUser";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 
-export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
+import NotificationDrawer from '@/components/Header/NotificationDrawer';
+import useNotifications from "@/hooks/common/useNotifications";
+export default function Header({}) {
+  const [profileDrawerOpen,setProfileDrawerOpen] = useState(false);
+  const [notificationDrawerOpen,setNotificationDrawerOpen] = useState(false);
   const { state } = useAppContext();
   const {isMd,isSm,isXs} = useBreakpointFlags();
   const { activeProject,loading } = state;
@@ -56,24 +60,21 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
     setMenuAnchorEl(null);
   };
 
-  const navigationItems = [
-    // { image: { path: "/notificationIcon.svg", alt: "notification" } },
-    // { image: { path: "/userIcon.svg", alt: "user" } },
-    // {
-    //   image: {
-    //     path: "/settingsIcon.svg",
-    //     alt: "settings",
-    //     animation: "rotateClockwise 5s linear infinite",
-    //   },
-    // },
-  ];
-
   const OpenProfileDrawer = () => {
     setProfileDrawerOpen(true);
   };
   const CloseProfileDrawer = () => {
     setProfileDrawerOpen(false);
   };
+
+  const handleNotificationDrawerOpen = () => {
+    console.log("::entered notification open")
+    setNotificationDrawerOpen(true);
+  }
+
+  const handleNotificationDrawerClose = () => {
+    setNotificationDrawerOpen(false);
+  }
 
   const handleProjectNameStartEdidting = () => {
     handleMenuClose();
@@ -115,6 +116,17 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
       color: "#FF5630",
     },
   ];
+  const navigationItems = [
+    { image: { path: "/notificationIcon.svg", alt: "notification" },onClick:handleNotificationDrawerOpen },
+    // { image: { path: "/userIcon.svg", alt: "user" } },
+    // {
+    //   image: {
+    //     path: "/settingsIcon.svg",
+    //     alt: "settings",
+    //     animation: "rotateClockwise 5s linear infinite",
+    //   },
+    // },
+  ];
   return (
     <>
       <ConfirmationPopup
@@ -129,6 +141,10 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
       <ProfileDrawer
         open={profileDrawerOpen}
         handleDrawer={CloseProfileDrawer}
+      />
+      <NotificationDrawer 
+      open={notificationDrawerOpen}
+      handleDrawer={handleNotificationDrawerClose}
       />
       <AppBar
         position="sticky"
@@ -306,6 +322,7 @@ export default function Header({ profileDrawerOpen, setProfileDrawerOpen }) {
               {navigationItems?.map((item, index) => {
                 return (
                   <IconButton
+                    onClick={item.onClick}
                     key={index}
                     sx={{
                       display: "inline-flex",

@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext, useState } from "react";
 import { initialState } from "./initialState";
-import * as actions from './action';
+import * as actions from "./action";
 const AppContext = createContext();
 
 function setLoading(state, key, value) {
@@ -11,55 +11,55 @@ function setError(state, key, value) {
   return { ...state.error, [key]: value };
 }
 
-function projectsReducer(state=initialState, action) {
+function projectsReducer(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
     case actions.SET_PROJECTS_REQUEST:
-  return {
-    ...state,
-    loading: setLoading(state, "loadingProjects", true),
-    error: setError(state, "errorProjects", null),
-  };
+      return {
+        ...state,
+        loading: setLoading(state, "loadingProjects", true),
+        error: setError(state, "errorProjects", null),
+      };
 
-case actions.SET_PROJECTS_SUCCESS:
-  return {
-    ...state,
-    projects: payload,
-    loading: setLoading(state, "loadingProjects", false),
-  };
+    case actions.SET_PROJECTS_SUCCESS:
+      return {
+        ...state,
+        projects: payload,
+        loading: setLoading(state, "loadingProjects", false),
+      };
 
-case actions.SET_PROJECTS_FAILURE:
-  return {
-    ...state,
-    loading: setLoading(state, "loadingProjects", false),
-    error: setError(state, "errorProjects", payload),
-  };
-  case "CREATE_PROJECT" : {
-    return {
-      ...state,
-      projects:[payload,...state?.projects]
+    case actions.SET_PROJECTS_FAILURE:
+      return {
+        ...state,
+        loading: setLoading(state, "loadingProjects", false),
+        error: setError(state, "errorProjects", payload),
+      };
+    case "CREATE_PROJECT": {
+      return {
+        ...state,
+        projects: [payload, ...state?.projects],
+      };
     }
-  }
-  case actions.SET_ACTIVE_PROJECT_REQUEST:
-    return {
-      ...state,
-      loading: setLoading(state, "loadingActiveProject", true),
-      error: setError(state, "errorActiveProject", null),
-    };
-  
-  case actions.SET_ACTIVE_PROJECT_SUCCESS:
-    return {
-      ...state,
-      activeProject: payload,
-      loading: setLoading(state, "loadingActiveProject", false),
-    };
-  
-  case actions.SET_ACTIVE_PROJECT_FAILURE:
-    return {
-      ...state,
-      loading: setLoading(state, "loadingActiveProject", false),
-      error: setError(state, "errorActiveProject", payload),
-    };
+    case actions.SET_ACTIVE_PROJECT_REQUEST:
+      return {
+        ...state,
+        loading: setLoading(state, "loadingActiveProject", true),
+        error: setError(state, "errorActiveProject", null),
+      };
+
+    case actions.SET_ACTIVE_PROJECT_SUCCESS:
+      return {
+        ...state,
+        activeProject: payload,
+        loading: setLoading(state, "loadingActiveProject", false),
+      };
+
+    case actions.SET_ACTIVE_PROJECT_FAILURE:
+      return {
+        ...state,
+        loading: setLoading(state, "loadingActiveProject", false),
+        error: setError(state, "errorActiveProject", payload),
+      };
 
     case "UPDATE_PROJECT_NAME": {
       const { newName, projectId } = payload;
@@ -103,7 +103,10 @@ case actions.SET_PROJECTS_FAILURE:
 
     case "ADD_COLUMN_TO_SECTION": {
       const { section } = payload;
-      const updatedSections = [...(state?.activeProject?.sections || []), section];
+      const updatedSections = [
+        ...(state?.activeProject?.sections || []),
+        section,
+      ];
       return {
         ...state,
         activeProject: {
@@ -262,21 +265,20 @@ case actions.SET_PROJECTS_FAILURE:
         loading: setLoading(state, "loadingActiveTask", true),
         error: setError(state, "errorActiveTask", null),
       };
-    
+
     case actions.SET_ACTIVE_TASK_SUCCESS:
       return {
         ...state,
         activeTask: payload,
         loading: setLoading(state, "loadingActiveTask", false),
       };
-    
+
     case actions.SET_ACTIVE_TASK_FAILURE:
       return {
         ...state,
         loading: setLoading(state, "loadingActiveTask", false),
         error: setError(state, "errorActiveTask", payload),
       };
-    
 
     case "EDIT_TASK": {
       const updatedTask = payload;
@@ -372,43 +374,43 @@ case actions.SET_PROJECTS_FAILURE:
           ...state?.activeTask,
           images: images,
         },
-        activeProject:{
+        activeProject: {
           ...state.activeProject,
-          sections:updatedSections,
-        }
+          sections: updatedSections,
+        },
       };
     }
 
-    case "ADD_COMMENTS_TO_TASK":{
-      const {subComments, taskId,columnId} = payload;
-      const updatedSections = state?.activeProject?.sections?.map((section)=> {
-        if(section?.id === columnId){
+    case "ADD_COMMENTS_TO_TASK": {
+      const { subComments, taskId, columnId } = payload;
+      const updatedSections = state?.activeProject?.sections?.map((section) => {
+        if (section?.id === columnId) {
           return {
             ...section,
-            tasks: section?.tasks?.map((task)=> {
-              if(task?.id === taskId){
+            tasks: section?.tasks?.map((task) => {
+              if (task?.id === taskId) {
                 return {
                   ...task,
-                  subComments:subComments,
-                }
+                  subComments: subComments,
+                };
               }
               return task;
-            })
-          }
+            }),
+          };
         }
         return section;
-      })
-        return {
-          ...state,
-          activeProject:{
-            ...state.activeProject,
-            sections: updatedSections,
-          },
-         activeTask:{
+      });
+      return {
+        ...state,
+        activeProject: {
+          ...state.activeProject,
+          sections: updatedSections,
+        },
+        activeTask: {
           ...state.activeTask,
-          subComments:subComments || state.activeTask.subComments,
-         }
-        }
+          subComments: subComments || state.activeTask.subComments,
+        },
+      };
     }
 
     case actions.SET_ACTIVE_USER_REQUEST:
@@ -417,19 +419,100 @@ case actions.SET_PROJECTS_FAILURE:
         loading: setLoading(state, "loadingActiveUser", true),
         error: setError(state, "errorActiveUser", null),
       };
-    
+
     case actions.SET_ACTIVE_USER_SUCCESS:
       return {
         ...state,
         activeUser: payload,
         loading: setLoading(state, "loadingActiveUser", false),
       };
-    
+
     case actions.SET_ACTIVE_USER_FAILURE:
       return {
         ...state,
         loading: setLoading(state, "loadingActiveUser", false),
         error: setError(state, "errorActiveUser", payload),
+      };
+
+    case "SET_NOTIFICATION_TAB": {
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          tab: payload.tab,
+          page: 1,
+          hasMore: true,
+        },
+      };
+    }
+
+    case actions.SET_NOTIFICATIONS_REQUEST: {
+      return {
+        ...state,
+        loading: setLoading(state, "loadingNotifications", true),
+        error: setError(state, "errorNotifications", payload),
+      };
+    }
+
+    case actions.SET_NOTIFICATIONS_SUCCESS: {
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          [state.notifications.tab]: payload.notifications,
+          hasMore: payload.hasMore,
+        },
+        loading: setLoading(state, "loadingNotifications", false),
+      };
+    }
+
+    case actions.SET_NOTIFICATIONS_FAILURE:
+      return {
+        ...state,
+        loading: setLoading(state, "loadingNotifications", false),
+        error: setError(state, "errorNotifications", payload),
+      };
+
+    case "APPEND_NOTIFICATIONS":
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          [state.notifications.tab]: [
+            ...(state.notifications[state.notifications.tab] || []),
+            ...payload.notifications,
+          ],
+          hasMore: payload.hasMore,
+        },
+      };
+
+    case "ADD_NOTIFICATION":
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          all: [payload.notification, ...state.notifications.all],
+          unread: [payload.notification, ...state.notifications.unread],
+        },
+      };
+
+    case "MARK_AS_READ":
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          unread: state.notifications.unread.filter((notifi) => notifi.id !== payload.id),
+          all: state.notifications.all.map((notifi) =>
+            notifi.id === payload.id ? { ...notifi, read: true } : notifi
+          ),
+        },
+      };
+
+    case "SET_LOADING":
+      return {
+        ...state,
+        loading: setLoading(state, "loadingActiveUser", true),
+        error: setError(state, "errorActiveUser", null),
       };
 
     default:

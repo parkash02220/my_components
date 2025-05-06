@@ -61,7 +61,7 @@ export const Content = ({
     } else if (tab === "comments") {
       return <CommentsTab activeTask={activeTask} />;
     } else {
-      return <OverviewTab activeTask={activeTask} />;
+      return <OverviewTab activeTask={activeTask} isDrawerOpen={open}/>;
     }
   };
   return (
@@ -132,8 +132,8 @@ export const Content = ({
                           })`
                     }
                     sx={{
-                      color: "#637381 !important",
-                      fontWeight: "600",
+                      color: currentTab === tab?.value ? "#1C252E !important" : "#637381 !important",
+                      fontWeight: currentTab === tab?.value ? 600 : 500,
                       fontSize: "14px",
                       textTransform: "none",
                       padding: "8px 0px",
