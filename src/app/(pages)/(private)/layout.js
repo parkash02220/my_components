@@ -14,7 +14,6 @@ export default function HomeLayout({ children }) {
   const [isClientUser, setIsClientUser] = useState(null);
   const { isMd } = useBreakpointFlags();
   const [open, setOpen] = useState(true);
-  const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
   useEffect(() => {
     const user = isUserLoggedIn();
     if (!user) {
@@ -44,10 +43,7 @@ export default function HomeLayout({ children }) {
           position={"relative"}
           height={"100vh"}
         >
-          <Header
-            profileDrawerOpen={profileDrawerOpen}
-            setProfileDrawerOpen={setProfileDrawerOpen}
-          />
+          <Header/>
           <main
             style={{
               flexGrow: 1,
@@ -58,12 +54,6 @@ export default function HomeLayout({ children }) {
           >
             {children}
           </main>
-        <Box display={'flex'} flexDirection={'column'} width={open ? 'calc(100% - 300px)' : 'calc(100% - 88px)'} position={'relative'} height={'100vh'}>
-          <Header/>
-        <main style={{ flexGrow: 1, padding: "24px",height:'calc(100vh - 75px',paddingBottom:"4px" }}>
-          {children}
-        </main>
-        </Box>
       </Box>
       </Box>
     </AppContextProvider>
