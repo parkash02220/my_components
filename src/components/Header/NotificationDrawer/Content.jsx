@@ -1,10 +1,20 @@
 import { Box, IconButton, Tab, Tabs, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import ArchivedTab from "@/components/Header/NotificationDrawer/ArchivedTab";
-import UnReadTab from "@/components/Header/NotificationDrawer/UnReadTab";
-import AllTab from "@/components/Header/NotificationDrawer/AllTab";
-export const Content = ({ currentTab, tabValues, handleTabChange, open,notificationCount,notifications,loadingNotifications }) => {
+import NotificatoinMsg from "./NotificatoinMsg";
+import useReadNotification from "@/hooks/notifications/useReadNotifications";
+export const Content = ({
+  currentTab,
+  tabValues,
+  handleTabChange,
+  open,
+  notifications,
+  loadingNotifications,
+  totalCount,
+  unReadCount,
+  loadMoreRef,
+  hasMore,
+}) => {
   const containerRef = useRef(null);
   const [targetStyle, setTargetStyle] = useState({ left: 0, width: 0 });
   const [prevStyle, setPrevStyle] = useState({ left: 0, width: 0 });
@@ -14,11 +24,12 @@ export const Content = ({ currentTab, tabValues, handleTabChange, open,notificat
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const currentIndex = tabValues.findIndex((tab) => tab.value === currentTab);
   const prevIndex = tabValues.findIndex((tab) => tab.value === prevTab);
-
+  const [visibleTab, setVisibleTab] = useState(currentTab);
+  const scrollContainerRef = useRef(null);
+  const {loadingReadNotification,errorReadNotification,markNotificationAsRead} = useReadNotification();
   useEffect(() => {
     const currentNode = tabsRef.current[currentIndex];
     const prevNode = tabsRef.current[prevIndex];
-
     if (currentNode && prevNode) {
       const { offsetLeft: currentLeft, offsetWidth: currentWidth } =
         currentNode;
@@ -38,23 +49,37 @@ export const Content = ({ currentTab, tabValues, handleTabChange, open,notificat
     }
   }, [currentTab]);
 
-  //   useEffect(() => {
-  //     if (!loadingGetTask && open) {
-  //       const currentNode = tabsRef.current[currentIndex];
-  //       if (currentNode) {
-  //         const { offsetLeft, offsetWidth } = currentNode;
-  //         setTargetStyle({ left: offsetLeft, width: offsetWidth });
-  //       }
-  //     }
-  //   }, [loadingGetTask, open]);
-
-  const getContentForCurrentTab = (tab) => {
-    if (tab === "unread") {
-      return <UnReadTab notifications={notifications} loadingNotifications={loadingNotifications}/>;
-    } else {
-      return <AllTab notifications={notifications} loadingNotifications={loadingNotifications}/>;
+  useEffect(() => {
+    if (!loadingNotifications && open) {
+      const currentNode = tabsRef.current[currentIndex];
+      if (currentNode) {
+        const { offsetLeft, offsetWidth } = currentNode;
+        setTargetStyle({ left: offsetLeft, width: offsetWidth });
+      }
     }
-  };
+  }, [loadingNotifications, open]);
+
+  useEffect(() => {
+    if (currentTab !== visibleTab) {
+      const timer = setTimeout(() => {
+        setVisibleTab(currentTab);
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentTab, visibleTab]);
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, [currentTab]);
+
+  const handleNotificationClick =async (isUnread,id) => {
+    if(!isUnread) return;
+    await markNotificationAsRead(id);
+  }
+
   return (
     <>
       <Box
@@ -162,7 +187,7 @@ export const Content = ({ currentTab, tabValues, handleTabChange, open,notificat
                           ml: 1,
                         }}
                       >
-                        {notificationCount}
+                        {(tab?.value === "all" ? totalCount : unReadCount) || 0}
                       </Typography>
                     </Box>
                   }
@@ -186,6 +211,7 @@ export const Content = ({ currentTab, tabValues, handleTabChange, open,notificat
           </Box>
         </Box>
         <Box
+        ref={scrollContainerRef}
           sx={{
             flexGrow: 1,
             overflowY: "auto",
@@ -195,7 +221,94 @@ export const Content = ({ currentTab, tabValues, handleTabChange, open,notificat
             },
           }}
         >
-          {getContentForCurrentTab(currentTab)}
+          <Box
+            className="notifications__container"
+            height={"100%"}
+            display={"flex"}
+            flexDirection={"column"}
+            alignItems={"center"}
+          >
+            {(loadingNotifications ||
+              currentTab !== visibleTab ||
+              !notifications) &&
+            notifications?.length < 1 ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flex: 1,
+                }}
+              >
+                <img
+                  src="/iosLoader.gif"
+                  alt="loading"
+                  style={{ width: "40px", height: "40px" }}
+                />
+              </Box>
+            ) : notifications.length > 0 ? (
+              <Box>
+                {notifications.map((notification, i) => (
+                  <Box key={i} width="100%">
+                    <NotificatoinMsg notification={notification} handleNotificationClick={handleNotificationClick}/>
+                  </Box>
+                ))}
+                {loadingNotifications && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flex: 1,
+                      mt: "4px",
+                    }}
+                  >
+                    <img
+                      src="/iosLoader.gif"
+                      alt="loading"
+                      style={{ width: "40px", height: "40px" }}
+                    />
+                  </Box>
+                )}
+                {hasMore &&  !loadingNotifications && (
+                  <Box
+                    ref={loadMoreRef}
+                    sx={{ height: "1px" }}
+                  ></Box>
+                )}
+              </Box>
+            ) : (
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                gap={2}
+                alignItems={"center"}
+                justifyContent={"center"}
+                height={"100%"}
+              >
+                <Box>
+                  <Typography
+                    fontSize={20}
+                    fontWeight={600}
+                    color="#1C252E"
+                    textAlign={"center"}
+                  >
+                    You're all caught up!
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    fontSize={14}
+                    color="#637381"
+                    textAlign={"center"}
+                  >
+                    No notifications at the moment — we'll let you know when
+                    something new comes in.
+                  </Typography>
+                </Box>
+              </Box>
+            )}
+          </Box>
         </Box>
       </Box>
     </>

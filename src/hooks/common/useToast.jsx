@@ -95,12 +95,18 @@ const useToast = () => {
                       alt="error"
                       style={{ width: "24px", height: "24px", flexShrink: 0 }}
                     />
-                  ) : (
+                  ) : type === "loading" ? (
                     <img
                       src="/iosLoader.gif"
                       alt="loading"
                       style={{ width: "24px", height: "24px", flexShrink: 0 }}
                     />
+                  ) : (
+                    <img
+                    src="/notificationToastIcon.svg"
+                    alt="loading"
+                    style={{ width: "24px", height: "24px", flexShrink: 0 }}
+                  />
                   )
                 }
                 </Box>

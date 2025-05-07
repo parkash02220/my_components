@@ -119,7 +119,6 @@ const OverviewTab = ({isDrawerOpen}) => {
       activeTask?.id
     );
   };
-  console.log("::active task in overview tab ", activeTask);
   return (
     <>
       <AssignDialog

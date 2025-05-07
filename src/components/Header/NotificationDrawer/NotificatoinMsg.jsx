@@ -2,10 +2,11 @@ import { useAppContext } from "@/context/AppContext";
 import { getTimeAgo } from "@/utils";
 import { Box, Typography } from "@mui/material";
 
-const NotificatoinMsg = ({ notification,type="" }) => {
+const NotificatoinMsg = ({ notification,type="",handleNotificationClick }) => {
   const { state } = useAppContext();
   const userId = state?.activeUser?.id;
   const isUnread = type==="unread" ? true : !notification?.seenBy?.some((item) => item?.user === userId && item?.seen === true);
+  console.log("::notification",notification)
   return (
     <>
       <Box
@@ -27,6 +28,7 @@ const NotificatoinMsg = ({ notification,type="" }) => {
             background: "rgba(145,158,171,0.08)",
           },
         }}
+        onClick={()=>handleNotificationClick(isUnread,notification?.id)}
       >
         {isUnread && (
           <Box
@@ -59,7 +61,7 @@ const NotificatoinMsg = ({ notification,type="" }) => {
             }}
           >
             <img
-              src="	https://pub-c5e31b5cdafb419fb247a8ac2e78df7a.r2.dev/public/assets/images/mock/avatar/avatar-2.webp"
+              src={notification?.sender?.avatar}
               alt="avatar"
               style={{
                 width: "100%",

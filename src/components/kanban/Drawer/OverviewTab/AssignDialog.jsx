@@ -57,7 +57,6 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen })
     setSearchValue("");
     handleClose();
   };
-  console.log("::all user", allUsers);
 
   useEffect(() => {
     if (!open && !isDrawerOpen) {

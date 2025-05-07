@@ -30,7 +30,6 @@ const useToggleAssignTask = () => {
       return;
     }
     const formattedIdResponse = convertIdFields(res?.data?.updatedTask || {});
-    console.log("::res in toggle assign task", formattedIdResponse);
     dispatch({
       type: "EDIT_TASK",
       payload: formattedIdResponse,

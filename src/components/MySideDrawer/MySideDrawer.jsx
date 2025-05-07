@@ -229,7 +229,6 @@ export default function MySideDrawer({ open, setOpen }) {
     handleLogoutPopupClose();
   };
   if (!hasMounted) return null;
-  console.log("isLoadMoreLoading:", isLoadMoreLoading);
   return (
     <>
       <ConfirmationPopup

@@ -27,9 +27,6 @@ const useUploadAttachments = () => {
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/upload-task-image/${taskId}`,
       method: "POST",
       onUploadProgress: (event) => {
-        console.log("::event.loaded", event.loaded);
-        console.log("::event.total", event.total);
-
         const percentage = Math.round((event.loaded * 100) / event.total);
         setProgressUploadAttachments(percentage);
       },
@@ -50,7 +47,6 @@ const useUploadAttachments = () => {
     }
 
     setSuccessUploadAttachments(true);
-    console.log("::response image uploaded", res.data);
     const images = res?.data?.images;
     dispatch({
       type: "ADD_IMAGE_TO_TASK",

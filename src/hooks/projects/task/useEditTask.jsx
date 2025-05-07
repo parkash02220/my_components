@@ -13,7 +13,6 @@ const useEditTask = () => {
   const controllerRef = useRef(new AbortController());
 
   const updateTaskInBackend = async (formData, taskId) => {
-    console.log("::formadata", formData);
     controllerRef.current.abort();
     const controller = new AbortController();
     controllerRef.current = controller;
@@ -38,7 +37,6 @@ const useEditTask = () => {
     }
 
     const formattedIdResponse = convertIdFields(res?.data?.updatedTask || {});
-    console.log("::res in formdata", formattedIdResponse);
     dispatch({ type: "EDIT_TASK", payload: { ...formattedIdResponse } });
     showToast({
       toastId,

@@ -109,7 +109,6 @@ const useGetAllProjects = () => {
 
   useEffect(() => {
     if (inView && hasMore && !loadingAllProjects) {
-      console.log("::entirng in view",inView)
       setPage((prev) => prev + 1);
     }
   }, [inView, hasMore, loadingAllProjects]);

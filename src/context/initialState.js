@@ -8,8 +8,11 @@ export const initialState = {
     all: [],
     unread: [],
     tab: "all",
-    page: 1,
+    page: 0,
+    pageSize:10,
     hasMore: true,
+    totalCount:0,
+    unReadCount:0,
   },
   loading: {
     loadingProjects: false,
