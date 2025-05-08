@@ -37,6 +37,7 @@ export default function Header({}) {
     loadMoreRef,
     hasMore,
     clearNotifications,
+    page,
 } = useNotifications(notificationDrawerOpen);
   const {loadingActiveProject} = loading;
   const inputRef = useRef();
@@ -140,6 +141,7 @@ export default function Header({}) {
     //   },
     // },
   ];
+  console.log("::notifications",notifications)
   return (
     <>
       <ConfirmationPopup
@@ -164,6 +166,7 @@ export default function Header({}) {
       loadingNotifications={loadingNotifications}
       loadMoreRef={loadMoreRef}
       hasMore={hasMore}
+      page={page}
       />
       <AppBar
         position="sticky"

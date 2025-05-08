@@ -6,7 +6,7 @@ const NotificatoinMsg = ({ notification,type="",handleNotificationClick }) => {
   const { state } = useAppContext();
   const userId = state?.activeUser?.id;
   const isUnread = type==="unread" ? true : !notification?.seenBy?.some((item) => item?.user === userId && item?.seen === true);
-  console.log("::notification",notification)
+
   return (
     <>
       <Box
@@ -91,7 +91,7 @@ const NotificatoinMsg = ({ notification,type="",handleNotificationClick }) => {
             </Box>
             <Box>
               <Typography color="#919EAB" fontSize={12}>
-                {getTimeAgo(notification?.updatedAt)}
+                {getTimeAgo(notification?.updatedAt || notification?.createdAt)}
               </Typography>
             </Box>
           </Box>

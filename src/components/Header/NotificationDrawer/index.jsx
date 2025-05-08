@@ -7,8 +7,7 @@ import { Footer } from "./Footer";
 import useNotifications from "@/hooks/notifications/useNotifications";
 import { useAppContext } from "@/context/AppContext";
 
-const index = ({ open, handleDrawer,notifications,loadingNotifications,totalCount,unReadCount,loadMoreRef,hasMore }) => {
-  console.log("::notifications",notifications)
+const index = ({ open, handleDrawer,notifications,loadingNotifications,totalCount,unReadCount,loadMoreRef,hasMore,page }) => {
   const { dispatch } = useAppContext();
   const tabValues = [
     {
@@ -61,6 +60,7 @@ const index = ({ open, handleDrawer,notifications,loadingNotifications,totalCoun
               unReadCount={unReadCount}
               loadMoreRef={loadMoreRef}
               hasMore={hasMore}
+              page={page}
             />
           }
           footer={<Footer />}

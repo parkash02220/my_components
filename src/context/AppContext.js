@@ -434,31 +434,33 @@ function projectsReducer(state = initialState, action) {
         error: setError(state, "errorActiveUser", payload),
       };
 
-    case "SET_NOTIFICATION_TAB": {
+      case actions.SET_NOTIFICATION_TAB: {
+        const tab = payload.tab;
+        return {
+          ...state,
+          notifications: {
+            ...state.notifications,
+            tab,
+            [tab]: state.notifications[tab] || {
+              data: [],
+              page: 1,
+              hasMore: true,
+            },
+          },
+        };
+      }
+    case actions.CLEAR_NOTIFICATIONS: {
       return {
         ...state,
         notifications: {
           ...state.notifications,
-          tab: payload.tab,
-          page: 0,
-          hasMore: true,
+          all: { data: [], page: 0, hasMore: true },
+          unread: { data: [], page: 0, hasMore: true },
+          tab: "all",
+          unReadCount: 0,
+          totalCount: 0,
         },
       };
-    }
-    case actions.CLEAR_NOTIFICATIONS:{
-      console.log("::clear notification action")
-      return {
-        ...state,
-        notifications:{
-          ...state.notifications,
-          all: [],
-          unread: [],
-          tab: "all",
-          page: 0,
-          pageSize:10,
-          hasMore: true,
-        }
-      }
     }
 
     case actions.SET_NOTIFICATIONS_REQUEST: {
@@ -470,15 +472,23 @@ function projectsReducer(state = initialState, action) {
     }
 
     case actions.SET_NOTIFICATIONS_SUCCESS: {
+      const { notifications, hasMore, page, totalUnread, totalCount } = payload;
+      console.log("::reducer",payload)
+      const tab = state.notifications.tab;
+      const isFirstCall = page === 1;
       return {
         ...state,
         notifications: {
           ...state.notifications,
-          [state.notifications.tab]: payload?.isFirstCall ? [...(payload.notifications || [])] : [...(state.notifications[state.notifications.tab] || []),...(payload.notifications || [])],
-          hasMore: payload.hasMore,
-          unReadCount:payload?.totalUnread,
-          totalCount:payload?.totalCount,
-          page:payload?.page,
+          [tab]: {
+            data: isFirstCall
+              ? notifications
+              : [...(state.notifications[tab]?.data || []), ...notifications],
+            page,
+            hasMore,
+          },
+          unReadCount: totalUnread,
+          totalCount,
         },
         loading: setLoading(state, "loadingNotifications", false),
       };
@@ -491,22 +501,34 @@ function projectsReducer(state = initialState, action) {
         error: setError(state, "errorNotifications", payload),
       };
 
-      case actions.NEW_NOTIFICATION_RECEIVED:{
-        const {newNotification} = payload;
-        const updatedAllNotifications = [newNotification, ...state.notifications.all];
-        const updatedUnreadNotifications = [newNotification, ...state.notifications.unread];
-        
-        return {
-          ...state,
-          notifications: {
-            ...state.notifications,
-            all:updatedAllNotifications,
-            unread: updatedUnreadNotifications,
-            unReadCount: (state.notifications.unReadCount || 0) + 1,
-            totalCount: (state.notifications.totalCount || 0) + 1,
+    case actions.NEW_NOTIFICATION_RECEIVED: {
+      const { newNotification } = payload;
+      const updatedAllNotifications = [
+        newNotification,
+        ...state.notifications.all.data,
+      ];
+      const updatedUnreadNotifications = [
+        newNotification,
+        ...state.notifications.unread.data,
+      ];
+
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          all: {
+            ...state.notifications.all,
+            data: updatedAllNotifications,
           },
-        };
-      }
+          unread: {
+            ...state.notifications.unread,
+            data: updatedUnreadNotifications,
+          },
+          unReadCount: (state.notifications.unReadCount || 0) + 1,
+          totalCount: (state.notifications.totalCount || 0) + 1,
+        },
+      };
+    }
     case "ADD_NOTIFICATION":
       return {
         ...state,
@@ -517,13 +539,46 @@ function projectsReducer(state = initialState, action) {
         },
       };
 
-    case  actions.MARK_NOTIFICATION_AS_READ:{
-      const {notificationId} = payload;
+    case actions.MARK_NOTIFICATION_AS_READ: {
+      const { newNotification } = payload;
+      const updatedAllNotifications = state?.notifications?.all?.map(
+        (notification) => {
+          if (notification?.id === newNotification?.id) {
+            return newNotification;
+          }
+          return notification;
+        }
+      );
+      const updatedUnreadNotifications = state?.notifications?.unread?.filter(
+        (notification) => notification?.id !== newNotification?.id
+      );
       return {
         ...state,
         notifications: {
           ...state.notifications,
-           
+          all: updatedAllNotifications,
+          unread: updatedUnreadNotifications,
+          unReadCount: (state.notifications.unReadCount || 1) - 1,
+        },
+      };
+    }
+
+    case actions.MARK_ALL_NOTIFICATION_AS_READ: {
+      const updatedAllNotifications = state?.notifications?.all?.map(
+        (notification) => {
+          return {
+            ...notification,
+            seenBy: [],
+          };
+        }
+      );
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          all: updatedAllNotifications,
+          unread: [],
+          unReadCount: 0,
         },
       };
     }

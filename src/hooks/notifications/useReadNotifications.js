@@ -3,6 +3,7 @@ import useToast from "../common/useToast";
 import { useState } from "react";
 import { ApiCall } from "@/utils/ApiCall";
 import * as actions from '@/context/action';
+import { convertIdFields } from "@/utils";
 const useReadNotification = () => {
      const toastId = "read_notification";
      const {showToast} = useToast();
@@ -23,9 +24,9 @@ const useReadNotification = () => {
                 showToast({toastId,type:"error",message:"Failed to mark notification as read. Please try again"});
                 return;
             }
-
-            console.log("::res in use read notification",res);
-            dispatch({type:actions.MARK_NOTIFICATION_AS_READ,payload:{notificationId}})
+            const data = res?.data;
+            const convertedIdResponse = convertIdFields(data?.notification || {});
+            dispatch({type:actions.MARK_NOTIFICATION_AS_READ,payload:{newNotification:convertedIdResponse}})
             showToast({toastId,type:"success",message:res?.data?.message || "Notification marked as read successfully."})
      }
 

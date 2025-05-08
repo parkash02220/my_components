@@ -108,6 +108,8 @@ const useGetAllUsers = () => {
     setAllUsers,
     debouncedSearchValue,
     totalUsers,
+    hasMore,
+    page,
   };
 };
 

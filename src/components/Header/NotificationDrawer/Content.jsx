@@ -14,6 +14,7 @@ export const Content = ({
   unReadCount,
   loadMoreRef,
   hasMore,
+  page,
 }) => {
   const containerRef = useRef(null);
   const [targetStyle, setTargetStyle] = useState({ left: 0, width: 0 });
@@ -79,7 +80,6 @@ export const Content = ({
     if(!isUnread) return;
     await markNotificationAsRead(id);
   }
-
   return (
     <>
       <Box
@@ -231,7 +231,7 @@ export const Content = ({
             {(loadingNotifications ||
               currentTab !== visibleTab ||
               !notifications) &&
-            notifications?.length < 1 ? (
+            (page === 0 || notifications?.length < 1) ? (
               <Box
                 sx={{
                   display: "flex",
@@ -273,7 +273,7 @@ export const Content = ({
                 {hasMore &&  !loadingNotifications && (
                   <Box
                     ref={loadMoreRef}
-                    sx={{ height: "1px" }}
+                    sx={{ height: "10px",background:"red" }}
                   ></Box>
                 )}
               </Box>

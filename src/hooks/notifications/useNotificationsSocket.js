@@ -21,8 +21,8 @@ export const useNotificationsSocket = () => {
     socketRef.current.emit("register", activeUser.id);
     
     socketRef.current.on("notification", (data) => {
-      console.log("::data",data)
        const convertedIdResponse = convertIdFields(data || {});
+       console.log("::data in socket",data)
        showToast({toastId,type:"info",message:data?.message || ""})
       dispatch({ type: actions.NEW_NOTIFICATION_RECEIVED, payload: {newNotification:convertedIdResponse} });
     });

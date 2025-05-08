@@ -41,6 +41,7 @@ export default function MyAutoComplete({
   required,
   requiredColor,
   textFieldSx,
+  loadMoreRef,
   ...props
 }) {
   const customStyleForAutoComplete = {
@@ -89,7 +90,7 @@ export default function MyAutoComplete({
       clearIcon={clearIcon}
       options={loading ? [] : Array.isArray(options) ? options : []}
       noOptionsText={
-        loading ? loadingText || "loading..." : noOptionsText || "No options"
+        loading ? loadingText || "loading..." : noOptionsText || ""
       }
       disabled={disabled}
       value={multiple ? value || [] : value}

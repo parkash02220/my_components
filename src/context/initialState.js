@@ -5,12 +5,18 @@ export const initialState = {
   activeTask: {},
   activeUser: {},
   notifications:{
-    all: [],
-    unread: [],
+    all: {
+      data:[],
+      page:0,
+      hasMore:true,
+    },
+    unread: {
+      data:[],
+      page:0,
+      hasMore:true,
+    },
     tab: "all",
-    page: 0,
     pageSize:10,
-    hasMore: true,
     totalCount:0,
     unReadCount:0,
   },

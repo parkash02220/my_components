@@ -1,8 +1,12 @@
+import useMarkAllNotificationAsRead from "@/hooks/notifications/useMarkAllNotificationAsRead";
 import { Box, IconButton, Typography } from "@mui/material";
 
 
 export const Header = ({ activeTask,handleDrawer }) => {
-
+  const {loadingMarkAllAsRead,errorMarkAllAsRead,markAllNotificationsAsRead} = useMarkAllNotificationAsRead();
+  const handleMarkAllAsReadButton = async () => {
+        await markAllNotificationsAsRead();
+  }
   return (
     <>
       <Box display={'flex'} padding={"16px 8px 16px 20px"} minHeight={68} alignItems={'center'}>
@@ -11,6 +15,7 @@ export const Header = ({ activeTask,handleDrawer }) => {
         </Box>
         <Box display={'flex'}>
             <IconButton
+            onClick={handleMarkAllAsReadButton}
             sx={{
                 display:'flex',
                 alignItems:'center',
