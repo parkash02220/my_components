@@ -1,6 +1,7 @@
 import React, { createContext, useReducer, useContext, useState } from "react";
 import { initialState } from "./initialState";
 import * as actions from "./action";
+import { daDK } from "@mui/x-date-pickers/locales";
 const AppContext = createContext();
 
 function setLoading(state, key, value) {
@@ -457,8 +458,6 @@ function projectsReducer(state = initialState, action) {
           all: { data: [], page: 0, hasMore: true },
           unread: { data: [], page: 0, hasMore: true },
           tab: "all",
-          unReadCount: 0,
-          totalCount: 0,
         },
       };
     }
@@ -473,7 +472,7 @@ function projectsReducer(state = initialState, action) {
 
     case actions.SET_NOTIFICATIONS_SUCCESS: {
       const { notifications, hasMore, page, totalUnread, totalCount } = payload;
-      console.log("::reducer",payload)
+      console.log("Reducer SET_NOTIFICATIONS_SUCCESS:", payload);
       const tab = state.notifications.tab;
       const isFirstCall = page === 1;
       return {
@@ -541,7 +540,7 @@ function projectsReducer(state = initialState, action) {
 
     case actions.MARK_NOTIFICATION_AS_READ: {
       const { newNotification } = payload;
-      const updatedAllNotifications = state?.notifications?.all?.map(
+      const updatedAllNotifications = state?.notifications?.all?.data?.map(
         (notification) => {
           if (notification?.id === newNotification?.id) {
             return newNotification;
@@ -549,22 +548,28 @@ function projectsReducer(state = initialState, action) {
           return notification;
         }
       );
-      const updatedUnreadNotifications = state?.notifications?.unread?.filter(
+      const updatedUnreadNotifications = state?.notifications?.unread?.data?.filter(
         (notification) => notification?.id !== newNotification?.id
       );
       return {
         ...state,
         notifications: {
           ...state.notifications,
-          all: updatedAllNotifications,
-          unread: updatedUnreadNotifications,
+          all:{
+            ...state.notifications?.all,
+            data:updatedAllNotifications,
+          },
+          unread:{
+            ...state.notifications?.unread,
+            data:updatedUnreadNotifications,
+          },
           unReadCount: (state.notifications.unReadCount || 1) - 1,
         },
       };
     }
 
     case actions.MARK_ALL_NOTIFICATION_AS_READ: {
-      const updatedAllNotifications = state?.notifications?.all?.map(
+      const updatedAllNotifications = state?.notifications?.all?.data?.map(
         (notification) => {
           return {
             ...notification,
@@ -576,8 +581,16 @@ function projectsReducer(state = initialState, action) {
         ...state,
         notifications: {
           ...state.notifications,
-          all: updatedAllNotifications,
-          unread: [],
+          all:{
+            ...state?.notifications?.all,
+            data:updatedAllNotifications,
+          },
+          unread:{
+           ...state?.notifications?.unread,
+           data:[],
+           page:0,
+           hasMore:true,
+          },
           unReadCount: 0,
         },
       };

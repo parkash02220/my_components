@@ -45,12 +45,13 @@ const useNotifications = (open) => {
     const currentPage = result?.currentPage;
     const totalUnread = result?.totalUnread || 0;
     const totalCount = result?.totalRead + result?.totalUnread || 0;
-    const hasMore = currentPage * result?.limit || pageSize < (tab === "all" ? totalCount : unReadCount);
+    const hasMore =
+      currentPage * (result?.limit || pageSize) <
+      (tab === "all" ? totalCount : totalUnread);
     dispatch({
       type: actions.SET_NOTIFICATIONS_SUCCESS,
       payload: {
         notifications: newNotifications,
-        append: true,
         hasMore,
         totalUnread,
         totalCount,
@@ -75,6 +76,12 @@ const useNotifications = (open) => {
       fetchNotifications();
     }
   }, [inView, open, hasMore, loadingNotifications]);
+
+  console.log("Tab:", tab);
+  console.log("Fetched Tabs Ref:", fetchedTabsRef.current);
+  console.log("Current Page:", page);
+  console.log("Has More:", hasMore);
+  console.log("Loading Notifications:", loadingNotifications);
 
   return {
     notifications: currentTabData?.data || [],

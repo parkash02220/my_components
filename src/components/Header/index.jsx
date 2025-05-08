@@ -18,15 +18,15 @@ import useDeleteProject from "@/hooks/projects/useDeleteProject";
 import { useRouter } from "next/navigation";
 import useGetActiveUser from "@/hooks/projects/user/useGetActiveUser";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
-import NotificationDrawer from '@/components/Header/NotificationDrawer';
+import NotificationDrawer from "@/components/Header/NotificationDrawer";
 import { useNotificationsSocket } from "@/hooks/notifications/useNotificationsSocket";
 import useNotifications from "@/hooks/notifications/useNotifications";
 export default function Header({}) {
-  const [profileDrawerOpen,setProfileDrawerOpen] = useState(false);
-  const [notificationDrawerOpen,setNotificationDrawerOpen] = useState(false);
+  const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
+  const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
   const { state } = useAppContext();
-  const {isMd,isSm,isXs} = useBreakpointFlags();
-  const { activeProject,loading } = state;
+  const { isMd, isSm, isXs } = useBreakpointFlags();
+  const { activeProject, loading } = state;
   const {
     notifications,
     loadingNotifications,
@@ -38,13 +38,15 @@ export default function Header({}) {
     hasMore,
     clearNotifications,
     page,
-} = useNotifications(notificationDrawerOpen);
-  const {loadingActiveProject} = loading;
+  } = useNotifications(notificationDrawerOpen);
+  console.log("Notification Drawer Open:", notificationDrawerOpen);
+  console.log("useNotifications Hook:", notifications, page, hasMore);
+  const { loadingActiveProject } = loading;
   const inputRef = useRef();
   const [showProjectNameTextfield, setShowProjectNameTextfield] =
     useState(false);
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
-   useNotificationsSocket();
+  useNotificationsSocket();
   const {
     loadingUpdateProjectName,
     errorUpdateProjectName,
@@ -82,13 +84,13 @@ export default function Header({}) {
 
   const handleNotificationDrawerOpen = async () => {
     setNotificationDrawerOpen(true);
-      await fetchNotifications(true);
-  }
+    await fetchNotifications(true);
+  };
 
   const handleNotificationDrawerClose = () => {
     clearNotifications();
     setNotificationDrawerOpen(false);
-  }
+  };
 
   const handleProjectNameStartEdidting = () => {
     handleMenuClose();
@@ -131,7 +133,11 @@ export default function Header({}) {
     },
   ];
   const navigationItems = [
-    { name: "notifications", image: { path: "/notificationIcon.svg", alt: "notification" },onClick:handleNotificationDrawerOpen },
+    {
+      name: "notifications",
+      image: { path: "/notificationIcon.svg", alt: "notification" },
+      onClick: handleNotificationDrawerOpen,
+    },
     // { image: { path: "/userIcon.svg", alt: "user" } },
     // {
     //   image: {
@@ -141,7 +147,7 @@ export default function Header({}) {
     //   },
     // },
   ];
-  console.log("::notifications",notifications)
+  console.log("::notifications", notifications);
   return (
     <>
       <ConfirmationPopup
@@ -157,22 +163,27 @@ export default function Header({}) {
         open={profileDrawerOpen}
         handleDrawer={CloseProfileDrawer}
       />
-      <NotificationDrawer 
-      open={notificationDrawerOpen}
-      handleDrawer={handleNotificationDrawerClose}
-      totalCount={totalCount}
-      notifications={notifications}
-      unReadCount={unReadCount}
-      loadingNotifications={loadingNotifications}
-      loadMoreRef={loadMoreRef}
-      hasMore={hasMore}
-      page={page}
+      <NotificationDrawer
+        open={notificationDrawerOpen}
+        handleDrawer={handleNotificationDrawerClose}
+        totalCount={totalCount}
+        notifications={notifications}
+        unReadCount={unReadCount}
+        loadingNotifications={loadingNotifications}
+        loadMoreRef={loadMoreRef}
+        hasMore={hasMore}
+        page={page}
       />
       <AppBar
         position="sticky"
         elevation={0}
         color="transparent"
-        sx={{ borderBottom: "1px solid #eee", zIndex: 1101,width:isMd ? 'calc(100% - 60px)' : '100%',alignSelf:'flex-end' }}
+        sx={{
+          borderBottom: "1px solid #eee",
+          zIndex: 1101,
+          width: isMd ? "calc(100% - 60px)" : "100%",
+          alignSelf: "flex-end",
+        }}
       >
         <Box
           sx={{
@@ -251,7 +262,7 @@ export default function Header({}) {
             }}
             transformOrigin={{
               vertical: "top",
-              horizontal:isXs ? "right" : "left",
+              horizontal: isXs ? "right" : "left",
             }}
             PaperProps={{
               sx: {
@@ -282,7 +293,7 @@ export default function Header({}) {
                   display="flex"
                   gap={2}
                   alignItems="center"
-                  minWidth= {isXs ? "130px" : "140px"}
+                  minWidth={isXs ? "130px" : "140px"}
                   mb={isXs ? "" : "4px"}
                 >
                   <img
@@ -291,7 +302,10 @@ export default function Header({}) {
                     width={isXs ? 16 : 20}
                     height={isXs ? 16 : 20}
                   />
-                  <Typography fontSize={isXs ? 13 : 14} color={item.color || "inherit"}>
+                  <Typography
+                    fontSize={isXs ? 13 : 14}
+                    color={item.color || "inherit"}
+                  >
                     {item.label}
                   </Typography>
                 </Box>
@@ -383,30 +397,31 @@ export default function Header({}) {
                         display: "inline-flex",
                       }}
                     />
-{
-                    item?.name==="notifications" ? (
-                      <Typography sx={{
-                        display:"flex",
-                        justifyContent:"center",
-                        alignItems:"center",
-                        position:"absolute",
-                        fontWeight:500,
-                        fontSize:12,
-                        minWidth:20,
-                        height:20,
-                        zIndex:1,
-                        background:"#FF5630",
-                        color:"#FFFFFF",
-                        top:"8px",
-                        right:"4px",
-                        transform:"scale(1) translate(50%,-50%)",
-                        transformOrigin:'100% 0%',
-                        padding:"0px 6px",borderRadius:"10px",
-                      }}>
-                       {unReadCount || 0}
+                    {item?.name === "notifications" ? (
+                      <Typography
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          position: "absolute",
+                          fontWeight: 500,
+                          fontSize: 12,
+                          minWidth: 20,
+                          height: 20,
+                          zIndex: 1,
+                          background: "#FF5630",
+                          color: "#FFFFFF",
+                          top: "8px",
+                          right: "4px",
+                          transform: "scale(1) translate(50%,-50%)",
+                          transformOrigin: "100% 0%",
+                          padding: "0px 6px",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        {unReadCount || 0}
                       </Typography>
-                    ) : null
-                  }
+                    ) : null}
                   </IconButton>
                 );
               })}
