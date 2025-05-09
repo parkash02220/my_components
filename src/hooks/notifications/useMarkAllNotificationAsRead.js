@@ -6,11 +6,12 @@ import * as actions from '@/context/action';
 const useMarkAllNotificationAsRead = () => {
     const toastId = 'mark_all_notification_as_read';
     const {showToast} = useToast();
+    const {activeUser} = useAppContext()?.state;
     const [loadingMarkAllAsRead,setLoadingMarkAllAsRead] = useState(false);
     const [errorMarkAllAsRead,setErrorMarkAllAsRead] = useState(null);
     const {dispatch} = useAppContext();
     const markAllNotificationsAsRead = async () => {
-        dispatch({type:actions.MARK_ALL_NOTIFICATION_AS_READ});
+        dispatch({type:actions.MARK_ALL_NOTIFICATION_AS_READ,payload:{user:activeUser}});
         setLoadingMarkAllAsRead(true);
         setErrorMarkAllAsRead(null);
 

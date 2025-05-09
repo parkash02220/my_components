@@ -11,7 +11,8 @@ const useCreateProject = () => {
   const {showToast} = useToast();
   const [loading, setLoading] = useState(false);
   const [isCreated, setIsCreated] = useState(false);
-  const createProject = async (name) => {
+  const createProject = async (name,users) => {
+    console.log("::users in create project",users)
     setLoading(true);
     showToast({toastId,type:"loading",message:"Creating project..."})
     const res = await ApiCall({

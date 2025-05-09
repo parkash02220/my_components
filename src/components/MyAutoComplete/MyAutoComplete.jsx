@@ -1,7 +1,60 @@
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, List } from "@mui/material";
+
+const CustomListbox = React.forwardRef(function CustomListbox(props, ref) {
+  const { children, loadMoreRef, loadingMore, hasMore, ...rest } = props;
+
+  return (
+    <List ref={ref} {...rest} className="autoComplete__listBox"  sx={{
+      height: 400,
+      overflowY: 'auto',
+      scrollbarWidth: 'none',
+      msOverflowStyle: 'none',
+      '&::-webkit-scrollbar': {
+        display: 'none',
+      },
+    }}>
+      <Box className="autoComplete__items" sx={{
+        padding:'8px',
+        display:'flex',
+        flexDirection:'column',
+        justifyContent:'center',
+        '& li': {
+          padding: '8px 12px',
+          fontSize: '14px',
+          cursor: 'pointer',
+          borderRadius: '8px',
+          '&:hover': {
+            backgroundColor: '#f4f4f4',
+          },
+        },
+      }}>{children}</Box>
+      {loadingMore && (
+        <Box display="flex" justifyContent="center" p={1}>
+          <img
+            src="/iosLoader.gif"
+            alt="loader"
+            style={{ width: "30px", height: "30px" }}
+          />
+        </Box>
+      )}
+      {hasMore && !loadingMore && <Box ref={loadMoreRef} sx={{ height: "1px" }} />}
+    </List>
+  );
+});
+
+const LoadingOptions = () => {
+  return <Box sx={{
+    height:300,
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center'
+  }}>
+<img src="/iosLoader.gif" alt="loader" style={{width:"40px",height:"40px"}} />
+  </Box>
+}
 
 export default function MyAutoComplete({
   disablePortal,
@@ -42,6 +95,9 @@ export default function MyAutoComplete({
   requiredColor,
   textFieldSx,
   loadMoreRef,
+  hasMore,
+  loadingMore,
+  labelFontSize,
   ...props
 }) {
   const customStyleForAutoComplete = {
@@ -66,15 +122,18 @@ export default function MyAutoComplete({
     },
     "& .MuiInputLabel-root": {
       color: error ? "red" : disabled ? "#a9a9a9" : labelColor,
+      fontSize: labelFontSize || "16px",
     },
     "& .MuiInputLabel-root.Mui-focused": {
       color: error ? "red" : labelColor,
+      fontSize: labelFontSize || "16px",
     },
     // "& .MuiAutocomplete-popupIndicator": {
     //   display: "none",
     // },
     "& .MuiInputLabel-root.Mui-focused": {
       color: error ? "red" : labelColor,
+      fontSize: labelFontSize || "16px",
     },
     ...sx,
   };
@@ -90,7 +149,7 @@ export default function MyAutoComplete({
       clearIcon={clearIcon}
       options={loading ? [] : Array.isArray(options) ? options : []}
       noOptionsText={
-        loading ? loadingText || "loading..." : noOptionsText || ""
+        noOptionsText ? noOptionsText : loading ? loadingText || <LoadingOptions /> : "no options found."
       }
       disabled={disabled}
       value={multiple ? value || [] : value}
@@ -166,6 +225,14 @@ export default function MyAutoComplete({
           }}
         />
       )}
+      ListboxComponent={CustomListbox}
+      componentsProps={{
+        listbox: {
+          loadMoreRef,
+          loadingMore,
+          hasMore,
+        },
+      }}
       {...props}
     />
      </Box>
@@ -195,4 +262,5 @@ MyAutoComplete.defaultProps = {
   fullWidth: false,
   multiple:false,
   required:false,
+  hasMore:false,
 };

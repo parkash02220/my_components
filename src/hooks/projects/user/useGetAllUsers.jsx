@@ -58,7 +58,7 @@ const useGetAllUsers = () => {
     const { signal } = controller;
 
     setPage(1);
-    setAllUsers([]);
+    // setAllUsers([]);
     getAllUsersFromBackend({
       signal,
       search: debouncedSearchValue,
@@ -101,6 +101,7 @@ const useGetAllUsers = () => {
     errorAllUsers,
     helperTextAllUsers,
     searchValue,
+    getAllUsersFromBackend,
     handleSearchValueChange,
     setSearchValue,
     setPage,

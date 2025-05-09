@@ -5,6 +5,7 @@ export const getAuthTokenFromCookies = () => {
 
 export const setAuthTokenToCookies = (token) => {
     if(!token) return;
+    console.log("::seting auth token in function",token)
     return Cookies.set("auth_token",token,{expires: 1});
 }
 
@@ -115,3 +116,9 @@ export function capitalizeFirstLetter(string){
     const formattedString = string?.charAt(0)?.toUpperCase() + string?.slice(1);
     return formattedString;
 }
+
+export  const loginUserWithGoogle = async (router) => {
+  if(router){
+    router.push(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`);
+  }
+ }

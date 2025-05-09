@@ -5,7 +5,7 @@ import { Box, Typography } from "@mui/material";
 const NotificatoinMsg = ({ notification,type="",handleNotificationClick }) => {
   const { state } = useAppContext();
   const userId = state?.activeUser?.id;
-  const isUnread = type==="unread" ? true : !notification?.seenBy?.some((item) => item?.user === userId && item?.seen === true);
+  const isUnread = type==="unread" ? true : !notification?.seenBy?.some((item) => item?.user?.id === userId && item?.seen === true);
 
   return (
     <>

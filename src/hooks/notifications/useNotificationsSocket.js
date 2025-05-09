@@ -5,7 +5,7 @@ import * as actions from "@/context/action";
 import { convertIdFields } from "@/utils";
 import useToast from "../common/useToast";
 
-const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
+const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 export const useNotificationsSocket = () => {
   const toastId = "show_notification";

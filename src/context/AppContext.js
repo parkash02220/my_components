@@ -457,7 +457,6 @@ function projectsReducer(state = initialState, action) {
           ...state.notifications,
           all: { data: [], page: 0, hasMore: true },
           unread: { data: [], page: 0, hasMore: true },
-          tab: "all",
         },
       };
     }
@@ -539,17 +538,21 @@ function projectsReducer(state = initialState, action) {
       };
 
     case actions.MARK_NOTIFICATION_AS_READ: {
-      const { newNotification } = payload;
+      const { notificationId,user} = payload;
+      console.log("::MARK_NOTIFICATION_AS_READ",payload)
       const updatedAllNotifications = state?.notifications?.all?.data?.map(
         (notification) => {
-          if (notification?.id === newNotification?.id) {
-            return newNotification;
+          if (notification?.id === notificationId) {
+            return {
+              ...notification,
+              seenBy: [...(notification?.seenBy || []),{id:notification?.id,seen:true,user}],
+            }
           }
           return notification;
         }
       );
       const updatedUnreadNotifications = state?.notifications?.unread?.data?.filter(
-        (notification) => notification?.id !== newNotification?.id
+        (notification) => notification?.id !== notificationId
       );
       return {
         ...state,
@@ -569,11 +572,12 @@ function projectsReducer(state = initialState, action) {
     }
 
     case actions.MARK_ALL_NOTIFICATION_AS_READ: {
+      const {user} = payload;
       const updatedAllNotifications = state?.notifications?.all?.data?.map(
         (notification) => {
           return {
             ...notification,
-            seenBy: [],
+            seenBy: [...(notification?.seenBy || []),{id:notification?.id,seen:true,user}],
           };
         }
       );

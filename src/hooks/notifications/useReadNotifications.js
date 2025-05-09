@@ -8,9 +8,11 @@ const useReadNotification = () => {
      const toastId = "read_notification";
      const {showToast} = useToast();
      const {state,dispatch} = useAppContext();
+     const user = state?.activeUser;
      const [loadingReadNotification,setLoadingReadNotification] = useState(false);
      const [errorReadNotification,setErrorReadNotification] = useState(null);
      const markNotificationAsRead = async (notificationId) => {
+         dispatch({type:actions.MARK_NOTIFICATION_AS_READ,payload:{notificationId,user}});
             setLoadingReadNotification(true);
             setErrorReadNotification(null);
             const res = await ApiCall({
@@ -21,13 +23,10 @@ const useReadNotification = () => {
             setLoadingReadNotification(false);
             if(res.error){
                 setErrorReadNotification(res.error);
-                showToast({toastId,type:"error",message:"Failed to mark notification as read. Please try again"});
+                showToast({toastId,type:"error",message:"Failed to mark notification as read. Please refresh the page."});
                 return;
             }
-            const data = res?.data;
-            const convertedIdResponse = convertIdFields(data?.notification || {});
-            dispatch({type:actions.MARK_NOTIFICATION_AS_READ,payload:{newNotification:convertedIdResponse}})
-            showToast({toastId,type:"success",message:res?.data?.message || "Notification marked as read successfully."})
+            showToast({toastId,type:"success",message:"Changes saved and synced with the server."})
      }
 
      return {loadingReadNotification,errorReadNotification,markNotificationAsRead};

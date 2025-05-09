@@ -17,7 +17,6 @@ const useNotifications = (open) => {
   const { loadingNotifications } = loading;
   const { errorNotifications } = error;
   const { ref: loadMoreRef, inView } = useInView();
-  const fetchedTabsRef = useRef({});
   const fetchNotifications = async (isFirstCall = false) => {
     if (loadingNotifications) return;
     console.log("::first call in function", isFirstCall);
@@ -61,14 +60,11 @@ const useNotifications = (open) => {
   };
 
   const clearNotifications = () => {
-    fetchedTabsRef.current = {};
     dispatch({ type: actions.CLEAR_NOTIFICATIONS });
   };
   useEffect(() => {
-    if (!fetchedTabsRef.current[notifications?.tab]) {
-      fetchNotifications(true);
-      fetchedTabsRef.current[notifications?.tab] = true;
-    }
+    clearNotifications();
+    fetchNotifications(true);
   }, [notifications?.tab]);
 
   useEffect(() => {
@@ -76,13 +72,6 @@ const useNotifications = (open) => {
       fetchNotifications();
     }
   }, [inView, open, hasMore, loadingNotifications]);
-
-  console.log("Tab:", tab);
-  console.log("Fetched Tabs Ref:", fetchedTabsRef.current);
-  console.log("Current Page:", page);
-  console.log("Has More:", hasMore);
-  console.log("Loading Notifications:", loadingNotifications);
-
   return {
     notifications: currentTabData?.data || [],
     loadingNotifications,

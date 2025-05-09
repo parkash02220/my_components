@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import MyButton from "../MyButton/MyButton";
-import { Box, Chip, CircularProgress, Typography } from "@mui/material";
+import { Box, Chip, CircularProgress, List, Typography } from "@mui/material";
 import MyTextField from "../MyTextfield/MyTextfield";
 import MyDialog from "../MyDialog/MyDialog";
 import { ApiCall } from "@/utils/ApiCall";
@@ -9,7 +9,6 @@ import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import MySelect from "../MySelect/MySelect";
 import useGetAllUsers from "@/hooks/projects/user/useGetAllUsers";
 import { getFullName } from "@/utils";
-import Avatar from "@mui/material/Avatar";
 import MyAutoComplete from "../MyAutoComplete/MyAutoComplete";
 const CreateProjectDialog = ({
   open,
@@ -30,6 +29,7 @@ const CreateProjectDialog = ({
     helperTextAllUsers,
     searchValue,
     handleSearchValueChange,
+    getAllUsersFromBackend,
     setSearchValue,
     setPage,
     loadMoreRef,
@@ -45,6 +45,12 @@ const CreateProjectDialog = ({
     setHelperText("");
     onClose();
   };
+
+  const filteredUsers = useMemo(() => {
+    return allUsers?.filter(
+      (user) => !selectedUsers?.some((selectedUser) => selectedUser?.id === user?.id)
+    );
+  }, [allUsers, selectedUsers]);
 
   const handleProjectInputfieldChange = (e) => {
     const newName = e.target.value;
@@ -65,7 +71,7 @@ const CreateProjectDialog = ({
 
   const handleCreateProject = async () => {
     const trimmedName = projectName.trim();
-    await onCreate(trimmedName);
+    await onCreate(trimmedName,selectedUsers);
     handleDialogClose();
   };
   const handleUserSelect = (_, newValue) => {
@@ -77,22 +83,33 @@ const CreateProjectDialog = ({
       handleSearchValueChange(event);
   };
 
-  console.log("::loading all user",loadingAllUsers)
+  console.log("::users",allUsers);
 
-  useEffect(() => {
-    if (allUsers && !allUsers.some((u) => u.isLoadMore)) {
-      setAllUsers([...allUsers, { isLoadMore: true }]);
-    }
-  }, [allUsers]);
-
-  useEffect(() => {
-    if (!open) {
-      setSearchValue("");
+  useEffect(()=>{
+    if(!open){
       setSelectedUsers([]);
-      setAllUsers([]);
-      setPage(1);
     }
-  }, [open]);
+    if(!open && allUsers?.length > 0){
+      setSearchValue("");
+    setAllUsers([]);
+    setPage(1);
+    }
+  },[open]);
+
+  useEffect(()=>{
+    const controller = new AbortController();
+    const {signal} = controller;
+    if(open && allUsers?.length === 0){
+         getAllUsersFromBackend(signal);
+    }
+    return () => controller.abort();
+  },[open])
+
+  const handleAutoCompleteClose = () => {
+    setSearchValue("");
+  }
+
+  
   return (
     <MyDialog
       open={open}
@@ -129,33 +146,13 @@ const CreateProjectDialog = ({
               fullWidth={true}
               multiple={true}
               value={selectedUsers}
-              options={allUsers}
-              loading={page===1 && loadingAllUsers}
-              loadingText={<Box display={'flex'} justifyContent={'center'} alignItems={'center'} justifyItems={'center'} minHeight={100}>
-                <img src="/iosLoader.gif" alt="loader" style={{width:"30px",height:"30px"}} />
-              </Box>}
+              loading={loadingAllUsers && page<=1}
+              options={filteredUsers}
+              filterOptions={(options) => options}
               getOptionLabel={(option) =>
                 getFullName(option?.firstName, option?.lastName)
               }
               renderOption={(props, option) => {
-                if (option.isLoadMore) {
-                  return loadingAllUsers ? (
-                    <li {...props} style={{ justifyContent: "center" }}>
-                      <img
-                        src="/iosLoader.gif"
-                        alt="loader"
-                        style={{ width: "30px", height: "30px" }}
-                      />
-                    </li>
-                  ) : hasMore ? (
-                    <li
-                      {...props}
-                      ref={loadMoreRef}
-                      style={{ justifyContent: "center", height: "1px" }}
-                    ></li>
-                  ) : null;
-                }
-
                 return (
                   <li
                     {...props}
@@ -187,17 +184,22 @@ const CreateProjectDialog = ({
                       {...getTagProps({ index })}
                     />
                   )),
-                  value.length > 2 && (
-                    <Typography key="more">+{value.length - 2} more</Typography>
+                  value.length > 4 && (
+                    <Typography key="more" fontSize={14}>+{value.length - 4} more</Typography>
                   ),
                 ];
               }}
               onChange={(_, newValue) => {
-                const cleanedValue = newValue.filter((opt) => !opt.isLoadMore);
-                handleUserSelect(_, cleanedValue);
+                handleUserSelect(_, newValue);
               }}
               onInputChange={(event,inputValue) => handleSearchUser(event,inputValue)}
               loadMoreRef={loadMoreRef}
+              hasMore={hasMore}
+              loadingMore={loadingAllUsers && page > 1}
+              label={'Select users'}
+              fontSize={14}
+              labelFontSize={14}
+              onClose={handleAutoCompleteClose}
             />
           </Box>
         </Box>
@@ -219,6 +221,7 @@ const CreateProjectDialog = ({
             hoverBgColor="whitesmoke"
             fullWidth={true}
             size="medium"
+            padding={"8px 12px"}
           >
             Cancel
           </MyButton>
@@ -230,6 +233,7 @@ const CreateProjectDialog = ({
             loading={loading}
             loadingText={"checking..."}
             size="medium"
+            padding={"8px 12px"}
           >
             Create
           </MyButton>

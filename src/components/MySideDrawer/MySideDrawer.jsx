@@ -213,8 +213,8 @@ export default function MySideDrawer({ open, setOpen }) {
     });
   };
 
-  const handleCreateProject = async (name) => {
-    await createProject(name);
+  const handleCreateProject = async (name,users) => {
+    await createProject(name,users);
   };
 
   const handleLogoutPopupOpen = () => {

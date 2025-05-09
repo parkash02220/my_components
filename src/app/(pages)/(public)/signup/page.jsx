@@ -4,8 +4,10 @@ import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import useSignUp from "@/hooks/projects/user/useSignUp";
+import { loginUserWithGoogle } from "@/utils";
 import {
   Box,
+  Divider,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -63,6 +65,9 @@ const SignUp = () => {
   useEffect(()=>{
     router.prefetch("/signin");
   },[]);
+  const handleGoogleLogin = () => {
+    loginUserWithGoogle(router);
+  }
   return (
     <>
       <Box className="signUpContainer" display={"flex"} minHeight={"100vh"}>
@@ -165,9 +170,10 @@ const SignUp = () => {
             display={"flex"}
             flexDirection={"column"}
             maxWidth={420}
+            gap={2}
           >
             <Box
-              mb={5}
+              mb={2}
               display={"flex"}
               flexDirection={"column"}
               whiteSpace={"pre-line"}
@@ -191,6 +197,21 @@ const SignUp = () => {
                   Get started
                 </Typography>
                 </Link>
+              </Box>
+            </Box>
+            <Box>
+              <Box>
+                <MyButton variant="outlined" color="#1C252E" fullWidth={true} border={'2px solid #1C252E'} borderRadius="8px" sx={{height:48}} startIcon={<img src="/googleIcon.svg" alt="google" style={{width:"24px",height:"24px"}} />} hoverBgColor="whitesmoke" onClick={handleGoogleLogin}>Sign up with Google</MyButton>
+              </Box>
+              <Box display="flex" alignItems="center" my={2}>
+                <Divider sx={{ flexGrow: 1 }} />
+                <Typography
+                  sx={{ mx: 2, whiteSpace: "nowrap" }}
+                  color="textSecondary"
+                >
+                  or
+                </Typography>
+                <Divider sx={{ flexGrow: 1 }} />
               </Box>
             </Box>
             <form onSubmit={formik.handleSubmit}>

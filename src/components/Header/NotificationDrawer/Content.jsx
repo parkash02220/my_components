@@ -27,7 +27,11 @@ export const Content = ({
   const prevIndex = tabValues.findIndex((tab) => tab.value === prevTab);
   const [visibleTab, setVisibleTab] = useState(currentTab);
   const scrollContainerRef = useRef(null);
-  const {loadingReadNotification,errorReadNotification,markNotificationAsRead} = useReadNotification();
+  const {
+    loadingReadNotification,
+    errorReadNotification,
+    markNotificationAsRead,
+  } = useReadNotification();
   useEffect(() => {
     const currentNode = tabsRef.current[currentIndex];
     const prevNode = tabsRef.current[prevIndex];
@@ -72,14 +76,14 @@ export const Content = ({
 
   useEffect(() => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTo({ top: 0, behavior: 'auto' });
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: "auto" });
     }
   }, [currentTab]);
 
-  const handleNotificationClick =async (isUnread,id) => {
-    if(!isUnread) return;
+  const handleNotificationClick = async (isUnread, id) => {
+    if (!isUnread) return;
     await markNotificationAsRead(id);
-  }
+  };
   return (
     <>
       <Box
@@ -211,7 +215,7 @@ export const Content = ({
           </Box>
         </Box>
         <Box
-        ref={scrollContainerRef}
+          ref={scrollContainerRef}
           sx={{
             flexGrow: 1,
             overflowY: "auto",
@@ -231,7 +235,7 @@ export const Content = ({
             {(loadingNotifications ||
               currentTab !== visibleTab ||
               !notifications) &&
-            (page === 0 || notifications?.length < 1) ? (
+            page === 0 ? (
               <Box
                 sx={{
                   display: "flex",
@@ -250,7 +254,10 @@ export const Content = ({
               <Box>
                 {notifications.map((notification, i) => (
                   <Box key={i} width="100%">
-                    <NotificatoinMsg notification={notification} handleNotificationClick={handleNotificationClick}/>
+                    <NotificatoinMsg
+                      notification={notification}
+                      handleNotificationClick={handleNotificationClick}
+                    />
                   </Box>
                 ))}
                 {loadingNotifications && (
@@ -270,10 +277,10 @@ export const Content = ({
                     />
                   </Box>
                 )}
-                {hasMore &&  !loadingNotifications && (
+                {hasMore && !loadingNotifications && (
                   <Box
                     ref={loadMoreRef}
-                    sx={{ height: "10px",background:"red" }}
+                    sx={{ height: "1px" }}
                   ></Box>
                 )}
               </Box>
