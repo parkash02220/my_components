@@ -30,5 +30,5 @@ export const useNotificationsSocket = () => {
     return () => {
       socketRef.current.disconnect();
     };
-  }, [activeUser?.id]);
+  }, [activeUser?.id,showToast]);
 };

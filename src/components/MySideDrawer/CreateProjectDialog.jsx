@@ -48,7 +48,8 @@ const CreateProjectDialog = ({
 
   const filteredUsers = useMemo(() => {
     return allUsers?.filter(
-      (user) => !selectedUsers?.some((selectedUser) => selectedUser?.id === user?.id)
+      (user) =>
+        !selectedUsers?.some((selectedUser) => selectedUser?.id === user?.id)
     );
   }, [allUsers, selectedUsers]);
 
@@ -71,7 +72,7 @@ const CreateProjectDialog = ({
 
   const handleCreateProject = async () => {
     const trimmedName = projectName.trim();
-    await onCreate(trimmedName,selectedUsers);
+    await onCreate(trimmedName, selectedUsers);
     handleDialogClose();
   };
   const handleUserSelect = (_, newValue) => {
@@ -80,36 +81,35 @@ const CreateProjectDialog = ({
   console.log("::all users", allUsers);
 
   const handleSearchUser = (event, inputValue) => {
-      handleSearchValueChange(event);
+    handleSearchValueChange(event);
   };
 
-  console.log("::users",allUsers);
+  console.log("::users", allUsers);
 
-  useEffect(()=>{
-    if(!open){
+  useEffect(() => {
+    if (!open) {
       setSelectedUsers([]);
     }
-    if(!open && allUsers?.length > 0){
+    if (!open && allUsers?.length > 0) {
       setSearchValue("");
-    setAllUsers([]);
-    setPage(1);
+      setAllUsers([]);
+      setPage(1);
     }
-  },[open]);
+  }, [open]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const controller = new AbortController();
-    const {signal} = controller;
-    if(open && allUsers?.length === 0){
-         getAllUsersFromBackend(signal);
+    const { signal } = controller;
+    if (open && allUsers?.length === 0) {
+      getAllUsersFromBackend(signal);
     }
     return () => controller.abort();
-  },[open])
+  }, [open]);
 
   const handleAutoCompleteClose = () => {
     setSearchValue("");
-  }
+  };
 
-  
   return (
     <MyDialog
       open={open}
@@ -146,7 +146,7 @@ const CreateProjectDialog = ({
               fullWidth={true}
               multiple={true}
               value={selectedUsers}
-              loading={loadingAllUsers && page<=1}
+              loading={loadingAllUsers && page <= 1}
               options={filteredUsers}
               filterOptions={(options) => options}
               getOptionLabel={(option) =>
@@ -185,18 +185,22 @@ const CreateProjectDialog = ({
                     />
                   )),
                   value.length > 4 && (
-                    <Typography key="more" fontSize={14}>+{value.length - 4} more</Typography>
+                    <Typography key="more" fontSize={14}>
+                      +{value.length - 4} more
+                    </Typography>
                   ),
                 ];
               }}
               onChange={(_, newValue) => {
                 handleUserSelect(_, newValue);
               }}
-              onInputChange={(event,inputValue) => handleSearchUser(event,inputValue)}
+              onInputChange={(event, inputValue) =>
+                handleSearchUser(event, inputValue)
+              }
               loadMoreRef={loadMoreRef}
               hasMore={hasMore}
               loadingMore={loadingAllUsers && page > 1}
-              label={'Select users'}
+              label={"Select users"}
               fontSize={14}
               labelFontSize={14}
               onClose={handleAutoCompleteClose}

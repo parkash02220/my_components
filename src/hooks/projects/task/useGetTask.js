@@ -29,7 +29,7 @@ const useGetTask = () => {
       const formattedIdResponse = convertIdFields(res?.data?.task);
       dispatch({type:actions.SET_ACTIVE_TASK_SUCCESS,payload:{...formattedIdResponse}});
       return data;
-  }, []);
+  }, [showToast,dispatch]);
 
   return {activeTask,loadingActiveTask,errorActiveTask,getTaskFromBackend };
 };
