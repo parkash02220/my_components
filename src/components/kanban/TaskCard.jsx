@@ -218,15 +218,20 @@ export function TaskCard({ task, isOverlay }) {
                   {taskData?.assigned_to?.length > 4 && (
                     <MyTooltip
                       content={
-                        <Box sx={{
-                          display:'flex',
-                          flexDirection:'column',
-                          gap:1,
-                          padding:1,
-                        }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 1,
+                            padding: 1,
+                          }}
+                        >
                           {taskData.assigned_to.map((user, index) => {
-                            const name = getFullName(user?.firstName,user?.lastName);
-                            return  (
+                            const name = getFullName(
+                              user?.firstName,
+                              user?.lastName
+                            );
+                            return (
                               <Box
                                 key={index}
                                 display="flex"
@@ -243,9 +248,15 @@ export function TaskCard({ task, isOverlay }) {
                                     objectFit: "cover",
                                   }}
                                 />
-                                <Typography fontSize={12} fontWeight={500} color="white">{name}</Typography>
+                                <Typography
+                                  fontSize={12}
+                                  fontWeight={500}
+                                  color="white"
+                                >
+                                  {name}
+                                </Typography>
                               </Box>
-                            )
+                            );
                           })}
                         </Box>
                       }
@@ -266,59 +277,59 @@ export function TaskCard({ task, isOverlay }) {
                         borderRadius={"50%"}
                         overflow={"hidden"}
                         sx={{
-                          background:"#C8FAD6"
+                          background: "#C8FAD6",
                         }}
                       >
                         +{taskData?.assigned_to?.length - 3}
                       </Box>
                     </MyTooltip>
                   )}
-                  <Box display={'flex'}>
-                  {taskData?.assigned_to?.length > 0 &&
-                    taskData?.assigned_to
-                      ?.slice(0, taskData?.assigned_to?.length > 4 ? 3 : 4)
-                      ?.map((item, index) => {
-                        const name = `${item?.firstName || ""} ${
-                          item?.lastName || ""
-                        }`;
-                        return (
-                          <MyTooltip
-                            key={index}
-                            title={name}
-                            placement="bottom"
-                          >
-                            <Box
-                              width={24}
-                              height={24}
-                              fontSize={16}
-                              fontWeight={600}
-                              border={"2px solid #FFFFFF"}
-                              boxSizing={"content-box"}
-                              ml={"-8px"}
-                              position={"relative"}
-                              display={"flex"}
-                              justifyContent={"center"}
-                              alignItems={"center"}
-                              borderRadius={"50%"}
-                              overflow={"hidden"}
+                  <Box display={"flex"}>
+                    {taskData?.assigned_to?.length > 0 &&
+                      taskData?.assigned_to
+                        ?.slice(0, taskData?.assigned_to?.length > 4 ? 3 : 4)
+                        ?.map((item, index) => {
+                          const name = `${item?.firstName || ""} ${
+                            item?.lastName || ""
+                          }`;
+                          return (
+                            <MyTooltip
+                              key={index}
+                              title={name}
+                              placement="bottom"
                             >
-                              <img
-                                src={item?.avatar}
-                                alt="avatar"
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "cover",
-                                  color: "transparent",
-                                  textIndent: "100000px",
-                                  maxWidth: "100%",
-                                }}
-                              />
-                            </Box>
-                          </MyTooltip>
-                        );
-                      })}
-                      </Box>
+                              <Box
+                                width={24}
+                                height={24}
+                                fontSize={16}
+                                fontWeight={600}
+                                border={"2px solid #FFFFFF"}
+                                boxSizing={"content-box"}
+                                ml={"-8px"}
+                                position={"relative"}
+                                display={"flex"}
+                                justifyContent={"center"}
+                                alignItems={"center"}
+                                borderRadius={"50%"}
+                                overflow={"hidden"}
+                              >
+                                <img
+                                  src={item?.avatar}
+                                  alt="avatar"
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                    color: "transparent",
+                                    textIndent: "100000px",
+                                    maxWidth: "100%",
+                                  }}
+                                />
+                              </Box>
+                            </MyTooltip>
+                          );
+                        })}
+                  </Box>
                 </Box>
               </Box>
             </Box>

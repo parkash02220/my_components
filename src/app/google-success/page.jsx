@@ -1,26 +1,12 @@
-'use client';
-
-import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { setAuthTokenToCookies } from '@/utils';
+import { Suspense } from "react";
+import GoogleSuccessContent from "./GoogleSearchContent";
 
 const GoogleSuccessPage = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  console.log("::google search page",)
-  useEffect(() => {
-    const token = searchParams.get('token');
-
-    if (token) { 
-        console.log("::token from google",token)
-        setAuthTokenToCookies(token);
-      router.push('/home');
-    } else {
-      router.push('/login');
-    }
-  }, [searchParams]);
-
-  return <p>Signing you in...</p>;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GoogleSuccessContent />
+    </Suspense>
+  );
 };
 
 export default GoogleSuccessPage;
