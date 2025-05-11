@@ -1,6 +1,10 @@
 "use client";
 
-import { SortableContext, useSortable } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Paper from "@mui/material/Paper";
@@ -462,7 +466,10 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
           }}
         >
           <Box display="flex" flexDirection="column" gap={2}>
-            <SortableContext items={taskIds}>
+            <SortableContext
+              items={taskIds}
+              strategy={verticalListSortingStrategy}
+            >
               {tasks?.length < 1 ? (
                 <Box
                   className="emptySection"

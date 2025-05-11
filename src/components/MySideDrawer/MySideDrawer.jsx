@@ -61,7 +61,7 @@ export default function MySideDrawer({ open, setOpen }) {
   const router = useRouter();
   const pathname = usePathname();
   const [hasMounted, setHasMounted] = useState(false);
-  const { isXs,isLg,isMd } = useBreakpointFlags();
+  const { isXs, isLg, isMd } = useBreakpointFlags();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const handleMobileDrawerOpen = () => {
     setMobileDrawerOpen(true);
@@ -102,7 +102,9 @@ export default function MySideDrawer({ open, setOpen }) {
 
     setSelectedDrawerItem(segment);
     router.push(`/${segment}`);
-    {isMd ? handleMobileDrawerClose() : null}
+    {
+      isMd ? handleMobileDrawerClose() : null;
+    }
   };
   const projectNavItems = projects?.map((project) => ({
     segment: `projects/${project?.id}`,
@@ -119,18 +121,36 @@ export default function MySideDrawer({ open, setOpen }) {
   const shouldShowNoProjects =
     isInitialFetchDone && !loadingAllProjects && projects?.length === 0;
 
+  // if (isSearchLoading) {
+  // } else if (shouldShowNoProjects) {
+  //   NAVIGATION.push({ type: "message", title: "No projects found" });
+  // } else if (projects?.length > 0) {
+  //   NAVIGATION.push(
+  //     ...projects.map((project) => ({
+  //       type: "item",
+  //       segment: `projects/${project?.id}`,
+  //       title: project?.name,
+  //       icon: <FolderOpenIcon />,
+  //     }))
+  //   );
+  // }
+
   if (isSearchLoading) {
   } else if (shouldShowNoProjects) {
     NAVIGATION.push({ type: "message", title: "No projects found" });
   } else if (projects?.length > 0) {
-    NAVIGATION.push(
-      ...projects.map((project) => ({
+    NAVIGATION.push({
+      type: "collapsible",
+      segment: "projects-folder",
+      title: "Projects",
+      icon: <FolderOpenIcon />,
+      children: projects.map((project) => ({
         type: "item",
         segment: `projects/${project?.id}`,
         title: project?.name,
         icon: <FolderOpenIcon />,
-      }))
-    );
+      })),
+    });
   }
   const renderNavItems = () => {
     return NAVIGATION.map((item, index) => {
@@ -213,8 +233,8 @@ export default function MySideDrawer({ open, setOpen }) {
     });
   };
 
-  const handleCreateProject = async (name,users) => {
-    await createProject(name,users);
+  const handleCreateProject = async (name, users) => {
+    await createProject(name, users);
   };
 
   const handleLogoutPopupOpen = () => {
@@ -336,8 +356,12 @@ export default function MySideDrawer({ open, setOpen }) {
             </List>
           </Drawer>
         ) : (
-           <MobileSideDrawer open={mobileDrawerOpen} handleDrawer={handleMobileDrawerClose} width={300}>
-             <List sx={{ padding: "16px" }}>
+          <MobileSideDrawer
+            open={mobileDrawerOpen}
+            handleDrawer={handleMobileDrawerClose}
+            width={300}
+          >
+            <List sx={{ padding: "16px" }}>
               {renderNavItems()}
               {(!isInitialFetchDone || loadingAllProjects) && (
                 <ListItem sx={{ justifyContent: "center", py: 1 }}>
@@ -348,7 +372,7 @@ export default function MySideDrawer({ open, setOpen }) {
                 <Box ref={loadMoreRef} style={{ height: 1 }} />
               )}
             </List>
-           </MobileSideDrawer>
+          </MobileSideDrawer>
         )}
       </Box>
     </>

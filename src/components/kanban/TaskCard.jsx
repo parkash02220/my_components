@@ -55,11 +55,11 @@ export function TaskCard({ task, isOverlay }) {
     transition,
     opacity: isOverlay ? 1 : isDragging ? 0.3 : 1,
     cursor: "grab",
-    // border: isOverlay
-    //   ? "2px solid #1976d2"
-    //   : isDragging
-    //   ? "2px solid rgba(0,0,0,0.2)"
-    //   : undefined,
+    border: isOverlay
+      ? "2px solid #1976d2"
+      : isDragging
+      ? "2px solid red"
+      : "2px solid yellow",
   };
 
   return (
