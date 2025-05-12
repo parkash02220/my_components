@@ -3,7 +3,9 @@ export const initialState = {
   activeProjectId: null,
   activeProject: {},
   activeTask: {},
-  activeUser: {},
+  activeUser: {
+    isAdmin:false,
+  },
   notifications:{
     all: {
       data:[],

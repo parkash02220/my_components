@@ -31,12 +31,13 @@ const useCreateSection = (boardId="", setShowAddColumnButton) => {
   };
 
   const handleColumnInputKeyDown = (e) => {
-     if(e.key==="Enter"){
+     if(e.key==="Enter" && !loadingCreateColumn){
         handleCreateColumn();
      }
   }
 
   const handleCreateColumn = async () => {
+    if(loadingCreateColumn) return;
     const trimmedName = newColumnName.trim();
     if (!trimmedName) return;
     setLoadingCreateColumn(true);

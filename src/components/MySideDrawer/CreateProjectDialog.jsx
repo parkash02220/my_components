@@ -118,7 +118,7 @@ const CreateProjectDialog = ({
       width={isXs ? "100%" : "auto"}
       content={
         <Box pt={2} paddingInline={1}>
-          <Box display={"flex"} flexDirection={"column"} gap={2}>
+          <Box display={"flex"} flexDirection={"column"}>
             <MyTextField
               fullWidth
               label="Project Name"
@@ -135,13 +135,13 @@ const CreateProjectDialog = ({
               fontSize={12}
               fontWeight={700}
               color={available ? "green" : "red"}
-              mt={1}
+              mt={0}
               ml={1}
             >
               {message}
             </Typography>
           </Box>
-          <Box>
+          <Box mt={2}>
             <MyAutoComplete
               fullWidth={true}
               multiple={true}

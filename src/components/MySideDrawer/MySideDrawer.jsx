@@ -9,7 +9,7 @@ import {
   drawerEasing,
 } from "@/components/MySideDrawer/MySideDrawerStyleComponents.jsx";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import CreateProjectDialog from "@/components/MySideDrawer/CreateProjectDialog.jsx";
 import {
   Drawer as MuiDrawer,
@@ -21,6 +21,8 @@ import {
   List,
   ListItem,
   Box,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { usePathname, useRouter } from "next/navigation";
@@ -35,6 +37,8 @@ import ConfirmationPopup from "../ConfirmationPopup";
 import useGetAllProjects from "@/hooks/projects/useGetAllProjects";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import MobileSideDrawer from "./MobileSideDrawer";
+import { NavigationGenerator } from "./NavigationGenerator";
+import MyMenu from "../MyMenu";
 
 export default function MySideDrawer({ open, setOpen }) {
   const [logoutPopupOpen, setLogoutPopupOpen] = useState(false);
@@ -51,18 +55,32 @@ export default function MySideDrawer({ open, setOpen }) {
     handleSearchClear,
     isInitialFetchDone,
   } = useGetAllProjects();
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [activeSegment, setActiveSegment] = useState(null);
+
+  const handleOpenMenu = (event, item) => {
+    setMenuAnchorEl(event.currentTarget);
+    setActiveSegment(item.segment); // Just save the segment
+  };
+  const handleCloseMenu = () => {
+    setMenuAnchorEl(null);
+    // setActiveMenuItem(null);
+  };
+
   const [expandedItems, setExpandedItems] = useState({});
   const [selectedDrawerItem, setSelectedDrawerItem] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const { state } = useAppContext();
-  const { projects } = state;
+  const { projects, activeUser } = state;
+  const { isAdmin } = activeUser;
   const [loading, isCreated, createProject] = useCreateProject();
   const { loadingLogout, logoutUser } = useLogout();
   const router = useRouter();
   const pathname = usePathname();
   const [hasMounted, setHasMounted] = useState(false);
-  const { isXs,isLg,isMd } = useBreakpointFlags();
+  const { isXs, isLg, isMd } = useBreakpointFlags();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  let menuCloseTimeout = null;
   const handleMobileDrawerOpen = () => {
     setMobileDrawerOpen(true);
   };
@@ -102,36 +120,22 @@ export default function MySideDrawer({ open, setOpen }) {
 
     setSelectedDrawerItem(segment);
     router.push(`/${segment}`);
-    {isMd ? handleMobileDrawerClose() : null}
+    {
+      isMd ? handleMobileDrawerClose() : null;
+    }
   };
-  const projectNavItems = projects?.map((project) => ({
-    segment: `projects/${project?.id}`,
-    title: project?.name,
-    icon: <FolderOpenIcon />,
-  }));
+  
+  const NAVIGATION = NavigationGenerator({isAdmin,
+    projects,
+    loadingAllProjects,
+    isInitialFetchDone,
+    isSearchLoading,
+    hasMore});
 
-  const NAVIGATION = [
-    { type: "header", title: "Projects" },
-    { type: "item", segment: "addproject", title: "+ Project" },
-    { type: "searchField" },
-  ];
+    const activeMenuItem = useMemo(() => {
+      return NAVIGATION.find((item) => item.segment === activeSegment);
+    }, [NAVIGATION, activeSegment]);
 
-  const shouldShowNoProjects =
-    isInitialFetchDone && !loadingAllProjects && projects?.length === 0;
-
-  if (isSearchLoading) {
-  } else if (shouldShowNoProjects) {
-    NAVIGATION.push({ type: "message", title: "No projects found" });
-  } else if (projects?.length > 0) {
-    NAVIGATION.push(
-      ...projects.map((project) => ({
-        type: "item",
-        segment: `projects/${project?.id}`,
-        title: project?.name,
-        icon: <FolderOpenIcon />,
-      }))
-    );
-  }
   const renderNavItems = () => {
     return NAVIGATION.map((item, index) => {
       if (item.type === "header") {
@@ -205,6 +209,8 @@ export default function MySideDrawer({ open, setOpen }) {
             onToggle={() => handleExpandToggle(item.segment)}
             selectedSegment={selectedDrawerItem}
             onClick={handleDrawerItemClick}
+            loadMoreRef={loadMoreRef}
+            onOpenMenu={handleOpenMenu}
           />
         );
       }
@@ -213,8 +219,8 @@ export default function MySideDrawer({ open, setOpen }) {
     });
   };
 
-  const handleCreateProject = async (name,users) => {
-    await createProject(name,users);
+  const handleCreateProject = async (name, users) => {
+    await createProject(name, users);
   };
 
   const handleLogoutPopupOpen = () => {
@@ -325,19 +331,33 @@ export default function MySideDrawer({ open, setOpen }) {
             <DrawerHeader />
             <List sx={{ padding: open ? "8px 16px" : "8px" }}>
               {renderNavItems()}
-              {(!isInitialFetchDone || loadingAllProjects) && (
+              {(!isInitialFetchDone || loadingAllProjects) && !isAdmin && (
                 <ListItem sx={{ justifyContent: "center", py: 1 }}>
                   <img src="/iosLoader.gif" width="30px" height="30px" />
                 </ListItem>
               )}
-              {projects?.length > 0 && hasMore && !loadingAllProjects && (
-                <Box ref={loadMoreRef} style={{ height: 1 }} />
-              )}
+              {projects?.length > 0 &&
+                hasMore &&
+                !loadingAllProjects &&
+                !isAdmin && <Box ref={loadMoreRef} style={{ height: 1 }} />}
             </List>
+            <MyMenu 
+             menuAnchorEl={menuAnchorEl}
+             open={Boolean(menuAnchorEl)}
+             onClose={handleCloseMenu}
+             activeMenuItem={activeMenuItem}
+             handleDrawerItemClick={handleDrawerItemClick}
+             type={"side_drawer"}
+             loadMoreRef={loadMoreRef}
+            />
           </Drawer>
         ) : (
-           <MobileSideDrawer open={mobileDrawerOpen} handleDrawer={handleMobileDrawerClose} width={300}>
-             <List sx={{ padding: "16px" }}>
+          <MobileSideDrawer
+            open={mobileDrawerOpen}
+            handleDrawer={handleMobileDrawerClose}
+            width={300}
+          >
+            <List sx={{ padding: "16px" }}>
               {renderNavItems()}
               {(!isInitialFetchDone || loadingAllProjects) && (
                 <ListItem sx={{ justifyContent: "center", py: 1 }}>
@@ -348,7 +368,7 @@ export default function MySideDrawer({ open, setOpen }) {
                 <Box ref={loadMoreRef} style={{ height: 1 }} />
               )}
             </List>
-           </MobileSideDrawer>
+          </MobileSideDrawer>
         )}
       </Box>
     </>

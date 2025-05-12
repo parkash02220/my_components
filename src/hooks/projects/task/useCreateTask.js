@@ -31,12 +31,13 @@ const useCreateTask = (sectionId="", setCreateTaskOpen) => {
   };
 
   const handleTaskInputKeyDown = (e) => {
-     if(e.key==="Enter"){
+     if(e.key==="Enter" && !loadingCreateTask){
         handleCreateTask();
      }
   }
 
   const handleCreateTask = async () => {
+    if(loadingCreateTask) return;
     const trimmedName = newTaskName.trim();
     if (!trimmedName) return;
     setLoadingCreateTask(true);

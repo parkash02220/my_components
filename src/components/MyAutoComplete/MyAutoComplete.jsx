@@ -8,7 +8,7 @@ const CustomListbox = React.forwardRef(function CustomListbox(props, ref) {
 
   return (
     <List ref={ref} {...rest} className="autoComplete__listBox"  sx={{
-      height: 400,
+      maxHeight: 400,
       overflowY: 'auto',
       scrollbarWidth: 'none',
       msOverflowStyle: 'none',

@@ -422,9 +422,11 @@ function projectsReducer(state = initialState, action) {
       };
 
     case actions.SET_ACTIVE_USER_SUCCESS:
+      let activeUser = payload;
+      activeUser.isAdmin = payload?.role === "admin";
       return {
         ...state,
-        activeUser: payload,
+        activeUser,
         loading: setLoading(state, "loadingActiveUser", false),
       };
 
