@@ -24,24 +24,18 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { usePathname, useRouter } from "next/navigation";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import useCreateProject from "@/hooks/projects/useCreateProject";
 import { useAppContext } from "@/context/AppContext";
-import useLogout from "@/hooks/projects/user/useLogout";
-import { SingleNavItem } from "./SingleNavItem";
-import { CollapsibleNavItem } from "./CollapsibleNavItem";
-import SearchNavItem from "./SearchNavItem";
 import ConfirmationPopup from "../ConfirmationPopup";
 import useGetAllProjects from "@/hooks/projects/useGetAllProjects";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import MobileSideDrawer from "./MobileSideDrawer";
 import { NavigationGenerator } from "./NavigationGenerator";
 import MyMenu from "../MyMenu";
+import NavItemList from "./NavItemList";
 
 export default function MySideDrawer({ open, setOpen }) {
-  const [logoutPopupOpen, setLogoutPopupOpen] = useState(false);
   const {
     allProjects,
     isSearchLoading,
@@ -74,13 +68,11 @@ export default function MySideDrawer({ open, setOpen }) {
   const { projects, activeUser } = state;
   const { isAdmin } = activeUser;
   const [loading, isCreated, createProject] = useCreateProject();
-  const { loadingLogout, logoutUser } = useLogout();
   const router = useRouter();
   const pathname = usePathname();
   const [hasMounted, setHasMounted] = useState(false);
   const { isXs, isLg, isMd } = useBreakpointFlags();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  let menuCloseTimeout = null;
   const handleMobileDrawerOpen = () => {
     setMobileDrawerOpen(true);
   };
@@ -98,11 +90,6 @@ export default function MySideDrawer({ open, setOpen }) {
   const toggleDrawer = () => {
     setOpen(!open);
   };
-  const slugify = (text) =>
-    text
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^\w-]+/g, "");
 
   const handleExpandToggle = (segment) => {
     setExpandedItems((prev) => ({
@@ -124,126 +111,26 @@ export default function MySideDrawer({ open, setOpen }) {
       isMd ? handleMobileDrawerClose() : null;
     }
   };
-  
-  const NAVIGATION = NavigationGenerator({isAdmin,
+
+  const NAVIGATION = NavigationGenerator({
+    isAdmin,
     projects,
     loadingAllProjects,
     isInitialFetchDone,
     isSearchLoading,
-    hasMore});
+    hasMore,
+  });
 
-    const activeMenuItem = useMemo(() => {
-      return NAVIGATION.find((item) => item.segment === activeSegment);
-    }, [NAVIGATION, activeSegment]);
-
-  const renderNavItems = () => {
-    return NAVIGATION.map((item, index) => {
-      if (item.type === "header") {
-        return open ? (
-          <ListItem key={index} sx={{ pl: 1 }}>
-            <Typography
-              variant="subtitle2"
-              sx={{
-                fontSize: "12px",
-                color: "#919EAB",
-                fontWeight: 700,
-                "&:hover": { color: "black", cursor: "pointer" },
-              }}
-            >
-              {item.title}
-            </Typography>
-          </ListItem>
-        ) : null;
-      }
-
-      if (item.type === "searchField") {
-        return (
-          <React.Fragment key={index}>
-            <SearchNavItem
-              open={open}
-              value={searchValue}
-              onChange={handleSearchValueChange}
-              handleSearchClear={handleSearchClear}
-            />
-          </React.Fragment>
-        );
-      }
-
-      if (item.type === "message") {
-        return open ? (
-          <ListItem key={index}>
-            <Typography
-              variant="body2"
-              sx={{
-                color: "#919EAB",
-                fontStyle: "italic",
-                px: 2,
-                width: "100%",
-                textAlign: "center",
-              }}
-            >
-              {item.title}
-            </Typography>
-          </ListItem>
-        ) : null;
-      }
-
-      if (item.type === "item") {
-        return (
-          <SingleNavItem
-            key={index}
-            item={item}
-            open={open}
-            onClick={() => handleDrawerItemClick(item)}
-          />
-        );
-      }
-
-      if (item.type === "collapsible") {
-        return (
-          <CollapsibleNavItem
-            key={index}
-            item={item}
-            open={open}
-            isExpanded={expandedItems[item.segment]}
-            onToggle={() => handleExpandToggle(item.segment)}
-            selectedSegment={selectedDrawerItem}
-            onClick={handleDrawerItemClick}
-            loadMoreRef={loadMoreRef}
-            onOpenMenu={handleOpenMenu}
-          />
-        );
-      }
-
-      return null;
-    });
-  };
+  const activeMenuItem = useMemo(() => {
+    return NAVIGATION.find((item) => item.segment === activeSegment);
+  }, [NAVIGATION, activeSegment]);
 
   const handleCreateProject = async (name, users) => {
     await createProject(name, users);
   };
-
-  const handleLogoutPopupOpen = () => {
-    setLogoutPopupOpen(true);
-  };
-
-  const handleLogoutPopupClose = () => {
-    setLogoutPopupOpen(false);
-  };
-  const handleUserLogout = async () => {
-    await logoutUser();
-    handleLogoutPopupClose();
-  };
   if (!hasMounted) return null;
   return (
     <>
-      <ConfirmationPopup
-        title={"Logout"}
-        handleClose={handleLogoutPopupClose}
-        open={logoutPopupOpen}
-        submitAction={handleUserLogout}
-        loading={loadingLogout}
-      />
       <Box className="createProjectDialog">
         <CreateProjectDialog
           open={dialogOpen}
@@ -330,7 +217,19 @@ export default function MySideDrawer({ open, setOpen }) {
           <Drawer variant="permanent" open={open}>
             <DrawerHeader />
             <List sx={{ padding: open ? "8px 16px" : "8px" }}>
-              {renderNavItems()}
+              <NavItemList
+                NAVIGATION={NAVIGATION}
+                open={open}
+                searchValue={searchValue}
+                handleSearchValueChange={handleSearchValueChange}
+                handleSearchClear={handleSearchClear}
+                expandedItems={expandedItems}
+                selectedDrawerItem={selectedDrawerItem}
+                handleDrawerItemClick={handleDrawerItemClick}
+                handleExpandToggle={handleExpandToggle}
+                loadMoreRef={loadMoreRef}
+                handleOpenMenu={handleOpenMenu}
+              />
               {(!isInitialFetchDone || loadingAllProjects) && !isAdmin && (
                 <ListItem sx={{ justifyContent: "center", py: 1 }}>
                   <img src="/iosLoader.gif" width="30px" height="30px" />
@@ -341,14 +240,14 @@ export default function MySideDrawer({ open, setOpen }) {
                 !loadingAllProjects &&
                 !isAdmin && <Box ref={loadMoreRef} style={{ height: 1 }} />}
             </List>
-            <MyMenu 
-             menuAnchorEl={menuAnchorEl}
-             open={Boolean(menuAnchorEl)}
-             onClose={handleCloseMenu}
-             activeMenuItem={activeMenuItem}
-             handleDrawerItemClick={handleDrawerItemClick}
-             type={"side_drawer"}
-             loadMoreRef={loadMoreRef}
+            <MyMenu
+              menuAnchorEl={menuAnchorEl}
+              open={Boolean(menuAnchorEl)}
+              onClose={handleCloseMenu}
+              activeMenuItem={activeMenuItem}
+              handleDrawerItemClick={handleDrawerItemClick}
+              type={"side_drawer"}
+              loadMoreRef={loadMoreRef}
             />
           </Drawer>
         ) : (
@@ -358,7 +257,19 @@ export default function MySideDrawer({ open, setOpen }) {
             width={300}
           >
             <List sx={{ padding: "16px" }}>
-              {renderNavItems()}
+              <NavItemList
+                NAVIGATION={NAVIGATION}
+                open={open}
+                searchValue={searchValue}
+                handleSearchValueChange={handleSearchValueChange}
+                handleSearchClear={handleSearchClear}
+                expandedItems={expandedItems}
+                selectedDrawerItem={selectedDrawerItem}
+                handleDrawerItemClick={handleDrawerItemClick}
+                handleExpandToggle={handleExpandToggle}
+                loadMoreRef={loadMoreRef}
+                handleOpenMenu={handleOpenMenu}
+              />
               {(!isInitialFetchDone || loadingAllProjects) && (
                 <ListItem sx={{ justifyContent: "center", py: 1 }}>
                   <img src="/iosLoader.gif" width="30px" height="30px" />
