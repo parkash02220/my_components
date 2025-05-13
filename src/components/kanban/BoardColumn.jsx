@@ -1,6 +1,11 @@
 "use client";
 
-import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  defaultAnimateLayoutChanges,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Paper from "@mui/material/Paper";
@@ -65,6 +70,10 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
     [column]
   );
 
+  const animateLayoutChanges = (args) => {
+    return defaultAnimateLayoutChanges(args) || args.isSorting;
+  };
+
   const {
     setNodeRef,
     attributes,
@@ -75,6 +84,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
   } = useSortable({
     id: column.id,
     data: sortableData,
+    animateLayoutChanges,
     attributes: {
       roleDescription: `Column: ${column.title}`,
     },
@@ -462,7 +472,10 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
           }}
         >
           <Box display="flex" flexDirection="column" gap={2}>
-            <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
+            <SortableContext
+              items={taskIds}
+              strategy={verticalListSortingStrategy}
+            >
               {tasks?.length < 1 ? (
                 <Box
                   className="emptySection"
