@@ -11,7 +11,7 @@ import {
 import { SingleNavItem } from "./SingleNavItem";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useState } from "react";
-
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 export const CollapsibleNavItem = ({
   item,
   open,
@@ -21,18 +21,29 @@ export const CollapsibleNavItem = ({
   onClick,
   loadMoreRef,
   onOpenMenu,
+  onCloseMenu,
 }) => {
   return (
     <>
       <ListItemButton
-      onClick={(e) => {
-        if (open) {
-          onToggle();
-        } else {
-          // Open floating menu
-          onOpenMenu(e, item);
-        }
-      }}
+        onMouseEnter={(e) => {
+          if (!open) {
+            onOpenMenu(e, item);
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!open) {
+            onCloseMenu();
+          }
+        }}
+        onClick={(e) => {
+          if (open) {
+            onToggle();
+          } else {
+            // Open floating menu
+            onOpenMenu(e, item);
+          }
+        }}
         sx={{
           minHeight: 48,
           justifyContent: open ? "initial" : "center",
@@ -47,9 +58,15 @@ export const CollapsibleNavItem = ({
             justifyContent: "center",
           }}
         >
-         {item.imgSrc ? (
-          <Box width={24} height={24} sx={{background:isExpanded ? "#1C252E" : "#637381",mask:`url(${item.imgSrc}) center center / contain no-repeat`}}>
-            </Box>
+          {item.imgSrc ? (
+            <Box
+              width={24}
+              height={24}
+              sx={{
+                background: isExpanded ? "#1C252E" : "#637381",
+                mask: `url(${item.imgSrc}) center center / contain no-repeat`,
+              }}
+            ></Box>
           ) : (
             item.icon
           )}
@@ -64,90 +81,106 @@ export const CollapsibleNavItem = ({
           }}
         />
         {open && (isExpanded ? <ExpandLess /> : <ExpandMore />)}
+        {!open && (
+          <Box>
+            <KeyboardArrowRightIcon sx={{ color: "#1C252E" }} />
+          </Box>
+        )}
       </ListItemButton>
 
-   {open ? (   <Collapse in={isExpanded} timeout="auto" unmountOnExit sx={{pl:3,position:'relative',pb:1}}>
-      <Box sx={{
-    top:'0px',
-    left:'0px',
-    width:"2px",
-    position:"absolute",
-    background:"#EDEFF2",
-    bottom:"25px",
-    ml:3,
-  }}/>
-  <Box
-    sx={{
-      maxHeight: 300,
-      overflowX:"hidden",
-      overflowY:'auto',
-      borderRadius:'8px',
-      pl:1.5,
-      scrollbarWidth: "none",
-      "&::-webkit-scrollbar": {
-        display: "none",
-      },
-    }}
-  >
-    <List component="div" disablePadding>
-      {item.children.map((child, idx) => {
-        if (child.type === "loader") {
-          return (
-            <ListItemButton key={idx} sx={{ justifyContent: "center", py: 1 }}>
-              <img src="/iosLoader.gif" width="30px" height="30px" />
-            </ListItemButton>
-          );
-        }
-
-        if (child.type === "message") {
-          return (
-            <ListItem key={idx}>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: "#919EAB",
-                  fontStyle: "italic",
-                  px: 2,
-                  width: "100%",
-                  textAlign: "center",
-                }}
-              >
-                {child.title}
-              </Typography>
-            </ListItem>
-          );
-        }
-
-        if (child.type === "loadMoreRef") {
-          return (
-            <Box
-              key={idx}
-              ref={loadMoreRef}
-              sx={{ height: 1, width: "100%" }}
-            />
-          );
-        }
-
-        return (
-          <SingleNavItem
-            key={idx}
-            item={child}
-            open={open}
-            selectedSegment={selectedSegment}
-            onClick={() => onClick(child)}
-            isCollapsible
+      {open ? (
+        <Collapse
+          in={isExpanded}
+          timeout="auto"
+          unmountOnExit
+          sx={{ pl: 3, position: "relative", pb: 1 }}
+        >
+          <Box
             sx={{
-              minHeight:36,
-              pt:'4px',
-              pb:'4px',
+              top: "0px",
+              left: "0px",
+              width: "2px",
+              position: "absolute",
+              background: "#EDEFF2",
+              bottom: "25px",
+              ml: 3,
             }}
           />
-        );
-      })}
-    </List>
-  </Box>
-</Collapse>) : null}
+          <Box
+            sx={{
+              maxHeight: 300,
+              overflowX: "hidden",
+              overflowY: "auto",
+              borderRadius: "8px",
+              pl: 1.5,
+              scrollbarWidth: "none",
+              "&::-webkit-scrollbar": {
+                display: "none",
+              },
+            }}
+          >
+            <List component="div" disablePadding>
+              {item.children.map((child, idx) => {
+                if (child.type === "loader") {
+                  return (
+                    <ListItemButton
+                      key={idx}
+                      sx={{ justifyContent: "center", py: 1 }}
+                    >
+                      <img src="/iosLoader.gif" width="30px" height="30px" />
+                    </ListItemButton>
+                  );
+                }
 
+                if (child.type === "message") {
+                  return (
+                    <ListItem key={idx}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "#919EAB",
+                          fontStyle: "italic",
+                          px: 2,
+                          width: "100%",
+                          textAlign: "center",
+                        }}
+                      >
+                        {child.title}
+                      </Typography>
+                    </ListItem>
+                  );
+                }
+
+                if (child.type === "loadMoreRef") {
+                  return (
+                    <Box
+                      key={idx}
+                      ref={loadMoreRef}
+                      sx={{ height: 1, width: "100%" }}
+                    />
+                  );
+                }
+
+                return (
+                  <SingleNavItem
+                    key={idx}
+                    item={child}
+                    open={open}
+                    selectedSegment={selectedSegment}
+                    onClick={() => onClick(child)}
+                    isCollapsible
+                    sx={{
+                      minHeight: 36,
+                      pt: "4px",
+                      pb: "4px",
+                    }}
+                  />
+                );
+              })}
+            </List>
+          </Box>
+        </Collapse>
+      ) : null}
     </>
   );
 };

@@ -22,7 +22,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen })
     setAllUsers,
     debouncedSearchValue,
     totalUsers,
-  } = useGetAllUsers();
+  } = useGetAllUsers('board');
   const [hasMounted, setHasMounted] = useState(true);
   const [assignedUserIds, setAssignedUserIds] = useState([]);
   useEffect(() => {
@@ -232,7 +232,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen })
                   )}
                   <Box ref={loadMoreRef} style={{ height: 1 }} />
                 </Box>
-              ) : !loadingAllUsers && debouncedSearchValue ? (
+              ) : !loadingAllUsers? (
                 <Box
                   className="assignDialog__emptyBox"
                   display={"flex"}

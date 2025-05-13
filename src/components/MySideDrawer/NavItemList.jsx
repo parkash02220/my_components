@@ -17,6 +17,7 @@ export default function NavItemList({
   handleExpandToggle,
   loadMoreRef,
   handleOpenMenu,
+  handleCloseMenu,
 }) {
   return NAVIGATION.map((item, index) => {
     if (item.type === "header") {
@@ -92,6 +93,7 @@ export default function NavItemList({
           onClick={handleDrawerItemClick}
           loadMoreRef={loadMoreRef}
           onOpenMenu={handleOpenMenu}
+          onCloseMenu={handleCloseMenu}
         />
       );
     }

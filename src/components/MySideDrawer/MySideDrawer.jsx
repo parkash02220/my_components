@@ -9,7 +9,7 @@ import {
   drawerEasing,
 } from "@/components/MySideDrawer/MySideDrawerStyleComponents.jsx";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import CreateProjectDialog from "@/components/MySideDrawer/CreateProjectDialog.jsx";
 import {
   Drawer as MuiDrawer,
@@ -51,14 +51,27 @@ export default function MySideDrawer({ open, setOpen }) {
   } = useGetAllProjects();
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [activeSegment, setActiveSegment] = useState(null);
-
+  const closeTimeoutRef = useRef(null);
+  
   const handleOpenMenu = (event, item) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
     setMenuAnchorEl(event.currentTarget);
-    setActiveSegment(item.segment); // Just save the segment
+    setActiveSegment(item.segment);
   };
-  const handleCloseMenu = () => {
-    setMenuAnchorEl(null);
-    // setActiveMenuItem(null);
+  
+  const handleDelayedCloseMenu = () => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setMenuAnchorEl(null);
+      setActiveSegment(null);
+    }, 200);
+  };
+  
+  const cancelCloseMenu = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
   };
 
   const [expandedItems, setExpandedItems] = useState({});
@@ -229,6 +242,7 @@ export default function MySideDrawer({ open, setOpen }) {
                 handleExpandToggle={handleExpandToggle}
                 loadMoreRef={loadMoreRef}
                 handleOpenMenu={handleOpenMenu}
+                handleCloseMenu={handleDelayedCloseMenu}
               />
               {(!isInitialFetchDone || loadingAllProjects) && !isAdmin && (
                 <ListItem sx={{ justifyContent: "center", py: 1 }}>
@@ -243,7 +257,8 @@ export default function MySideDrawer({ open, setOpen }) {
             <MyMenu
               menuAnchorEl={menuAnchorEl}
               open={Boolean(menuAnchorEl)}
-              onClose={handleCloseMenu}
+              onClose={handleDelayedCloseMenu}
+              cancelCloseMenu={cancelCloseMenu}
               activeMenuItem={activeMenuItem}
               handleDrawerItemClick={handleDrawerItemClick}
               type={"side_drawer"}
@@ -259,7 +274,7 @@ export default function MySideDrawer({ open, setOpen }) {
             <List sx={{ padding: "16px" }}>
               <NavItemList
                 NAVIGATION={NAVIGATION}
-                open={open}
+                open={mobileDrawerOpen}
                 searchValue={searchValue}
                 handleSearchValueChange={handleSearchValueChange}
                 handleSearchClear={handleSearchClear}
@@ -269,13 +284,14 @@ export default function MySideDrawer({ open, setOpen }) {
                 handleExpandToggle={handleExpandToggle}
                 loadMoreRef={loadMoreRef}
                 handleOpenMenu={handleOpenMenu}
+                handleCloseMenu={handleDelayedCloseMenu}
               />
-              {(!isInitialFetchDone || loadingAllProjects) && (
+              {(!isInitialFetchDone || loadingAllProjects) && !isAdmin && (
                 <ListItem sx={{ justifyContent: "center", py: 1 }}>
                   <img src="/iosLoader.gif" width="30px" height="30px" />
                 </ListItem>
               )}
-              {projects?.length > 0 && hasMore && !loadingAllProjects && (
+              {projects?.length > 0 && hasMore && !loadingAllProjects && !isAdmin && (
                 <Box ref={loadMoreRef} style={{ height: 1 }} />
               )}
             </List>

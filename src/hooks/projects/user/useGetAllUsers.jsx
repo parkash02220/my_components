@@ -1,3 +1,4 @@
+import { useAppContext } from "@/context/AppContext";
 import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 
@@ -5,31 +6,34 @@ const { default: useDebounce } = require("@/hooks/common/useDebounce");
 const { useState, useEffect } = require("react");
 const { useInView } = require("react-intersection-observer");
 
-const useGetAllUsers = () => {
+const useGetAllUsers = (type="all",paginationMode = "scroll") => {
   const [loadingAllUsers, setLoadingAllUsers] = useState(false);
   const [errorAllUsers, setErrorAllUsers] = useState(false);
   const [helperTextAllUsers, setHelperTextAllUsers] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize,setPageSize] = useState(10);
   const [allUsers, setAllUsers] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const debouncedSearchValue = useDebounce(searchValue, 500);
   const { ref: loadMoreRef, inView } = useInView();
-
+  const {state} = useAppContext();
+  const activeProjectId = state?.activeProject?.id;
   const getAllUsersFromBackend = async ({
     signal,
     search = "",
     page = 1,
-    append = false,
+    append = paginationMode === "scroll",
+    pageSize = 10,
   }) => {
     setLoadingAllUsers(true);
     setErrorAllUsers(false);
     setHelperTextAllUsers("");
-
+    const url = type==="all"? `${process.env.NEXT_PUBLIC_BASE_URL}/get-users?search=${search}&page=${page}&limit=${pageSize}` :
+    `${process.env.NEXT_PUBLIC_BASE_URL}/get-users?boardId=${activeProjectId}&search=${search}&page=${page}&limit=${pageSize}`;
     const res = await ApiCall({
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/get-users?search=${search}&page=${page}&limit=${pageSize}`,
+      url,
       method: "GET",
       signal,
     });
@@ -58,7 +62,7 @@ const useGetAllUsers = () => {
     const { signal } = controller;
 
     setPage(1);
-    // setAllUsers([]);
+    setAllUsers([]);
     getAllUsersFromBackend({
       signal,
       search: debouncedSearchValue,
@@ -79,13 +83,15 @@ const useGetAllUsers = () => {
       signal,
       search: debouncedSearchValue,
       page,
-      append: true,
+      pageSize,
+      append : paginationMode === "scroll",
     });
 
     return () => controller.abort();
-  }, [page]);
+  }, [page,debouncedSearchValue,pageSize]);
 
   useEffect(() => {
+    if (paginationMode !== "scroll") return;
     if (inView && hasMore && !loadingAllUsers) {
       setPage((prev) => prev + 1);
     }
@@ -105,6 +111,7 @@ const useGetAllUsers = () => {
     handleSearchValueChange,
     setSearchValue,
     setPage,
+    setPageSize,
     loadMoreRef,
     setAllUsers,
     debouncedSearchValue,
