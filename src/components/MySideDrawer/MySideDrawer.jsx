@@ -8,7 +8,7 @@ import {
   drawerTransitionDuration,
   drawerEasing,
 } from "@/components/MySideDrawer/MySideDrawerStyleComponents.jsx";
-
+import * as actions from '@/context/action';
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import CreateProjectDialog from "@/components/MySideDrawer/CreateProjectDialog.jsx";
 import {
@@ -77,7 +77,7 @@ export default function MySideDrawer({ open, setOpen }) {
   const [expandedItems, setExpandedItems] = useState({});
   const [selectedDrawerItem, setSelectedDrawerItem] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { state } = useAppContext();
+  const { state,dispatch } = useAppContext();
   const { projects, activeUser } = state;
   const { isAdmin } = activeUser;
   const [loading, isCreated, createProject] = useCreateProject();
@@ -123,6 +123,7 @@ export default function MySideDrawer({ open, setOpen }) {
     {
       isMd ? handleMobileDrawerClose() : null;
     }
+    dispatch({type:actions.SET_SELECTED_DRAWER_ITEM,payload:item});
   };
 
   const NAVIGATION = NavigationGenerator({

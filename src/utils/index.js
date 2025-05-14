@@ -8,7 +8,15 @@ export const setAuthTokenToCookies = (token) => {
     console.log("::seting auth token in function",token)
     return Cookies.set("auth_token",token,{expires: 1});
 }
+export const setCookie = (name,value) => {
+  if(!name || !value) return;
+  return Cookies.set(name,value,{expires:1});
+}
+export const getCookie = (name) => {
+  if(!name) return;
+  return Cookies.get(name);
 
+}
 export const isUserLoggedIn = () => {
     const token =  getAuthTokenFromCookies();
     return !!token && token !== null && token !== "undefined";

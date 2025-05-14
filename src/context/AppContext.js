@@ -1,7 +1,8 @@
-import React, { createContext, useReducer, useContext, useState } from "react";
+import React, { createContext, useReducer, useContext, useState, useEffect } from "react";
 import { initialState } from "./initialState";
 import * as actions from "./action";
 import { daDK } from "@mui/x-date-pickers/locales";
+import { getCookie, setCookie } from "@/utils";
 const AppContext = createContext();
 
 function setLoading(state, key, value) {
@@ -602,13 +603,14 @@ function projectsReducer(state = initialState, action) {
       };
     }
 
-    case "SET_LOADING":
+    case actions.SET_SELECTED_DRAWER_ITEM:
+      if (typeof window !== "undefined") {
+        setCookie("selectedDrawerItem", JSON.stringify(payload));
+      }
       return {
         ...state,
-        loading: setLoading(state, "loadingActiveUser", true),
-        error: setError(state, "errorActiveUser", null),
+        selectedDrawerItem:payload,
       };
-
     default:
       return state;
   }
@@ -616,6 +618,16 @@ function projectsReducer(state = initialState, action) {
 
 export function AppContextProvider({ children }) {
   const [state, dispatch] = useReducer(projectsReducer, initialState);
+
+  useEffect(() => {
+    const stored = getCookie("selectedDrawerItem");
+    if (stored) {
+      dispatch({
+        type: "SET_SELECTED_DRAWER_ITEM",
+        payload: JSON.parse(stored),
+      });
+    }
+  }, []);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>

@@ -153,9 +153,11 @@ const CreateProjectDialog = ({
                 getFullName(option?.firstName, option?.lastName)
               }
               renderOption={(props, option) => {
+                const { key, ...rest } = props;
                 return (
                   <li
-                    {...props}
+                  key={key}
+                  {...rest}
                     style={{ display: "flex", alignItems: "center" }}
                   >
                     <img

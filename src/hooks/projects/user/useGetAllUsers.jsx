@@ -12,7 +12,7 @@ const useGetAllUsers = (type="all",paginationMode = "scroll") => {
   const [helperTextAllUsers, setHelperTextAllUsers] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [hasMore, setHasMore] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [pageSize,setPageSize] = useState(10);
   const [allUsers, setAllUsers] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
@@ -47,6 +47,8 @@ const useGetAllUsers = (type="all",paginationMode = "scroll") => {
 
     const data = res?.data;
     const hasMoreUser = data && data?.page * data?.limit < data?.totalUsers;
+    setPage(data?.page);
+    setPageSize(data?.limit);
     setHasMore(hasMoreUser);
     setTotalUsers(data?.totalUsers || 0);
     const formattedUsers = convertIdFields(data?.users || []);
@@ -54,14 +56,16 @@ const useGetAllUsers = (type="all",paginationMode = "scroll") => {
       new Map(formattedUsers.map((user) => [user?.id, user])).values()
     );
 
-    setAllUsers((prev) => (append ? [...prev, ...uniqueUsers] : uniqueUsers));
+    setAllUsers((prev) => {
+      const combined = append ? [...prev, ...uniqueUsers] : [...uniqueUsers];
+      const deduplicated = Array.from(new Map(combined.map((u) => [u.id, u])).values());
+      return deduplicated;
+    });
   };
 
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
-
-    setPage(1);
     setAllUsers([]);
     getAllUsersFromBackend({
       signal,
@@ -74,7 +78,7 @@ const useGetAllUsers = (type="all",paginationMode = "scroll") => {
   }, [debouncedSearchValue]);
 
   useEffect(() => {
-    if (page === 1) return;
+    if (page <= 1) return;
 
     const controller = new AbortController();
     const { signal } = controller;

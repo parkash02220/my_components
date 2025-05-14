@@ -20,7 +20,6 @@ const SearchBox = styled(Box)(
   }) => ({
     display: "flex",
     alignItems: "center",
-    padding: "4px 8px",
     border: `1px solid ${bordercolor || "#ccc"}`,
     borderRadius: borderradius || "4px",
     cursor: disabled ? "not-allowed" : "text",
@@ -80,6 +79,7 @@ export default function MySearch({
   hoverBorderColor,
   focusedBorder,
   loading,
+  padding,
   ...props
 }) {
   return (
@@ -97,7 +97,7 @@ export default function MySearch({
         backgroundcolor={backgroundColor}
         focusedborder={focusedBorder}
         focusedbordercolor={focusedBorderColor}
-        sx={{ cursor: disabled ? "not-allowed" : "text" }}
+        sx={{ cursor: disabled ? "not-allowed" : "text",padding:padding || "4px 8px" }}
         hoverbordercolor={hoverBorderColor}
       >
         <IconButton

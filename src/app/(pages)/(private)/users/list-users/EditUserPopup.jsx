@@ -2,6 +2,7 @@ import UserDetailsForm from "@/app/(pages)/(public)/signup/UserDetailsForm";
 import MyButton from "@/components/MyButton/MyButton";
 import MyDialog from "@/components/MyDialog/MyDialog";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
+import useUpdateUser from "@/hooks/projects/user/useUpdateUser";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useFormik } from "formik";
 import { useEffect } from "react";
@@ -19,9 +20,11 @@ const EditUserPopup = ({
     loading,
     loadingText,
     user,
+    setData,
 }) => {
     const {isXs} = useBreakpointFlags();
     const theme = useTheme();
+    const {loadingUpdateUser,errorUpdateUser,updateUser} = useUpdateUser();
     console.log("::user",user)
     const formik = useFormik({
         enableReinitialize:true,
@@ -41,14 +44,27 @@ const EditUserPopup = ({
             email: Yup.string()
               .email("invalid email address")
               .required("This field is required"),
-            password: Yup.string()
-              .min(6, "Password must be greater than 6 chars")
-              .max(20, "Password must be less than 21 char")
-              .required(),
             gender: Yup.string().required("This field is required"),
           }),
-       onSubmit:(values) => {
-          console.log("::values");
+       onSubmit: async(values) => {
+          console.log("::values",values);
+          setData((prev) =>
+            prev?.map((data) => {
+              if (data?.id === user?.id) {
+                return {
+                  ...data,
+                  ...values,
+                  nameWithAvatar: {
+                    name: `${values.firstName} ${values.lastName}`,
+                    avatar: values.avatar || '',
+                  },
+                };
+              }
+              return data;
+            })
+          );
+          await updateUser(values,user?.id);
+          handleClose();
        }
     })
     useEffect(()=> {
@@ -81,7 +97,7 @@ const EditUserPopup = ({
               p={0}
             >
               <MyButton
-                onClick={submitAction}
+                onClick={submitAction ? submitAction : formik.handleSubmit}
                 variant="contained"
                 loadingText={loadingText || "Deleting"}
                 padding={"6px 12px"}

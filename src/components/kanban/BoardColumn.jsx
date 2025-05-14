@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  defaultAnimateLayoutChanges,
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
@@ -70,10 +69,6 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
     [column]
   );
 
-  const animateLayoutChanges = (args) => {
-    return defaultAnimateLayoutChanges(args) || args.isSorting;
-  };
-
   const {
     setNodeRef,
     attributes,
@@ -84,7 +79,6 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
   } = useSortable({
     id: column.id,
     data: sortableData,
-    animateLayoutChanges,
     attributes: {
       roleDescription: `Column: ${column.title}`,
     },

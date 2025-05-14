@@ -19,10 +19,11 @@ const TableCellRenderer = ({
   tooltip,
   icon,
   icons,
+  isAllRowSelected,
 }) => {
   switch (type) {
     case "checkbox":
-      return <Checkbox checked={Boolean(value)} onChange={onChange} />;
+      return <Checkbox checked={isAllRowSelected ? true : Boolean(value)} onChange={onChange} />;
 
     case "button":
       return (

@@ -5,7 +5,13 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { CircularProgress, FormHelperText, InputAdornment, Typography } from "@mui/material";
+import {
+  Checkbox,
+  CircularProgress,
+  FormHelperText,
+  InputAdornment,
+  Typography,
+} from "@mui/material";
 import { typography } from "storybook/internal/theming";
 
 export default function MySelect({
@@ -30,6 +36,9 @@ export default function MySelect({
   error,
   menuBackgroundColor,
   menuHoverColor,
+  border,
+  focusedBorder,
+  hoverBorder,
   borderColor = "black",
   labelColor = "black",
   className,
@@ -39,6 +48,7 @@ export default function MySelect({
   color,
   required,
   requiredColor,
+  multiple = false,
   sx,
   ...props
 }) {
@@ -47,11 +57,13 @@ export default function MySelect({
     padding,
     cursor: disabled ? "not-allowed" : "default",
     "& .MuiOutlinedInput-root": {
-      cursor: disabled ? "not-allowed" : "text",  
+      cursor: disabled ? "not-allowed" : "text",
     },
     "& .MuiOutlinedInput-notchedOutline": {
       borderColor: error ? "red" : "rgba(0, 0, 0, 0.23)",
-      border: error ? "1px solid red" : `1px solid ${borderColor || rgba(0, 0, 0, 0.23)}`,
+      border: error
+        ? "1px solid red"
+        : border || `1px solid ${borderColor || rgba(0, 0, 0, 0.23)}`,
     },
     "& .MuiSelect-select": {
       fontSize: selectFontSize,
@@ -62,16 +74,72 @@ export default function MySelect({
   };
 
   const menuItems = React.useMemo(() => {
-    return options.map((option) => (
-      <MenuItem
-        key={option.value}
-        value={option.value}
-        sx={{ fontSize: menuItemFontSize }}
-        className={`mySelect__option ${optionItemClassName}`}
-      >
-        {option.label}
-      </MenuItem>
-    ));
+    if (multiple) {
+      return options.map((option) => (
+        <MenuItem
+          key={option.value}
+          value={option.value}
+          selected={value.includes(option.value)}
+          sx={{
+            fontSize: menuItemFontSize,
+            padding: "6px 8px",
+            mb: "4px",
+            borderRadius: "6px",
+            bgcolor: "transparent",
+            "&.Mui-selected": {
+              bgcolor: "rgba(145 158 171 / 0.08)",
+            },
+            "&:hover":{
+              bgcolor:'rgba(145 158 171 / 0.08)'
+            },
+            "&.Mui-selected:hover": {
+            bgcolor:'rgba(145 158 171 / 0.08)'
+            },
+          }}
+          className={`mySelect__option ${optionItemClassName}`}
+        >
+          <Box>
+            <Checkbox
+              checked={value?.some((val) => val === option?.value)}
+              // onChange={(e) => handleSelectAllUsers(e.target.checked)}
+              sx={{
+                color: "#00A76F !important",
+                padding: "4px",
+                marginInline: "4px",
+                borderRadius: "50%",
+              }}
+            />
+            {option.label}
+          </Box>
+        </MenuItem>
+      ));
+    } else {
+      return options.map((option) => (
+        <MenuItem
+          key={option.value}
+          value={option.value}
+          selected={value === option.value}
+          sx={{
+            fontSize: menuItemFontSize,
+            mb: "4px",
+            padding: "6px 8px",
+            bgcolor: value === option.value ? "#e0f7fa" : "transparent",
+            "&.Mui-selected": {
+              bgcolor: "rgba(145 158 171 / 0.08)",
+            },
+            "&:hover":{
+              bgcolor:'rgba(145 158 171 / 0.08)'
+            },
+            "&.Mui-selected:hover": {
+            bgcolor:'rgba(145 158 171 / 0.08)'
+            },
+          }}
+          className={`mySelect__option ${optionItemClassName}`}
+        >
+          {option.label}
+        </MenuItem>
+      ));
+    }
   }, [options, menuItemFontSize, optionItemClassName]);
 
   const renderMenuItems = () => {
@@ -93,10 +161,16 @@ export default function MySelect({
             borderRadius,
             borderColor: error ? "red" : borderColor,
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              border: `1px solid ${error ? "red" : hoverBorderColor || borderColor}`,
+              border:
+                hoverBorder ||
+                border ||
+                `1px solid ${error ? "red" : hoverBorderColor || borderColor}`,
             },
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              border: `1px solid ${error ? "red" : borderColor}`,
+              border:
+                focusedBorder ||
+                border ||
+                `1px solid ${error ? "red" : borderColor}`,
             },
           },
           "& .MuiInputLabel-root": {
@@ -112,31 +186,46 @@ export default function MySelect({
             },
         }}
       >
-        <InputLabel
-          id="custom-select-label"
-        >
-         {required ? 
-         ( <Box display={'flex'} gap={'2px'}>
-           <Typography fontSize={labelFontSize} color={labelColor}>{label}</Typography> <Typography mt={'-4px'} color={requiredColor || labelColor}>*</Typography>
-          </Box> )
-           :   
-           ( <Box>
-           <Typography fontSize={labelFontSize}  color={labelColor}>{label}</Typography>
-          </Box> )
-         }
+        <InputLabel id="custom-select-label">
+          {required ? (
+            <Box display={"flex"} gap={"2px"}>
+              <Typography fontSize={labelFontSize} color={labelColor}>
+                {label}
+              </Typography>{" "}
+              <Typography mt={"-4px"} color={requiredColor || labelColor}>
+                *
+              </Typography>
+            </Box>
+          ) : (
+            <Box>
+              <Typography fontSize={labelFontSize} color={labelColor}>
+                {label}
+              </Typography>
+            </Box>
+          )}
         </InputLabel>
         <Select
+          multiple={multiple}
           labelId="custom-select-label"
           id="custom-select"
           className={`mySelect ${className}`}
-          value={value}
+          value={multiple ? value || [] : value}
+          renderValue={
+            multiple
+              ? (selected) =>
+                  options
+                    .filter((opt) => selected.includes(opt.value))
+                    .map((opt) => opt.label)
+                    .join(", ")
+              : undefined
+          }
           onChange={onChange}
           label={label}
           sx={customStyleForSelect}
           endAdornment={
             loading ? (
               <InputAdornment position="end">
-                <CircularProgress size={16} sx={{mr:4}}/>
+                <CircularProgress size={16} sx={{ mr: 4 }} />
               </InputAdornment>
             ) : null
           }
@@ -146,6 +235,7 @@ export default function MySelect({
               sx: {
                 borderRadius,
                 bgcolor: menuBackgroundColor || "white",
+                paddingInline: "4px",
                 "& .MuiMenuItem-root:hover": {
                   bgcolor: menuHoverColor || "",
                 },
@@ -189,5 +279,5 @@ MySelect.defaultProps = {
   helperText: "Please select valid input.",
   borderColor: "black",
   labelColor: "black",
-  required:false,
+  required: false,
 };

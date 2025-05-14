@@ -6,10 +6,20 @@ import { getFullName } from "@/utils";
 import EditUserPopup from "./EditUserPopup";
 import { Box, Checkbox, IconButton, Typography } from "@mui/material";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
+import SelectUserRole from "../components/SelectUserRole";
+import TableUser from "../components/TableUser";
+import SearchUser from "../components/SearchUser";
+import MyMenu from "@/components/MyMenu";
 const ListUsers = () => {
   const { isXs, isMd } = useBreakpointFlags();
-  const [openEditPopup, setOpenEditPopup] = useState(false);
-  const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(menuAnchorEl);
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
   const [selectedUsers, setSelectedUsers] = useState([]);
   const {
     allUsers,
@@ -46,96 +56,38 @@ const ListUsers = () => {
     setData(usersWithUpdatedKeys);
   }, [allUsers, selectedUsers]);
   console.log("::all users", allUsers);
-  const handleSelectAllUsers = (checked) => {
-    if (checked) {
-      setSelectedUsers(allUsers);
-    } else {
-      setSelectedUsers([]);
-    }
-  };
-  const handleSingleUserSelect = (e, row) => {
-    console.log("::e and row", e, row);
-    const isUserPresentAlready = selectedUsers?.some(
-      (user) => user?.id === row?.id
-    );
-    if (isUserPresentAlready) {
-      setSelectedUsers((pre) => pre?.filter((user) => user?.id !== row?.id));
-    } else {
-      setSelectedUsers((pre) => [...pre, row]);
-    }
-  };
 
-  const handleEditClick = (e, row) => {
-    console.log("::Edit:", row);
-    setSelectedUserForEdit(row);
-    handleOpenEditPopup();
-  };
-  const handleMenuClick = (e, row) => {
-    console.log("::menu click", row);
-  };
   console.log("::data", data);
-  const columns = [
+
+  console.log("::selected user in table", selectedUsers);
+  const menuItems = [
     {
-      id: "isSelected",
-      label: (
-        <Box>
-          {" "}
-          <Checkbox
-            indeterminate={
-              selectedUsers.length > 0 && selectedUsers.length < allUsers.length
-            }
-            checked={
-              allUsers.length > 0 && selectedUsers.length === allUsers.length
-            }
-            onChange={(e) => handleSelectAllUsers(e.target.checked)}
-          />
-        </Box>
-      ),
-      type: "checkbox",
-      onChange: handleSingleUserSelect,
-      align: "center",
-      sx: { width: "40px", minWidth: "40px", maxWidth: "40px" },
+      label: "Print",
+      icon: "/printIcon.svg",
+      onClick: ()=>{
+        console.log("::print button clicked")
+        handleMenuClose();
+      } 
     },
-    { id: "nameWithAvatar", label: "Name", type: "avatarText" },
-    { id: "email", label: "Email", type: "text" },
-    { id: "role", label: "Role", type: "text" },
-    // {
-    //   id: 'edit',
-    //   label: '',
-    //   type: 'iconButton',
-    //   icon: 'edit',
-    //   tooltip: 'Edit Task',
-    //   onClick: handleEditClick
-    // },
     {
-      id: "edit_menu",
-      label: "",
-      type: "multipleIconButton",
-      icons: [
-        { icon: "edit", onClick: handleEditClick, tooltip: "Edit Task" },
-        { icon: "menu", onClick: handleMenuClick, tooltip: "menu" },
-      ],
-      sx: { minWidth: "40px", maxWidth: "50px", padding: "4px" },
+      label: "Import",
+      icon: "/importIcon.svg",
+      onClick: ()=>{
+        console.log("::import button clicked")
+        handleMenuClose();
+      } 
+    },
+    {
+      label: "Export",
+      icon: "/exportIcon.svg",
+      onClick: ()=>{
+        console.log("::export button clicked")
+        handleMenuClose();
+      },
     },
   ];
-
-  const handleOpenEditPopup = () => {
-    setOpenEditPopup(true);
-  };
-
-  const handleCloseEditPopup = () => {
-    setOpenEditPopup(false);
-    setSelectedUserForEdit(null);
-  };
-  console.log("::selected user in table", selectedUsers);
   return (
     <>
-      <EditUserPopup
-        open={openEditPopup}
-        handleClose={handleCloseEditPopup}
-        title={"Update user"}
-        user={selectedUserForEdit}
-      />
       <Box
         sx={{
           display: "flex",
@@ -159,83 +111,56 @@ const ListUsers = () => {
             color: "#1C252E",
           }}
         >
-          <Box>
-            {
-              <Box
-                display={"flex"}
-                sx={{
-                  background: "#C8FAD6",
-                  pl: 1,
-                  pr: 2,
-                  top: "0px",
-                  left: "0px",
-                  zIndex: 9,
-                  height: 58,
-                  position: "absolute",
-                  alignItems: "center",
-                  justifyContent:'center',
-                  width: "100%",
-                }}
-              >
-                <Box
-                  sx={{
-                    borderColor: "transparent",
-                    fontSize: "14px",
-                    color: "#637381",
-                    fontWeight: 600,
-                    background: "inherit",
-                    width: "40px",
-                    minWidth: "40px",
-                  }}
-                >
-                  {columns[0]?.label}
-                </Box>
-                <Box flexGrow={1}>
-                  <Typography
-                    color="#00A76F"
-                    fontSize={14}
-                    fontWeight={600}
-                    ml={2}
-                  >
-                    {selectedUsers?.length || 0} selected
-                  </Typography>
-                </Box>
-                <IconButton
-                  sx={{
-                    padding: 1,
-                    borderRadius: "50%",
-                    flex: "0 0 auto",
-                  }}
-                >
-                  <img
-                    src="/deleteIcon.svg"
-                    alt="delete"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
+          {" "}
+          <Box
+            p={"20px 8px 20px 20px"}
+            display={"flex"}
+            alignItems={"center"}
+            gap={2}
+          >
+            <Box width={200} flexShrink={0}>
+              <SelectUserRole />
+            </Box>
+            <Box flexGrow={1}>
+              <SearchUser
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                handleSearchValueChange={handleSearchValueChange}
+              />
+            </Box>
+            <Box>
+                <IconButton onClick={handleMenuOpen} sx={{
+                  padding:1,
+                  borderRadius:"50%",
+                  color:"#637381",
+                  '&:hover':{
+                    background:"rgba(99,115,129,0.08)",
+                  }
+                }}>
+                  <img src="/menuVerticalIcon.svg" alt="menu" style={{width:'20px',height:"20px"}} />
                 </IconButton>
+                <MyMenu 
+                type={'list_user'}
+                options={menuItems}
+                menuAnchorEl={menuAnchorEl}
+                onClose={handleMenuClose}
+
+                />
               </Box>
-            }
-            <MyTable
-              columns={columns}
-              rows={data}
-              fetchMore={({ page, limit }) => {
-                setPage(page);
-                setPageSize(limit);
-                getAllUsersFromBackend({
-                  page,
-                  search: debouncedSearchValue,
-                  append: false,
-                  pageSize: limit,
-                });
-              }}
-              totalCount={totalUsers}
-              selectedRows={selectedUsers}
-            />
           </Box>
+          <TableUser
+            data={data}
+            setData={setData}
+            setPage={setPage}
+            setPageSize={setPageSize}
+            getAllUsersFromBackend={getAllUsersFromBackend}
+            totalUsers={totalUsers}
+            selectedUsers={selectedUsers}
+            loadingAllUsers={loadingAllUsers}
+            page={page}
+            setSelectedUsers={setSelectedUsers}
+            debouncedSearchValue={debouncedSearchValue}
+          />
         </Box>
       </Box>
     </>

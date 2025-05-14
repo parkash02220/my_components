@@ -50,6 +50,7 @@ export default function HomeLayout({ children }) {
               padding: isMd ? "24px 0px 0px 0px" : "24px",
               height: "calc(100vh - 75px",
               paddingBottom: "4px",
+              overflow:'auto',
             }}
           >
             {children}
