@@ -11,7 +11,6 @@ const SelectUserRole = () => {
 
   const handleRoleSelect = (e) => {
     const selected = e.target.value;
-    console.log("::Selected roles:", selected);
     setSelectedRoles(selected);
   };
   return (

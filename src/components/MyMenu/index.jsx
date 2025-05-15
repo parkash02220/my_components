@@ -52,7 +52,6 @@ const MyMenu = ({
           }}
         >
           {activeMenuItem?.children?.map((child, idx) => {
-            console.log("::child", child);
             if (child.type === "loader") {
               return (
                 <MenuItem

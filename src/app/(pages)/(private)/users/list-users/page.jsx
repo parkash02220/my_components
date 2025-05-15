@@ -38,6 +38,7 @@ const ListUsers = () => {
     hasMore,
     page,
     setPageSize,
+    pageSize,
   } = useGetAllUsers("all", "table");
   const [data, setData] = useState([]);
 
@@ -55,11 +56,6 @@ const ListUsers = () => {
     });
     setData(usersWithUpdatedKeys);
   }, [allUsers, selectedUsers]);
-  console.log("::all users", allUsers);
-
-  console.log("::data", data);
-
-  console.log("::selected user in table", selectedUsers);
   const menuItems = [
     {
       label: "Print",
@@ -160,6 +156,7 @@ const ListUsers = () => {
             page={page}
             setSelectedUsers={setSelectedUsers}
             debouncedSearchValue={debouncedSearchValue}
+            pageSize={pageSize}
           />
         </Box>
       </Box>

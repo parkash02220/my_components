@@ -5,7 +5,6 @@ export const getAuthTokenFromCookies = () => {
 
 export const setAuthTokenToCookies = (token) => {
     if(!token) return;
-    console.log("::seting auth token in function",token)
     return Cookies.set("auth_token",token,{expires: 1});
 }
 export const setCookie = (name,value) => {

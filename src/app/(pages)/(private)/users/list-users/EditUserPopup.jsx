@@ -25,7 +25,6 @@ const EditUserPopup = ({
     const {isXs} = useBreakpointFlags();
     const theme = useTheme();
     const {loadingUpdateUser,errorUpdateUser,updateUser} = useUpdateUser();
-    console.log("::user",user)
     const formik = useFormik({
         enableReinitialize:true,
         initialValues:{
@@ -41,13 +40,12 @@ const EditUserPopup = ({
               .min(3, "First name should be bigger than 2 chars")
               .required("This field is required"),
             lastName: Yup.string(),
-            email: Yup.string()
-              .email("invalid email address")
-              .required("This field is required"),
+            // email: Yup.string()
+            //   .email("invalid email address")
+            //   .required("This field is required"),
             gender: Yup.string().required("This field is required"),
           }),
        onSubmit: async(values) => {
-          console.log("::values",values);
           setData((prev) =>
             prev?.map((data) => {
               if (data?.id === user?.id) {
@@ -72,7 +70,6 @@ const EditUserPopup = ({
             formik.setValues(user);
         }
     },[user,open]);
-    console.log("::formik",formik)
     return <>
      <MyDialog
           open={open}
@@ -85,7 +82,7 @@ const EditUserPopup = ({
           width={isXs ? '100%':'auto'} 
           content={
             <Box pt={2} pb={2}>
-                {<UserDetailsForm formik={formik} type={'create_user'}/>}
+                {<UserDetailsForm formik={formik} type={'update_user'}/>}
             </Box>
           }
           actions={

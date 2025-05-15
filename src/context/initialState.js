@@ -22,7 +22,6 @@ export const initialState = {
     totalCount:0,
     unReadCount:0,
   },
-  selectedDrawerItem:{},
   loading: {
     loadingProjects: false,
     loadingActiveProject: false,

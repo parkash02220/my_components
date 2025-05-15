@@ -22,8 +22,6 @@ const useUpdateUser = () => {
             showToast({toastId,type:"error",message:"Failed to update user details. Please refresh the page"});
             return;
         }
-         
-        console.log("::updates user",res?.data);
         showToast({toastId,type:"success",message:"User updted successfully."});
 
 

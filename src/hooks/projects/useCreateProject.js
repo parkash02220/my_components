@@ -13,7 +13,6 @@ const useCreateProject = () => {
   const [isCreated, setIsCreated] = useState(false);
   const createProject = async (name,users) => {
     const userIds = users?.map((user)=> user?.id) || [];
-    console.log("::userIds in create project",userIds)
     setLoading(true);
     showToast({toastId,type:"loading",message:"Creating project..."})
     const res = await ApiCall({

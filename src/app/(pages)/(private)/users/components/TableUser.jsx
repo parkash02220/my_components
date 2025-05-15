@@ -2,6 +2,8 @@ import { Box, Checkbox, IconButton, Typography } from "@mui/material";
 import { useState } from "react";
 import EditUserPopup from "../list-users/EditUserPopup";
 import MyTable from "@/components/MyTable";
+import useDeleteUser from "@/hooks/projects/user/useDeleteUser";
+import ConfirmationPopup from "@/components/ConfirmationPopup";
 
 const TableUser = ({
   data,
@@ -15,10 +17,14 @@ const TableUser = ({
   page,
   setSelectedUsers,
   debouncedSearchValue,
+  pageSize,
 }) => {
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
-  const [isAllUserSelected,setIsAllUserSelected] = useState(false);
+  const [isAllUserSelected, setIsAllUserSelected] = useState(false);
+  const { loadingDeleteUser, errorDeleteUser, deleteUser } = useDeleteUser();
+  const [deletePopupOpen, setDeletePopupOpen] = useState(false);
+  const msgForDeleteUser = isAllUserSelected ? 'all users.' : selectedUsers?.length === 1 ? '1 user' : `${selectedUsers?.length} users`; 
   const handleSelectAllUsers = (checked) => {
     if (checked) {
       setSelectedUsers(data);
@@ -29,7 +35,6 @@ const TableUser = ({
     }
   };
   const handleSingleUserSelect = (e, row) => {
-    console.log("::e and row", e, row);
     const isUserPresentAlready = selectedUsers?.some(
       (user) => user?.id === row?.id
     );
@@ -41,7 +46,6 @@ const TableUser = ({
   };
 
   const handleEditClick = (e, row) => {
-    console.log("::Edit:", row);
     setSelectedUserForEdit(row);
     handleOpenEditPopup();
   };
@@ -55,12 +59,8 @@ const TableUser = ({
         <Box>
           {" "}
           <Checkbox
-            indeterminate={
-              selectedUsers.length > 0 && !isAllUserSelected
-            }
-            checked={
-             isAllUserSelected
-            }
+            indeterminate={selectedUsers.length > 0 && !isAllUserSelected}
+            checked={isAllUserSelected}
             onChange={(e) => handleSelectAllUsers(e.target.checked)}
           />
         </Box>
@@ -100,8 +100,33 @@ const TableUser = ({
     setOpenEditPopup(false);
     setSelectedUserForEdit(null);
   };
+
+  const handleDeletePopupOpen = () => {
+    setDeletePopupOpen(true);
+  };
+  const handleDeletePopupClose = () => {
+    setDeletePopupOpen(false);
+  };
+  const getUpdatedUsers = async () => {
+    setSelectedUsers([]);
+    await getAllUsersFromBackend({search:debouncedSearchValue,page,append:false,pageSize});
+  }
+  const handleDeleteProject = async () => {
+    await deleteUser(selectedUsers,isAllUserSelected,getUpdatedUsers);
+    setDeletePopupOpen(false);
+  };
+  
   return (
     <>
+    <ConfirmationPopup
+        title={"Delete Users"}
+        handleClose={handleDeletePopupClose}
+        open={selectedUsers?.length > 0 && deletePopupOpen}
+        message={msgForDeleteUser}
+        type={"delete"}
+        submitAction={handleDeleteProject}
+        loading={loadingDeleteUser}
+      />
       <EditUserPopup
         open={openEditPopup}
         handleClose={handleCloseEditPopup}
@@ -109,7 +134,7 @@ const TableUser = ({
         user={selectedUserForEdit}
         setData={setData}
       />
-      <Box position={'relative'}>
+      <Box position={"relative"}>
         {selectedUsers?.length > 0 && (
           <Box
             display={"flex"}
@@ -143,10 +168,12 @@ const TableUser = ({
             </Box>
             <Box flexGrow={1}>
               <Typography color="#00A76F" fontSize={14} fontWeight={600} ml={2}>
-                {isAllUserSelected ? totalUsers : selectedUsers?.length || 0} selected
+                {isAllUserSelected ? totalUsers : selectedUsers?.length || 0}{" "}
+                selected
               </Typography>
             </Box>
             <IconButton
+            onClick={handleDeletePopupOpen}
               sx={{
                 padding: 1,
                 borderRadius: "50%",

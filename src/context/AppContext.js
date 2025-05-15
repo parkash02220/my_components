@@ -474,7 +474,6 @@ function projectsReducer(state = initialState, action) {
 
     case actions.SET_NOTIFICATIONS_SUCCESS: {
       const { notifications, hasMore, page, totalUnread, totalCount } = payload;
-      console.log("Reducer SET_NOTIFICATIONS_SUCCESS:", payload);
       const tab = state.notifications.tab;
       const isFirstCall = page === 1;
       return {
@@ -542,7 +541,6 @@ function projectsReducer(state = initialState, action) {
 
     case actions.MARK_NOTIFICATION_AS_READ: {
       const { notificationId,user} = payload;
-      console.log("::MARK_NOTIFICATION_AS_READ",payload)
       const updatedAllNotifications = state?.notifications?.all?.data?.map(
         (notification) => {
           if (notification?.id === notificationId) {
@@ -602,15 +600,6 @@ function projectsReducer(state = initialState, action) {
         },
       };
     }
-
-    case actions.SET_SELECTED_DRAWER_ITEM:
-      if (typeof window !== "undefined") {
-        setCookie("selectedDrawerItem", JSON.stringify(payload));
-      }
-      return {
-        ...state,
-        selectedDrawerItem:payload,
-      };
     default:
       return state;
   }
@@ -618,16 +607,6 @@ function projectsReducer(state = initialState, action) {
 
 export function AppContextProvider({ children }) {
   const [state, dispatch] = useReducer(projectsReducer, initialState);
-
-  useEffect(() => {
-    const stored = getCookie("selectedDrawerItem");
-    if (stored) {
-      dispatch({
-        type: "SET_SELECTED_DRAWER_ITEM",
-        payload: JSON.parse(stored),
-      });
-    }
-  }, []);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>

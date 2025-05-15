@@ -78,13 +78,11 @@ const CreateProjectDialog = ({
   const handleUserSelect = (_, newValue) => {
     setSelectedUsers(newValue);
   };
-  console.log("::all users", allUsers);
 
   const handleSearchUser = (event, inputValue) => {
     handleSearchValueChange(event);
   };
 
-  console.log("::users", allUsers);
 
   useEffect(() => {
     if (!open) {

@@ -122,6 +122,7 @@ const useGetAllUsers = (type="all",paginationMode = "scroll") => {
     totalUsers,
     hasMore,
     page,
+    pageSize,
   };
 };
 

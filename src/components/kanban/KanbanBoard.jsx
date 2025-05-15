@@ -10,12 +10,13 @@ import {
   TouchSensor,
   KeyboardSensor,
   DragOverlay,
+  pointerWithin,
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 
 import { coordinateGetter } from "./multipleContainersKeyboardPreset";
-import { hasDraggableData } from "./utils";
+import { customCollisionDetection, hasDraggableData } from "./utils";
 import { BoardColumn } from "./BoardColumn";
 import { TaskCard } from "./TaskCard";
 import useGetProject from "@/hooks/projects/useGetProject";
@@ -333,6 +334,7 @@ export default function KanbanBoard({
         onDragStart={onDragStart}
         onDragOver={onDragOver}
         onDragEnd={onDragEnd}
+        collisionDetection={customCollisionDetection}
       >
         <div
           style={{

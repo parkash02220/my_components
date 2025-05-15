@@ -6,12 +6,16 @@ import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import HeaderProjectName from "./HeaderProjectName";
 import HeaderNotifications from "./HeaderNotifications";
 import HeaderUserProfile from "./HeaderUserProfile";
+import { usePathname } from "next/navigation";
+import { useNavigationInfo } from "@/hooks/common/useNavigationInfo";
+import { useState } from "react";
 export default function Header({}) {
   const { state } = useAppContext();
   const { isMd, isSm, isXs } = useBreakpointFlags();
-  const { selectedDrawerItem } = state;
-  console.log("::selected draer item", selectedDrawerItem);
-
+  const {projects} = state;
+  const pathname = usePathname();
+  const {parent,child} = useNavigationInfo({path:pathname,projects});
+  
   return (
     <>
       <AppBar
@@ -36,7 +40,7 @@ export default function Header({}) {
             alignItems: "center",
           }}
         >
-          {selectedDrawerItem?.segment?.startsWith("projects") ? (
+       {child?.segment?.startsWith("projects") ? (
             <HeaderProjectName />
           ) : (
             <Box>
@@ -44,7 +48,7 @@ export default function Header({}) {
                 fontSize={isXs ? "1.125rem" : isSm ? "1.25rem" : "1.5rem"}
                 fontWeight={700}
                 color="#1C252E"
-              >{selectedDrawerItem?.title || ""}</Typography>
+              > {child?.title || parent?.title || ""}</Typography>
             </Box>
           )}
           <Box

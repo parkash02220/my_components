@@ -17,7 +17,6 @@ export const CollapsibleNavItem = ({
   open,
   isExpanded,
   onToggle,
-  selectedSegment,
   onClick,
   loadMoreRef,
   onOpenMenu,
@@ -40,7 +39,6 @@ export const CollapsibleNavItem = ({
           if (open) {
             onToggle();
           } else {
-            // Open floating menu
             onOpenMenu(e, item);
           }
         }}
@@ -56,12 +54,12 @@ export const CollapsibleNavItem = ({
             minWidth: 0,
             mr: open ? "12px" : "auto",
             justifyContent: "center",
+            width:open?"24px":"20px",
+            height:open?"24px":"20px",
           }}
         >
           {item.imgSrc ? (
             <Box
-              width={24}
-              height={24}
               sx={{
                 background: isExpanded ? "#1C252E" : "#637381",
                 mask: `url(${item.imgSrc}) center center / contain no-repeat`,
@@ -77,7 +75,7 @@ export const CollapsibleNavItem = ({
           primaryTypographyProps={{
             fontSize: "14px",
             fontWeight: 500,
-            color: selectedSegment === item.segment ? "#00A76F" : "#637381",
+            color: isExpanded ? "#00A76F" : "#637381",
           }}
         />
         {open && (isExpanded ? <ExpandLess /> : <ExpandMore />)}
@@ -166,7 +164,6 @@ export const CollapsibleNavItem = ({
                     key={idx}
                     item={child}
                     open={open}
-                    selectedSegment={selectedSegment}
                     onClick={() => onClick(child)}
                     isCollapsible
                     sx={{

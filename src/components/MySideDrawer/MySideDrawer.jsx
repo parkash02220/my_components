@@ -75,7 +75,6 @@ export default function MySideDrawer({ open, setOpen }) {
   };
 
   const [expandedItems, setExpandedItems] = useState({});
-  const [selectedDrawerItem, setSelectedDrawerItem] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const { state,dispatch } = useAppContext();
   const { projects, activeUser } = state;
@@ -83,7 +82,7 @@ export default function MySideDrawer({ open, setOpen }) {
   const [loading, isCreated, createProject] = useCreateProject();
   const router = useRouter();
   const pathname = usePathname();
-  const [hasMounted, setHasMounted] = useState(false);
+  // const [hasMounted, setHasMounted] = useState(false);
   const { isXs, isLg, isMd } = useBreakpointFlags();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const handleMobileDrawerOpen = () => {
@@ -92,14 +91,9 @@ export default function MySideDrawer({ open, setOpen }) {
   const handleMobileDrawerClose = () => {
     setMobileDrawerOpen(false);
   };
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
-  useEffect(() => {
-    const parts = pathname.split("/");
-    const selectedSegment = parts.length > 1 ? parts[1] : "";
-    setSelectedDrawerItem(selectedSegment);
-  }, [pathname]);
+  // useEffect(() => {
+  //   setHasMounted(true);
+  // }, []);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -117,13 +111,9 @@ export default function MySideDrawer({ open, setOpen }) {
       setDialogOpen(true);
       return;
     }
-
-    setSelectedDrawerItem(segment);
     router.push(`/${segment}`);
-    {
-      isMd ? handleMobileDrawerClose() : null;
-    }
-    dispatch({type:actions.SET_SELECTED_DRAWER_ITEM,payload:item});
+    if (isMd) handleMobileDrawerClose();
+
   };
 
   const NAVIGATION = NavigationGenerator({
@@ -142,7 +132,7 @@ export default function MySideDrawer({ open, setOpen }) {
   const handleCreateProject = async (name, users) => {
     await createProject(name, users);
   };
-  if (!hasMounted) return null;
+  // if (!hasMounted) return null;
   return (
     <>
       <Box className="createProjectDialog">
@@ -238,7 +228,6 @@ export default function MySideDrawer({ open, setOpen }) {
                 handleSearchValueChange={handleSearchValueChange}
                 handleSearchClear={handleSearchClear}
                 expandedItems={expandedItems}
-                selectedDrawerItem={selectedDrawerItem}
                 handleDrawerItemClick={handleDrawerItemClick}
                 handleExpandToggle={handleExpandToggle}
                 loadMoreRef={loadMoreRef}
@@ -280,7 +269,6 @@ export default function MySideDrawer({ open, setOpen }) {
                 handleSearchValueChange={handleSearchValueChange}
                 handleSearchClear={handleSearchClear}
                 expandedItems={expandedItems}
-                selectedDrawerItem={selectedDrawerItem}
                 handleDrawerItemClick={handleDrawerItemClick}
                 handleExpandToggle={handleExpandToggle}
                 loadMoreRef={loadMoreRef}

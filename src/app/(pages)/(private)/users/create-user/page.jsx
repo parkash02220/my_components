@@ -35,7 +35,6 @@ const CreateUser = () => {
     },
   });
   const handleCreateUser = async (values) => {
-    console.log("::values in create user", values);
     await createUser(values);
     if(!!errorCreateUser){
       formik.resetForm();

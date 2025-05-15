@@ -54,7 +54,6 @@ const TableCellRenderer = ({
       );
 
     case "multipleIconButton": {
-      console.log("::icons",icons)
       return (
         <Box display={'flex'} alignItems={'center'}  sx={{ minWidth: 0 }} justifyContent={'center'}>
           {icons?.map((icon,index) => {

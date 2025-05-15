@@ -26,7 +26,6 @@ const useMarkAllNotificationAsRead = () => {
             setErrorMarkAllAsRead(res.error);
             return;
         }
-        console.log("::res in all mark read",res)
         showToast({toastId,type:"success",message:"Changes saved and synced with the server."});
         
     }

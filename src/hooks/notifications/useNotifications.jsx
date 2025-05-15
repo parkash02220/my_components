@@ -19,7 +19,6 @@ const useNotifications = (open) => {
   const { ref: loadMoreRef, inView } = useInView();
   const fetchNotifications = async (isFirstCall = false) => {
     if (loadingNotifications) return;
-    console.log("::first call in function", isFirstCall);
     dispatch({ type: actions.SET_NOTIFICATIONS_REQUEST });
     const res = await ApiCall({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/get-notifications?unseen=${
@@ -40,7 +39,6 @@ const useNotifications = (open) => {
 
     const { result } = res?.data;
     const newNotifications = convertIdFields(result?.notifications || []);
-    console.log("::data in notificatin", result);
     const currentPage = result?.currentPage;
     const totalUnread = result?.totalUnread || 0;
     const totalCount = result?.totalRead + result?.totalUnread || 0;

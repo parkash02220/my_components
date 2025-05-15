@@ -12,7 +12,6 @@ export default function NavItemList({
   handleSearchValueChange,
   handleSearchClear,
   expandedItems,
-  selectedDrawerItem,
   handleDrawerItemClick,
   handleExpandToggle,
   loadMoreRef,
@@ -89,7 +88,6 @@ export default function NavItemList({
           open={open}
           isExpanded={expandedItems[item.segment]}
           onToggle={() => handleExpandToggle(item.segment)}
-          selectedSegment={selectedDrawerItem}
           onClick={handleDrawerItemClick}
           loadMoreRef={loadMoreRef}
           onOpenMenu={handleOpenMenu}

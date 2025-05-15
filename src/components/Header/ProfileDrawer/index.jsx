@@ -8,6 +8,7 @@ import ConfirmationPopup from "@/components/ConfirmationPopup";
 import { useAppContext } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
+import userDrawerRoutes from "@/routes/userDrawerRoutes";
 const ProfileDrawer = ({ open, handleDrawer }) => {
   const {isXs} = useBreakpointFlags();
   const {state} = useAppContext();
@@ -15,44 +16,6 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
   const [logoutPopupOpen,setLogoutPopupOpen] = useState(false);
   const { loadingLogout, logoutUser } = useLogout();
   const router = useRouter();
-  const navigationItems = [
-    {
-      name: "Home",
-      alt: "home",
-      icon: "/homeIcon.svg",
-      path:"/home",
-    },
-    {
-      name: "Profile",
-      alt: "profile",
-      icon: "/profileIcon.svg",
-      path:"/profile"
-    },
-    {
-      name: "Projects",
-      alt: "projects",
-      icon: "/profileIcon.svg",
-      path:"/projects",
-    },
-    {
-      name: "Subscription",
-      alt: "subscription",
-      icon: "/subscriptionIcon.svg",
-      path:"/subscription",
-    },
-    {
-      name: "Security",
-      alt: "security",
-      icon: "/securityIcon.svg",
-      path:"/security",
-    },
-    {
-      name: "Account settings",
-      alt: "settings",
-      icon: "/settingIcon.svg",
-      path:"/settings",
-    },
-  ];
   const handleLogoutOpen = () => {
     setLogoutPopupOpen(true);
 }
@@ -62,6 +25,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
 const handleNavigation = (path) => {
   if(!path) return;
         router.push(path);
+        handleDrawer();
 }
   return (
     <>
@@ -350,10 +314,10 @@ const handleNavigation = (path) => {
                   borderBottom: "1px dashed rgba(145,158,171,0.2)",
                 }}
               >
-                {navigationItems?.map((item, index) => {
+                {userDrawerRoutes?.map((item, index) => {
                   return (
                     <Box
-                    onClick={()=> handleNavigation(item?.path)}
+                    onClick={()=> handleNavigation(item?.segment)}
                       mb={"4px"}
                       p={1}
                       display={"flex"}
@@ -372,13 +336,13 @@ const handleNavigation = (path) => {
                     >
                       <Box>
                         <img
-                          src={item?.icon}
-                          alt={item?.alt}
+                          src={item?.icon?.src}
+                          alt={item?.icon?.alt}
                           style={{ width: "24px", height: "24px" }}
                         />
                       </Box>
                       <Typography fontSize={14} color="inherit">
-                        {item?.name}
+                        {item?.title}
                       </Typography>
                     </Box>
                   );

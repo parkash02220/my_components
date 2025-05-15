@@ -22,7 +22,6 @@ const useCreateUser = () => {
             setErrorCreateUser(res.error.message || 'something went wrong')
             return;
         }
-        console.log("::res in use create user hook",res)
         showToast({toastId,type:"success",message:"User created successfully"});
     },[showToast])
     return {loadingCreateUser,errorCreateUser,createUser};
