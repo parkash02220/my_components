@@ -27,7 +27,6 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import useCreateProject from "@/hooks/projects/useCreateProject";
 import { useAppContext } from "@/context/AppContext";
-import ConfirmationPopup from "../ConfirmationPopup";
 import useGetAllProjects from "@/hooks/projects/useGetAllProjects";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import MobileSideDrawer from "./MobileSideDrawer";
@@ -187,16 +186,17 @@ export default function MySideDrawer({ open, setOpen }) {
           <Toolbar sx={{ justifyContent: open ? "space-between" : "center" }}>
             {!isMd ? (
               <IconButton
-                sx={{
-                  width: open ? "80px" : "50px",
-                  height: "40px",
-                  padding: "0px",
-                }}
+              onClick={()=>router.push("/home")}
+              sx={{
+                '&:hover':{
+                  background:'transparent',
+                }
+              }}
               >
                 <img
                   src="/websperoLogo.svg"
                   alt="logo"
-                  style={{ height: "100%", width: "100%" }}
+                  style={{height: "40px",  width: open ? "80px" : "50px", }}
                 />
               </IconButton>
             ) : (

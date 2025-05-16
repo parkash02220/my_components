@@ -2,18 +2,20 @@
 
 import { Box, Grid } from "@mui/system";
 import { useFormik } from "formik";
-import UserDetailsForm from "../../(public)/signup/UserDetailsForm";
-import { Button, Typography } from "@mui/material";
-import MyButton from "@/components/MyButton/MyButton";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
-import ProfileImageBox from "./tabs/ProfileImageBox";
 import { useAppContext } from "@/context/AppContext";
 import ProfileHeader from "./ProfileHeader";
 import GeneralTab from "./tabs/GeneralTab";
 import SecurityTab from "./tabs/SecurityTab";
 import { useNavigationInfo } from "@/hooks/common/useNavigationInfo";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ExpandLess } from "@mui/icons-material";
+import BackButton from "@/components/BackButton";
 export default function Profile() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const tab = searchParams.get("tab");
     const [selectedTab, setSelectedTab] = useState("general");
   const { state } = useAppContext();
   const { activeUser } = state;
@@ -25,7 +27,6 @@ export default function Profile() {
       email: "",
       gender: "",
       role: "",
-      avatar: "",
     },
     validationSchema: Yup.object({
       firstName: Yup.string()
@@ -42,7 +43,6 @@ export default function Profile() {
       console.log("::formik values", values);
     },
   });
-  const {parent,child} = useNavigationInfo({type:"userDrawerRoutes",path:"/profile"})
   useEffect(() => {
     if (activeUser) {
       formik.setValues({
@@ -51,20 +51,41 @@ export default function Profile() {
         email: activeUser?.email || "",
         gender: activeUser?.gender || "",
         role: activeUser?.role || "",
-        avatar: activeUser?.avatar || "",
       });
     }
   }, [activeUser]);
 
+  useEffect(()=>{
+    if(tab==="general" || tab==="security"){
+      setSelectedTab(tab);
+    }
+  },[tab]);
+
+  useEffect(() => {
+    if (!tab) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set("tab", "general");
+      router.replace(`?${current.toString()}`);
+    }
+  }, []);
+
+  const handleTabChange = (newValue) => {
+    setSelectedTab(newValue);
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    current.set("tab", newValue);
+    router.push(`?${current.toString()}`);
+  };
+
   return (
     <>
       <Box className="profile__container">
-        <Box mb={5}>
-            <ProfileHeader selectedTab={selectedTab} setSelectedTab={setSelectedTab}/>
+        <Box mb={5} display={'flex'} flexDirection={'column'} alignItems={'flex-start'}>
+            <BackButton />
+            <ProfileHeader selectedTab={selectedTab} onTabChange={handleTabChange}/>
         </Box>
        <Box>
         {
-            selectedTab === "security" ? <SecurityTab /> : <GeneralTab formik={formik}/> 
+            selectedTab === "security" ? <SecurityTab /> : <GeneralTab formik={formik} userId={activeUser?.id} avatar={activeUser?.avatar}/> 
         }
        </Box>
       </Box>

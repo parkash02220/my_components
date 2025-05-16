@@ -5,21 +5,17 @@ import Tab from "@mui/material/Tab";
 import PhoneIcon from "@mui/icons-material/Phone";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
-const ProfileHeader = ({selectedTab,setSelectedTab}) => {
-
-
+const ProfileHeader = ({ selectedTab, onTabChange }) => {
   const handleChange = (event, newValue) => {
-    setSelectedTab(newValue);
+    onTabChange(newValue);
   };
   const allTabValues = [
     {
-      id: 0,
       value: "general",
       label: "General",
       icon: { src: "/generalProfileIcon.svg", alt: "general" },
     },
     {
-      id: 1,
       value: "security",
       label: "Security",
       icon: { src: "/securityProfileIcon.svg", alt: "security" },
@@ -36,14 +32,13 @@ const ProfileHeader = ({selectedTab,setSelectedTab}) => {
           {allTabValues?.map((item) => {
             return (
               <Tab
-              key={item?.value}
-              sx={{
-                fontSize:"14px",
-                fontWeight:700,
-              }}
+                key={item?.value}
+                sx={{
+                  fontSize: "14px",
+                  fontWeight: 700,
+                }}
                 icon={
-                  <Box
-                  >
+                  <Box>
                     <img
                       src={item?.icon?.src}
                       alt={item?.icon?.alt}

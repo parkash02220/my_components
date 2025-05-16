@@ -1,9 +1,15 @@
 import MyTextField from "@/components/MyTextfield/MyTextfield";
+import useChangePassword from "@/hooks/user/activeUser/useChangePassword";
 import { Box, Button, Grid, IconButton } from "@mui/material";
 import { useFormik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
 const SecurityTab = () => {
+  const {
+    loadingChangePassword,
+    errorChangePassword,
+    changePassword,
+} = useChangePassword();
   const [showPasswrod, setShowPassword] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -26,9 +32,13 @@ const SecurityTab = () => {
         .required("Confirm password is required")
         .oneOf([Yup.ref("newPassword"), null], "Passwords must match"),
     }),
-    onSubmit: (values) => {
+    onSubmit:async (values) => {
       console.log("::formik values", values);
-    },
+     const isSuccess = await changePassword(values);
+     if(isSuccess){
+      formik.resetForm();
+     }
+    },  
   });
   const handleShowPasswrod = () => {
     setShowPassword(true);
@@ -181,6 +191,7 @@ const SecurityTab = () => {
           </Grid>
           <Grid size={12} textAlign={'end'}>
             <Button
+            disabled={loadingChangePassword}
               type="submit"
               sx={{
                 fontWeight: 700,
@@ -189,6 +200,12 @@ const SecurityTab = () => {
                 fontSize: 14,
                 color: "#FFFFFF",
                 background: "#1C252E",
+                "&.Mui-disabled": {
+                  color: "#FFFFFF",
+                  background: "#1C252E",
+                  opacity: 0.7,
+                  cursor:'not-allowed',
+                },
               }}
             >
               Save changes

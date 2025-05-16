@@ -1,8 +1,8 @@
 import { Box, Checkbox, IconButton, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditUserPopup from "../list-users/EditUserPopup";
 import MyTable from "@/components/MyTable";
-import useDeleteUser from "@/hooks/projects/user/useDeleteUser";
+import useDeleteUser from "@/hooks/user/useDeleteUser";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 
 const TableUser = ({
@@ -24,7 +24,12 @@ const TableUser = ({
   const [isAllUserSelected, setIsAllUserSelected] = useState(false);
   const { loadingDeleteUser, errorDeleteUser, deleteUser } = useDeleteUser();
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
-  const msgForDeleteUser = isAllUserSelected ? 'all users.' : selectedUsers?.length === 1 ? '1 user' : `${selectedUsers?.length} users`; 
+  const msgForDeleteUser =
+    isAllUserSelected || selectedUsers?.length === totalUsers
+      ? "all users."
+      : selectedUsers?.length === 1
+      ? "1 user"
+      : `${selectedUsers?.length} users`;
   const handleSelectAllUsers = (checked) => {
     if (checked) {
       setSelectedUsers(data);
@@ -59,8 +64,12 @@ const TableUser = ({
         <Box>
           {" "}
           <Checkbox
-            indeterminate={selectedUsers.length > 0 && !isAllUserSelected}
-            checked={isAllUserSelected}
+            indeterminate={
+              selectedUsers.length > 0 &&
+              !isAllUserSelected &&
+              selectedUsers?.length < totalUsers
+            }
+            checked={isAllUserSelected || selectedUsers?.length === totalUsers}
             onChange={(e) => handleSelectAllUsers(e.target.checked)}
           />
         </Box>
@@ -109,16 +118,21 @@ const TableUser = ({
   };
   const getUpdatedUsers = async () => {
     setSelectedUsers([]);
-    await getAllUsersFromBackend({search:debouncedSearchValue,page,append:false,pageSize});
-  }
+    await getAllUsersFromBackend({
+      search: debouncedSearchValue,
+      page,
+      append: false,
+      pageSize,
+    });
+  };
   const handleDeleteProject = async () => {
-    await deleteUser(selectedUsers,isAllUserSelected,getUpdatedUsers);
+    await deleteUser(selectedUsers, isAllUserSelected, getUpdatedUsers);
     setDeletePopupOpen(false);
   };
-  
+
   return (
     <>
-    <ConfirmationPopup
+      <ConfirmationPopup
         title={"Delete Users"}
         handleClose={handleDeletePopupClose}
         open={selectedUsers?.length > 0 && deletePopupOpen}
@@ -173,7 +187,7 @@ const TableUser = ({
               </Typography>
             </Box>
             <IconButton
-            onClick={handleDeletePopupOpen}
+              onClick={handleDeletePopupOpen}
               sx={{
                 padding: 1,
                 borderRadius: "50%",

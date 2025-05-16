@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import MyTable from "@/components/MyTable";
-import useGetAllUsers from "@/hooks/projects/user/useGetAllUsers";
+import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { getFullName } from "@/utils";
 import EditUserPopup from "./EditUserPopup";
 import { Box, Checkbox, IconButton, Typography } from "@mui/material";

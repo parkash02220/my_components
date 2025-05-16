@@ -2,7 +2,7 @@ import { useAppContext } from "@/context/AppContext";
 import { Box, Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
-const ProfileImageBox = ({avatar,handleImageUpload}) => {
+const ProfileImageBox = ({avatar,handleImageUpload,onDelete}) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -169,6 +169,7 @@ const ProfileImageBox = ({avatar,handleImageUpload}) => {
         </Box>
         <Box display={'flex'} justifyContent={'center'} alignItems={'center'} mt={3}>
           <Button
+          onClick={onDelete}
             sx={{
                 background:"rgba(255,86,48,0.16)",
                 color:"#B71D18",
@@ -176,6 +177,11 @@ const ProfileImageBox = ({avatar,handleImageUpload}) => {
                 padding:"6px 12px",
                 minWidth:64,
                 fontSize:14,
+                "&.Mui-disabled": {
+                  color: "#B71D18",
+                  background: "rgba(255,86,48,0.08)",
+                  cursor: "not-allowed",
+                },
             }}
           >
             Delete user

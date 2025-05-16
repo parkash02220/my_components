@@ -4,6 +4,7 @@ import * as actions from '@/context/action';
 import useToast from "@/hooks/common/useToast";
 import { useRouter } from "next/navigation";
 import useLogout from "./useLogout";
+
 const { ApiCall } = require("@/utils/ApiCall");
 const { useState, useEffect } = require("react")
 
@@ -26,7 +27,9 @@ const useGetActiveUser = () => {
                 const {error} = res;
                 showToast({toastId,type:"error",message:error?.message || "Something went wrong"});
                 dispatch({type:actions.SET_ACTIVE_USER_FAILURE,payload:error});
-                logoutUser();
+                if (error?.status >= 400 && error?.status <= 499) {
+                    logoutUser();
+                  }
                 return;
             }
             const formattedIdResponse = convertIdFields(res?.data?.user || {});

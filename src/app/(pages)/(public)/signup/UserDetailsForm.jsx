@@ -694,17 +694,6 @@ const UserDetailsForm = ({ formik,type }) => {
               alignItems: "flex-start",
             }}
           >
-            {/* <FormLabel
-                        component="legend"
-                        sx={{
-                          color: "#637381",
-                          fontWeight: 600,
-                          fontSize: 14,
-                          marginRight: 2,
-                        }}
-                      >
-                        Gender
-                      </FormLabel> */}
             <RadioGroup
               row
               name="gender"
@@ -792,17 +781,6 @@ const UserDetailsForm = ({ formik,type }) => {
               alignItems: "flex-start",
             }}
           >
-            {/* <FormLabel
-                        component="legend"
-                        sx={{
-                          color: "#637381",
-                          fontWeight: 600,
-                          fontSize: 14,
-                          marginRight: 2,
-                        }}
-                      >
-                        Gender
-                      </FormLabel> */}
             <RadioGroup
               row
               name="role"

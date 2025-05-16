@@ -1,48 +1,44 @@
-import routes from "@/routes";
+import routes, { staticNavItems } from "@/routes";
 import { FolderOpenIcon } from "lucide-react";
-
-export const staticNavItems = [
-  // { type: "header", title: "Projects" },
-  { type: "item", segment: "addproject", title: "+ Project" },
-  { type: "searchField" },
-];
 
 export function NavigationGenerator({
   isAdmin,
-  projects,
+  projects = [],
   loadingAllProjects,
   isInitialFetchDone,
   isSearchLoading,
   hasMore,
 }) {
-  const NAVIGATION = [...staticNavItems];
-  if(isAdmin === undefined){
-    NAVIGATION.push([{ type: "loader" }]);
-    return
-  } 
+  if (isAdmin === undefined) {
+    return [{ type: "loader" }];
+  }
+
   const role = isAdmin ? "admin" : "user";
-   
-  routes.forEach((route) => {
-    if (!route.roles.includes(role)) return;
-    if (!isAdmin && route.segment === "projects") {
-      return;
-    }
+  const NAVIGATION = [];
+
+  const filteredStaticItems = staticNavItems.filter(item => {
+    return !item.roles || item.roles.includes(role);
+  });
+
+  NAVIGATION.push(...filteredStaticItems);
+
+  for (const route of routes) {
+    if (!route.roles.includes(role)) continue;
+
+    if (!isAdmin && route.segment === "projects") continue;
+
     if (route.type === "item") {
-      NAVIGATION.push({
-        ...route,
-      });
+      NAVIGATION.push({ ...route });
     }
 
     if (route.type === "collapsible") {
-      const childrenFnOrArray = route.children;
-
       let children = [];
 
-      if (typeof childrenFnOrArray === "function") {
+      if (typeof route.children === "function") {
         if (!isInitialFetchDone || isSearchLoading) {
           children = [{ type: "loader" }];
         } else if (projects.length > 0) {
-          children = childrenFnOrArray(projects);
+          children = route.children(projects);
 
           if (loadingAllProjects) {
             children.push({ type: "loader" });
@@ -50,17 +46,17 @@ export function NavigationGenerator({
             children.push({ type: "loadMoreRef" });
           }
         }
-      } else {
-        children = childrenFnOrArray;
-      }
 
-      if (
-        route.segment === "projects" &&
-        !isInitialFetchDone &&
-        !loadingAllProjects &&
-        projects?.length === 0
-      ) {
-        children = [{ type: "message", title: "No projects found" }];
+        if (
+          route.segment === "projects" &&
+          isInitialFetchDone &&
+          !loadingAllProjects &&
+          projects.length === 0
+        ) {
+          children = [{ type: "message", title: "No projects found" }];
+        }
+      } else {
+        children = route.children;
       }
 
       NAVIGATION.push({
@@ -68,9 +64,10 @@ export function NavigationGenerator({
         children,
       });
     }
-  });
+  }
 
-    if (!isAdmin && isInitialFetchDone && projects?.length > 0) {
+  if (!isAdmin && isInitialFetchDone) {
+    if(projects.length > 0){
       const projectItems = projects.map((project) => ({
         type: "item",
         segment: `projects/${project.id}`,
@@ -83,7 +80,10 @@ export function NavigationGenerator({
       if (hasMore) {
         NAVIGATION.push({ type: "loadMoreRef" });
       }
+    }else if(projects.length === 0){
+      NAVIGATION.push({ type: "message", title: "No projects found" });
     }
+  }
 
   return NAVIGATION;
 }

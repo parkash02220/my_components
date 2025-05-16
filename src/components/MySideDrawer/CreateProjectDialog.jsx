@@ -7,7 +7,7 @@ import { ApiCall } from "@/utils/ApiCall";
 import useProjectNameAvailability from "@/hooks/projects/useProjectNameAvailability";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import MySelect from "../MySelect/MySelect";
-import useGetAllUsers from "@/hooks/projects/user/useGetAllUsers";
+import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { getFullName } from "@/utils";
 import MyAutoComplete from "../MyAutoComplete/MyAutoComplete";
 const CreateProjectDialog = ({

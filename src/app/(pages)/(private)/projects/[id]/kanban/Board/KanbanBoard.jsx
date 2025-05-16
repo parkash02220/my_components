@@ -16,19 +16,18 @@ import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 
 import { coordinateGetter } from "./multipleContainersKeyboardPreset";
-import { customCollisionDetection, hasDraggableData } from "./utils";
-import { BoardColumn } from "./BoardColumn";
-import { TaskCard } from "./TaskCard";
+import { customCollisionDetection, hasDraggableData } from "../utils";
+import { TaskCard } from "../Task";
 import useGetProject from "@/hooks/projects/useGetProject";
 import useMoveTask from "@/hooks/projects/task/useMoveTask";
 import useUpdateColumnPosition from "@/hooks/projects/section/useUpdateColumnPosition";
 import useCreateSection from "@/hooks/projects/section/useCreateSection";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
-import MyTextField from "../MyTextfield/MyTextfield";
-import MyButton from "../MyButton/MyButton";
 import { useAppContext } from "@/context/AppContext";
-import RightDrawer from "../RightDrawer";
-import KanbanRightDrawer from "./Drawer/KanbanRightDrawer";
+import KanbanRightDrawer from "../Drawer/KanbanRightDrawer";
+import MyButton from "@/components/MyButton/MyButton";
+import MyTextField from "@/components/MyTextfield/MyTextfield";
+import { BoardColumn } from "../Column/BoardColumn";
 
 export default function KanbanBoard({
   boardId,

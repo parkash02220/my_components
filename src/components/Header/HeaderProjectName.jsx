@@ -1,6 +1,7 @@
 import { useAppContext } from "@/context/AppContext";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import ConfirmationPopup from "../ConfirmationPopup";
+import { useRouter } from "next/navigation";
 
 const {
   Box,
@@ -23,6 +24,7 @@ const HeaderProjectName = () => {
   const { state } = useAppContext();
   const { activeProject, loading, selectedDrawerItem } = state;
   const { loadingActiveProject } = loading;
+  const router = useRouter();
   const inputRef = useRef();
   const [showProjectNameTextfield, setShowProjectNameTextfield] =
     useState(false);

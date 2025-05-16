@@ -1,13 +1,13 @@
 import { FolderOpenIcon, UserIcon } from "lucide-react";
 
+export const staticNavItems = [
+  // { type: "header", title: "Projects" },
+  { type: "item", segment: "addproject", title: "+ Project", roles: ["admin"], },
+  { type: "searchField" },
+];
+
+
 const drawerRoutes = [
-//   {
-//     type: "item",
-//     segment: "dashboard",
-//     title: "Dashboard",
-//     icon: <FolderOpenIcon />,
-//     roles: ["admin", "user"],
-//   },
   {
     type: "collapsible",
     segment: "projects",

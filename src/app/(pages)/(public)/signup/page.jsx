@@ -3,7 +3,7 @@
 import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
-import useSignUp from "@/hooks/projects/user/useSignUp";
+import useSignUp from "@/hooks/user/activeUser/useSignUp";
 import { loginUserWithGoogle } from "@/utils";
 import {
   Box,

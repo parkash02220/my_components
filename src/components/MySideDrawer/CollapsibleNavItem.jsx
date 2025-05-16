@@ -46,7 +46,7 @@ export const CollapsibleNavItem = ({
           minHeight: 48,
           justifyContent: open ? "initial" : "center",
           px: 2.5,
-          background: isExpanded ? "#919EAB14" : "#FFFFFF",
+          background: isExpanded && open ? "#919EAB14" : "#FFFFFF",
         }}
       >
         <ListItemIcon

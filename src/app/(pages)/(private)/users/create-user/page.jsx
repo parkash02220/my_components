@@ -2,7 +2,7 @@
 import UserDetailsForm from "@/app/(pages)/(public)/signup/UserDetailsForm";
 import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
-import useCreateUser from "@/hooks/projects/user/useCreateUser";
+import useCreateUser from "@/hooks/user/useCreateUser";
 import { Box, Grid, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import { useState } from "react";

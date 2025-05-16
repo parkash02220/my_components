@@ -1,8 +1,8 @@
 "use client";
 import { Box, CircularProgress } from "@mui/material";
-import KanbanBoardWrapper from "@/components/kanban/KanbanBoardWrapper";
 import useGetProject from "@/hooks/projects/useGetProject";
 import { useRouter } from "next/navigation";
+import KanbanBoardWrapper from "./kanban/Board/KanbanBoardWrapper";
 
 export default function ProjectPageContent({ id }) {
   const router = useRouter();
@@ -32,7 +32,7 @@ export default function ProjectPageContent({ id }) {
     );
   }
   if(isNotFound){
-       router.push('/not-found')
+       router.push('/not-found');
   }
   return (
     <KanbanBoardWrapper

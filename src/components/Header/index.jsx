@@ -6,16 +6,14 @@ import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import HeaderProjectName from "./HeaderProjectName";
 import HeaderNotifications from "./HeaderNotifications";
 import HeaderUserProfile from "./HeaderUserProfile";
-import { usePathname } from "next/navigation";
 import { useNavigationInfo } from "@/hooks/common/useNavigationInfo";
 import { useState } from "react";
 export default function Header({}) {
-  const { state } = useAppContext();
   const { isMd, isSm, isXs } = useBreakpointFlags();
-  const {projects} = state;
-  const pathname = usePathname();
-  const {parent,child} = useNavigationInfo({path:pathname,projects});
-  
+  const { state } = useAppContext();
+  const { projects } = state;
+  const { parent, child } = useNavigationInfo({ projects });
+  console.log("::parent child",parent,child)
   return (
     <>
       <AppBar

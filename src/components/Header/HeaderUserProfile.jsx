@@ -1,5 +1,5 @@
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
-import useGetActiveUser from "@/hooks/projects/user/useGetActiveUser";
+import useGetActiveUser from "@/hooks/user/activeUser/useGetActiveUser";
 const { IconButton, Typography, Box } = require("@mui/material");
 const { useState } = require("react");
 const { default: ProfileDrawer } = require("./ProfileDrawer");
@@ -29,10 +29,7 @@ const HeaderUserProfile = () => {
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
-          boxSizing: "border-box",
           backgroundColor: "transparent",
-          cursor: "pointer",
-          textAlign: "center",
           fontSize: "24px",
           color: "#637381",
           outline: "0px",
@@ -40,7 +37,6 @@ const HeaderUserProfile = () => {
           margin: "0px",
           textDecoration: "none",
           flex: "0 0 auto",
-          padding: "8px",
           borderRadius: "50%",
           transition: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)",
           "&:hover": {
@@ -75,10 +71,10 @@ const HeaderUserProfile = () => {
                 animation: "rotateClockwise 5s linear infinite",
                 WebkitMaskImage:
                   "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
-                WebkitMaskComposite: "xor", // for WebKit browsers (Chrome/Safari)
+                WebkitMaskComposite: "xor",
                 maskImage:
                   "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
-                maskComposite: "exclude", // Firefox supports 'exclude' instead of 'xor'
+                maskComposite: "exclude",
               }}
             >
               <img

@@ -1,3 +1,4 @@
+import { useAppContext } from "@/context/AppContext";
 import Cookies from "js-cookie";
 export const getAuthTokenFromCookies = () => {
     return Cookies.get("auth_token");
@@ -76,12 +77,16 @@ export function getTimeAgo(updatedAt) {
 
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
   if (diffMinutes < 1) return "Just now";
   if (diffHours < 1) {
     return `${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""} before`;
   }
-  return `${diffHours} hour${diffHours !== 1 ? "s" : ""} before`;
+  if (diffDays < 1) {
+    return `${diffHours} hour${diffHours !== 1 ? "s" : ""} before`;
+  }
+  return `${diffDays} day${diffDays !== 1 ? "s" : ""} before`;
 }
 
 export function formatDueDateRange(due_start_date, due_end_date) {

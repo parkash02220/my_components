@@ -2,7 +2,7 @@ import MyButton from "@/components/MyButton/MyButton";
 import MyDialog from "@/components/MyDialog/MyDialog";
 import MySearch from "@/components/MySearch/MySearch";
 import useToggleAssignTask from "@/hooks/projects/task/useToggleAssignTask";
-import useGetAllUsers from "@/hooks/projects/user/useGetAllUsers";
+import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen }) => {
@@ -22,6 +22,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen })
     setAllUsers,
     debouncedSearchValue,
     totalUsers,
+    page,
   } = useGetAllUsers('board');
   const [hasMounted, setHasMounted] = useState(true);
   const [assignedUserIds, setAssignedUserIds] = useState([]);
@@ -62,7 +63,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen })
     if (!open && !isDrawerOpen) {
       setSearchValue("");
       setAllUsers([]);
-      setPage(1);
+      setPage(0);
     }
   }, [open, isDrawerOpen]);
 
@@ -232,7 +233,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen })
                   )}
                   <Box ref={loadMoreRef} style={{ height: 1 }} />
                 </Box>
-              ) : !loadingAllUsers? (
+              ) : !loadingAllUsers && page === 0? (
                 <Box
                   className="assignDialog__emptyBox"
                   display={"flex"}

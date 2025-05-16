@@ -1,46 +1,48 @@
-import routes from "@/routes";
+
+import { useMemo } from "react";
+
+import { usePathname } from "next/navigation";
 import userDrawerRoutes from "@/routes/userDrawerRoutes";
+import drawerRoutes from "@/routes";
 
-export function useNavigationInfo({path, projects = [],type=""}) {
-  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
 
-  let selectedChild = null;
-  let selectedParent = null;
-
-  if(type==="userDrawerRoutes"){
-    for (const route of userDrawerRoutes) {
-    console.log("::routes",route)
-  }
-  return { parent: selectedParent, child: selectedChild };
-  }
-
-  for (const route of routes) {
-    if (route.type === "collapsible" && route.children) {
+function flattenRoutes(routes, projects = []) {
+  return routes.flatMap((route) => {
+    if (route.type === "collapsible") {
       const children = typeof route.children === "function"
         ? route.children(projects)
-        : route.children;
+        : route.children || [];
 
-      const matchedChild = children.find(
-        (child) =>
-          child.segment === normalizedPath ||
-          normalizedPath.startsWith(child.segment + "/")
-      );
-
-      if (matchedChild) {
-        selectedParent = route;
-        selectedChild = matchedChild;
-        break;
-      }
-    } else {
-      if (
-        route.segment === normalizedPath ||
-        normalizedPath.startsWith(route.segment + "/")
-      ) {
-        selectedChild = route;
-        break;
-      }
+      return [
+        { ...route, isParent: true },
+        ...children.map(child => ({
+          ...child,
+          parent: route,
+        }))
+      ];
     }
-  }
+    return [route];
+  });
+}
 
-  return { parent: selectedParent, child: selectedChild };
+export function useNavigationInfo({ projects = [] } = {}) {
+  const pathname = usePathname();
+  console.log("::use pathname",pathname)
+  const allRoutes = useMemo(() => {
+    return [
+      ...flattenRoutes(drawerRoutes, projects),
+      ...flattenRoutes(userDrawerRoutes),
+    ];
+  }, [projects]);
+
+  const matchedChild = useMemo(() => {
+    return allRoutes.find(route =>
+      pathname === `/${route.segment}` || pathname.startsWith(`${route.segment}`)
+    );
+  }, [allRoutes, pathname]);
+
+  return {
+    parent: matchedChild?.parent || null,
+    child: matchedChild || null,
+  };
 }

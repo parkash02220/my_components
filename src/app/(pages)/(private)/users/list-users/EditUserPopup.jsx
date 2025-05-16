@@ -2,7 +2,7 @@ import UserDetailsForm from "@/app/(pages)/(public)/signup/UserDetailsForm";
 import MyButton from "@/components/MyButton/MyButton";
 import MyDialog from "@/components/MyDialog/MyDialog";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
-import useUpdateUser from "@/hooks/projects/user/useUpdateUser";
+import useUpdateUser from "@/hooks/user/useUpdateUser";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useFormik } from "formik";
 import { useEffect } from "react";

@@ -2,7 +2,7 @@ import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useState } from "react";
 
 import RightDrawer from "@/components/RightDrawer";
-import useLogout from "@/hooks/projects/user/useLogout";
+import useLogout from "@/hooks/user/activeUser/useLogout";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import { useAppContext } from "@/context/AppContext";
