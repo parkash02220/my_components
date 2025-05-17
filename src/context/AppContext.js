@@ -1,3 +1,4 @@
+"use client";
 import React, { createContext, useReducer, useContext, useState, useEffect } from "react";
 import { initialState } from "./initialState";
 import * as actions from "./action";

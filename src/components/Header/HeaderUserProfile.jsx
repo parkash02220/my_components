@@ -4,12 +4,10 @@ const { IconButton, Typography, Box } = require("@mui/material");
 const { useState } = require("react");
 const { default: ProfileDrawer } = require("./ProfileDrawer");
 
-const HeaderUserProfile = () => {
-    const { isMd, isSm, isXs } = useBreakpointFlags();
+const HeaderUserProfile = ({ activeUser }) => {
+  const { isMd, isSm, isXs } = useBreakpointFlags();
   const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
 
-  const { activeUser, loadingActiveUser, errorActiveUser, fetchActiveUser } =
-    useGetActiveUser();
   const OpenProfileDrawer = () => {
     setProfileDrawerOpen(true);
   };
@@ -44,7 +42,7 @@ const HeaderUserProfile = () => {
           },
         }}
       >
-        {!loadingActiveUser && activeUser ? (
+        {activeUser ? (
           <Box
             sx={{
               minWidth: "unset",

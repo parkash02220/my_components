@@ -6,19 +6,25 @@ import { AppContextProvider } from "@/context/AppContext";
 import { Box } from "@mui/material";
 import Header from "@/components/Header";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
+import useGetActiveUser from "@/hooks/user/activeUser/useGetActiveUser";
+import Loader from "@/components/Loader/Loader";
 
 export default function HomeLayout({ children }) {
   const { isMd } = useBreakpointFlags();
   const [open, setOpen] = useState(true);
   const [hasMounted, setHasMounted] = useState(false);
-
+    const { activeUser } = useGetActiveUser();
   useEffect(() => {
     setHasMounted(true);
   }, []);
   if (!hasMounted) return null;
 
+  if(loadingActiveUser){
+   return <Box height={'100vh'}>
+  <Loader />
+  </Box>
+  }
   return (
-    <AppContextProvider>
       <Box sx={{ display: "flex" }} className="privateLayout__container">
         <MySideDrawer open={open} setOpen={setOpen} />
         <Box
@@ -30,7 +36,7 @@ export default function HomeLayout({ children }) {
           position={"relative"}
           height={"100vh"}
         >
-          <Header/>
+          <Header />
           <main
             style={{
               flexGrow: 1,
@@ -44,6 +50,5 @@ export default function HomeLayout({ children }) {
           </main>
       </Box>
       </Box>
-    </AppContextProvider>
   );
 }

@@ -8,12 +8,11 @@ import HeaderNotifications from "./HeaderNotifications";
 import HeaderUserProfile from "./HeaderUserProfile";
 import { useNavigationInfo } from "@/hooks/common/useNavigationInfo";
 import { useState } from "react";
-export default function Header({}) {
+export default function Header() {
   const { isMd, isSm, isXs } = useBreakpointFlags();
   const { state } = useAppContext();
-  const { projects } = state;
+  const { projects, activeUser } = state;
   const { parent, child } = useNavigationInfo({ projects });
-  console.log("::parent child",parent,child)
   return (
     <>
       <AppBar
@@ -38,15 +37,19 @@ export default function Header({}) {
             alignItems: "center",
           }}
         >
-       {child?.segment?.startsWith("projects") ? (
+          {child?.segment?.startsWith("projects") ? (
             <HeaderProjectName />
           ) : (
             <Box>
-              <Typography  variant="h4"
+              <Typography
+                variant="h4"
                 fontSize={isXs ? "1.125rem" : isSm ? "1.25rem" : "1.5rem"}
                 fontWeight={700}
                 color="#1C252E"
-              > {child?.title || parent?.title || ""}</Typography>
+              >
+                {" "}
+                {child?.title || parent?.title || ""}
+              </Typography>
             </Box>
           )}
           <Box
@@ -76,7 +79,7 @@ export default function Header({}) {
               }}
             >
               <HeaderNotifications />
-              <HeaderUserProfile />
+              <HeaderUserProfile activeUser={activeUser} />
             </Box>
           </Box>
         </Box>

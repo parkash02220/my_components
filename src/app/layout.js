@@ -5,6 +5,7 @@ import MySideDrawer from "@/components/MySideDrawer/MySideDrawer";
 import { Box } from "@mui/material";
 import CustomThemeProvider from '@/theme/CustomThemeProvider';
 import { Toaster } from 'react-hot-toast';
+import { AppContextProvider } from '@/context/AppContext';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,10 +29,12 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
          <AppRouterCacheProvider>
+           <AppContextProvider>
           <CustomThemeProvider >
           <Toaster position="top-center" />
         <Box className="main_container">{children}</Box>
         </CustomThemeProvider>
+        </AppContextProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
