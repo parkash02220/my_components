@@ -19,12 +19,14 @@ const useDeleteUser = () => {
         userIds,
       },
     });
-    setLoading(false);
+   
     if(res.error){
+       setLoading(false);
         showToast({toastId,type:"error",message:res?.error?.message || "Failed to delete user. Please try again."});
         setError(res?.error?.message || "something went wrong");
         return;
     }
+     setLoading(false);
       await getUpdatedUsers();
       showToast({toastId,type:"success",message:res?.data?.message || "User deleted successfully."})
   };

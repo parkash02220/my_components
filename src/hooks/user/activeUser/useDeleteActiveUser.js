@@ -1,4 +1,4 @@
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext } from "@/context/App/AppContext";
 import useToast from "@/hooks/common/useToast";
 import { ApiCall } from "@/utils/ApiCall";
 import useLogout from "./useLogout";
@@ -26,12 +26,14 @@ const useDeleteActiveUser = () => {
           userIds:[userId],
         },
       });
-      setLoading(false);
+     
       if(res.error){
+         setLoading(false);
           showToast({toastId,type:"error",message:res?.error?.message || "Failed to delete user. Please try again."});
           setError(res?.error?.message || "something went wrong");
           return;
       }
+       setLoading(false);
         showToast({toastId,type:"success",message:res?.data?.message || "User deleted successfully."});
         logoutUser();
     };

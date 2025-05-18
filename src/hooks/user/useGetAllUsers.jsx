@@ -1,4 +1,4 @@
-import { useAppContext } from "@/context/AppContext";
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 
@@ -6,19 +6,19 @@ const { default: useDebounce } = require("@/hooks/common/useDebounce");
 const { useState, useEffect } = require("react");
 const { useInView } = require("react-intersection-observer");
 
-const useGetAllUsers = (type="all",paginationMode = "scroll") => {
-  const [loadingAllUsers, setLoadingAllUsers] = useState(false);
-  const [errorAllUsers, setErrorAllUsers] = useState(false);
-  const [helperTextAllUsers, setHelperTextAllUsers] = useState("");
+const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [helperText, setHelperText] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(0);
-  const [pageSize,setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(10);
   const [allUsers, setAllUsers] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const debouncedSearchValue = useDebounce(searchValue, 500);
   const { ref: loadMoreRef, inView } = useInView();
-  const {state} = useAppContext();
+  const { state } = useProjectsContext();
   const activeProjectId = state?.activeProject?.id;
   const getAllUsersFromBackend = async ({
     signal,
@@ -27,24 +27,25 @@ const useGetAllUsers = (type="all",paginationMode = "scroll") => {
     append = paginationMode === "scroll",
     pageSize = 10,
   }) => {
-    setLoadingAllUsers(true);
-    setErrorAllUsers(false);
-    setHelperTextAllUsers("");
-    const url = type==="all"? `${process.env.NEXT_PUBLIC_BASE_URL}/get-users?search=${search}&page=${page}&limit=${pageSize}` :
-    `${process.env.NEXT_PUBLIC_BASE_URL}/get-users?boardId=${activeProjectId}&search=${search}&page=${page}&limit=${pageSize}`;
+    setLoading(true);
+    setError(false);
+    setHelperText("");
+    const url =
+      type === "all"
+        ? `${process.env.NEXT_PUBLIC_BASE_URL}/get-users?search=${search}&page=${page}&limit=${pageSize}`
+        : `${process.env.NEXT_PUBLIC_BASE_URL}/get-users?boardId=${activeProjectId}&search=${search}&page=${page}&limit=${pageSize}`;
     const res = await ApiCall({
       url,
       method: "GET",
       signal,
     });
 
-    setLoadingAllUsers(false);
-
     if (res?.error) {
-      setErrorAllUsers(true);
+      setLoading(false);
+      setError(true);
       return;
     }
-
+    setLoading(false);
     const data = res?.data;
     const hasMoreUser = data && data?.page * data?.limit < data?.totalUsers;
     setPage(data?.page);
@@ -58,7 +59,9 @@ const useGetAllUsers = (type="all",paginationMode = "scroll") => {
 
     setAllUsers((prev) => {
       const combined = append ? [...prev, ...uniqueUsers] : [...uniqueUsers];
-      const deduplicated = Array.from(new Map(combined.map((u) => [u.id, u])).values());
+      const deduplicated = Array.from(
+        new Map(combined.map((u) => [u.id, u])).values()
+      );
       return deduplicated;
     });
   };
@@ -88,18 +91,18 @@ const useGetAllUsers = (type="all",paginationMode = "scroll") => {
       search: debouncedSearchValue,
       page,
       pageSize,
-      append : paginationMode === "scroll",
+      append: paginationMode === "scroll",
     });
 
     return () => controller.abort();
-  }, [page,debouncedSearchValue,pageSize]);
+  }, [page, debouncedSearchValue, pageSize]);
 
   useEffect(() => {
     if (paginationMode !== "scroll") return;
-    if (inView && hasMore && !loadingAllUsers) {
+    if (inView && hasMore && !loading) {
       setPage((prev) => prev + 1);
     }
-  }, [inView, hasMore, loadingAllUsers]);
+  }, [inView, hasMore, loading]);
 
   const handleSearchValueChange = (e) => {
     setSearchValue(e.target.value);
@@ -107,9 +110,9 @@ const useGetAllUsers = (type="all",paginationMode = "scroll") => {
 
   return {
     allUsers,
-    loadingAllUsers,
-    errorAllUsers,
-    helperTextAllUsers,
+    loadingAllUsers: loading,
+    errorAllUsers: error,
+    helperTextAllUsers: helperText,
     searchValue,
     getAllUsersFromBackend,
     handleSearchValueChange,

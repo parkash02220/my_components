@@ -1,29 +1,31 @@
-// hooks/useUpdateColumnPosition.js
-import { useAppContext } from "@/context/AppContext";
+
 import useToast from "@/hooks/common/useToast";
 import { ApiCall } from "@/utils/ApiCall";
 import { useCallback, useState } from "react";
+import * as actions from '@/context/Projects/action';
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 
 const useUpdateColumnPosition = () => {
     const toastId = 'move_column';
     const {showToast} = useToast();
-    const {dispatch} = useAppContext();
-    const [loadingUpdatingColoumPos,setLoadingUpdatingColoumPos] = useState(false);
+    const {dispatch} = useProjectsContext();
+    const [loading,setLoading] = useState(false);
 
     const updateColumnPosition = async (columnId, position,boardId) => {
         setTimeout(() => {
-            dispatch({type:"Move_SECTION",payload:{newPosition:position-1,columnId}});
+            dispatch({type:actions.Move_SECTION,payload:{newPosition:position-1,columnId}});
         }, 0);
-        setLoadingUpdatingColoumPos(true);
+        setLoading(true);
         const res = await ApiCall({
             url:`${process.env.NEXT_PUBLIC_BASE_URL}/move-section/${boardId}`,
             method:"PUT",
             body:{sectionId:columnId,newPosition:position},
         });
 
-        setLoadingUpdatingColoumPos(false);
+
 
         if(res.error){
+                  setLoading(false);
             showToast({
                 toastId,
                 type: "error",
@@ -32,7 +34,7 @@ const useUpdateColumnPosition = () => {
             console.log("::error while changing coloumn order",res);
             return;
         }
-
+        setLoading(false);
         const data = res?.data;
          showToast({
             toastId,
@@ -41,7 +43,7 @@ const useUpdateColumnPosition = () => {
           });
     }
 
-  return {loadingUpdatingColoumPos, updateColumnPosition};
+  return {loadingUpdatingColoumPos:loading, updateColumnPosition};
 };
 
 export default useUpdateColumnPosition;

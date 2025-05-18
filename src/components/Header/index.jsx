@@ -1,17 +1,19 @@
 "use client";
 
 import { AppBar, Box, IconButton, Typography } from "@mui/material";
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext } from "@/context/App/AppContext";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import HeaderProjectName from "./HeaderProjectName";
 import HeaderNotifications from "./HeaderNotifications";
 import HeaderUserProfile from "./HeaderUserProfile";
 import { useNavigationInfo } from "@/hooks/common/useNavigationInfo";
 import { useState } from "react";
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 export default function Header() {
   const { isMd, isSm, isXs } = useBreakpointFlags();
   const { state } = useAppContext();
-  const { projects, activeUser } = state;
+  const { activeUser } = state;
+  const { projects } = useProjectsContext()?.state;
   const { parent, child } = useNavigationInfo({ projects });
   return (
     <>

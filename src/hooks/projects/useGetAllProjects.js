@@ -1,19 +1,21 @@
-import { useAppContext } from "@/context/AppContext";
+
 import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 const { default: useDebounce } = require("@/hooks/common/useDebounce");
 const { useState, useEffect } = require("react");
 const { useInView } = require("react-intersection-observer");
+import * as actions from "@/context/Projects/action";
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 
 const useGetAllProjects = () => {
-  const {dispatch,state} = useAppContext();
+  const {dispatch,state} = useProjectsContext();
   const [page, setPage] = useState(1);
   const [pageSize,setPageSize] = useState(15);
   const [isInitialFetchDone,setIsInitialFetchDone] = useState(false);
-  const isSearchLoading = state.loading.loadingProjects && page === 1;
-  const isLoadMoreLoading = state.loading.loadingProjects && page > 1;
-  const loadingAllProjects = state.loading.loadingProjects;
-  const errorAllProjects = !!state.error.errorProjects;
+  const isSearchLoading = state?.loadingProjects && page === 1;
+  const isLoadMoreLoading = state?.loadingProjects && page > 1;
+  const loadingAllProjects = state?.loadingProjects;
+  const errorAllProjects = !!state?.errorProjects;
   const [searchValue, setSearchValue] = useState("");
   const [hasMore, setHasMore] = useState(false);
   const [allProjects, setAllProjects] = useState([]);
@@ -34,7 +36,7 @@ const useGetAllProjects = () => {
     append = false,
   } = {}) => {
     try {
-      dispatch({ type: "SET_PROJECTS_REQUEST" });
+      dispatch({ type: actions.SET_PROJECTS_REQUEST });
   
       const res = await ApiCall({
         url: `${process.env.NEXT_PUBLIC_BASE_URL}/get-board?search=${search}&page=${page}&limit=${pageSize}`,
@@ -43,7 +45,7 @@ const useGetAllProjects = () => {
       });
   
       if (res?.error) {
-        dispatch({ type: "SET_PROJECTS_FAILURE", payload: res?.error });
+        dispatch({ type: actions.SET_PROJECTS_FAILURE, payload: res?.error });
         return;
       }
   
@@ -61,7 +63,7 @@ const useGetAllProjects = () => {
       setAllProjects(combinedProjects);
   
       dispatch({
-        type: "SET_PROJECTS_SUCCESS",
+        type: actions.SET_PROJECTS_SUCCESS,
         payload: combinedProjects,
       });
 
@@ -69,7 +71,7 @@ const useGetAllProjects = () => {
   
     } catch (error) {
       if (error?.name !== "AbortError") {
-        dispatch({ type: "SET_PROJECTS_FAILURE", payload: error.message || "Something went wrong" });
+        dispatch({ type: actions.SET_PROJECTS_FAILURE, payload: error.message || "Something went wrong" });
       }
     }
   };

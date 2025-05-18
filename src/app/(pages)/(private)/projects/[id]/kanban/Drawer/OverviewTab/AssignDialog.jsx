@@ -5,7 +5,13 @@ import useToggleAssignTask from "@/hooks/projects/task/useToggleAssignTask";
 import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
-const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen }) => {
+const AssignDialog = ({
+  open,
+  handleClose,
+  assignedUsers,
+  taskId,
+  isDrawerOpen,
+}) => {
   const { loadingAssignTaskIds, errorAssignTask, toggleAssignTask } =
     useToggleAssignTask();
   const theme = useTheme();
@@ -23,7 +29,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen })
     debouncedSearchValue,
     totalUsers,
     page,
-  } = useGetAllUsers('board');
+  } = useGetAllUsers("board");
   const [hasMounted, setHasMounted] = useState(true);
   const [assignedUserIds, setAssignedUserIds] = useState([]);
   useEffect(() => {
@@ -84,7 +90,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen })
           open={open}
           minwidth={"444px"}
           maxwidth={"444px"}
-          width={'100%'}
+          width={"100%"}
           titlepadding="24px 24px 0px"
           contentpadding="0px !important"
           handleClose={handleAssignDialogClose}
@@ -233,7 +239,7 @@ const AssignDialog = ({ open, handleClose, assignedUsers, taskId,isDrawerOpen })
                   )}
                   <Box ref={loadMoreRef} style={{ height: 1 }} />
                 </Box>
-              ) : !loadingAllUsers && page === 0? (
+              ) : !loadingAllUsers ? (
                 <Box
                   className="assignDialog__emptyBox"
                   display={"flex"}

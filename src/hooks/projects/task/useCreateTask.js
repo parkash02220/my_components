@@ -1,18 +1,19 @@
 import { useRef, useState } from "react";
 import axios from "axios";
-import { ApiCall } from "@/utils/ApiCall";
-import { useAppContext } from "@/context/AppContext";
+import { ApiCall } from "@/utils/ApiCall";  
 import { convertIdFields } from "@/utils";
 import useToast from "@/hooks/common/useToast";
+import * as actions from '@/context/Projects/action';
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 
 const useCreateTask = (sectionId="", setCreateTaskOpen) => {
   const toastId = "create_task";
   const {showToast} = useToast();
   const [newTaskName, setNewTaskName] = useState("");
-  const [loadingCreateTask,setLoadingCreateTask] = useState(false);
-  const [errorCreateTask,setErrorCreateTask] = useState(false);
-  const [helperTextCreateTask,setHelperTextCreateTask] = useState('');
-  const {dispatch} = useAppContext();
+  const [loading,setLoading] = useState(false);
+  const [error,setError] = useState(false);
+  const [helperText,setHelperText] = useState('');
+  const {dispatch} = useProjectsContext();
   const handleTaskInputfieldChange = (e) => {
     const newName = e.target.value;
     let error = false;
@@ -26,21 +27,22 @@ const useCreateTask = (sectionId="", setCreateTaskOpen) => {
       helperText = "Task name must be between 3 and 50 characters";
     }
     setNewTaskName(newName);
-    setErrorCreateTask(error);
-    setHelperTextCreateTask(helperText);
+    setError(error);
+    setHelperText(helperText);
   };
 
   const handleTaskInputKeyDown = (e) => {
-     if(e.key==="Enter" && !loadingCreateTask){
+     if(e.key==="Enter" && !loading){
         handleCreateTask();
      }
   }
 
   const handleCreateTask = async () => {
-    if(loadingCreateTask) return;
+    if(loading) return;
     const trimmedName = newTaskName.trim();
     if (!trimmedName) return;
-    setLoadingCreateTask(true);
+    setLoading(true);
+    setError(false);
     const res = await ApiCall({
         url:`${process.env.NEXT_PUBLIC_BASE_URL}/create-task`,
         method:"POST",
@@ -53,22 +55,23 @@ const useCreateTask = (sectionId="", setCreateTaskOpen) => {
 
     setNewTaskName("");
 
-    setLoadingCreateTask(false);
     if(res.error){
+      setLoading(false);
+      setError(true);
         showToast({toastId,type:"error",message:"Failed to create the task. Please try again."});
         console.log("::error while creating task");
         return;
     }
-
+  setLoading(false);
     const data = res?.data;
 
     const formattedIdResponse = convertIdFields(data?.task || []);
-     dispatch({type:"ADD_TASK_TO_SECTION",payload:{sectionId,task:formattedIdResponse}});
+     dispatch({type:actions.ADD_TASK_TO_SECTION,payload:{sectionId,task:formattedIdResponse}});
      showToast({toastId,type:"success",message:"Task created successfully."});
      setCreateTaskOpen(false);
   };
 
-  return {loadingCreateTask,errorCreateTask,helperTextCreateTask,newTaskName,handleTaskInputfieldChange,handleTaskInputKeyDown,setNewTaskName};
+  return {loadingCreateTask:loading,errorCreateTask:error,helperTextCreateTask:helperText,newTaskName,handleTaskInputfieldChange,handleTaskInputKeyDown,setNewTaskName};
 };
 
 export default useCreateTask;

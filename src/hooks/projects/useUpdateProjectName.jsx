@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import useDebounce from "../common/useDebounce";
 import { ApiCall } from "@/utils/ApiCall";
-import { useAppContext } from "@/context/AppContext";
 import useToast from "../common/useToast";
+import * as actions from "@/context/Projects/action";
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 
 const useUpdateProjectName = (
   initialName = "",
@@ -10,12 +11,10 @@ const useUpdateProjectName = (
 ) => {
   const toastId = "update_project_name";
   const { showToast } = useToast();
-  const { dispatch } = useAppContext();
-  const [loadingUpdateProjectName, setLoadingUpdateProjectName] =
-    useState(false);
-  const [errorUpdateProjectName, setErrorUpdateProjectName] = useState(false);
-  const [helperTextUpdateProjectName, setHelperTextUpdateProjectName] =
-    useState("");
+  const { dispatch } = useProjectsContext();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [helperText, setHelperText] = useState("");
   const [originalProjectName, setOriginalProjectName] = useState();
   const [projectName, setProjectName] = useState();
   const debouncedProjectName = useDebounce(projectName);
@@ -30,7 +29,7 @@ const useUpdateProjectName = (
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    setLoadingUpdateProjectName(true);
+    setLoading(true);
 
     const res = await ApiCall({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/check-boardName-duplicates`,
@@ -40,16 +39,16 @@ const useUpdateProjectName = (
     });
 
     if (res.error) {
-      setErrorUpdateProjectName(true);
+      setError(true);
       setIsNameAvailable(false);
-      setLoadingUpdateProjectName(false);
-      setHelperTextUpdateProjectName(res?.error?.message);
+      setLoading(false);
+      setHelperText(res?.error?.message);
       return;
     }
-    setErrorUpdateProjectName(false);
-    setHelperTextUpdateProjectName("");
+    setError(false);
+    setHelperText("");
     setIsNameAvailable(res.data?.createName || false);
-    setLoadingUpdateProjectName(false);
+    setLoading(false);
   };
 
   const startEditing = (currentName) => {
@@ -59,8 +58,8 @@ const useUpdateProjectName = (
 
   const cancelEditing = () => {
     setProjectName(originalProjectName);
-    setErrorUpdateProjectName(false);
-    setHelperTextUpdateProjectName(false);
+    setError(false);
+    setHelperText(false);
   };
 
   const handleProjectInputChange = (e) => {
@@ -78,8 +77,8 @@ const useUpdateProjectName = (
     }
 
     setProjectName(name);
-    setErrorUpdateProjectName(error);
-    setHelperTextUpdateProjectName(message);
+    setError(error);
+    setHelperText(message);
   };
 
   const handleProjectInputKeyDown = (e, projectId) => {
@@ -97,12 +96,12 @@ const useUpdateProjectName = (
     if (
       !trimmedProjectName ||
       trimmedProjectName === originalProjectName ||
-      errorUpdateProjectName
+      error
     )
       return;
 
-    setLoadingUpdateProjectName(true);
-    setErrorUpdateProjectName(false);
+    setLoading(true);
+    setError(false);
     const res = await ApiCall({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/rename-board/${projectId}`,
       method: "PATCH",
@@ -111,23 +110,23 @@ const useUpdateProjectName = (
       },
     });
 
-    setLoadingUpdateProjectName(false);
     if (res.error) {
+      setLoading(false);
+      setError(true);
       showToast({
         toastId,
         type: "error",
         message: "Failed to update project name. Please try again.",
       });
       console.log("::error while changing project name", res);
-      setErrorUpdateProjectName(true);
       return;
     }
-
+    setLoading(false);
     setOriginalProjectName(trimmedProjectName);
     setProjectName(trimmedProjectName);
     setShowProjectNameTextfield(false);
     dispatch({
-      type: "UPDATE_PROJECT_NAME",
+      type: actions.UPDATE_PROJECT_NAME,
       payload: { newName: trimmedProjectName, projectId },
     });
   };
@@ -142,7 +141,7 @@ const useUpdateProjectName = (
       !hasMount ||
       !debouncedProjectName ||
       debouncedProjectName === originalProjectName ||
-      errorUpdateProjectName
+      error
     )
       return;
 
@@ -150,9 +149,9 @@ const useUpdateProjectName = (
   }, [debouncedProjectName]);
 
   return {
-    loadingUpdateProjectName,
-    errorUpdateProjectName,
-    helperTextUpdateProjectName,
+    loadingUpdateProjectName: loading,
+    errorUpdateProjectName: error,
+    helperTextUpdateProjectName: helperText,
     startEditing,
     cancelEditing,
     handleProjectInputChange,

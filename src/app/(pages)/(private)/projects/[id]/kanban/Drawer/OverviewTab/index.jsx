@@ -6,13 +6,13 @@ import AssignDialog from "./AssignDialog.jsx";
 import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
-import { useAppContext } from "@/context/AppContext";
 import useDeleteAttachments from "@/hooks/projects/task/useDeleteAttachments";
 import DueDateDialog from "./DueDateDialog.jsx";
 import AttachmentViewer from "./AttachmentViewer.jsx";
 import { formatDueDateRange, getFullName } from "@/utils/index.js";
-const OverviewTab = ({isDrawerOpen}) => {
-  const { state } = useAppContext();
+import { useTaskContext } from "@/context/Task/TaskContext.js";
+const OverviewTab = ({ isDrawerOpen }) => {
+  const { state } = useTaskContext();
   const { activeTask } = state || {};
   const {
     uploadImage,
@@ -180,9 +180,8 @@ const OverviewTab = ({isDrawerOpen}) => {
           </SectionRow>
 
           <SectionRow label="Assignee" className="editTask__assigneeBox">
-            {
-              activeTask?.assigned_to?.length > 0 ? (
-                <Box display={"flex"} flexDirection={"row-reverse"} gap={1}>
+            {activeTask?.assigned_to?.length > 0 ? (
+              <Box display={"flex"} flexDirection={"row-reverse"} gap={1}>
                 {activeTask?.assigned_to?.length > 6 && (
                   <MyTooltip
                     content={
@@ -216,7 +215,11 @@ const OverviewTab = ({isDrawerOpen}) => {
                                   objectFit: "cover",
                                 }}
                               />
-                              <Typography fontSize={12} fontWeight={500} color="white">
+                              <Typography
+                                fontSize={12}
+                                fontWeight={500}
+                                color="white"
+                              >
                                 {name}
                               </Typography>
                             </Box>
@@ -254,7 +257,11 @@ const OverviewTab = ({isDrawerOpen}) => {
                       ?.slice(0, activeTask?.assigned_to?.length > 6 ? 5 : 6)
                       ?.map((item, index) => {
                         return (
-                          <MyTooltip key={index} title={name} placement="bottom">
+                          <MyTooltip
+                            key={index}
+                            title={name}
+                            placement="bottom"
+                          >
                             <AvatarBox
                               key={index}
                               src={item?.avatar}
@@ -266,8 +273,7 @@ const OverviewTab = ({isDrawerOpen}) => {
                       })}
                 </Box>
               </Box>
-              ) : null
-            }
+            ) : null}
             <MyTooltip title="Add assignee" placement="bottom">
               <Box
                 width={40}
@@ -531,7 +537,13 @@ const SectionRow = ({ label, labelStyle = {}, children, className = "" }) => (
     >
       {label}
     </Typography>
-    <Box display="flex" alignItems="center" gap={1} flexWrap="wrap" width={'100%'}>
+    <Box
+      display="flex"
+      alignItems="center"
+      gap={1}
+      flexWrap="wrap"
+      width={"100%"}
+    >
       {children}
     </Box>
   </Box>

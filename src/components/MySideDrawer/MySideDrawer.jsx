@@ -8,7 +8,7 @@ import {
   drawerTransitionDuration,
   drawerEasing,
 } from "@/components/MySideDrawer/MySideDrawerStyleComponents.jsx";
-import * as actions from '@/context/action';
+import * as actions from "@/context/App/action";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import CreateProjectDialog from "@/components/MySideDrawer/CreateProjectDialog.jsx";
 import {
@@ -26,13 +26,14 @@ import {
 } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
 import useCreateProject from "@/hooks/projects/useCreateProject";
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext } from "@/context/App/AppContext";
 import useGetAllProjects from "@/hooks/projects/useGetAllProjects";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import MobileSideDrawer from "./MobileSideDrawer";
 import { NavigationGenerator } from "./NavigationGenerator";
 import MyMenu from "../MyMenu";
 import NavItemList from "./NavItemList";
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 
 export default function MySideDrawer({ open, setOpen }) {
   const {
@@ -51,7 +52,7 @@ export default function MySideDrawer({ open, setOpen }) {
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [activeSegment, setActiveSegment] = useState(null);
   const closeTimeoutRef = useRef(null);
-  
+
   const handleOpenMenu = (event, item) => {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -59,14 +60,14 @@ export default function MySideDrawer({ open, setOpen }) {
     setMenuAnchorEl(event.currentTarget);
     setActiveSegment(item.segment);
   };
-  
+
   const handleDelayedCloseMenu = () => {
     closeTimeoutRef.current = setTimeout(() => {
       setMenuAnchorEl(null);
       setActiveSegment(null);
     }, 200);
   };
-  
+
   const cancelCloseMenu = () => {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -75,8 +76,9 @@ export default function MySideDrawer({ open, setOpen }) {
 
   const [expandedItems, setExpandedItems] = useState({});
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { state,dispatch } = useAppContext();
-  const { projects, activeUser } = state;
+  const { state, dispatch } = useAppContext();
+  const { activeUser } = state;
+  const { projects } = useProjectsContext()?.state;
   const { isAdmin } = activeUser;
   const [loading, isCreated, createProject] = useCreateProject();
   const router = useRouter();
@@ -112,7 +114,6 @@ export default function MySideDrawer({ open, setOpen }) {
     }
     router.push(`/${segment}`);
     if (isMd) handleMobileDrawerClose();
-
   };
 
   const NAVIGATION = NavigationGenerator({
@@ -186,17 +187,17 @@ export default function MySideDrawer({ open, setOpen }) {
           <Toolbar sx={{ justifyContent: open ? "space-between" : "center" }}>
             {!isMd ? (
               <IconButton
-              onClick={()=>router.push("/home")}
-              sx={{
-                '&:hover':{
-                  background:'transparent',
-                }
-              }}
+                onClick={() => router.push("/home")}
+                sx={{
+                  "&:hover": {
+                    background: "transparent",
+                  },
+                }}
               >
                 <img
                   src="/websperoLogo.svg"
                   alt="logo"
-                  style={{height: "40px",  width: open ? "80px" : "50px", }}
+                  style={{ height: "40px", width: open ? "80px" : "50px" }}
                 />
               </IconButton>
             ) : (
@@ -280,9 +281,10 @@ export default function MySideDrawer({ open, setOpen }) {
                   <img src="/iosLoader.gif" width="30px" height="30px" />
                 </ListItem>
               )}
-              {projects?.length > 0 && hasMore && !loadingAllProjects && !isAdmin && (
-                <Box ref={loadMoreRef} style={{ height: 1 }} />
-              )}
+              {projects?.length > 0 &&
+                hasMore &&
+                !loadingAllProjects &&
+                !isAdmin && <Box ref={loadMoreRef} style={{ height: 1 }} />}
             </List>
           </MobileSideDrawer>
         )}

@@ -1,8 +1,6 @@
-import { useAppContext } from "@/context/AppContext";
 import { Box, Button, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
 
-const ProfileImageBox = ({avatar,handleImageUpload,onDelete}) => {
+const ProfileImageBox = ({ avatar, handleImageUpload, onDelete }) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -69,7 +67,7 @@ const ProfileImageBox = ({avatar,handleImageUpload,onDelete}) => {
                       background: "rgba(145,158,171,0.08)",
                       gap: 1,
                       borderRadius: "50%",
-                      position:"relative",
+                      position: "relative",
                     }}
                   >
                     <img
@@ -84,40 +82,40 @@ const ProfileImageBox = ({avatar,handleImageUpload,onDelete}) => {
                       }}
                     />
                     <Box
-                    sx={{
-                      top: "0px",
-                      left: "0px",
-                      width: "100%",
-                      height: "100%",
-                      zIndex: 9,
-                      display: "flex",
-                      flexDirection: "column",
-                      position: "absolute",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "#919EAB",
-                      background: "#141A21A3",
-                      gap: 1,
-                      borderRadius: "50%",
-                      opacity:0,
-                      '&:hover':{
-                        opacity:1,
-                      }
-                    }}
-                  >
-                    <img
-                      src="/addProfileIcon.svg"
-                      alt="add profile"
-                      style={{
-                        width: "32px",
-                        height: "32px",
-                        flexShrink: 0,
+                      sx={{
+                        top: "0px",
+                        left: "0px",
+                        width: "100%",
+                        height: "100%",
+                        zIndex: 9,
+                        display: "flex",
+                        flexDirection: "column",
+                        position: "absolute",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#919EAB",
+                        background: "#141A21A3",
+                        gap: 1,
+                        borderRadius: "50%",
+                        opacity: 0,
+                        "&:hover": {
+                          opacity: 1,
+                        },
                       }}
-                    />
-                    <Typography fontSize={12} color="#919EAB">
-                      Upload photo
-                    </Typography>
-                  </Box>
+                    >
+                      <img
+                        src="/addProfileIcon.svg"
+                        alt="add profile"
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography fontSize={12} color="#919EAB">
+                        Upload photo
+                      </Typography>
+                    </Box>
                   </Box>
                 ) : (
                   <Box
@@ -167,21 +165,26 @@ const ProfileImageBox = ({avatar,handleImageUpload,onDelete}) => {
             </Typography>
           </Box>
         </Box>
-        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} mt={3}>
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          mt={3}
+        >
           <Button
-          onClick={onDelete}
+            onClick={onDelete}
             sx={{
-                background:"rgba(255,86,48,0.16)",
-                color:"#B71D18",
-                fontWeight:700,
-                padding:"6px 12px",
-                minWidth:64,
-                fontSize:14,
-                "&.Mui-disabled": {
-                  color: "#B71D18",
-                  background: "rgba(255,86,48,0.08)",
-                  cursor: "not-allowed",
-                },
+              background: "rgba(255,86,48,0.16)",
+              color: "#B71D18",
+              fontWeight: 700,
+              padding: "6px 12px",
+              minWidth: 64,
+              fontSize: 14,
+              "&.Mui-disabled": {
+                color: "#B71D18",
+                background: "rgba(255,86,48,0.08)",
+                cursor: "not-allowed",
+              },
             }}
           >
             Delete user

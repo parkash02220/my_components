@@ -1,4 +1,4 @@
-import { useAppContext } from "@/context/AppContext";
+
 import Cookies from "js-cookie";
 export const getAuthTokenFromCookies = () => {
     return Cookies.get("auth_token");

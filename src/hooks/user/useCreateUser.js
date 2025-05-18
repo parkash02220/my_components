@@ -5,25 +5,27 @@ import { useCallback, useState } from "react";
 const useCreateUser = () => {
     const toastId = 'create_user';
     const {showToast} = useToast();
-    const [loadingCreateUser,setLoadingCreateUser] = useState(false);
-    const [errorCreateUser,setErrorCreateUser] = useState(null);
+    const [loading,setLoading] = useState(false);
+    const [error,setError] = useState(null);
     const createUser = useCallback(async (userData) => {
         showToast({toastId,type:"loading",message:"Creating user..."});
-        setLoadingCreateUser(true);
-        setErrorCreateUser(null);
+        setLoading(true);
+        setError(null);
         const res = await ApiCall({
             url:`${process.env.NEXT_PUBLIC_BASE_URL}/add-user`,
             method:"POST",
             body:userData,
         });
-        setLoadingCreateUser(false);
+        
         if(res.error){
+            setLoading(false);
+            setError(res.error.message || 'something went wrong')
             showToast({toastId,type:"error",message:"Failed to create user. Please try again."});
-            setErrorCreateUser(res.error.message || 'something went wrong')
             return;
         }
+        setLoading(false);
         showToast({toastId,type:"success",message:"User created successfully"});
     },[showToast])
-    return {loadingCreateUser,errorCreateUser,createUser};
+    return {loadingCreateUser:loading,errorCreateUser:error,createUser};
 }
 export default useCreateUser;

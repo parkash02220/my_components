@@ -1,11 +1,15 @@
-import { useAppContext } from "@/context/AppContext";
 import useToast from "@/hooks/common/useToast";
 import { ApiCall } from "@/utils/ApiCall";
 import { useState, useCallback } from "react";
+import * as taskActions from "@/context/Task/action";
+import * as projectsActions from "@/context/Projects/action";
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
+import { useTaskContext } from "@/context/Task/TaskContext";
 const useUploadAttachments = () => {
   const toastId = "upload_image";
   const { showToast } = useToast();
-  const { dispatch } = useAppContext();
+  const { dispatch: projectsDispatch } = useProjectsContext();
+  const { dispatch: taskDispatch } = useTaskContext();
   const [loadingUploadAttachments, setLoadingUploadAttachments] =
     useState(false);
   const [progressUploadAttachments, setProgressUploadAttachments] = useState(0);
@@ -48,8 +52,12 @@ const useUploadAttachments = () => {
 
     setSuccessUploadAttachments(true);
     const images = res?.data?.images;
-    dispatch({
-      type: "ADD_IMAGE_TO_TASK",
+    taskDispatch({
+      type: taskActions.ADD_IMAGE_TO_TASK,
+      payload: { images },
+    });
+    projectsDispatch({
+      type: projectsActions.ADD_IMAGE_TO_TASK_IN_PROJECT,
       payload: { images, taskId, columnId },
     });
     showToast({

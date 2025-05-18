@@ -5,38 +5,38 @@ import RightDrawer from "@/components/RightDrawer";
 import useLogout from "@/hooks/user/activeUser/useLogout";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext } from "@/context/App/AppContext";
 import { useRouter } from "next/navigation";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import userDrawerRoutes from "@/routes/userDrawerRoutes";
 const ProfileDrawer = ({ open, handleDrawer }) => {
-  const {isXs} = useBreakpointFlags();
-  const {state} = useAppContext();
-  const {activeUser} = state;
-  const [logoutPopupOpen,setLogoutPopupOpen] = useState(false);
+  const { isXs } = useBreakpointFlags();
+  const { state } = useAppContext();
+  const { activeUser } = state;
+  const [logoutPopupOpen, setLogoutPopupOpen] = useState(false);
   const { loadingLogout, logoutUser } = useLogout();
   const router = useRouter();
   const handleLogoutOpen = () => {
     setLogoutPopupOpen(true);
-}
+  };
   const handleLogoutClose = () => {
     setLogoutPopupOpen(false);
-}
-const handleNavigation = (path) => {
-  if(!path) return;
-        router.push(path);
-        handleDrawer();
-}
+  };
+  const handleNavigation = (path) => {
+    if (!path) return;
+    router.push(path);
+    handleDrawer();
+  };
   return (
     <>
-    <ConfirmationPopup 
-    title={'Logout'}
-    handleClose={handleLogoutClose}
-    open={logoutPopupOpen}
-    type={'logout'}
-     loading={loadingLogout}
-     submitAction={logoutUser}
-    />
+      <ConfirmationPopup
+        title={"Logout"}
+        handleClose={handleLogoutClose}
+        open={logoutPopupOpen}
+        type={"logout"}
+        loading={loadingLogout}
+        submitAction={logoutUser}
+      />
       <Box>
         <RightDrawer
           open={open}
@@ -194,7 +194,7 @@ const handleNavigation = (path) => {
                     }}
                   >
                     <img
-                    src={activeUser?.avatar || "/dummyUser.svg"}
+                      src={activeUser?.avatar || "/dummyUser.svg"}
                       alt="avatar"
                       style={{
                         width: "100%",
@@ -218,7 +218,9 @@ const handleNavigation = (path) => {
                     }}
                     variant="h6"
                   >
-                  {`${activeUser?.firstName || ""} ${activeUser?.lastName || ""}`}
+                    {`${activeUser?.firstName || ""} ${
+                      activeUser?.lastName || ""
+                    }`}
                   </Typography>
                 </Box>
                 <Box>
@@ -317,7 +319,7 @@ const handleNavigation = (path) => {
                 {userDrawerRoutes?.map((item, index) => {
                   return (
                     <Box
-                    onClick={()=> handleNavigation(item?.segment)}
+                      onClick={() => handleNavigation(item?.segment)}
                       mb={"4px"}
                       p={1}
                       display={"flex"}
@@ -363,7 +365,7 @@ const handleNavigation = (path) => {
                 sx={{
                   backgroundColor: "rgba(255,86,48,0.16)",
                   minWidth: "64px",
-                  borderRadius:"8px",
+                  borderRadius: "8px",
                   boxShadow:
                     "0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12)",
                   "&:hover": {

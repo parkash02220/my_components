@@ -1,21 +1,20 @@
-import { useAppContext } from "@/context/AppContext";
-import * as actions from "@/context/action";
+
+import * as actions from "@/context/Notifications/action";
 import { ApiCall } from "@/utils/ApiCall";
 import useToast from "../common/useToast";
 import { useEffect, useRef } from "react";
 import { convertIdFields } from "@/utils";
 import { useInView } from "react-intersection-observer";
+import { useNotificationContext } from "@/context/Notifications/NotificationsContext";
 
 const useNotifications = (open) => {
+  const { dispatch, state } = useNotificationContext();
+  const { notifications, loadingNotifications, errorNotifications } = state;
+  const { tab, unReadCount, totalCount, pageSize } = notifications;
   const toastId = "get_notification";
   const { showToast } = useToast();
-  const { dispatch, state } = useAppContext();
-  const { notifications, loading, error } = state;
-  const { tab, unReadCount, totalCount, pageSize } = notifications;
   const currentTabData = notifications[tab] || {};
   const { page, hasMore } = currentTabData;
-  const { loadingNotifications } = loading;
-  const { errorNotifications } = error;
   const { ref: loadMoreRef, inView } = useInView();
   const fetchNotifications = async (isFirstCall = false) => {
     if (loadingNotifications) return;

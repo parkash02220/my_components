@@ -1,16 +1,16 @@
-import { useAppContext } from "@/context/AppContext";
+
 import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 import { useEffect, useState } from "react";
-import * as actions from '@/context/action';
 import useToast from "../common/useToast";
+import * as actions from "@/context/Projects/action";
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
+
 const useGetProject = (id) => {
   const toastId = "get_project";
   const {showToast} = useToast(); 
-  const { dispatch,state } = useAppContext();
-  const { activeProject, loading,error, projectVersion } = state;
-  const {loadingActiveProject} = loading;
-  const {errorActiveProject} = error;
+  const { dispatch,state } = useProjectsContext();
+  const { activeProject, loadingActiveProject,errorActiveProject, projectVersion } = state;
   const [isNotFound,setIsNotFound] = useState(false);
   const getProjectById = async (id) => {
     setIsNotFound(false);

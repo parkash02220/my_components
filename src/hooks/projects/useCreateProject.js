@@ -1,12 +1,13 @@
-import { useAppContext } from "@/context/AppContext";
+
 import useToast from "../common/useToast";
 import { convertIdFields } from "@/utils";
-
+import * as actions from '@/context/Projects/action';
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 const { ApiCall } = require("@/utils/ApiCall");
 const { useState, useEffect } = require("react");
 
 const useCreateProject = () => {
-  const {dispatch} = useAppContext();
+  const {dispatch} = useProjectsContext();
   const toastId = "create_project";
   const {showToast} = useToast();
   const [loading, setLoading] = useState(false);
@@ -21,16 +22,17 @@ const useCreateProject = () => {
       body: { name,userIds },
     });
 
-    setLoading(false);
 
     if (res.error) {
+    setLoading(false);
       showToast({toastId,type:"error",message:"Failed to create project."})
       console.log("::error while creating project", res);
       return;
     }
+    setLoading(false);
     const formattedIdResponse = convertIdFields(res?.data?.board) || {};
     setIsCreated(true);
-    dispatch({type:"CREATE_PROJECT",payload:formattedIdResponse})
+    dispatch({type:actions.CREATE_PROJECT,payload:formattedIdResponse})
     showToast({toastId,type:"success",message:"Project created successfully."})
   };
 

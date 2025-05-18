@@ -1,16 +1,15 @@
-import { useAppContext } from "@/context/AppContext";
+
 import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 import { useCallback, useState } from "react";
-import * as actions from '@/context/action';
+import * as actions from '@/context/Task/action';
 import useToast from "@/hooks/common/useToast";
+import { useTaskContext } from "@/context/Task/TaskContext";
 const useGetTask = () => {
   const toastId = 'get_task';
   const {showToast} = useToast();
-  const {dispatch,state} = useAppContext();
-  const {activeTask,loading,error} = state;
-  const {loadingActiveTask} = loading;
-  const {errorActiveTask} = error;
+  const {dispatch,state} = useTaskContext();
+  const {activeTask,loadingActiveTask,errorActiveTask} = state;
   const getTaskFromBackend = useCallback(async (taskId) => {
     dispatch({type:actions.SET_ACTIVE_TASK_REQUEST});
 

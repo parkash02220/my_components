@@ -8,9 +8,9 @@ const useLogout = () => {
    const router = useRouter();
    const logoutUser = async () => {
     setLoadingLogout(true);
-    setLoadingLogout(false);
     Cookies.remove("auth_token");
      router.push("/signin");
+    setLoadingLogout(false);
    }
 
    useEffect(()=>{

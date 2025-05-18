@@ -1,13 +1,15 @@
-import { useAppContext } from "@/context/AppContext";
 import useToast from "@/hooks/common/useToast";
 import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 import { useState } from "react";
-
-
+import * as taskActions from "@/context/Task/action";
+import * as projectsActions from "@/context/Projects/action";
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
+import { useTaskContext } from "@/context/Task/TaskContext";
 const useToggleAssignTask = () => {
   const { showToast } = useToast();
-  const { dispatch } = useAppContext();
+  const { dispatch: projectsDispatch } = useProjectsContext();
+  const { dispatch: taskDispatch } = useTaskContext();
   const [loadingAssignTaskIds, setLoadingAssignTaskIds] = useState([]);
   const [errorAssignTask, setErrorAssignTask] = useState(false);
   const toggleAssignTask = async (taskId, assignedUserIds, userId) => {
@@ -30,8 +32,12 @@ const useToggleAssignTask = () => {
       return;
     }
     const formattedIdResponse = convertIdFields(res?.data?.updatedTask || {});
-    dispatch({
-      type: "EDIT_TASK",
+    projectsDispatch({
+      type: projectsActions.EDIT_TASK_IN_PROJECT,
+      payload: formattedIdResponse,
+    });
+    taskDispatch({
+      type: taskActions.EDIT_TASK,
       payload: formattedIdResponse,
     });
     showToast({

@@ -14,7 +14,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
-
+import * as actions from "@/context/Task/action";
 import { coordinateGetter } from "./multipleContainersKeyboardPreset";
 import { customCollisionDetection, hasDraggableData } from "../utils";
 import { TaskCard } from "../Task";
@@ -23,11 +23,11 @@ import useMoveTask from "@/hooks/projects/task/useMoveTask";
 import useUpdateColumnPosition from "@/hooks/projects/section/useUpdateColumnPosition";
 import useCreateSection from "@/hooks/projects/section/useCreateSection";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
-import { useAppContext } from "@/context/AppContext";
 import KanbanRightDrawer from "../Drawer/KanbanRightDrawer";
 import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { BoardColumn } from "../Column/BoardColumn";
+import { useTaskContext } from "@/context/Task/TaskContext";
 
 export default function KanbanBoard({
   boardId,
@@ -37,7 +37,7 @@ export default function KanbanBoard({
   const [openDrawer, setOpenDrawer] = useState(false);
   const inputRef = useRef(null);
   const wasDragged = useRef(false);
-  const { dispatch } = useAppContext();
+  const { dispatch } = useTaskContext();
   const [showAddColumnButton, setShowAddColumnButton] = useState(true);
   const {
     loadingCreateColumn,
@@ -306,7 +306,7 @@ export default function KanbanBoard({
     setOpenDrawer(true);
   };
   const handleDrawerClose = () => {
-    dispatch({ type: "SET_ACTIVE_TASK", payload: {} });
+    dispatch({ type: actions.SET_ACTIVE_TASK_SUCCESS, payload: {} });
     setOpenDrawer(false);
   };
 

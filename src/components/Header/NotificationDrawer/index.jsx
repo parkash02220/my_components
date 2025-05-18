@@ -5,10 +5,21 @@ import { Header } from "./Header";
 import { Content } from "./Content";
 import { Footer } from "./Footer";
 import useNotifications from "@/hooks/notifications/useNotifications";
-import { useAppContext } from "@/context/AppContext";
+import * as actions from "@/context/Notifications/action";
+import { useNotificationContext } from "@/context/Notifications/NotificationsContext";
 
-const index = ({ open, handleDrawer,notifications,loadingNotifications,totalCount,unReadCount,loadMoreRef,hasMore,page }) => {
-  const { dispatch } = useAppContext();
+const index = ({
+  open,
+  handleDrawer,
+  notifications,
+  loadingNotifications,
+  totalCount,
+  unReadCount,
+  loadMoreRef,
+  hasMore,
+  page,
+}) => {
+  const { dispatch } = useNotificationContext();
   const tabValues = [
     {
       key: 1,
@@ -35,7 +46,10 @@ const index = ({ open, handleDrawer,notifications,loadingNotifications,totalCoun
   };
 
   useEffect(() => {
-    dispatch({ type: "SET_NOTIFICATION_TAB", payload: { tab: currentTab } });
+    dispatch({
+      type: actions.SET_NOTIFICATION_TAB,
+      payload: { tab: currentTab },
+    });
   }, [currentTab]);
 
   return (

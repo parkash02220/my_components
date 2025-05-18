@@ -4,7 +4,7 @@ import { Box, Grid } from "@mui/system";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext } from "@/context/App/AppContext";
 import ProfileHeader from "./ProfileHeader";
 import GeneralTab from "./tabs/GeneralTab";
 import SecurityTab from "./tabs/SecurityTab";
@@ -16,7 +16,7 @@ export default function Profile() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const tab = searchParams.get("tab");
-    const [selectedTab, setSelectedTab] = useState("general");
+  const [selectedTab, setSelectedTab] = useState("general");
   const { state } = useAppContext();
   const { activeUser } = state;
   const formik = useFormik({
@@ -55,11 +55,11 @@ export default function Profile() {
     }
   }, [activeUser]);
 
-  useEffect(()=>{
-    if(tab==="general" || tab==="security"){
+  useEffect(() => {
+    if (tab === "general" || tab === "security") {
       setSelectedTab(tab);
     }
-  },[tab]);
+  }, [tab]);
 
   useEffect(() => {
     if (!tab) {
@@ -79,15 +79,29 @@ export default function Profile() {
   return (
     <>
       <Box className="profile__container">
-        <Box mb={5} display={'flex'} flexDirection={'column'} alignItems={'flex-start'}>
-            <BackButton />
-            <ProfileHeader selectedTab={selectedTab} onTabChange={handleTabChange}/>
+        <Box
+          mb={5}
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"flex-start"}
+        >
+          <BackButton />
+          <ProfileHeader
+            selectedTab={selectedTab}
+            onTabChange={handleTabChange}
+          />
         </Box>
-       <Box>
-        {
-            selectedTab === "security" ? <SecurityTab /> : <GeneralTab formik={formik} userId={activeUser?.id} avatar={activeUser?.avatar}/> 
-        }
-       </Box>
+        <Box>
+          {selectedTab === "security" ? (
+            <SecurityTab />
+          ) : (
+            <GeneralTab
+              formik={formik}
+              userId={activeUser?.id}
+              avatar={activeUser?.avatar}
+            />
+          )}
+        </Box>
       </Box>
     </>
   );

@@ -2,7 +2,6 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import ProfileImageBox from "./ProfileImageBox";
 import UserDetailsForm from "@/app/(pages)/(public)/signup/UserDetailsForm";
 import useUpdateUser from "@/hooks/user/useUpdateUser";
-import { useAppContext } from "@/context/AppContext";
 import { getActiveUser } from "@/utils";
 import useDeleteUser from "@/hooks/user/useDeleteUser";
 import { useEffect, useState } from "react";
@@ -10,18 +9,16 @@ import useDeleteActiveUser from "@/hooks/user/activeUser/useDeleteActiveUser";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import useUpdateActiveUser from "@/hooks/user/activeUser/useUpdateActiveUser";
 
-const GeneralTab = ({ formik, userId,avatar }) => {
-  const {loadingUpdateActiveUser,errorUpdateActiveUser,updateActiveUser} = useUpdateActiveUser();
-  const [imgSrc,setImgSrc] = useState(null);
-  const {
-    loadingDeleteActiveUser,
-    errorDeleteActiveUser,
-    deleteActiveUser,
-  } = useDeleteActiveUser();
+const GeneralTab = ({ formik, userId, avatar }) => {
+  const { loadingUpdateActiveUser, errorUpdateActiveUser, updateActiveUser } =
+    useUpdateActiveUser();
+  const [imgSrc, setImgSrc] = useState(null);
+  const { loadingDeleteActiveUser, errorDeleteActiveUser, deleteActiveUser } =
+    useDeleteActiveUser();
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const handleImageUpload = (img) => {
     if (img) {
-     setImgSrc(img)
+      setImgSrc(img);
     }
   };
   const handleUpdateUser = async () => {
@@ -38,12 +35,12 @@ const GeneralTab = ({ formik, userId,avatar }) => {
   const handleDeletePopupClose = () => {
     setDeletePopupOpen(false);
   };
-  useEffect(()=>{
-     setImgSrc(avatar);
-  },[avatar]);
+  useEffect(() => {
+    setImgSrc(avatar);
+  }, [avatar]);
   return (
     <>
-     <ConfirmationPopup
+      <ConfirmationPopup
         title={"Delete user"}
         handleClose={handleDeletePopupClose}
         open={deletePopupOpen}

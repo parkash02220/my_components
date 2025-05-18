@@ -5,7 +5,7 @@ import MySideDrawer from "@/components/MySideDrawer/MySideDrawer";
 import { Box } from "@mui/material";
 import CustomThemeProvider from '@/theme/CustomThemeProvider';
 import { Toaster } from 'react-hot-toast';
-import { AppContextProvider } from '@/context/AppContext';
+import { AppContextProvider } from '@/context/App/AppContext';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

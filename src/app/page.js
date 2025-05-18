@@ -17,5 +17,5 @@ export default function Page() {
   <Box height={'100vh'}>
   <Loader />
   </Box>
-  </>;
+  </>
 }

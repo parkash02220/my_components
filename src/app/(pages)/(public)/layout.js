@@ -1,5 +1,5 @@
 'use client';
-import { AppContextProvider } from "@/context/AppContext";
+import { AppContextProvider } from "@/context/App/AppContext";
 
 const SignINLayout = ({children}) => {
     return <>

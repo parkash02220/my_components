@@ -1,24 +1,25 @@
-import { useAppContext } from "@/context/AppContext";
 import useToast from "@/hooks/common/useToast";
 import { convertIdFields } from "@/utils";
-
+import * as actions from "@/context/Task/action";
+import { useTaskContext } from "@/context/Task/TaskContext";
 const { ApiCall } = require("@/utils/ApiCall");
 const { useState } = require("react");
 
 const useCreateSubTask = () => {
   const toastId = "create_subtask";
   const { showToast } = useToast();
-  const { dispatch } = useAppContext();
-  const [loadingCreateSubTask, setLoadingCreateSubTask] = useState(false);
+  const { dispatch } = useTaskContext();
+  const [loading, setLoading] = useState(false);
   const addSubTaskToBackend = async (taskId, title) => {
-    setLoadingCreateSubTask(true);
+    setLoading(true);
     const res = await ApiCall({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/add-subtask/${taskId}`,
       method: "POST",
       body: { title },
     });
-    setLoadingCreateSubTask(false);
+
     if (res.error) {
+      setLoading(false);
       showToast({
         toastId,
         type: "error",
@@ -27,10 +28,10 @@ const useCreateSubTask = () => {
       console.log("::error while adding subtask", res);
       return;
     }
-
+    setLoading(false);
     const formattedIdResponse = convertIdFields(res?.data?.subtask || {});
 
-    dispatch({ type: "ADD_SUBTASK", payload: formattedIdResponse });
+    dispatch({ type: actions.ADD_SUBTASK, payload: formattedIdResponse });
     showToast({
       toastId,
       type: "success",
@@ -38,7 +39,7 @@ const useCreateSubTask = () => {
     });
   };
 
-  return { loadingCreateSubTask, addSubTaskToBackend };
+  return { loadingCreateSubTask: loading, addSubTaskToBackend };
 };
 
 export default useCreateSubTask;

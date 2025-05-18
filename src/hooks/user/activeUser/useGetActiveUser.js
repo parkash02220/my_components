@@ -1,6 +1,6 @@
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext } from "@/context/App/AppContext";
 import { convertIdFields } from "@/utils";
-import * as actions from '@/context/action';
+import * as actions from '@/context/App/action';
 import useToast from "@/hooks/common/useToast";
 import { useRouter } from "next/navigation";
 import useLogout from "./useLogout";
@@ -10,9 +10,7 @@ const { useState, useEffect } = require("react")
 
 const useGetActiveUser = () => {
     const {dispatch,state} = useAppContext();
-    const {activeUser,loading,error} = state;
-    const {loadingActiveUser} = loading;
-    const {errorActiveUser} = error;
+    const {activeUser,loadingActiveUser,errorActiveUser} = state;
     const toastId = "active_user";
     const {showToast} = useToast();
     const {loadingLogout,logoutUser} = useLogout();
@@ -22,7 +20,7 @@ const useGetActiveUser = () => {
                 url:`${process.env.NEXT_PUBLIC_BASE_URL}/get-user`,
                 method:"GET",
             });
-    
+    console.log("::request completed",res)
             if(res.error){
                 const {error} = res;
                 showToast({toastId,type:"error",message:error?.message || "Something went wrong"});

@@ -1,11 +1,20 @@
-import { useAppContext } from "@/context/AppContext";
+import { useAppContext } from "@/context/App/AppContext";
 import { getTimeAgo } from "@/utils";
 import { Box, Typography } from "@mui/material";
 
-const NotificatoinMsg = ({ notification,type="",handleNotificationClick }) => {
+const NotificatoinMsg = ({
+  notification,
+  type = "",
+  handleNotificationClick,
+}) => {
   const { state } = useAppContext();
   const userId = state?.activeUser?.id;
-  const isUnread = type==="unread" ? true : !notification?.seenBy?.some((item) => item?.user?.id === userId && item?.seen === true);
+  const isUnread =
+    type === "unread"
+      ? true
+      : !notification?.seenBy?.some(
+          (item) => item?.user?.id === userId && item?.seen === true
+        );
 
   return (
     <>
@@ -28,7 +37,7 @@ const NotificatoinMsg = ({ notification,type="",handleNotificationClick }) => {
             background: "rgba(145,158,171,0.08)",
           },
         }}
-        onClick={()=>handleNotificationClick(isUnread,notification?.id)}
+        onClick={() => handleNotificationClick(isUnread, notification?.id)}
       >
         {isUnread && (
           <Box

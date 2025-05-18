@@ -13,7 +13,7 @@ const useLogin = () => {
    const [errorMsg,setErrorMsg] = useState('');
    const router = useRouter();
    const loginUser = async (userData) => {
-     showToast({message:"Authenticating your account...",type:"loading",toastId,duration:Infinity});
+     showToast({message:"Authenticating your account...",type:"loading",toastId});
     setLoadingLogin(true);
     setErrorLogin(false);
     setErrorMsg("");

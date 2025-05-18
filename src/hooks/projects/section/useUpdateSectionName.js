@@ -1,8 +1,8 @@
 import useToast from "@/hooks/common/useToast";
 import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
-
-const { useAppContext } = require("@/context/AppContext");
+import * as actions from '@/context/Projects/action';
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 const { useState } = require("react");
 
 const useUpdateSectionName = (initialName = "",setShowEditTextfield) => {
@@ -10,10 +10,10 @@ const useUpdateSectionName = (initialName = "",setShowEditTextfield) => {
   const {showToast} = useToast();
     const [columnName, setColumnName] = useState(initialName);
     const [originalName, setOriginalName] = useState(initialName);
-    const [loadingUpdateColumnName, setLoadingUpdateColumnName] = useState(false);
-    const [errorUpdateColumnName, setErrorUpdateColumnName] = useState(false);
-    const [helperTextUpdateColumnName, setHelperTextUpdateColumnName] = useState('');
-    const { dispatch } = useAppContext();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+    const [helperText, setHelperText] = useState('');
+    const { dispatch } = useProjectsContext();
   
     const startEditing = (currentName) => {
       setOriginalName(currentName);
@@ -22,8 +22,8 @@ const useUpdateSectionName = (initialName = "",setShowEditTextfield) => {
   
     const cancelEditing = () => {
       setColumnName(originalName);
-      setErrorUpdateColumnName(false);
-      setHelperTextUpdateColumnName('');
+      setError(false);
+      setHelperText('');
     };
   
     const handleColumnNameInputfieldChange = (e) => {
@@ -40,8 +40,8 @@ const useUpdateSectionName = (initialName = "",setShowEditTextfield) => {
       }
   
       setColumnName(newName);
-      setErrorUpdateColumnName(error);
-      setHelperTextUpdateColumnName(helperText);
+      setError(error);
+      setHelperText(helperText);
     };
   
     const handleColumnInputKeyDown = (e, sectionId) => {
@@ -56,7 +56,7 @@ const useUpdateSectionName = (initialName = "",setShowEditTextfield) => {
       const trimmedName = columnName.trim();
       if (!trimmedName || trimmedName === originalName) return;
   
-      setLoadingUpdateColumnName(true);
+      setLoading(true);
   
       const res = await ApiCall({
         url: `${process.env.NEXT_PUBLIC_BASE_URL}/rename-section/${sectionId}`,
@@ -64,15 +64,15 @@ const useUpdateSectionName = (initialName = "",setShowEditTextfield) => {
         body: { name: trimmedName },
       });
   
-      setLoadingUpdateColumnName(false);
-  
+      
       if (res.error) {
+        setLoading(false);
         showToast({toastId,type:"error",message:"Failed to update section name. Please try again."})
         console.log("::error while renaming column", res.error);
         return;
       }
-
-      dispatch({ type: "UPDATE_SECTION_NAME", payload: { sectionId:sectionId,newName:trimmedName } });
+      setLoading(false);
+      dispatch({ type: actions.UPDATE_SECTION_NAME, payload: { sectionId:sectionId,newName:trimmedName } });
   
       setOriginalName(trimmedName);
       setShowEditTextfield(false);
@@ -80,9 +80,9 @@ const useUpdateSectionName = (initialName = "",setShowEditTextfield) => {
   
     return {
       columnName,
-      loadingUpdateColumnName,
-      errorUpdateColumnName,
-      helperTextUpdateColumnName,
+      loadingUpdateColumnName:loading,
+      errorUpdateColumnName:error,
+      helperTextUpdateColumnName:helperText,
       setColumnName,
       handleColumnNameInputfieldChange,
       handleColumnInputKeyDown,

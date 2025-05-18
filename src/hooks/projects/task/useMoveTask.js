@@ -1,17 +1,18 @@
-import { useAppContext } from "@/context/AppContext";
+
 import useToast from "@/hooks/common/useToast";
 import { ApiCall } from "@/utils/ApiCall";
 import { useCallback, useState } from "react";
-
+import * as actions from '@/context/Projects/action';
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 const useMoveTask = () => {
     const toastId = 'move_task';
     const {showToast} = useToast();
-    const [loadingMoveTask,setLoadingMoveTask] = useState(false);
-    const {dispatch} = useAppContext();
+    const [loading,setLoading] = useState(false);
+    const {dispatch} = useProjectsContext();
     const moveTask = async (taskId,toSectionId,newPosition) => {
-        setLoadingMoveTask(true);
+        setLoading(true);
         setTimeout(() => {
-            dispatch({type:"MOVE_TASK",payload:{taskId,toSectionId,newPosition:newPosition-1}});
+            dispatch({type:actions.MOVE_TASK,payload:{taskId,toSectionId,newPosition:newPosition-1}});
         }, 0);
         const res = await ApiCall({
             url:`${process.env.NEXT_PUBLIC_BASE_URL}/move-task`,
@@ -19,8 +20,9 @@ const useMoveTask = () => {
             body:{taskId,toSectionId,newPosition},
         });
 
-        setLoadingMoveTask(false);
+       
         if(res.error){
+           setLoading(false);
             showToast({
                 toastId,
                 type: "error",
@@ -29,7 +31,7 @@ const useMoveTask = () => {
             console.log("::error whhile updating task");
             return;
         }
-
+ setLoading(false);
         const data = res?.data;
          showToast({
       toastId,
@@ -38,7 +40,7 @@ const useMoveTask = () => {
     });
     }
 
-  return { loadingMoveTask,moveTask };
+  return { loadingMoveTask:loading,moveTask };
 };
 
 export default useMoveTask;
