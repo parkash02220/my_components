@@ -27,13 +27,13 @@ export const SingleNavItem = ({
     setSelectedDrawerItem(cleanPath);
   }, [pathname]);
 
-  const isSelected = selectedDrawerItem === item.segment;
-  const isAddProject = item.segment === "addproject";
+  const isSelected = selectedDrawerItem === item.path;
+  const isAddProject = item.path === "addproject";
   const content = (
     <ListItemButton
       onMouseEnter={() => {
-        if (item.segment !== "addproject") {
-          router.prefetch(`/${item.segment}`);
+        if (item.path !== "addproject") {
+          router.prefetch(`/${item.path}`);
         }
       }}
       onClick={onClick}

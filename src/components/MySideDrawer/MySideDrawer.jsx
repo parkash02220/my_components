@@ -58,7 +58,7 @@ export default function MySideDrawer({ open, setOpen }) {
       clearTimeout(closeTimeoutRef.current);
     }
     setMenuAnchorEl(event.currentTarget);
-    setActiveSegment(item.segment);
+    setActiveSegment(item.path);
   };
 
   const handleDelayedCloseMenu = () => {
@@ -99,20 +99,20 @@ export default function MySideDrawer({ open, setOpen }) {
     setOpen(!open);
   };
 
-  const handleExpandToggle = (segment) => {
+  const handleExpandToggle = (path) => {
     setExpandedItems((prev) => ({
       ...prev,
-      [segment]: !prev[segment],
+      [path]: !prev[path],
     }));
   };
 
   const handleDrawerItemClick = (item) => {
-    const { segment } = item;
-    if (segment === "addproject") {
+    const { path } = item;
+    if (path === "addproject") {
       setDialogOpen(true);
       return;
     }
-    router.push(`/${segment}`);
+    router.push(`/${path}`);
     if (isMd) handleMobileDrawerClose();
   };
 
@@ -126,7 +126,7 @@ export default function MySideDrawer({ open, setOpen }) {
   });
 
   const activeMenuItem = useMemo(() => {
-    return NAVIGATION.find((item) => item.segment === activeSegment);
+    return NAVIGATION.find((item) => item.path === activeSegment);
   }, [NAVIGATION, activeSegment]);
 
   const handleCreateProject = async (name, users) => {

@@ -3,6 +3,7 @@ import { Box, CircularProgress } from "@mui/material";
 import useGetProject from "@/hooks/projects/useGetProject";
 import { useRouter } from "next/navigation";
 import KanbanBoardWrapper from "./kanban/Board/KanbanBoardWrapper";
+import PageNotFound from "@/components/PageNotFound";
 
 export default function ProjectPageContent({ id }) {
   const router = useRouter();
@@ -31,8 +32,8 @@ export default function ProjectPageContent({ id }) {
       </Box>
     );
   }
-  if(isNotFound){
-       router.push('/not-found');
+  if (isNotFound) {
+    return <PageNotFound />;
   }
   return (
     <KanbanBoardWrapper

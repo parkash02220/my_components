@@ -2,19 +2,19 @@
 const userDrawerRoutes = [
     {
       type: "item",
-      segment: "/user/profile",
+      path: "/user/profile",
       title: "My Profile",
       icon: {src:"/profileIcon.svg",alt:"profile"},
     },
     {
       type: "item",
-      segment: "/user/security",
+      path: "/user/security",
       title: "Security",
       icon: {src:"/securityIcon.svg",alt:"security"},
     },
     {
         type: "item",
-        segment: "/user/settings",
+        path: "/user/settings",
         title: "Account settings",
         icon: {src:"/settingIcon.svg",alt:"account settings"},
       },

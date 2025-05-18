@@ -37,7 +37,7 @@ export function useNavigationInfo({ projects = [] } = {}) {
 
   const matchedChild = useMemo(() => {
     return allRoutes.find(route =>
-      pathname === `/${route.segment}` || pathname.startsWith(`${route.segment}`)
+      pathname === `/${route.path}` || pathname.startsWith(`${route.path}`)
     );
   }, [allRoutes, pathname]);
 

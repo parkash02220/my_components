@@ -25,7 +25,7 @@ export function NavigationGenerator({
   for (const route of routes) {
     if (!route.roles.includes(role)) continue;
 
-    if (!isAdmin && route.segment === "projects") continue;
+    if (!isAdmin && route.path === "projects") continue;
 
     if (route.type === "item") {
       NAVIGATION.push({ ...route });
@@ -48,7 +48,7 @@ export function NavigationGenerator({
         }
 
         if (
-          route.segment === "projects" &&
+          route.path === "projects" &&
           isInitialFetchDone &&
           !loadingAllProjects &&
           projects.length === 0
@@ -70,7 +70,7 @@ export function NavigationGenerator({
     if(projects.length > 0){
       const projectItems = projects.map((project) => ({
         type: "item",
-        segment: `projects/${project.id}`,
+        path: `projects/${project.id}`,
         title: project.name,
         icon: <FolderOpenIcon />,
       }));

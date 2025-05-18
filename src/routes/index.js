@@ -2,7 +2,7 @@ import { FolderOpenIcon, UserIcon } from "lucide-react";
 
 export const staticNavItems = [
   // { type: "header", title: "Projects" },
-  { type: "item", segment: "addproject", title: "+ Project", roles: ["admin"], },
+  { type: "item", path: "addproject", title: "+ Project", roles: ["admin"], },
   { type: "searchField" },
 ];
 
@@ -10,27 +10,27 @@ export const staticNavItems = [
 const drawerRoutes = [
   {
     type: "collapsible",
-    segment: "projects",
+    path: "projects",
     title: "Projects",
     icon: <FolderOpenIcon />,
     roles: ["admin"],
     children: (projects) =>
       projects.map((project) => ({
         type: "item",
-        segment: `projects/${project.id}`,
+        path: `projects/${project.id}`,
         title: project.name,
         projectId: project.id,
       })),
   },
   {
     type: "collapsible",
-    segment: "users",
+    path: "users",
     title: "Users",
     icon: <UserIcon />,
     roles: ["admin"],
     children: [
-      { type: "item", segment: "users/list-users", title: "List Users" },
-      { type: "item", segment: "users/create-user", title: "Create User" },
+      { type: "item", path: "users/list-users", title: "List Users" },
+      { type: "item", path: "users/create-user", title: "Create User" },
     ],
   },
 ];

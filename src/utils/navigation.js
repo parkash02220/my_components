@@ -13,5 +13,5 @@ export function getNavigationInfo(path) {
     }
   });
 
-  return flatRoutes.find((r) => r.segment === path) || null;
+  return flatRoutes.find((r) => r.path === path) || null;
 }

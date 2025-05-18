@@ -319,7 +319,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                 {userDrawerRoutes?.map((item, index) => {
                   return (
                     <Box
-                      onClick={() => handleNavigation(item?.segment)}
+                      onClick={() => handleNavigation(item?.path)}
                       mb={"4px"}
                       p={1}
                       display={"flex"}

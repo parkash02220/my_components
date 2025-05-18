@@ -86,8 +86,8 @@ export default function NavItemList({
           key={index}
           item={item}
           open={open}
-          isExpanded={expandedItems[item.segment]}
-          onToggle={() => handleExpandToggle(item.segment)}
+          isExpanded={expandedItems[item.path]}
+          onToggle={() => handleExpandToggle(item.path)}
           onClick={handleDrawerItemClick}
           loadMoreRef={loadMoreRef}
           onOpenMenu={handleOpenMenu}

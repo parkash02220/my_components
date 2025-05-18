@@ -39,7 +39,7 @@ export default function Header() {
             alignItems: "center",
           }}
         >
-          {child?.segment?.startsWith("projects") ? (
+          {child?.path?.startsWith("projects") ? (
             <HeaderProjectName />
           ) : (
             <Box>
