@@ -25,10 +25,10 @@ const useLogin = () => {
     setLoadingLogin(false);
     if (res.error) {
       toast.dismiss(toastId);
-      showToast({message:"Login failed please try again...",type:"error",toastId});
       setErrorLogin(true);
-         const error = res?.error?.data?.error || "something went wrong";
-         setErrorMsg(error);
+      const error = res?.error?.data?.error || "something went wrong";
+      setErrorMsg(error);
+      showToast({message:error || "Login failed please try again...",type:"error",toastId});
          return;
        }
 
