@@ -26,7 +26,6 @@ const useCreateProject = () => {
     if (res.error) {
     setLoading(false);
       showToast({toastId,type:"error",message:"Failed to create project."})
-      console.log("::error while creating project", res);
       return;
     }
     setLoading(false);

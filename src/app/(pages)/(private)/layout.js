@@ -45,8 +45,8 @@ export default function HomeLayout({ children }) {
           <main
             style={{
               flexGrow: 1,
-              padding: isMd ? "24px 0px 0px 0px" : "24px",
-              height: "calc(100vh - 75px",
+              padding: isMd ? "24px 16px 8px 16px" : "24px",
+              height: "calc(100vh - 75px)",
               paddingBottom: "4px",
               overflow:'auto',
             }}

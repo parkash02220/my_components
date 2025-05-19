@@ -18,12 +18,14 @@ const TableUser = ({
   setSelectedUsers,
   debouncedSearchValue,
   pageSize,
+  hasFetchedOnce,
 }) => {
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
   const [isAllUserSelected, setIsAllUserSelected] = useState(false);
   const { loadingDeleteUser, errorDeleteUser, deleteUser } = useDeleteUser();
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
+  const isLoading = loadingAllUsers || page === 0;
   const msgForDeleteUser =
     isAllUserSelected || selectedUsers?.length === totalUsers
       ? "all users."
@@ -69,7 +71,7 @@ const TableUser = ({
               !isAllUserSelected &&
               selectedUsers?.length < totalUsers
             }
-            checked={isAllUserSelected || selectedUsers?.length === totalUsers}
+            checked={isAllUserSelected || (!isLoading && selectedUsers?.length === totalUsers)}
             onChange={(e) => handleSelectAllUsers(e.target.checked)}
           />
         </Box>
@@ -221,7 +223,7 @@ const TableUser = ({
           }}
           totalCount={totalUsers}
           selectedRows={selectedUsers}
-          isLoading={loadingAllUsers || page === 0}
+          isLoading={(loadingAllUsers || page === 0)}
           isAllRowSelected={isAllUserSelected}
         />
       </Box>

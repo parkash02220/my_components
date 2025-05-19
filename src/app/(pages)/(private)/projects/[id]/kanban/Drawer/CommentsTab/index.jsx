@@ -1,5 +1,6 @@
 import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
+import { useAppContext } from "@/context/App/AppContext";
 import useAddTaskComment from "@/hooks/projects/task/comment/useAddTaskComment";
 import useGetAllTaskComments from "@/hooks/projects/task/comment/useGetAllTaskComments";
 import { getTimeAgo } from "@/utils";
@@ -9,6 +10,7 @@ import { useFormik } from "formik";
 const CommentsTab = ({ activeTask }) => {
  const  {loadingAllTaskComments,errorAllTaskComments,getAllTaskComments,allComments,setAllComments} = useGetAllTaskComments(activeTask?.id);
   const {loadingAddCommnet,errorAddComment,addCommentToTask} = useAddTaskComment();
+  const {activeUser} = useAppContext()?.state;
   const theme = useTheme();
   const formik = useFormik({
     initialValues:{
@@ -61,7 +63,7 @@ const CommentsTab = ({ activeTask }) => {
               overflow:"hidden",
             }}
             >
-              <img src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-1.webp" alt="avatar" style={{width:"100%",height:"100%",objectFit:"cover",color:"transparent",textIndent:"10000px"}} />
+              <img src={comment?.user?.avatar || '/dummyUser.svg'} alt="avatar" style={{width:"100%",height:"100%",objectFit:"cover",color:"transparent",textIndent:"10000px"}} />
               
             </Box>
             <Box className = "commentBox__right"
@@ -126,7 +128,7 @@ const CommentsTab = ({ activeTask }) => {
         overflow:"hidden",
         flexShrink:0,
       }}>
-        <img src="https://pub-c5e31b5cdafb419fb247a8ac2e78df7a.r2.dev/public/assets/images/mock/avatar/avatar-25.webp" alt="avatar" style={{
+        <img src={activeUser?.avatar || '/dummyUser.svg'} alt="avatar" style={{
           width:"100%",
           height:"100%",
           objectFit:"cover",

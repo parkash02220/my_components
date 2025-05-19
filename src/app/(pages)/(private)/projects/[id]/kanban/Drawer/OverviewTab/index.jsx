@@ -2,7 +2,7 @@ import useEditTask from "@/hooks/projects/task/useEditTask";
 import useUploadAttachments from "@/hooks/projects/task/useUploadAttachments";
 import { useFormik } from "formik";
 import { useEffect, useRef, useState } from "react";
-import AssignDialog from "./AssignDialog.jsx";
+import AssignDialog from "./AssignTaskDialog/index";
 import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
@@ -206,7 +206,7 @@ const OverviewTab = ({ isDrawerOpen }) => {
                               gap={1}
                             >
                               <img
-                                src={user.avatar}
+                                src={user.avatar || '/dummyUser.svg'}
                                 alt={name}
                                 style={{
                                   width: 24,
@@ -569,7 +569,7 @@ const AvatarBox = ({ src, alt = "user", user, withToolTip }) =>
         }}
       >
         <img
-          src={src}
+          src={src || '/dummyUser.svg'}
           alt={alt}
           style={{
             width: "100%",
@@ -592,7 +592,7 @@ const AvatarBox = ({ src, alt = "user", user, withToolTip }) =>
       fontSize="1.25rem"
     >
       <img
-        src={src}
+        src={src || "/dummyUser.svg"}
         alt={alt}
         style={{
           width: "100%",

@@ -28,6 +28,7 @@ const useGetProject = (id) => {
       }
   
       const formattedIdResponse = convertIdFields(res?.data?.board || {});
+      formattedIdResponse.isChatWindowOpen = false;
       dispatch({ type: actions.SET_ACTIVE_PROJECT_SUCCESS, payload: formattedIdResponse });
   };
   

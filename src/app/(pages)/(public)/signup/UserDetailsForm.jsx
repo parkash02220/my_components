@@ -750,7 +750,7 @@ const UserDetailsForm = ({ formik,type }) => {
           </FormControl>
         </Grid>
 
-        <Grid size={12}>
+        {/* <Grid size={12}>
           <MyTextField
             name="email"
             value={formik?.values?.email}
@@ -770,8 +770,8 @@ const UserDetailsForm = ({ formik,type }) => {
             labelFontWeight={600}
             color={"#1C252E"}
           />
-        </Grid>
-        <Grid size={12}>
+        </Grid> */}
+        {/* <Grid size={12}>
         <FormControl
             component="fieldset"
             error={formik.touched.gender && Boolean(formik.errors.gender)}
@@ -822,7 +822,7 @@ const UserDetailsForm = ({ formik,type }) => {
               </Typography>
             )}
           </FormControl>
-        </Grid>
+        </Grid> */}
       </Grid>
     </>
   );

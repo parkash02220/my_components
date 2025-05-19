@@ -39,6 +39,7 @@ const ListUsers = () => {
     page,
     setPageSize,
     pageSize,
+    hasFetchedOnce,
   } = useGetAllUsers("all", "table");
   const [data, setData] = useState([]);
 
@@ -157,6 +158,7 @@ const ListUsers = () => {
             setSelectedUsers={setSelectedUsers}
             debouncedSearchValue={debouncedSearchValue}
             pageSize={pageSize}
+            hasFetchedOnce={hasFetchedOnce}
           />
         </Box>
       </Box>

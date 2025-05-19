@@ -4,6 +4,7 @@ import useGetProject from "@/hooks/projects/useGetProject";
 import { useRouter } from "next/navigation";
 import KanbanBoardWrapper from "./kanban/Board/KanbanBoardWrapper";
 import PageNotFound from "@/components/PageNotFound";
+import ChatWindow from "./ChatWindow";
 
 export default function ProjectPageContent({ id }) {
   const router = useRouter();
@@ -15,6 +16,8 @@ export default function ProjectPageContent({ id }) {
     projectVersion,
     isNotFound,
   } = useGetProject(id);
+
+  const { isChatWindowOpen } = activeProject;
 
   if (loadingActiveProject || !activeProject) {
     return (
@@ -35,7 +38,9 @@ export default function ProjectPageContent({ id }) {
   if (isNotFound) {
     return <PageNotFound />;
   }
-  return (
+  return isChatWindowOpen ? (
+    <ChatWindow projectId={id} />
+  ) : (
     <KanbanBoardWrapper
       boardId={id}
       activeProject={activeProject}

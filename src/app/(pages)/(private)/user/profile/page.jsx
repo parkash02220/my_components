@@ -97,7 +97,7 @@ export default function Profile() {
           ) : (
             <GeneralTab
               formik={formik}
-              userId={activeUser?.id}
+              isAdmin={activeUser?.isAdmin}
               avatar={activeUser?.avatar}
             />
           )}

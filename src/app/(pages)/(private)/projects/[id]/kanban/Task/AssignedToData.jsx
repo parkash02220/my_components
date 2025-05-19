@@ -1,4 +1,5 @@
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
+import { getFullName } from "@/utils";
 import { Box, Typography } from "@mui/material";
 
 export default function AssignedToData({ assigned_to }) {
@@ -20,7 +21,7 @@ export default function AssignedToData({ assigned_to }) {
                 return (
                   <Box key={index} display="flex" alignItems="center" gap={1}>
                     <img
-                      src={user.avatar}
+                      src={user.avatar || '/dummyUser.svg'}
                       alt={name}
                       style={{
                         width: 24,
@@ -85,7 +86,7 @@ export default function AssignedToData({ assigned_to }) {
                     overflow={"hidden"}
                   >
                     <img
-                      src={item?.avatar}
+                      src={item?.avatar || '/dummyUser.svg'}
                       alt="avatar"
                       style={{
                         width: "100%",

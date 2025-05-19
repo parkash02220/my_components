@@ -10,6 +10,7 @@ import MySelect from "../MySelect/MySelect";
 import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { getFullName } from "@/utils";
 import MyAutoComplete from "../MyAutoComplete/MyAutoComplete";
+import useToast from "@/hooks/common/useToast";
 const CreateProjectDialog = ({
   open,
   onClose,
@@ -22,6 +23,7 @@ const CreateProjectDialog = ({
   const [helperText, setHelperText] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [message, loading, available] = useProjectNameAvailability(projectName);
+  const {showToast} = useToast();
   const {
     allUsers,
     loadingAllUsers,
@@ -71,6 +73,10 @@ const CreateProjectDialog = ({
   };
 
   const handleCreateProject = async () => {
+    if(selectedUsers?.length===0){
+      showToast({type:"error",message:"Please select atleast one user."})
+      return;
+    }
     const trimmedName = projectName.trim();
     await onCreate(trimmedName, selectedUsers);
     handleDialogClose();

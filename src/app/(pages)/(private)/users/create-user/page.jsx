@@ -35,8 +35,8 @@ const CreateUser = () => {
     },
   });
   const handleCreateUser = async (values) => {
-    await createUser(values);
-    if(!!errorCreateUser){
+   const isSuccess =  await createUser(values);
+    if(isSuccess){
       formik.resetForm();
     }
   };

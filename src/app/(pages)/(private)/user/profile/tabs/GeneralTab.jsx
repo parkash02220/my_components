@@ -9,7 +9,7 @@ import useDeleteActiveUser from "@/hooks/user/activeUser/useDeleteActiveUser";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import useUpdateActiveUser from "@/hooks/user/activeUser/useUpdateActiveUser";
 
-const GeneralTab = ({ formik, userId, avatar }) => {
+const GeneralTab = ({ formik, isAdmin, avatar }) => {
   const { loadingUpdateActiveUser, errorUpdateActiveUser, updateActiveUser } =
     useUpdateActiveUser();
   const [imgSrc, setImgSrc] = useState(null);
@@ -74,6 +74,7 @@ const GeneralTab = ({ formik, userId, avatar }) => {
                     avatar={imgSrc}
                     handleImageUpload={handleImageUpload}
                     onDelete={handleDeletePopupOpen}
+                    isAdmin={isAdmin}
                   />
                 </Box>
               </Grid>

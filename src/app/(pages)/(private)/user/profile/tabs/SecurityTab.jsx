@@ -33,7 +33,6 @@ const SecurityTab = () => {
         .oneOf([Yup.ref("newPassword"), null], "Passwords must match"),
     }),
     onSubmit:async (values) => {
-      console.log("::formik values", values);
      const isSuccess = await changePassword(values);
      if(isSuccess){
       formik.resetForm();

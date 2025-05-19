@@ -20,11 +20,8 @@ const useDeleteActiveUser = () => {
       setLoading(true);
       setError(null);
       const res = await ApiCall({
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/delete-user`,
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/delete-current-user`,
         method: "DELETE",
-        body: {
-          userIds:[userId],
-        },
       });
      
       if(res.error){

@@ -26,7 +26,6 @@ const useChangePassword = () => {
             }
 
             showToast({toastId,type:"success",message:res?.data?.message || "Password changed successfully."});
-            console.log("::changed password response",res)
             return true;
     }
 

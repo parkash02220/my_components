@@ -3,7 +3,7 @@ import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 
 const { default: useDebounce } = require("@/hooks/common/useDebounce");
-const { useState, useEffect } = require("react");
+const { useState, useEffect, useRef } = require("react");
 const { useInView } = require("react-intersection-observer");
 
 const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
@@ -16,10 +16,24 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
   const [pageSize, setPageSize] = useState(10);
   const [allUsers, setAllUsers] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
+  // const [hasFetchedOnce,setHasFetchedOnce] = useState(false);
+  const hasFetchedOnce = useRef(false);
   const debouncedSearchValue = useDebounce(searchValue, 500);
   const { ref: loadMoreRef, inView } = useInView();
   const { state } = useProjectsContext();
   const activeProjectId = state?.activeProject?.id;
+  const resetAndFetch = () => {
+    setSearchValue("");
+    setAllUsers([]);
+    setPage(1);
+    hasFetchedOnce.current=false;
+    getAllUsersFromBackend({
+      signal: new AbortController().signal,
+      search: "",
+      page: 1,
+      append: false,
+    });
+  };
   const getAllUsersFromBackend = async ({
     signal,
     search = "",
@@ -42,10 +56,10 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
 
     if (res?.error) {
       setLoading(false);
+      hasFetchedOnce.current=false;
       setError(true);
       return;
     }
-    setLoading(false);
     const data = res?.data;
     const hasMoreUser = data && data?.page * data?.limit < data?.totalUsers;
     setPage(data?.page);
@@ -62,14 +76,17 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
       const deduplicated = Array.from(
         new Map(combined.map((u) => [u.id, u])).values()
       );
+      if (hasFetchedOnce) hasFetchedOnce.current = true;
       return deduplicated;
     });
+    setLoading(false);
   };
 
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
     setAllUsers([]);
+    hasFetchedOnce.current = false;
     getAllUsersFromBackend({
       signal,
       search: debouncedSearchValue,
@@ -126,6 +143,8 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
     hasMore,
     page,
     pageSize,
+    hasFetchedOnce: hasFetchedOnce.current,
+    resetAndFetch,
   };
 };
 

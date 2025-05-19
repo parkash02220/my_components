@@ -32,7 +32,6 @@ const useDeleteProject = () => {
         type: "error",
         message: "Failed to delete project. Please try again.",
       });
-      console.log("::error while deleting project", res);
       return;
     }
     setLoading(false);

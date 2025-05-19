@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 
-const ProfileImageBox = ({ avatar, handleImageUpload, onDelete }) => {
+const ProfileImageBox = ({ avatar, handleImageUpload, onDelete,isAdmin }) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -165,7 +165,7 @@ const ProfileImageBox = ({ avatar, handleImageUpload, onDelete }) => {
             </Typography>
           </Box>
         </Box>
-        <Box
+      { !isAdmin &&  <Box
           display={"flex"}
           justifyContent={"center"}
           alignItems={"center"}
@@ -189,7 +189,7 @@ const ProfileImageBox = ({ avatar, handleImageUpload, onDelete }) => {
           >
             Delete user
           </Button>
-        </Box>
+        </Box>}
       </Box>
     </>
   );

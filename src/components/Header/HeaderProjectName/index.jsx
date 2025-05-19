@@ -1,8 +1,11 @@
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
-import ConfirmationPopup from "../ConfirmationPopup";
+
 import { useRouter } from "next/navigation";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
-
+import ConfirmationPopup from "@/components/ConfirmationPopup";
+import MyTextField from "@/components/MyTextfield/MyTextfield";
+import AssignAllUsersDialog from './AssignAllUsersDIalog/index';
+import * as actions from '@/context/Projects/action';
 const {
   Box,
   Typography,
@@ -10,7 +13,6 @@ const {
   Menu,
   MenuItem,
 } = require("@mui/material");
-const { default: MyTextField } = require("../MyTextfield/MyTextfield");
 const {
   default: useUpdateProjectName,
 } = require("@/hooks/projects/useUpdateProjectName");
@@ -21,13 +23,17 @@ const { useState, useEffect, useRef } = require("react");
 
 const HeaderProjectName = () => {
   const { isMd, isSm, isXs } = useBreakpointFlags();
-  const { state } = useProjectsContext();
+  const { state,dispatch } = useProjectsContext();
   const { activeProject, loadingActiveProject } = state;
   const router = useRouter();
   const inputRef = useRef();
   const [showProjectNameTextfield, setShowProjectNameTextfield] =
     useState(false);
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
+  const [openEditUsersPopup,setOpenEditUsersPopup] = useState(false);
+  const handleClose = () => {
+    setOpenEditUsersPopup(false);
+  }
   const {
     loadingUpdateProjectName,
     errorUpdateProjectName,
@@ -72,12 +78,30 @@ const HeaderProjectName = () => {
     setDeletePopupOpen(false);
     router.push("/home");
   };
+  const handleEditUsers= () => {
+    handleMenuClose();
+        setOpenEditUsersPopup(true);
+  }
+  const handleChatStart = () => {
+     dispatch({type:actions.SET_ACTIVE_PROJECT_CHAT_WINDOW_STATUS,payload:true});
+     handleMenuClose();
+  }
   const menuItems = [
     {
       label: "Rename",
       icon: "/rename.svg",
       onClick: handleProjectNameStartEdidting,
     },
+    {
+        label: "Edit users",
+        icon: "/usersIcon.svg",
+        onClick: handleEditUsers,
+      },
+      {
+        label: "Chat",
+        icon: "/chatIcon.svg",
+        onClick: handleChatStart,
+      },
     {
       label: "Delete",
       icon: "/delete.svg",
@@ -92,6 +116,12 @@ const HeaderProjectName = () => {
   }, [showProjectNameTextfield]);
   return (
     <>
+    <AssignAllUsersDialog 
+    open={openEditUsersPopup}
+    handleClose={handleClose}
+    assignedUsers={activeProject?.user_id}
+    projectId={activeProject?.id}
+    />
       <ConfirmationPopup
         title={"Delete Project"}
         handleClose={handleDeletePopupClose}

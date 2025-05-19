@@ -3,7 +3,7 @@
 import { AppBar, Box, IconButton, Typography } from "@mui/material";
 import { useAppContext } from "@/context/App/AppContext";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
-import HeaderProjectName from "./HeaderProjectName";
+import HeaderProjectName from '@/components/Header/HeaderProjectName/index';
 import HeaderNotifications from "./HeaderNotifications";
 import HeaderUserProfile from "./HeaderUserProfile";
 import { useNavigationInfo } from "@/hooks/common/useNavigationInfo";

@@ -27,7 +27,6 @@ function flattenRoutes(routes, projects = []) {
 
 export function useNavigationInfo({ projects = [] } = {}) {
   const pathname = usePathname();
-  console.log("::use pathname",pathname)
   const allRoutes = useMemo(() => {
     return [
       ...flattenRoutes(drawerRoutes, projects),
