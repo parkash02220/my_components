@@ -50,7 +50,10 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
         : `${process.env.NEXT_PUBLIC_BASE_URL}/get-users?boardId=${activeProjectId}&search=${search}&page=${page}&limit=${pageSize}`;
     const res = await ApiCall({
       url,
-      method: "GET",
+      method: "POST",
+      body:{
+        role:[],
+      },
       signal,
     });
 

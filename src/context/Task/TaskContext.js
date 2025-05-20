@@ -73,10 +73,6 @@ case actions.SET_ACTIVE_TASK_REQUEST:
           ...state?.activeTask,
           images: images,
         },
-        activeProject: {
-          ...state.activeProject,
-          sections: updatedSections,
-        },
       };
     }
 

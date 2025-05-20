@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
+import UserWithStatus from "../../../components/UserWithStatus";
 
-export default function UserDIrectoryItem() {
+export default function UserDIrectoryItem({ type,isExpanded=true }) {
   return (
     <>
       <Box
@@ -17,54 +18,62 @@ export default function UserDIrectoryItem() {
           pt: "12px",
           pb: "12px",
           gap: 2,
+          ":hover": {
+            background: "rgba(145 158 171 / 0.08)",
+          },
         }}
       >
-        <Box position={"relative"} display={"inline-flex"} flexShrink={0}>
-          <Box
-            position={"relative"}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            flexShrink={0}
+        <UserWithStatus type={type} />
+        {
+          isExpanded && (
+            <>
+             <Box sx={{ flex: "1 1 auto", minWidth: 0 }}>
+          <Typography
             overflow={"hidden"}
-            fontWeight={500}
-            width={48}
-            height={48}
-            borderRadius={"50%"}
-            sx={{ cursor: "pointer" }}
+            textOverflow={"ellipsis"}
+            whiteSpace={"nowrap"}
+            fontWeight={600}
+            fontSize={14}
+            color="#1C252E"
           >
-            <img
-              src="https://pub-c5e31b5cdafb419fb247a8ac2e78df7a.r2.dev/public/assets/images/mock/avatar/avatar-25.webp"
-              alt="avatar"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                textIndent: "10000px",
-              }}
-            />
-          </Box>
-          <Box
-            sx={{
-              width: "10px",
-              height: "10px",
-              position: "absolute",
-              top: "auto",
-              right: "14%",
-              bottom: "14%",
-              transform: "scale(1) translate(50%,50%)",
-              background: "#22C55E",
-              borderRadius: "10px",
-            }}
-          ></Box>
+            Parkash mishra
+          </Typography>
+          <Typography
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            whiteSpace={"nowrap"}
+            color="#637381"
+            fontSize={14}
+          >
+            You:hello
+          </Typography>
         </Box>
-        <Box sx={{flex:'1 1 auto',minWidth:0,}}>
-         <Typography overflow={'hidden'} textOverflow={'ellipsis'} whiteSpace={'nowrap'} fontWeight={600} fontSize={14} color="#1C252E">Parkash mishra</Typography>
-         <Typography overflow={'hidden'} textOverflow={'ellipsis'} whiteSpace={'nowrap'} color="#637381" fontSize={14}>You:hello</Typography>
+        <Box
+          display={"flex"}
+          alignSelf={"stretch"}
+          alignItems={"flex-end"}
+          flexDirection={"column"}
+        >
+          <Typography
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            whiteSpace={"nowrap"}
+            fontSize={12}
+            color="#919EAB"
+            mb={"12px"}
+          >
+            an hour
+          </Typography>
+          <Typography
+            width={8}
+            height={8}
+            borderRadius={"50%"}
+            bgcolor={"#00B8D9"}
+          />
         </Box>
-        <Box display={'flex'} alignSelf={'stretch'} alignItems={'flex-end'} flexDirection={'column'}>
-             <Typography overflow={'hidden'} textOverflow={'ellipsis'} whiteSpace={'nowrap'} fontSize={12} color="#919EAB" mb={'12px'}>an hour</Typography>
-        </Box>
+            </>
+          )
+        }
       </Box>
     </>
   );

@@ -44,11 +44,12 @@ export default function HomeLayout({ children }) {
           <Header />
           <main
             style={{
+              display: "flex",
+              flexDirection: "column",
               flexGrow: 1,
+              minHeight: 0, // 🧠 KEY: allows children to shrink
               padding: isMd ? "24px 16px 8px 16px" : "24px",
-              height: "calc(100vh - 75px)",
               paddingBottom: "4px",
-              overflow:'auto',
             }}
           >
             {children}

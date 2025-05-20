@@ -1,12 +1,13 @@
 
 import { NextResponse } from 'next/server';
 
-const PUBLIC_PATHS = ['/', '/signin', '/signup'];
+const PUBLIC_PATHS = ['/', '/signin', '/signup', '/auth/callback'];
 
 export function middleware(request) {
   const token = request.cookies.get('auth_token')?.value;
 
-  const isPublicPath = PUBLIC_PATHS.includes(request.nextUrl.pathname);
+  const path = request.nextUrl.pathname;
+  const isPublicPath = PUBLIC_PATHS.includes(path) || path.startsWith('/auth');
 
   if (!token && (!isPublicPath ||  request.nextUrl.pathname === '/')) {
     return NextResponse.redirect(new URL('/signin', request.url));
