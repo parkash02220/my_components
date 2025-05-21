@@ -1,6 +1,8 @@
+import { useAppContext } from "@/context/App/AppContext";
 import { Box, IconButton } from "@mui/material";
 
 const Header = ({ isExpanded, toggleExpand }) => {
+  const {activeUser} = useAppContext()?.state;
   return (
     <>
       <Box
@@ -26,7 +28,7 @@ const Header = ({ isExpanded, toggleExpand }) => {
               sx={{ cursor: "pointer" }}
             >
               <img
-                src="https://pub-c5e31b5cdafb419fb247a8ac2e78df7a.r2.dev/public/assets/images/mock/avatar/avatar-25.webp"
+                src={activeUser?.avatar || '/dummyUser.svg'}
                 alt="avatar"
                 style={{
                   width: "100%",

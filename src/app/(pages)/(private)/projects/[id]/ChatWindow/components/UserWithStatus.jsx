@@ -1,8 +1,9 @@
 import { Box } from "@mui/material";
 
-export default function UserWithStatus({ width, height, type }) {
+export default function UserWithStatus({ width, height, type, avatar }) {
   if (type === "group__chat") {
-  return <Box position={"relative"} display={"inline-flex"} flexShrink={0}>
+    return (
+      <Box position={"relative"} display={"inline-flex"} flexShrink={0}>
         <Box
           display={"flex"}
           flexDirection={"row-reverse"}
@@ -28,7 +29,7 @@ export default function UserWithStatus({ width, height, type }) {
             justifyContent={"center"}
           >
             <img
-              src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-8.webp"
+              src={avatar[0] || "/dummyUser.svg"}
               alt="user"
               style={{
                 width: "100%",
@@ -53,7 +54,7 @@ export default function UserWithStatus({ width, height, type }) {
             overflow={"hidden"}
           >
             <img
-              src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-7.webp"
+              src={avatar[1] || "/dummyUser.svg"}
               alt="user"
               style={{
                 width: "100%",
@@ -77,7 +78,8 @@ export default function UserWithStatus({ width, height, type }) {
             borderRadius: "10px",
           }}
         ></Box>
-    </Box>
+      </Box>
+    );
   }
   return (
     <>
@@ -94,10 +96,10 @@ export default function UserWithStatus({ width, height, type }) {
           height={height || 48}
           borderRadius={"50%"}
           sx={{ cursor: "pointer" }}
-          border={'2px solid #FFFFFF'}
+          border={"2px solid #FFFFFF"}
         >
           <img
-            src="https://pub-c5e31b5cdafb419fb247a8ac2e78df7a.r2.dev/public/assets/images/mock/avatar/avatar-25.webp"
+           src={avatar || "/dummyUser.svg"}
             alt="avatar"
             style={{
               width: "100%",

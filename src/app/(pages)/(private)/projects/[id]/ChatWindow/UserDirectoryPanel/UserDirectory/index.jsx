@@ -1,7 +1,10 @@
 import { Box } from "@mui/material";
 import UserDIrectoryItem from "./UserDIrectoryItem";
+import React from "react";
 
-const UserDirectory = ({ isExpanded }) => {
+const UserDirectory = ({ isExpanded,chatWindow,handleChatStart }) => {
+ console.log("::chat window in directory",chatWindow);
+ const {users,groups} = chatWindow;
   return (
     <>
       <Box
@@ -28,27 +31,20 @@ const UserDirectory = ({ isExpanded }) => {
           }}
         >
           <Box pb={1} display={"flex"} flexDirection={"column"}>
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem type={"group__chat"} isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
-            <UserDIrectoryItem isExpanded={isExpanded} />
+            {
+              groups?.map((group)=>{
+                return <React.Fragment key={group?.id}>
+                 <UserDIrectoryItem type={"group__chat"} isExpanded={isExpanded} group={group} handleChatStart={handleChatStart}/>
+                 </React.Fragment>
+              })
+            }
+             {
+              users?.map((user)=>{
+                return <React.Fragment key={user?.id}>
+                 <UserDIrectoryItem isExpanded={isExpanded} user={user} handleChatStart={handleChatStart}/>
+                 </React.Fragment>
+              })
+            }
           </Box>
         </Box>
       </Box>

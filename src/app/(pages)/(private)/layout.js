@@ -10,6 +10,7 @@ import Loader from "@/components/Loader/Loader";
 import { NotificationsContextProvider } from "@/context/Notifications/NotificationsContext";
 import { ProjectsContextProvider } from "@/context/Projects/ProjectsContex";
 import { TaskContextProvider } from "@/context/Task/TaskContext";
+import { ChatContextProvider } from "@/context/Chat/ChatContext";
 
 export default function HomeLayout({ children }) {
   const { isMd } = useBreakpointFlags();
@@ -30,6 +31,7 @@ export default function HomeLayout({ children }) {
     <NotificationsContextProvider>
       <ProjectsContextProvider>
         <TaskContextProvider>
+        <ChatContextProvider>
       <Box sx={{ display: "flex" }} className="privateLayout__container">
         <MySideDrawer open={open} setOpen={setOpen} />
         <Box
@@ -56,6 +58,7 @@ export default function HomeLayout({ children }) {
           </main>
       </Box>
       </Box>
+      </ChatContextProvider>
       </TaskContextProvider>
       </ProjectsContextProvider>
       </NotificationsContextProvider>

@@ -181,7 +181,7 @@ const CreateProjectDialog = ({
                 );
               }}
               renderTags={(value, getTagProps) => {
-                const visibleTags = value.slice(0, 2);
+                const visibleTags = value.slice(0, 4);
                 return [
                   ...visibleTags.map((option, index) => (
                     <Chip
