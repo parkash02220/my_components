@@ -31,6 +31,7 @@ export default function UserWithStatus({ width, height, type, avatar }) {
             <img
               src={avatar[0] || "/dummyUser.svg"}
               alt="user"
+               referrerPolicy="no-referrer"
               style={{
                 width: "100%",
                 height: "100%",
@@ -56,6 +57,7 @@ export default function UserWithStatus({ width, height, type, avatar }) {
             <img
               src={avatar[1] || "/dummyUser.svg"}
               alt="user"
+               referrerPolicy="no-referrer"
               style={{
                 width: "100%",
                 height: "100%",
@@ -99,6 +101,7 @@ export default function UserWithStatus({ width, height, type, avatar }) {
           border={"2px solid #FFFFFF"}
         >
           <img
+           referrerPolicy="no-referrer"
            src={avatar || "/dummyUser.svg"}
             alt="avatar"
             style={{

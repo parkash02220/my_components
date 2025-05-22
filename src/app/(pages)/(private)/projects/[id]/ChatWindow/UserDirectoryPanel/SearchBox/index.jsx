@@ -29,7 +29,7 @@ const SearchBox = () => {
             fullWidth={true}
             minWidth="100%"
             borderRadius="8px"
-            placeholder="Seach contacts..."
+            placeholder="Search contacts..."
             hoverBorderColor={"#1C252E"}
             focusedBorder="2px solid #1C252E"
             value={value}

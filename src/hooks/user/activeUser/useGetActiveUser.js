@@ -20,7 +20,6 @@ const useGetActiveUser = () => {
                 url:`${process.env.NEXT_PUBLIC_BASE_URL}/get-user`,
                 method:"GET",
             });
-    console.log("::request completed",res)
             if(res.error){
                 const {error} = res;
                 showToast({toastId,type:"error",message:error?.message || "Something went wrong"});

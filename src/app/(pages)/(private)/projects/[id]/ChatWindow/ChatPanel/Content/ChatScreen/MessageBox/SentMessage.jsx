@@ -1,6 +1,7 @@
+import { getTimeAgo } from "@/utils";
 import { Box, IconButton, Typography } from "@mui/material";
 
-const SentMessage = () => {
+const SentMessage = ({msg}) => {
   return (
     <>
       <Box mb={5} display={"flex"} justifyContent={"flex-end"}>
@@ -14,7 +15,7 @@ const SentMessage = () => {
               whiteSpace={"nowrap"}
               fontSize={12}
             >
-              6 hours
+            {getTimeAgo(msg?.createdAt)}
             </Typography>
           </Box>
           <Box display={"flex"} alignItems={"center"} position={"relative"}>
@@ -29,8 +30,7 @@ const SentMessage = () => {
               bgcolor={"#C8FAD6"}
               color={"#1C252E"}
             >
-              The concert was a mesmerizing experience, with the music filling
-              the venue and the crowd cheering in delight.
+              {msg?.text || ""}
             </Box>
             <Box
               pt={"4px"}
@@ -41,7 +41,9 @@ const SentMessage = () => {
                 top: "100%",
                 right: "0px",
                 transition: "opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)",
-                
+                '&:hover':{
+                  opacity:1,
+                }
               }}
             >
               <IconButton

@@ -1,13 +1,12 @@
 import { Box } from "@mui/material";
-
-import MessageInputBox from "./MessageInputBox";
 import MessageBox from "./MessageBox";
+import MessageInputBox from "./MessageInputBox";
 
-const ChatScreen = () => {
+const ChatScreen = ({selectedDirectoryItem,chatType,loadingStartChat}) => {
     return <>
     <Box minWidth={0} display={'flex'} flex={'1 1 auto'} flexDirection={'column'}>
-        <MessageBox />
-        <MessageInputBox />
+        <MessageBox selectedDirectoryItem={selectedDirectoryItem} chatType={chatType} loadingStartChat={loadingStartChat}/>
+        <MessageInputBox selectedDirectoryItem={selectedDirectoryItem}/>
     </Box>
     </>
 }

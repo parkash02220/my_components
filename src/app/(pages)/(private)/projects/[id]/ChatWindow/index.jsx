@@ -5,13 +5,15 @@ import useInitializeChatWindow from "@/hooks/chat/useInitializeChatWindow";
 import { useChatContext } from "@/context/Chat/ChatContext";
 import Loader from "@/components/Loader/Loader";
 import { useState } from "react";
+import useStartChat from "@/hooks/chat/singleUserChat/useStartChat";
 
-const ChatWindow = ({ projectId }) => {
+const ChatWindow = () => {
   const [chatType, setChatType] = useState("");
-  const { initializeChatWindow } = useInitializeChatWindow(projectId);
+   useInitializeChatWindow();
+  const {loadingStartChat,errorStartChat,startChat} = useStartChat();
   const [selectedDirectoryItem, setSelectedDirectoryItem] = useState(null);
   const { state } = useChatContext();
-  const { loadingChatWindow, errorChatWindow, chatWindow } = state;
+  const { loadingChatWindow } = state;
   if (loadingChatWindow) {
     return (
       <Box height={"100%"}>
@@ -22,6 +24,11 @@ const ChatWindow = ({ projectId }) => {
   const handleChatStart = (data, type) => {
     setChatType(type);
     setSelectedDirectoryItem(data);
+    if(type==="group__chat"){
+
+    }else{
+      startChat(data?.id);
+    }
   };
   return (
     <>
@@ -57,12 +64,12 @@ const ChatWindow = ({ projectId }) => {
           }}
         >
           <UserDirectoryPanel
-            chatWindow={chatWindow}
             handleChatStart={handleChatStart}
           />
           <ChatPanel
             chatType={chatType}
             selectedDirectoryItem={selectedDirectoryItem}
+            loadingStartChat={loadingStartChat}
           />
         </Box>
       </Box>

@@ -78,7 +78,6 @@ const AssignAllUsersDialog = ({
       resetAndFetch();
     }
   }, [open]);
-  console.log("::user", allUsers);
   return (
     <>
       <Box

@@ -45,7 +45,6 @@ const useToggleAssignProject = () => {
       setErrorAssignProject(true);
       return;
     }
-    console.log("::res in assing project", res);
     const formattedIdResponse = convertIdFields(res?.data?.updatedTask || {});
 
     showToast({

@@ -1,97 +1,17 @@
-import { Box, Typography } from "@mui/material";
-import React from "react";
+import { Box, Collapse, Typography } from "@mui/material";
+import React, { useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import UserWithStatus from "../../../../components/UserWithStatus";
-const RoomDetails = () => {
-  const roomData = [
-    {
-      label: {
-        src: "/locationIcon.svg",
-        alt: "location",
-      },
-      value: "2089 Runolfsson Harbors Suite 886 - Chapel Hill, TX / 32827",
-    },
-    {
-      label: {
-        src: "/mobileNumberIcon.svg",
-        alt: "location",
-      },
-      value: "999999999",
-    },
-    {
-      label: {
-        src: "/emailIcon.svg",
-        alt: "location",
-      },
-      value: "parkash@gmail.com",
-    },
-    {
-        label: {
-          src: "/locationIcon.svg",
-          alt: "location",
-        },
-        value: "2089 Runolfsson Harbors Suite 886 - Chapel Hill, TX / 32827",
-      },
-      {
-        label: {
-          src: "/mobileNumberIcon.svg",
-          alt: "location",
-        },
-        value: "999999999",
-      },
-      {
-        label: {
-          src: "/emailIcon.svg",
-          alt: "location",
-        },
-        value: "parkash@gmail.com",
-      },
-      {
-        label: {
-          src: "/locationIcon.svg",
-          alt: "location",
-        },
-        value: "2089 Runolfsson Harbors Suite 886 - Chapel Hill, TX / 32827",
-      },
-      {
-        label: {
-          src: "/mobileNumberIcon.svg",
-          alt: "location",
-        },
-        value: "999999999",
-      },
-      {
-        label: {
-          src: "/emailIcon.svg",
-          alt: "location",
-        },
-        value: "parkash@gmail.com",
-      },
-      {
-        label: {
-          src: "/locationIcon.svg",
-          alt: "location",
-        },
-        value: "2089 Runolfsson Harbors Suite 886 - Chapel Hill, TX / 32827",
-      },
-      {
-        label: {
-          src: "/mobileNumberIcon.svg",
-          alt: "location",
-        },
-        value: "999999999",
-      },
-      {
-        label: {
-          src: "/emailIcon.svg",
-          alt: "location",
-        },
-        value: "parkash@gmail.com",
-      },
-  ];
+import { getFullName } from "@/utils";
+const RoomDetails = ({users=[]}) => {
+  const [isExpanded,setIsExpanded] = useState(true);
+  const toggleIsExpanded = () => {
+    setIsExpanded((pre)=> !pre);
+  }
   return (
     <>
       <Box
+        onClick={toggleIsExpanded}
         sx={{
           background: "#F4F6F8",
           p: "8px 12px 8px 20px",
@@ -105,7 +25,7 @@ const RoomDetails = () => {
         }}
       >
         <Typography color="#637381" fontWeight={700} fontSize={12}>
-          IN ROOM (5)
+          {`IN ROOM (${users?.length})`}
         </Typography>
         <KeyboardArrowRightIcon
           sx={{
@@ -113,10 +33,11 @@ const RoomDetails = () => {
             width: "16px",
             height: "16px",
             flexShrink: 0,
-            transform: "rotate(90deg)",
+            transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
           }}
         />
       </Box>
+      <Collapse in={isExpanded} timeout="auto" unmountOnExit>
       <Box minHeight={0} display={'flex'} flexDirection={'column'} flex={'1 1 auto'}>
         <Box display={"flex"} flexDirection={"column"} sx={{
               overflowY: "auto",
@@ -125,15 +46,16 @@ const RoomDetails = () => {
                 display: "none",
               },
         }}>
-          {roomData?.map((data, i) => {
+          {users?.map((user) => {
             return (
-              <React.Fragment key={i}>
-               <RoomRow />
+              <React.Fragment key={user?.id}>
+               <RoomRow user={user}/>
               </React.Fragment>
             );
           })}
         </Box>
       </Box>
+        </Collapse>
     </>
   );
 };
@@ -152,7 +74,7 @@ export const RoomRow = ({ user }) => {
           p: "8px 16px",
         }}
       >
-        <UserWithStatus width={40} height={40} />
+        <UserWithStatus width={40} height={40} avatar={user?.avatar}/>
         <Box
           flex={"1 1 auto"}
           minWidth={0}
@@ -168,7 +90,7 @@ export const RoomRow = ({ user }) => {
             color="#1C252E"
             fontSize={14}
           >
-            {"suraj mishra"}
+           {getFullName(user?.firstName,user?.lastName)}
           </Typography>
           <Typography
             overflow={"hidden"}
@@ -177,7 +99,7 @@ export const RoomRow = ({ user }) => {
             color="#637381"
             fontSize={12}
           >
-            {"suraj mishra"}
+          {user?.role}
           </Typography>
         </Box>
       </Box>

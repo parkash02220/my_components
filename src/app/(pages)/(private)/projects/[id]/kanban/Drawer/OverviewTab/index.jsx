@@ -208,6 +208,7 @@ const OverviewTab = ({ isDrawerOpen }) => {
                               <img
                                 src={user.avatar || '/dummyUser.svg'}
                                 alt={name}
+                                 referrerPolicy="no-referrer"
                                 style={{
                                   width: 24,
                                   height: 24,
@@ -571,6 +572,7 @@ const AvatarBox = ({ src, alt = "user", user, withToolTip }) =>
         <img
           src={src || '/dummyUser.svg'}
           alt={alt}
+           referrerPolicy="no-referrer"
           style={{
             width: "100%",
             height: "100%",
@@ -594,6 +596,7 @@ const AvatarBox = ({ src, alt = "user", user, withToolTip }) =>
       <img
         src={src || "/dummyUser.svg"}
         alt={alt}
+         referrerPolicy="no-referrer"
         style={{
           width: "100%",
           height: "100%",

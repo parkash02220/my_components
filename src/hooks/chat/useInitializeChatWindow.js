@@ -3,12 +3,14 @@ const { useState, useEffect, useRef } = require("react");
 const { default: useToast } = require("../common/useToast");
 import * as actions from "@/context/Chat/action";
 import { useChatContext } from "@/context/Chat/ChatContext";
+import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 import { convertIdFields } from "@/utils";
-const useInitializeChatWindow = (projectId) => {
+const useInitializeChatWindow = () => {
   const { showToast } = useToast();
-  const hasInitialized = useRef({});
   const { dispatch } = useChatContext();
-  const initializeChatWindow = async (projectId) => {
+  const {activeProject} = useProjectsContext()?.state;
+  const projectId = activeProject?.id;
+  const initializeChatWindow = async () => {
     dispatch({ type: actions.INITIALIZE_CHAT_WINDOW_REQUEST });
     const res = await ApiCall({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/create-chat-room/${projectId}`,
@@ -36,9 +38,7 @@ const useInitializeChatWindow = (projectId) => {
   };
 
   useEffect(() => {
-    if (!projectId || hasInitialized.current[projectId]) return;
-
-    hasInitialized.current[projectId] = true;
+    if (!projectId) return;
     initializeChatWindow(projectId);
   }, [projectId]);
 

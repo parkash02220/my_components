@@ -23,6 +23,7 @@ export default function AssignedToData({ assigned_to }) {
                     <img
                       src={user.avatar || '/dummyUser.svg'}
                       alt={name}
+                       referrerPolicy="no-referrer"
                       style={{
                         width: 24,
                         height: 24,
@@ -88,6 +89,7 @@ export default function AssignedToData({ assigned_to }) {
                     <img
                       src={item?.avatar || '/dummyUser.svg'}
                       alt="avatar"
+                       referrerPolicy="no-referrer"
                       style={{
                         width: "100%",
                         height: "100%",

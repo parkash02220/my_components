@@ -196,6 +196,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     <img
                       src={activeUser?.avatar || "/dummyUser.svg"}
                       alt="avatar"
+                       referrerPolicy="no-referrer"
                       style={{
                         width: "100%",
                         height: "100%",

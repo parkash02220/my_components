@@ -1,6 +1,9 @@
+import { getFullName, getTimeAgo } from "@/utils";
 import { Box, IconButton, Typography } from "@mui/material";
 
-const ReceivedMessage = () => {
+const ReceivedMessage = ({ msg }) => {
+  const {sender} = msg;
+  const fullName = getFullName(sender?.firstName,sender?.lastName);
   return (
     <>
       <Box mb={5} display={"flex"}>
@@ -16,9 +19,23 @@ const ReceivedMessage = () => {
           alignItems={"center"}
           position={"relative"}
         >
-            <img src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-7.webp" alt="sender" style={{width:"100%",height:"100%",textIndent:"10000px",objectFit:"cover"}} />
+          <img
+            src={sender?.avatar || "/dummyUser.svg"}
+            alt="sender"
+               referrerPolicy="no-referrer"
+            style={{
+              width: "100%",
+              height: "100%",
+              textIndent: "10000px",
+              objectFit: "cover",
+            }}
+          />
         </Box>
-        <Box display={"flex"} flexDirection={"column"} alignItems={"flex-start"}>
+        <Box
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"flex-start"}
+        >
           <Box>
             <Typography
               color="#919EAB"
@@ -27,9 +44,9 @@ const ReceivedMessage = () => {
               textOverflow={"ellipsis"}
               whiteSpace={"nowrap"}
               fontSize={12}
-              mr={'auto'}
+              mr={"auto"}
             >
-             parkash, 6 hours
+              {fullName}, {getTimeAgo(msg?.createdAt)}
             </Typography>
           </Box>
           <Box display={"flex"} alignItems={"center"} position={"relative"}>
@@ -44,8 +61,7 @@ const ReceivedMessage = () => {
               bgcolor={"#F4F6F8"}
               color={"#1C252E"}
             >
-              The concert was a mesmerizing experience, with the music filling
-              the venue and the crowd cheering in delight.
+              {msg?.text || ""}
             </Box>
             <Box
               pt={"4px"}
@@ -56,6 +72,9 @@ const ReceivedMessage = () => {
                 top: "100%",
                 left: "0px",
                 transition: "opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)",
+                '&:hover':{
+                  opacity:1,
+                }
               }}
             >
               <IconButton

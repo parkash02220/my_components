@@ -1,6 +1,8 @@
+import { getFullName } from "@/utils";
 import { Box, Typography } from "@mui/material";
 
-const UserDetails = () => {
+const UserDetails = ({ user }) => {
+  console.log("::user in details", user);
   return (
     <>
       <Box
@@ -21,10 +23,24 @@ const UserDetails = () => {
           alignItems={"center"}
           justifyContent={"center"}
         >
-            <img src="https://api-prod-minimal-v700.pages.dev/assets/images/avatar/avatar-6.webp" alt="user" style={{width:'100%',height:"100%",objectFit:'cover',textIndent:"10000px"}} />
+          <img
+            src={user?.avatar || "/dummyUser.svg"}
+            alt="user"
+             referrerPolicy="no-referrer"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              textIndent: "10000px",
+            }}
+          />
         </Box>
-        <Typography variant="h6" fontWeight={600} fontSize={20} color="#1C252E">Jethalal</Typography>
-        <Typography color="#637381" fontSize={14} mt={'4px'}>Marketing</Typography>
+        <Typography variant="h6" fontWeight={600} fontSize={20} color="#1C252E">
+          {getFullName(user?.firstName, user?.lastName)}
+        </Typography>
+        <Typography color="#637381" fontSize={14} mt={"4px"}>
+          {user?.role}
+        </Typography>
       </Box>
     </>
   );

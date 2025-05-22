@@ -157,6 +157,7 @@ const HeaderUserProfile = ({ activeUser }) => {
               <img
                 src={activeUser?.avatar}
                 alt="avatar"
+                 referrerPolicy="no-referrer"
                 style={{
                   width: "100%",
                   height: "100%",

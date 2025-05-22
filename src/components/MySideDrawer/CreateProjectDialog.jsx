@@ -167,6 +167,7 @@ const CreateProjectDialog = ({
                     <img
                       src={option.avatar || "/dummyUser.svg"}
                       alt={option.firstName}
+                       referrerPolicy="no-referrer"
                       style={{
                         width: 30,
                         height: 30,

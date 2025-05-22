@@ -4,7 +4,7 @@ import SearchBox from "./SearchBox";
 import UserDirectory from "./UserDirectory";
 import { useState } from "react";
 
-const UserDirectoryPanel = ({chatWindow,handleChatStart}) => {
+const UserDirectoryPanel = ({handleChatStart}) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const toggleExpand = () => {
     setIsExpanded((pre) => !pre);
@@ -55,7 +55,7 @@ const UserDirectoryPanel = ({chatWindow,handleChatStart}) => {
         >
           <Header isExpanded={isExpanded} toggleExpand={toggleExpand}/>
           {isExpanded && <SearchBox />}
-          <UserDirectory isExpanded={isExpanded} chatWindow={chatWindow} handleChatStart={handleChatStart}/>
+          <UserDirectory isExpanded={isExpanded} handleChatStart={handleChatStart}/>
         </Box>
       </Box>
     </>

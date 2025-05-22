@@ -1,7 +1,11 @@
-import { Box, Typography } from "@mui/material";
-import React from "react";
+import { Box, Collapse, Typography } from "@mui/material";
+import React, { useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 const UserInformation = () => {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const toggleIsExpanded = () => {
+    setIsExpanded((pre) => !pre);
+  };
   const inoformationData = [
     {
       label: {
@@ -28,6 +32,7 @@ const UserInformation = () => {
   return (
     <>
       <Box
+        onClick={toggleIsExpanded}
         sx={{
           background: "#F4F6F8",
           p: "8px 12px 8px 20px",
@@ -36,30 +41,40 @@ const UserInformation = () => {
           display: "flex",
           alignItems: "center",
           cursor: "pointer",
-          justifyContent:'space-between'
+          justifyContent: "space-between",
         }}
       >
         <Typography color="#637381" fontWeight={700} fontSize={12}>
           Information
         </Typography>
-        <KeyboardArrowRightIcon sx={{ color: "#637381",width:"16px",height:"16px",flexShrink:0,transform:"rotate(90deg)" }} />
+        <KeyboardArrowRightIcon
+          sx={{
+            color: "#637381",
+            width: "16px",
+            height: "16px",
+            flexShrink: 0,
+            transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
+          }}
+        />
       </Box>
-      <Box minHeight={0}>
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          gap={2}
-          p={"20px 16px"}
-        >
-            {
-                inoformationData?.map((data,i)=>{
-                    return <React.Fragment key={i}>
-                        <InformationRow label={data?.label} value={data?.value}/>
-                    </React.Fragment>
-                })
-            }
+      <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+        <Box minHeight={0}>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            gap={2}
+            p={"20px 16px"}
+          >
+            {inoformationData?.map((data, i) => {
+              return (
+                <React.Fragment key={i}>
+                  <InformationRow label={data?.label} value={data?.value} />
+                </React.Fragment>
+              );
+            })}
+          </Box>
         </Box>
-      </Box>
+      </Collapse>
     </>
   );
 };
@@ -73,7 +88,7 @@ export const InformationRow = ({ label, value }) => {
           <img
             src={label?.src}
             alt={label?.atl}
-            style={{ width: "20px", height: "20px"}}
+            style={{ width: "20px", height: "20px" }}
           />
         </Box>
         <Box>

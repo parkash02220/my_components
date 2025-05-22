@@ -24,6 +24,7 @@ const GroupUsersDetails = ({chatType,groupDetails}) => {
                   <Box key={index} display="flex" alignItems="center" gap={1}>
                     <img
                       src={user.avatar || '/dummyUser.svg'}
+                       referrerPolicy="no-referrer"
                       alt={name}
                       style={{
                         width: 24,
@@ -60,7 +61,7 @@ const GroupUsersDetails = ({chatType,groupDetails}) => {
               background: "#C8FAD6",
             }}
           >
-            +{users?.length - 3}
+            +{users?.length - 2}
           </Box>
         </MyTooltip>
       )}
@@ -91,6 +92,7 @@ const GroupUsersDetails = ({chatType,groupDetails}) => {
                     <img
                       src={item?.avatar || '/dummyUser.svg'}
                       alt="avatar"
+                       referrerPolicy="no-referrer"
                       style={{
                         width: "100%",
                         height: "100%",

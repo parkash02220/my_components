@@ -1,10 +1,12 @@
 import { Box } from "@mui/material";
 import UserDIrectoryItem from "./UserDIrectoryItem";
 import React from "react";
+import { useChatContext } from "@/context/Chat/ChatContext";
 
-const UserDirectory = ({ isExpanded,chatWindow,handleChatStart }) => {
- console.log("::chat window in directory",chatWindow);
+const UserDirectory = ({ isExpanded,handleChatStart }) => {
+  const {chatWindow} = useChatContext().state;
  const {users,groups} = chatWindow;
+ console.log("::chat window in user directory",chatWindow)
   return (
     <>
       <Box

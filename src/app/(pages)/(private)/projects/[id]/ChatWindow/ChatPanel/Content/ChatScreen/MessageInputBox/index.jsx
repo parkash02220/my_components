@@ -1,7 +1,9 @@
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { Box, IconButton } from "@mui/material";
+import TextMessage from "./TextMessage";
 
-const MessageInputBox = () => {
+const MessageInputBox = ({selectedDirectoryItem}) => {
+  const isDisabled = !selectedDirectoryItem;
   const inputIcons = [
     {
       name: "add image",
@@ -35,6 +37,7 @@ const MessageInputBox = () => {
         position={"relative"}
       >
         <IconButton
+        disabled={isDisabled}
           sx={{
             borderRadius: "50%",
             flex: "0 0 auto",
@@ -51,13 +54,14 @@ const MessageInputBox = () => {
           />
         </IconButton>
         <Box flex={'1 1 auto'}>
-          <MyTextField fullWidth={true} border={'none'} label="" placeholder={'Type a message'}/>
+          <TextMessage isDisabled={isDisabled}/>
         </Box>
         <Box display={"flex"} alignItems={"space-between"}>
           <Box display={"flex"} flexGrow={1}>
             {inputIcons?.map((icon, i) => {
               return (
                   <IconButton
+                  disabled={isDisabled}
                   key={i}
                     onClick={icon?.onClick}
                     sx={{

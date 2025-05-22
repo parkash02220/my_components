@@ -72,6 +72,7 @@ const NotificatoinMsg = ({
             <img
               src={notification?.sender?.avatar}
               alt="avatar"
+               referrerPolicy="no-referrer"
               style={{
                 width: "100%",
                 height: "100%",

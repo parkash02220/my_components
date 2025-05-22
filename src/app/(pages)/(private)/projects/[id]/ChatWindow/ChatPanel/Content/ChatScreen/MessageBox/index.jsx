@@ -1,8 +1,11 @@
 import { Box } from "@mui/material";
 import SentMessage from "./SentMessage";
 import ReceivedMessage from "./ReceivedMessage";
+import InitialMessageBox from "./InitialMessageBox";
+import SingleUser from "./SingleUser";
+import { useAppContext } from "@/context/App/AppContext";
 
-const MessageBox = () => {
+const MessageBox = ({ selectedDirectoryItem, chatType,loadingStartChat }) => {
   return (
     <>
       <Box
@@ -16,41 +19,51 @@ const MessageBox = () => {
         alignItems={"flex-start"}
         position={"relative"}
       >
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          minHeight={0}
-          paddingInline={3}
-          pt={5}
-          pb={3}
-          width={'100%'}
-          sx={{
-            overflowY: "auto",
-            scrollbarWidth: "none",
-            "&::-webkit-scrollbar": {
-              display: "none",
-            },
-          }}
-        >
-          <SentMessage />
-          <ReceivedMessage />
-          <SentMessage />
-          <ReceivedMessage />
-          <SentMessage />
-          <ReceivedMessage />
-          <SentMessage />
-          <ReceivedMessage />
-          <SentMessage />
-          <ReceivedMessage />
-          <SentMessage />
-          <ReceivedMessage />
-          <SentMessage />
-          <ReceivedMessage />
-          <SentMessage />
-          <ReceivedMessage />
-          <SentMessage />
-          <ReceivedMessage />
-        </Box>
+        {selectedDirectoryItem ? (
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            minHeight={0}
+            paddingInline={3}
+            pt={5}
+            pb={3}
+            width={"100%"}
+            sx={{
+              overflowY: "auto",
+              scrollbarWidth: "none",
+              "&::-webkit-scrollbar": {
+                display: "none",
+              },
+            }}
+          >
+            {chatType === "group__chat" ? (
+              <>
+                <SentMessage />
+                <ReceivedMessage />
+                <SentMessage />
+                <ReceivedMessage />
+                <SentMessage />
+                <ReceivedMessage />
+                <SentMessage />
+                <ReceivedMessage />
+                <SentMessage />
+                <ReceivedMessage />
+                <SentMessage />
+                <ReceivedMessage />
+                <SentMessage />
+                <ReceivedMessage />
+                <SentMessage />
+                <ReceivedMessage />
+                <SentMessage />
+                <ReceivedMessage />
+              </>
+            ) : (
+              <SingleUser loadingStartChat={loadingStartChat}/>
+            )}
+          </Box>
+        ) : (
+          <InitialMessageBox />
+        )}
       </Box>
     </>
   );
