@@ -1,13 +1,14 @@
 "use client";
 import { Box, CircularProgress } from "@mui/material";
 import useGetProject from "@/hooks/projects/useGetProject";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import KanbanBoardWrapper from "./kanban/Board/KanbanBoardWrapper";
 import PageNotFound from "@/components/PageNotFound";
 import ChatWindow from "./ChatWindow";
 
 export default function ProjectPageContent({ id }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const {
     getProjectById,
     activeProject,
@@ -17,7 +18,7 @@ export default function ProjectPageContent({ id }) {
     isNotFound,
   } = useGetProject(id);
 
-  const { isChatWindowOpen } = activeProject;
+  const isChatWindowOpen = searchParams.get("chat") === "true";
 
   if (loadingActiveProject || !activeProject) {
     return (

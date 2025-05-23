@@ -36,7 +36,6 @@ const useSearchProject = () => {
       if (res.error) {
         setLoading(false);
         setError(true);
-        console.log("::error while getting boards", res);
         return;
       }
       setLoading(false);

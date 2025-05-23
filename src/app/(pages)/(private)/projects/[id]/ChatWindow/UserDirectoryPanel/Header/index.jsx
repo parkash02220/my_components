@@ -1,8 +1,8 @@
 import { useAppContext } from "@/context/App/AppContext";
 import { Box, IconButton } from "@mui/material";
 
-const Header = ({ isExpanded, toggleExpand }) => {
-  const {activeUser} = useAppContext()?.state;
+const Header = ({ isExpanded, toggleExpand, setSelectedDirectoryItem }) => {
+  const { activeUser } = useAppContext()?.state;
   return (
     <>
       <Box
@@ -13,49 +13,49 @@ const Header = ({ isExpanded, toggleExpand }) => {
       >
         {isExpanded && (
           <>
-          <Box position={"relative"} display={"inline-flex"} flexShrink={0}>
-            <Box
-              position={"relative"}
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              flexShrink={0}
-              overflow={"hidden"}
-              fontWeight={500}
-              width={48}
-              height={48}
-              borderRadius={"50%"}
-              sx={{ cursor: "pointer" }}
-            >
-              <img
-                src={activeUser?.avatar || '/dummyUser.svg'}
-                alt="avatar"
-                 referrerPolicy="no-referrer"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  textIndent: "10000px",
+            <Box position={"relative"} display={"inline-flex"} flexShrink={0}>
+              <Box
+                position={"relative"}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                flexShrink={0}
+                overflow={"hidden"}
+                fontWeight={500}
+                width={48}
+                height={48}
+                borderRadius={"50%"}
+                sx={{ cursor: "pointer" }}
+              >
+                <img
+                  src={activeUser?.avatar || "/dummyUser.svg"}
+                  alt="avatar"
+                  referrerPolicy="no-referrer"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    textIndent: "10000px",
+                  }}
+                />
+              </Box>
+              <Box
+                sx={{
+                  width: "10px",
+                  height: "10px",
+                  position: "absolute",
+                  top: "auto",
+                  right: "14%",
+                  bottom: "14%",
+                  transform: "scale(1) translate(50%,50%)",
+                  background: "#22C55E",
+                  borderRadius: "10px",
                 }}
-              />
+              ></Box>
             </Box>
-            <Box
-              sx={{
-                width: "10px",
-                height: "10px",
-                position: "absolute",
-                top: "auto",
-                right: "14%",
-                bottom: "14%",
-                transform: "scale(1) translate(50%,50%)",
-                background: "#22C55E",
-                borderRadius: "10px",
-              }}
-            ></Box>
-          </Box>
-        <Box flexGrow={1} />
-        </>
-      )}
+            <Box flexGrow={1} />
+          </>
+        )}
         <IconButton
           onClick={toggleExpand}
           sx={{
@@ -74,21 +74,24 @@ const Header = ({ isExpanded, toggleExpand }) => {
             }}
           />
         </IconButton>
-      { isExpanded &&  <IconButton
-          sx={{
-            borderRadius: "50%",
-            flex: "0 0 auto",
-            "&:hover": {
-              background: "rgba(99,115,129,0.08)",
-            },
-          }}
-        >
-          <img
-            src="/addUser.svg"
-            alt="user"
-            style={{ width: "24px", height: "24px", flexShrink: 0 }}
-          />
-        </IconButton>}
+        {isExpanded && (
+          <IconButton
+            onClick={() => setSelectedDirectoryItem(null)}
+            sx={{
+              borderRadius: "50%",
+              flex: "0 0 auto",
+              "&:hover": {
+                background: "rgba(99,115,129,0.08)",
+              },
+            }}
+          >
+            <img
+              src="/addUser.svg"
+              alt="user"
+              style={{ width: "24px", height: "24px", flexShrink: 0 }}
+            />
+          </IconButton>
+        )}
       </Box>
     </>
   );

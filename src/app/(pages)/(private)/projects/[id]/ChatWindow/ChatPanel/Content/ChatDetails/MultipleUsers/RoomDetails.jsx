@@ -37,8 +37,8 @@ const RoomDetails = ({users=[]}) => {
           }}
         />
       </Box>
-      <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-      <Box minHeight={0} display={'flex'} flexDirection={'column'} flex={'1 1 auto'}>
+      <Collapse in={isExpanded} timeout="auto" unmountOnExit flex={'1 1 auto'} sx={{overflow:'auto'}}>
+      <Box display={'flex'} flexDirection={'column'}>
         <Box display={"flex"} flexDirection={"column"} sx={{
               overflowY: "auto",
               scrollbarWidth: "none",

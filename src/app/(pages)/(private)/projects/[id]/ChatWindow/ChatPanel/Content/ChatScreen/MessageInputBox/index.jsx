@@ -2,8 +2,9 @@ import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { Box, IconButton } from "@mui/material";
 import TextMessage from "./TextMessage";
 
-const MessageInputBox = ({selectedDirectoryItem}) => {
-  const isDisabled = !selectedDirectoryItem;
+const MessageInputBox = ({chatType,selectedUsers,selectedDirectoryItem,handleChatStart}) => {
+  const isGroupChat = chatType === "group__chat";
+  const isDisabled = !selectedDirectoryItem && selectedUsers?.length === 0;
   const inputIcons = [
     {
       name: "add image",
@@ -54,7 +55,7 @@ const MessageInputBox = ({selectedDirectoryItem}) => {
           />
         </IconButton>
         <Box flex={'1 1 auto'}>
-          <TextMessage isDisabled={isDisabled}/>
+          <TextMessage isDisabled={isDisabled} isGroupChat={isGroupChat} selectedUsers={selectedUsers} handleChatStart={handleChatStart}/>
         </Box>
         <Box display={"flex"} alignItems={"space-between"}>
           <Box display={"flex"} flexGrow={1}>

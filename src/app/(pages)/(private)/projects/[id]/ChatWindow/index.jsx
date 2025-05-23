@@ -6,12 +6,17 @@ import { useChatContext } from "@/context/Chat/ChatContext";
 import Loader from "@/components/Loader/Loader";
 import { useState } from "react";
 import useStartChat from "@/hooks/chat/singleUserChat/useStartChat";
+import useGetAllMessages from "@/hooks/chat/useGetAllMessages";
+import useStartGroupChat from "@/hooks/chat/groupChat/useStartGroupChat";
+import BackButton from "@/components/BackButton";
 
-const ChatWindow = () => {
+const ChatWindow = ({projectId}) => {
   const [chatType, setChatType] = useState("");
    useInitializeChatWindow();
   const {loadingStartChat,errorStartChat,startChat} = useStartChat();
+  const {loadingStartGroupChat,startGroupChat} = useStartGroupChat();
   const [selectedDirectoryItem, setSelectedDirectoryItem] = useState(null);
+  const [selectedUsers, setSelectedUsers] = useState([]);
   const { state } = useChatContext();
   const { loadingChatWindow } = state;
   if (loadingChatWindow) {
@@ -21,17 +26,21 @@ const ChatWindow = () => {
       </Box>
     );
   }
-  const handleChatStart = (data, type) => {
+  const handleChatStart = async (data, type) => {
+    setSelectedUsers([]);
     setChatType(type);
     setSelectedDirectoryItem(data);
     if(type==="group__chat"){
-
+     return startGroupChat(data)
     }else{
-      startChat(data?.id);
+      return startChat(data?.id);
     }
   };
   return (
     <>
+    <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'} mb={2}>
+      <BackButton fontSize={16} path={`/projects/${projectId}`}/>
+    </Box>
       <Box
         className="chatWindow__container"
         sx={{
@@ -65,11 +74,16 @@ const ChatWindow = () => {
         >
           <UserDirectoryPanel
             handleChatStart={handleChatStart}
+            setSelectedDirectoryItem={setSelectedDirectoryItem}
           />
           <ChatPanel
             chatType={chatType}
             selectedDirectoryItem={selectedDirectoryItem}
             loadingStartChat={loadingStartChat}
+            loadingStartGroupChat={loadingStartGroupChat}
+            handleChatStart={handleChatStart}
+            selectedUsers={selectedUsers}
+            setSelectedUsers={setSelectedUsers}
           />
         </Box>
       </Box>

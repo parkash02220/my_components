@@ -7,6 +7,9 @@ const Content = ({
   chatType,
   selectedDirectoryItem,
   loadingStartChat,
+  loadingStartGroupChat,
+  selectedUsers,
+  handleChatStart,
 }) => {
   return (
     <>
@@ -15,6 +18,9 @@ const Content = ({
           selectedDirectoryItem={selectedDirectoryItem}
           loadingStartChat={loadingStartChat}
           chatType={chatType}
+          loadingStartGroupChat={loadingStartGroupChat}
+          selectedUsers={selectedUsers}
+          handleChatStart={handleChatStart}
         />
         {selectedDirectoryItem && (
           <ChatDetails

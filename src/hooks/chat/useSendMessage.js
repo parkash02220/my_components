@@ -1,7 +1,8 @@
 const { useChatContext } = require("@/context/Chat/ChatContext");
 const { ApiCall } = require("@/utils/ApiCall");
-const { useState, useEffect } = require("react");
+const { useState, useEffect, useRef } = require("react");
 const { default: useToast } = require("../common/useToast");
+import { useAppContext } from '@/context/App/AppContext';
 import * as actions from '@/context/Chat/action';
 
 
@@ -12,9 +13,12 @@ const useSendMessage = () => {
     const [error,setError] = useState(null);
     const [message,setMessage] = useState("");
     const {state,dispatch} = useChatContext();
+    const {activeUser} = useAppContext().state;
     const {chatRoom} = state;
+    const content = useRef('');
     const handleMessageChange = (e) => {
         const newMessage = e?.target?.value;
+        content.current= newMessage;
         setMessage(newMessage);
 
     }
@@ -25,11 +29,16 @@ const useSendMessage = () => {
         }
     }
 
-    const sendMessage = async () => {
-        if(!message?.trim() || !chatRoom?.id) return;
-        const msgToSend = message;
+    const sendMessage = async (isGroupChat,chatRoomOverRide) => {
+        const msgToSend = content.current;
+        const currentChatRoom = chatRoomOverRide || chatRoom;
+        if(!msgToSend?.trim() || !currentChatRoom?.id) return;
         setMessage("");
-        dispatch({type:actions.ADD_MESSSAGE_IN_USER_MESSAGES,payload:msgToSend});
+        if(isGroupChat){
+            dispatch({type:actions.ADD_MESSSAGE_IN_GROUP_MESSAGES,payload:{data:msgToSend,activeUser}});
+        }else{
+            dispatch({type:actions.ADD_MESSSAGE_IN_USER_MESSAGES,payload:{data:msgToSend,activeUser}});
+        }
         setLoading(true);
         setError(null);
 
@@ -37,11 +46,11 @@ const useSendMessage = () => {
             url:`${process.env.NEXT_PUBLIC_BASE_URL}/send-message`,
             method:"POST",
             body:{
-                chatRoomId:chatRoom?.id,
+                chatRoomId:currentChatRoom?.id,
                 content:msgToSend,
             }
         });
-
+        content.current="";
         if(res.error){
             setLoading(false);
             setError(res.error);
@@ -50,11 +59,10 @@ const useSendMessage = () => {
         }
 
         setLoading(false);
-        console.log("::res in send mesage",res?.data);
     }
 
      
-    return {loadingMessageSend:loading,errorMessageSend:error,sendMessage,handleMessageChange,message,handleKeyDown};
+    return {loadingMessageSend:loading,errorMessageSend:error,sendMessage,handleMessageChange,message,handleKeyDown,setMessage};
 }
 
 export default useSendMessage;

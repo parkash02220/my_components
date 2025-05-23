@@ -98,6 +98,7 @@ export default function MyAutoComplete({
   hasMore,
   loadingMore,
   labelFontSize,
+  focusedBorder,
   ...props
 }) {
   const customStyleForAutoComplete = {
@@ -110,6 +111,7 @@ export default function MyAutoComplete({
       },
       "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         borderColor: error ? "red" : borderColor,
+        border:focusedBorder || `1px solid ${borderColor}`,
       },
     },
     "& .MuiOutlinedInput-notchedOutline": {

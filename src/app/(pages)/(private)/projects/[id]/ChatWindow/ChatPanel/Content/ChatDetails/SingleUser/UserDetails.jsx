@@ -2,7 +2,6 @@ import { getFullName } from "@/utils";
 import { Box, Typography } from "@mui/material";
 
 const UserDetails = ({ user }) => {
-  console.log("::user in details", user);
   return (
     <>
       <Box

@@ -6,6 +6,7 @@ import ConfirmationPopup from "@/components/ConfirmationPopup";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import AssignAllUsersDialog from './AssignAllUsersDIalog/index';
 import * as actions from '@/context/Projects/action';
+import { useAppContext } from "@/context/App/AppContext";
 const {
   Box,
   Typography,
@@ -27,6 +28,7 @@ const HeaderProjectName = () => {
   const { activeProject, loadingActiveProject } = state;
   const router = useRouter();
   const inputRef = useRef();
+  const {activeUser} = useAppContext().state;
   const [showProjectNameTextfield, setShowProjectNameTextfield] =
     useState(false);
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
@@ -83,7 +85,7 @@ const HeaderProjectName = () => {
         setOpenEditUsersPopup(true);
   }
   const handleChatStart = () => {
-     dispatch({type:actions.SET_ACTIVE_PROJECT_CHAT_WINDOW_STATUS,payload:true});
+    router.push(`/projects/${activeProject?.id}?chat=true`);
      handleMenuClose();
   }
   const menuItems = [
@@ -91,22 +93,26 @@ const HeaderProjectName = () => {
       label: "Rename",
       icon: "/rename.svg",
       onClick: handleProjectNameStartEdidting,
+      role:['admin'],
     },
     {
         label: "Edit users",
         icon: "/usersIcon.svg",
         onClick: handleEditUsers,
+        role:['admin'],
       },
       {
         label: "Chat",
         icon: "/chatIcon.svg",
         onClick: handleChatStart,
+        role:['admin','user'],
       },
     {
       label: "Delete",
       icon: "/delete.svg",
       onClick: handleDeletePopupOpen,
       color: "#FF5630",
+      role:['admin'],
     },
   ];
   useEffect(() => {
@@ -210,7 +216,7 @@ const HeaderProjectName = () => {
           },
         }}
       >
-        {menuItems.map((item) => (
+        {menuItems?.filter((item)=> item.role.some((r)=> r === activeUser?.role)).map((item) => (
           <MenuItem
             key={item.label}
             onClick={item.onClick}

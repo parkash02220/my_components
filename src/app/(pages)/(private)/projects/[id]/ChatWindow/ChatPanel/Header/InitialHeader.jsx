@@ -1,7 +1,10 @@
-import MySelect from "@/components/MySelect/MySelect";
+import MyAutoComplete from "@/components/MyAutoComplete/MyAutoComplete";
+import MyAutoCompleteVarient from "@/components/MyAutoComplete/MyAutoCompleteVarient";
+import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { Box, Typography } from "@mui/material";
+import { useMemo, useState } from "react";
 
-const InitialHeader = () => {
+const InitialHeader = ({ selectedUsers, setSelectedUsers }) => {
   return (
     <>
       <Box display={"flex"} alignItems={"center"} gap={2}>
@@ -9,14 +12,10 @@ const InitialHeader = () => {
           To:
         </Typography>
         <Box minWidth={320}>
-          <MySelect
-            placeholder={"+ Recipients"}
-            label=""
-            hoverBorderColor={"#1C252E"}
-            focusedBorder="2px solid #1C252E"
-            borderRadius="8px"
-            borderColor="#ccc"
-            value={''}
+          <MyAutoCompleteVarient
+            type="user"
+            selectedUsers={selectedUsers}
+            setSelectedUsers={setSelectedUsers}
           />
         </Box>
       </Box>

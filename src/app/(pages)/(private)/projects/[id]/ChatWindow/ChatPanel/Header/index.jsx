@@ -3,8 +3,10 @@ import SingleUserDetails from "./SingleUserDetails";
 import HeaderIconButtons from "./HeaderIconButtons";
 import GroupUsersDetails from "./GroupUsersDetails";
 import InitialHeader from "./InitialHeader";
+import { useState } from "react";
 
-const Header = ({ toggleExpand, chatType, selectedDirectoryItem }) => {
+const Header = ({ toggleExpand, chatType, selectedDirectoryItem,selectedUsers,setSelectedUsers }) => {
+
   return (
     <>
       <Box
@@ -16,7 +18,7 @@ const Header = ({ toggleExpand, chatType, selectedDirectoryItem }) => {
         borderBottom={"1px solid rgba(145,158,171,0.2)"}
       >
         {!selectedDirectoryItem ? (
-          <InitialHeader />
+          <InitialHeader selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers}/>
         ) : chatType === "group__chat" ? (
           <GroupUsersDetails
             chatType={chatType}

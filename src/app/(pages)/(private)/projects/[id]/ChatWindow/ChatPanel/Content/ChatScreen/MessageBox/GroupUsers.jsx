@@ -1,18 +1,18 @@
+import Loader from "@/components/Loader/Loader";
 import { useChatContext } from "@/context/Chat/ChatContext";
 import { Box } from "@mui/material";
+import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import SentMessage from "./SentMessage";
 import ReceivedMessage from "./ReceivedMessage";
-import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
-import Loader from "@/components/Loader/Loader";
-const SingleUser = ({ loadingStartChat }) => {
-  const { singleUserChat, loadingSingleUserChat } = useChatContext().state;
-  const { messages } = singleUserChat;
+const GroupUsers = ({ loadingStartGroupChat }) => {
+  const { groupChat, loadingGroupChat } = useChatContext().state;
+  const { messages } = groupChat;
   const bottomRef = useRef(null);
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-  if (loadingSingleUserChat || loadingStartChat) {
+  if (loadingGroupChat || loadingStartGroupChat) {
     return (
       <Box height={"100%"} position={"absolute"} width={"100%"}>
         <Loader />
@@ -44,5 +44,4 @@ const SingleUser = ({ loadingStartChat }) => {
     </>
   );
 };
-
-export default SingleUser;
+export default GroupUsers;

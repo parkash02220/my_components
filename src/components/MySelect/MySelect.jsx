@@ -49,6 +49,7 @@ export default function MySelect({
   required,
   requiredColor,
   multiple = false,
+  menuDesignType = "checkbox",
   sx,
   ...props
 }) {
@@ -89,28 +90,40 @@ export default function MySelect({
             "&.Mui-selected": {
               bgcolor: "rgba(145 158 171 / 0.08)",
             },
-            "&:hover":{
-              bgcolor:'rgba(145 158 171 / 0.08)'
+            "&:hover": {
+              bgcolor: "rgba(145 158 171 / 0.08)",
             },
             "&.Mui-selected:hover": {
-            bgcolor:'rgba(145 158 171 / 0.08)'
+              bgcolor: "rgba(145 158 171 / 0.08)",
             },
           }}
           className={`mySelect__option ${optionItemClassName}`}
         >
-          <Box>
-            <Checkbox
-              checked={value?.some((val) => val === option?.value)}
-              // onChange={(e) => handleSelectAllUsers(e.target.checked)}
-              sx={{
-                color: "#00A76F !important",
-                padding: "4px",
-                marginInline: "4px",
-                borderRadius: "50%",
-              }}
-            />
-            {option.label}
-          </Box>
+          {menuDesignType === "checkbox" ? (
+            <Box display="flex" alignItems="center" gap={1}>
+              <Checkbox
+                checked={value?.includes(option.value)}
+                sx={{
+                  color: "#00A76F !important",
+                  padding: "4px",
+                  borderRadius: "50%",
+                }}
+              />
+              {option.label}
+            </Box>
+          ) : menuDesignType === "withAvatar" ? (
+            <Box display="flex" alignItems="center" gap={1}>
+              <img
+                src={option.avatar || '/dummyUser.svg'}
+                  referrerPolicy="no-referrer"
+                alt={option.label}
+                style={{ width: 24, height: 24, borderRadius: "50%" }}
+              />
+              <Typography fontSize={menuItemFontSize}>{option.label}</Typography>
+            </Box>
+          ) : (
+            option.label
+          )}
         </MenuItem>
       ));
     } else {
@@ -127,11 +140,11 @@ export default function MySelect({
             "&.Mui-selected": {
               bgcolor: "rgba(145 158 171 / 0.08)",
             },
-            "&:hover":{
-              bgcolor:'rgba(145 158 171 / 0.08)'
+            "&:hover": {
+              bgcolor: "rgba(145 158 171 / 0.08)",
             },
             "&.Mui-selected:hover": {
-            bgcolor:'rgba(145 158 171 / 0.08)'
+              bgcolor: "rgba(145 158 171 / 0.08)",
             },
           }}
           className={`mySelect__option ${optionItemClassName}`}
@@ -140,11 +153,67 @@ export default function MySelect({
         </MenuItem>
       ));
     }
-  }, [options, menuItemFontSize, optionItemClassName]);
+  }, [options, menuItemFontSize, optionItemClassName, value, menuDesignType]);
+  
 
   const renderMenuItems = () => {
     return menuItems;
   };
+
+  const getRenderValue = ({ multiple, menuDesignType, options }) => {
+    if (!multiple) return undefined;
+  
+    if (menuDesignType === "withAvatar") {
+      return (selected) => (
+        <Box display="flex" flexWrap="wrap" gap={1} alignItems="center">
+          {options
+            .filter((opt) => selected.includes(opt.value))
+            .map((opt) => (
+              <Box
+                key={opt.value}
+                display="flex"
+                alignItems="center"
+                gap={0.5}
+                px={1}
+                py={0.5}
+                sx={{
+                  border: "1px solid #ccc",
+                  borderRadius: "12px",
+                  background: "#f5f5f5",
+                }}
+              >
+                <img
+                  src={opt.avatar || '/dummyUser.svg'}
+                  alt={opt.label}
+                   referrerPolicy="no-referrer"
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+                <Typography
+                  fontSize="13px"
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
+                  {opt.label}
+                </Typography>
+              </Box>
+            ))}
+        </Box>
+      );
+    }
+
+    return (selected) =>
+      options
+        .filter((opt) => selected.includes(opt.value))
+        .map((opt) => opt.label)
+        .join(", ");
+  };
+  
 
   return (
     <Box sx={{ minWidth }}>
@@ -210,15 +279,7 @@ export default function MySelect({
           id="custom-select"
           className={`mySelect ${className}`}
           value={multiple ? value || [] : value}
-          renderValue={
-            multiple
-              ? (selected) =>
-                  options
-                    .filter((opt) => selected.includes(opt.value))
-                    .map((opt) => opt.label)
-                    .join(", ")
-              : undefined
-          }
+          renderValue={getRenderValue({ multiple, menuDesignType, options })}
           onChange={onChange}
           label={label}
           sx={customStyleForSelect}

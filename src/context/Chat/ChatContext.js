@@ -49,8 +49,8 @@ function chatReducer(state = initialState, action) {
     }
    
     case actions.SET_USER_MESSAGES_SUCCESS:{
-        console.log("::SET_USER_MESSAGES_SUCCESS",payload)
-        const formattedPayload = formatAllMessages(payload);
+        const {data,activeUser} = payload
+        const formattedPayload = formatAllMessages(data,activeUser);
         return {
             ...state,
             singleUserChat:formattedPayload || {},
@@ -67,7 +67,8 @@ function chatReducer(state = initialState, action) {
     }
 
     case actions.ADD_MESSSAGE_IN_USER_MESSAGES:{
-        const message = formatAddMessageInUserMsgs(payload);
+        const {data,activeUser} = payload
+        const message = formatAddMessageInUserMsgs(data,activeUser);
         return {
             ...state,
             singleUserChat:{
@@ -77,7 +78,55 @@ function chatReducer(state = initialState, action) {
             }
         }
     }
+
+    case actions.SET_GROUP_MESSAGES_REQUEST:{
+        return {
+            ...state,
+            loadingGroupChat:true,
+            errorGroupChat:null,
+        }
+    }
    
+    case actions.SET_GROUP_MESSAGES_SUCCESS:{
+        const {data,activeUser} = payload
+        const formattedPayload = formatAllMessages(data,activeUser);
+        return {
+            ...state,
+            groupChat:formattedPayload || {},
+            loadingGroupChat:false,
+        }
+    }
+
+    case actions.SET_USER_MESSAGES_ERROR:{
+        return {
+            ...state,
+            loadingGroupChat:false,
+            errorGroupChat:payload,
+        }
+    }
+   
+    case actions.ADD_MESSSAGE_IN_GROUP_MESSAGES:{
+        const {data,activeUser} = payload
+        const message = formatAddMessageInUserMsgs(data,activeUser);
+        return {
+            ...state,
+            groupChat:{
+                ...state?.groupChat,
+                messages:[...state?.groupChat?.messages,message],
+                totalMessages: state?.groupChat.totalMessages + 1,
+            }
+        }
+    }
+
+    case actions.ADD_NEW_GROUP_IN_GROUPS:{
+        return {
+            ...state,
+            chatWindow:{
+                ...state.chatWindow,
+                groups:[payload,...state.chatWindow.groups]
+            }
+        }
+    }
     
     default:
         return state;

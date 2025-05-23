@@ -4,14 +4,15 @@ import { ApiCall } from "@/utils/ApiCall";
 import { useState } from "react";
 import * as actions from '@/context/Chat/action';
 import { convertIdFields } from "@/utils";
+import { useAppContext } from "@/context/App/AppContext";
 const useGetAllMessages = () => {
     const toastId = "get__messages";
     const {showToast} = useToast();
     const {dispatch,state} = useChatContext();
-
+    const {activeUser} = useAppContext().state;
     const getAllMessages = async (chatRoomId,isGroupChat) => {
            if(isGroupChat){
-
+            dispatch({type:actions.SET_GROUP_MESSAGES_REQUEST});
            }else{
                dispatch({type:actions.SET_USER_MESSAGES_REQUEST});
            }
@@ -22,7 +23,7 @@ const useGetAllMessages = () => {
 
         if(res.error){
             if(isGroupChat){
-
+                dispatch({type:actions.SET_GROUP_MESSAGES_ERROR});
             }else{
                 dispatch({type:actions.SET_USER_MESSAGES_ERROR});
             }
@@ -31,11 +32,10 @@ const useGetAllMessages = () => {
         }
 
         const formattedIdResponse = convertIdFields(res?.data)
-        console.log("::res in get all messages",res?.data)
         if(isGroupChat){
-
+            dispatch({type:actions.SET_GROUP_MESSAGES_SUCCESS,payload:{data:formattedIdResponse,activeUser}});
         }else{
-            dispatch({type:actions.SET_USER_MESSAGES_SUCCESS,payload:formattedIdResponse});
+            dispatch({type:actions.SET_USER_MESSAGES_SUCCESS,payload:{data:formattedIdResponse,activeUser}});
         }
     }
     return {getAllMessages};

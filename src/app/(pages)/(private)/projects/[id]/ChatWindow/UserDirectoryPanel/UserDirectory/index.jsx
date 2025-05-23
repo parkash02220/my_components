@@ -6,7 +6,6 @@ import { useChatContext } from "@/context/Chat/ChatContext";
 const UserDirectory = ({ isExpanded,handleChatStart }) => {
   const {chatWindow} = useChatContext().state;
  const {users,groups} = chatWindow;
- console.log("::chat window in user directory",chatWindow)
   return (
     <>
       <Box

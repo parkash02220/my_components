@@ -15,4 +15,13 @@ export const initialState = {
     },
     loadingSingleUserChat:false,
     errorSingleUserChat:null,
+    groupChat:{
+        page:0,
+        pageSize:20,
+        totalMessages:0,
+        messages:[],
+        hasMore:false,
+    },
+    loadingGroupChat:false,
+    errorGroupChat:null,
 }

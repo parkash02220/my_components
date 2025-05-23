@@ -374,16 +374,6 @@ function projectsReducer(state = initialState, action) {
 
     }
 
-    case actions.SET_ACTIVE_PROJECT_CHAT_WINDOW_STATUS:{
-      return {
-        ...state,
-        activeProject:{
-          ...state?.activeProject,
-          isChatWindowOpen:payload,
-        }
-      }
-    }
-
     default:
       return state;
   }

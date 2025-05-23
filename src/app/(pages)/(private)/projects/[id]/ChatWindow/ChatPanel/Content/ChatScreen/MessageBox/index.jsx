@@ -4,8 +4,9 @@ import ReceivedMessage from "./ReceivedMessage";
 import InitialMessageBox from "./InitialMessageBox";
 import SingleUser from "./SingleUser";
 import { useAppContext } from "@/context/App/AppContext";
+import GroupUsers from "./GroupUsers";
 
-const MessageBox = ({ selectedDirectoryItem, chatType,loadingStartChat }) => {
+const MessageBox = ({ selectedDirectoryItem, chatType,loadingStartChat,loadingStartGroupChat }) => {
   return (
     <>
       <Box
@@ -38,24 +39,7 @@ const MessageBox = ({ selectedDirectoryItem, chatType,loadingStartChat }) => {
           >
             {chatType === "group__chat" ? (
               <>
-                <SentMessage />
-                <ReceivedMessage />
-                <SentMessage />
-                <ReceivedMessage />
-                <SentMessage />
-                <ReceivedMessage />
-                <SentMessage />
-                <ReceivedMessage />
-                <SentMessage />
-                <ReceivedMessage />
-                <SentMessage />
-                <ReceivedMessage />
-                <SentMessage />
-                <ReceivedMessage />
-                <SentMessage />
-                <ReceivedMessage />
-                <SentMessage />
-                <ReceivedMessage />
+               <GroupUsers loadingStartGroupChat={loadingStartGroupChat}/>
               </>
             ) : (
               <SingleUser loadingStartChat={loadingStartChat}/>
