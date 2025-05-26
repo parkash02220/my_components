@@ -1,18 +1,21 @@
+import { useTaskContext } from "@/context/Task/TaskContext";
 import useToast from "@/hooks/common/useToast";
 
 const { ApiCall } = require("@/utils/ApiCall");
 const { useState, useEffect } = require("react");
 
-const useToggleSubTaskCompletion = (acitveTask) => {
+const useToggleSubTaskCompletion = () => {
+  const { state } = useTaskContext();
+  const { activeTask } = state || {};
   const toastId = "toggle_subtask";
   const { showToast } = useToast();
   const [loadingIdsToggle, setLoadingIdsToggle] = useState([]);
-  const [subtasks, setSubtasks] = useState(acitveTask?.subtasks || []);
+  const [subtasks, setSubtasks] = useState(activeTask?.subtasks || []);
 
-  const toggleCompletionSubTask = async (taskId, subTaskId, currentStatus) => {
+  const toggleCompletionSubTask = async (subTaskId, currentStatus) => {
     setLoadingIdsToggle((pre) => [...pre, subTaskId]);
     const res = await ApiCall({
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/toggle-subtask-completion/${taskId}/${subTaskId}`,
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/toggle-subtask-completion/${activeTask?.id}/${subTaskId}`,
       method: "PATCH",
     });
 
@@ -44,8 +47,8 @@ const useToggleSubTaskCompletion = (acitveTask) => {
   };
 
   useEffect(() => {
-    setSubtasks(acitveTask?.subtasks || []);
-  }, [acitveTask]);
+    setSubtasks(activeTask?.subtasks || []);
+  }, [activeTask]);
 
   return { loadingIdsToggle, subtasks, toggleCompletionSubTask };
 };

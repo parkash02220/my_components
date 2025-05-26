@@ -2,7 +2,12 @@ import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { Box, IconButton } from "@mui/material";
 import TextMessage from "./TextMessage";
 
-const MessageInputBox = ({chatType,selectedUsers,selectedDirectoryItem,handleChatStart}) => {
+const MessageInputBox = ({
+  chatType,
+  selectedUsers,
+  selectedDirectoryItem,
+  handleChatStart,
+}) => {
   const isGroupChat = chatType === "group__chat";
   const isDisabled = !selectedDirectoryItem && selectedUsers?.length === 0;
   const inputIcons = [
@@ -38,7 +43,7 @@ const MessageInputBox = ({chatType,selectedUsers,selectedDirectoryItem,handleCha
         position={"relative"}
       >
         <IconButton
-        disabled={isDisabled}
+          disabled={isDisabled}
           sx={{
             borderRadius: "50%",
             flex: "0 0 auto",
@@ -54,30 +59,36 @@ const MessageInputBox = ({chatType,selectedUsers,selectedDirectoryItem,handleCha
             style={{ width: "20px", height: "20px", flexShrink: 0 }}
           />
         </IconButton>
-        <Box flex={'1 1 auto'}>
-          <TextMessage isDisabled={isDisabled} isGroupChat={isGroupChat} selectedUsers={selectedUsers} handleChatStart={handleChatStart}/>
+        <Box flex={"1 1 auto"}>
+          <TextMessage
+            isDisabled={isDisabled}
+            isGroupChat={isGroupChat}
+            selectedUsers={selectedUsers}
+            handleChatStart={handleChatStart}
+            selectedDirectoryItem={selectedDirectoryItem}
+          />
         </Box>
         <Box display={"flex"} alignItems={"space-between"}>
           <Box display={"flex"} flexGrow={1}>
             {inputIcons?.map((icon, i) => {
               return (
-                  <IconButton
+                <IconButton
                   disabled={isDisabled}
                   key={i}
-                    onClick={icon?.onClick}
-                    sx={{
-                      borderRadius: "50%",
-                      overflow: "hidden",
-                      padding: "8px",
-                      flex: "0 0 auto",
-                    }}
-                  >
-                    <img
-                      style={{ width: "20px", height: "20px", flexShrink: 0 }}
-                      src={icon?.src}
-                      alt={icon?.alt}
-                    />
-                  </IconButton>
+                  onClick={icon?.onClick}
+                  sx={{
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    padding: "8px",
+                    flex: "0 0 auto",
+                  }}
+                >
+                  <img
+                    style={{ width: "20px", height: "20px", flexShrink: 0 }}
+                    src={icon?.src}
+                    alt={icon?.alt}
+                  />
+                </IconButton>
               );
             })}
           </Box>

@@ -9,6 +9,7 @@ const TextMessage = ({
   isGroupChat,
   selectedUsers,
   handleChatStart,
+  selectedDirectoryItem,
 }) => {
   const {
     loadingMessageSend,
@@ -19,40 +20,41 @@ const TextMessage = ({
     setMessage,
   } = useSendMessage();
 
-  const {loadingCreateCustomGroup,errorCreateCustomGroup,createCustomGroup} = useCreateCustomGroup();
+  const {
+    loadingCreateCustomGroup,
+    errorCreateCustomGroup,
+    createCustomGroup,
+  } = useCreateCustomGroup();
 
   const handleSendMessage = async (e) => {
     if (e.key === "Enter") {
-
       setMessage("");
-      
-      if ((selectedUsers || []).length === 0) {
+
+      if (selectedDirectoryItem) {
         await sendMessage(isGroupChat);
         return;
       }
-      
+
       if (selectedUsers?.length === 1) {
         const user = selectedUsers[0];
-        await handleChatStart(user, "single_user_chat");
-        await sendMessage(false);
+        const room = await handleChatStart(user, "single_user_chat");
+        await sendMessage(false, room);
         return;
       }
 
-      if((selectedUsers || []).length > 1){
-            const participantIds = selectedUsers?.map((user)=> user?.id);
-            const name = selectedUsers
-            ?.slice(0, 3)
-            ?.reduce((acc, curr, index) => {
-              const fullName = getFullName(curr?.firstName, curr?.lastName);
-              return acc + (index > 0 ? ', ' : '') + fullName;
-            }, '');
+      if ((selectedUsers || []).length > 1) {
+        const participantIds = selectedUsers?.map((user) => user?.id);
+        const name = selectedUsers?.slice(0, 3)?.reduce((acc, curr, index) => {
+          const fullName = getFullName(curr?.firstName, curr?.lastName);
+          return acc + (index > 0 ? ", " : "") + fullName;
+        }, "");
 
-          const group =  await createCustomGroup(participantIds,name);
-          await handleChatStart(group,"group__chat");
-          await sendMessage(true,group);
+        const group = await createCustomGroup(participantIds, name);
+        await handleChatStart(group, "group__chat");
+        await sendMessage(true, group);
       }
+    }
   };
-}
   return (
     <>
       <Box width={"100%"}>

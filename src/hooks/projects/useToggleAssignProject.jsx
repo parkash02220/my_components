@@ -5,7 +5,7 @@ import { useState } from "react";
 import * as projectsActions from "@/context/Projects/action";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 const useToggleAssignProject = () => {
-  const toastId = 'add_user_in_project';
+  const toastId = "add_user_in_project";
   const { showToast } = useToast();
   const { dispatch: projectsDispatch } = useProjectsContext();
   const [loadingAssignProjectIds, setLoadingAssignProjectIds] = useState([]);
@@ -41,14 +41,13 @@ const useToggleAssignProject = () => {
         type: "error",
         message: "Request failed. Please refresh the page",
       });
-      console.log("::error while changing state of assign task", res);
       setErrorAssignProject(true);
       return;
     }
     const formattedIdResponse = convertIdFields(res?.data?.updatedTask || {});
 
     showToast({
-        toastId,
+      toastId,
       type: "success",
       message: "Changes saved and synced with the server.",
     });

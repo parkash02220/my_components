@@ -1,14 +1,3 @@
-const activeTask = {
-  title: "Build New Feature",
-  subtasks: [
-    { id: 1, title: "Complete project proposal", completed: true },
-    { id: 2, title: "Conduct market research", completed: true },
-    { id: 3, title: "Design user interface mockups", completed: false },
-    { id: 4, title: "Develop backend api", completed: false },
-    { id: 5, title: "Implement authentication system", completed: false },
-  ],
-};
-
 import {
   Box,
   Checkbox,
@@ -20,6 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
   useTheme,
+  IconButton,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
@@ -33,18 +23,24 @@ import MyTextField from "@/components/MyTextfield/MyTextfield";
 import useCreateSubTask from "@/hooks/projects/task/subtask/useCreateSubTask";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import { useTaskContext } from "@/context/Task/TaskContext";
+import ConfirmationPopup from "@/components/ConfirmationPopup";
+import useDeleteSubtask from "@/hooks/projects/task/subtask/useDeleteSubtask";
+import AddSubTaskDialog from "./AddSubTaskDialog";
 const SubTasksTab = () => {
-  const { state } = useTaskContext();
-  const { activeTask } = state || {};
   const theme = useTheme();
+  const [selectedSubTask, setSelectedSubtask] = useState(null);
   const [subTaskPopupOpen, setSubTaskPopupOpen] = useState(false);
   const { loadingIdsToggle, subtasks, toggleCompletionSubTask } =
-    useToggleSubTaskCompletion(activeTask);
-
+    useToggleSubTaskCompletion();
+  const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const handleToggle = async (subTaskId, completed) => {
-    toggleCompletionSubTask(activeTask?.id, subTaskId, completed);
+    toggleCompletionSubTask(subTaskId, completed);
   };
-
+  const {
+    loading: loadingDeleteSubtask,
+    error: errorDeleteSubtask,
+    deleteSubTask,
+  } = useDeleteSubtask();
   const completedCount = subtasks?.filter((task) => task?.completed)?.length;
   const totalCount = subtasks?.length;
   const progress = (completedCount / totalCount) * 100;
@@ -53,13 +49,34 @@ const SubTasksTab = () => {
     setSubTaskPopupOpen(false);
   };
 
+  const handleDeletePopupOpen = (subtask) => {
+    setSelectedSubtask(subtask);
+    setDeletePopupOpen(true);
+  };
+  const handleDeletePopupClose = () => {
+    setDeletePopupOpen(false);
+    setSelectedSubtask(null);
+  };
+
+  const handleMenuDeleteButton = async () => {
+    await deleteSubTask(selectedSubTask?.id);
+    handleDeletePopupClose();
+  };
+
   return (
     <>
-      <AddSubTaskDialog
-        open={subTaskPopupOpen}
-        onClose={handleDialogClose}
-        taskId={activeTask?.id}
-      />
+      <AddSubTaskDialog open={subTaskPopupOpen} onClose={handleDialogClose} />
+      {deletePopupOpen && (
+        <ConfirmationPopup
+          title={"Delete Subtask"}
+          handleClose={handleDeletePopupClose}
+          open={deletePopupOpen}
+          message={selectedSubTask?.title}
+          type={"delete"}
+          submitAction={handleMenuDeleteButton}
+          loading={loadingDeleteSubtask}
+        />
+      )}
       <Box p={"24px 20px"}>
         <Box display={"flex"} flexDirection={"column"} gap={2}>
           <Box>
@@ -131,6 +148,15 @@ const SubTasksTab = () => {
                     </Typography>
                   }
                 />
+                <Box>
+                  <IconButton onClick={() => handleDeletePopupOpen(subtask)}>
+                    <img
+                      src="/delete.svg"
+                      alt="edit"
+                      style={{ width: "20px", height: "20px" }}
+                    />
+                  </IconButton>
+                </Box>
               </ListItem>
             ))}
           </List>
@@ -159,104 +185,3 @@ const SubTasksTab = () => {
 };
 
 export default SubTasksTab;
-
-const AddSubTaskDialog = ({ open, onClose, taskId }) => {
-  const { isXs } = useBreakpointFlags();
-  const { loadingCreateSubTask, addSubTaskToBackend } = useCreateSubTask();
-  const [subtaskName, setSubtaskName] = useState("");
-  const [error, setError] = useState(false);
-  const [helperText, setHelperText] = useState("");
-
-  const handleDialogClose = () => {
-    setSubtaskName("");
-    setError(false);
-    setHelperText("");
-    onClose();
-  };
-
-  const handleSubTaskInputfieldChange = (e) => {
-    const newName = e.target.value;
-    let error = false;
-    let helperText = "";
-
-    if (!newName.trim()) {
-      error = true;
-      helperText = "Subtask name cannot be empty";
-    } else if (newName.length < 3 || newName.length > 50) {
-      error = true;
-      helperText = "Subtask name must be between 3 and 50 characters";
-    }
-    setSubtaskName(newName);
-    setError(error);
-    setHelperText(helperText);
-  };
-
-  const handleKeyDownInAddSubTask = (e) => {
-    if (e.key === "Enter") {
-      handleAddSubTask();
-    }
-  };
-
-  const handleAddSubTask = async () => {
-    const trimmedName = subtaskName.trim();
-    await addSubTaskToBackend(taskId, trimmedName);
-    handleDialogClose();
-  };
-  return (
-    <>
-      <MyDialog
-        open={open}
-        handleClose={handleDialogClose}
-        title="Add New Subtask"
-        width={isXs ? "100%" : "auto"}
-        content={
-          <Box pt={2}>
-            <MyTextField
-              fullWidth
-              label="Subtask Name"
-              value={subtaskName}
-              onChange={handleSubTaskInputfieldChange}
-              variant="outlined"
-              autoFocus
-              error={error}
-              helperText={helperText}
-              onKeyDown={handleKeyDownInAddSubTask}
-            />
-          </Box>
-        }
-        actions={
-          <Box
-            display="flex"
-            flexDirection={isXs ? "column-reverse" : "row"}
-            justifyContent="space-between"
-            gap={2}
-            width="100%"
-            p={isXs ? 1 : 2}
-          >
-            <MyButton
-              onClick={handleDialogClose}
-              color="black"
-              variant="outlined"
-              hoverBgColor="whitesmoke"
-              padding={"8px 16px"}
-              fullWidth={true}
-            >
-              Cancel
-            </MyButton>
-            <MyButton
-              onClick={handleAddSubTask}
-              disabled={error}
-              variant="contained"
-              loading={loadingCreateSubTask}
-              loadingText={"Adding..."}
-              padding={"8px 16px"}
-              fullWidth={true}
-            >
-              Add
-            </MyButton>
-          </Box>
-        }
-      />
-    </>
-  );
-};

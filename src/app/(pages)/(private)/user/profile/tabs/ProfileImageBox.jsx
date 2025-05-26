@@ -1,6 +1,13 @@
 import { Box, Button, Typography } from "@mui/material";
 
-const ProfileImageBox = ({ avatar, handleImageUpload, onDelete,isAdmin }) => {
+const ProfileImageBox = ({
+  avatar,
+  handleImageUpload,
+  onDelete,
+  isAdmin,
+  loading,
+  progress,
+}) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -165,31 +172,33 @@ const ProfileImageBox = ({ avatar, handleImageUpload, onDelete,isAdmin }) => {
             </Typography>
           </Box>
         </Box>
-      { !isAdmin &&  <Box
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          mt={3}
-        >
-          <Button
-            onClick={onDelete}
-            sx={{
-              background: "rgba(255,86,48,0.16)",
-              color: "#B71D18",
-              fontWeight: 700,
-              padding: "6px 12px",
-              minWidth: 64,
-              fontSize: 14,
-              "&.Mui-disabled": {
-                color: "#B71D18",
-                background: "rgba(255,86,48,0.08)",
-                cursor: "not-allowed",
-              },
-            }}
+        {!isAdmin && (
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            mt={3}
           >
-            Delete user
-          </Button>
-        </Box>}
+            <Button
+              onClick={onDelete}
+              sx={{
+                background: "rgba(255,86,48,0.16)",
+                color: "#B71D18",
+                fontWeight: 700,
+                padding: "6px 12px",
+                minWidth: 64,
+                fontSize: 14,
+                "&.Mui-disabled": {
+                  color: "#B71D18",
+                  background: "rgba(255,86,48,0.08)",
+                  cursor: "not-allowed",
+                },
+              }}
+            >
+              Delete user
+            </Button>
+          </Box>
+        )}
       </Box>
     </>
   );

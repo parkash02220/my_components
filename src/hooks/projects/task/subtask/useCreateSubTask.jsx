@@ -11,6 +11,7 @@ const useCreateSubTask = () => {
   const { dispatch } = useTaskContext();
   const [loading, setLoading] = useState(false);
   const addSubTaskToBackend = async (taskId, title) => {
+    if (loading) return;
     setLoading(true);
     const res = await ApiCall({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/add-subtask/${taskId}`,

@@ -8,19 +8,17 @@ import { useEffect, useState } from "react";
 import useDeleteActiveUser from "@/hooks/user/activeUser/useDeleteActiveUser";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import useUpdateActiveUser from "@/hooks/user/activeUser/useUpdateActiveUser";
+import useUploadProfileImage from "@/hooks/user/activeUser/useUploadProfileImage";
 
 const GeneralTab = ({ formik, isAdmin, avatar }) => {
+  const { uploadProfileImage, loadingUploadProfile, progress } =
+    useUploadProfileImage();
   const { loadingUpdateActiveUser, errorUpdateActiveUser, updateActiveUser } =
     useUpdateActiveUser();
   const [imgSrc, setImgSrc] = useState(null);
   const { loadingDeleteActiveUser, errorDeleteActiveUser, deleteActiveUser } =
     useDeleteActiveUser();
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
-  const handleImageUpload = (img) => {
-    if (img) {
-      setImgSrc(img);
-    }
-  };
   const handleUpdateUser = async () => {
     await updateActiveUser(formik.values);
   };
@@ -38,6 +36,16 @@ const GeneralTab = ({ formik, isAdmin, avatar }) => {
   useEffect(() => {
     setImgSrc(avatar);
   }, [avatar]);
+
+  const handleImageUpload = async (imgFile) => {
+    if (imgFile) {
+      const uploadedUrl = await uploadProfileImage(imgFile);
+      if (uploadedUrl) {
+        setImgSrc(uploadedUrl);
+        formik.setFieldValue("avatar", uploadedUrl);
+      }
+    }
+  };
   return (
     <>
       <ConfirmationPopup
@@ -75,6 +83,8 @@ const GeneralTab = ({ formik, isAdmin, avatar }) => {
                     handleImageUpload={handleImageUpload}
                     onDelete={handleDeletePopupOpen}
                     isAdmin={isAdmin}
+                    loading={loadingUploadProfile}
+                    progress={progress}
                   />
                 </Box>
               </Grid>

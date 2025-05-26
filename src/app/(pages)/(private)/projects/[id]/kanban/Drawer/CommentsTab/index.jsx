@@ -1,13 +1,31 @@
+import ConfirmationPopup from "@/components/ConfirmationPopup";
 import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { useAppContext } from "@/context/App/AppContext";
 import useAddTaskComment from "@/hooks/projects/task/comment/useAddTaskComment";
+import useDeleteComment from "@/hooks/projects/task/comment/useDeleteComment";
+import useEditTaskComment from "@/hooks/projects/task/comment/useEditTaskComment";
 import useGetAllTaskComments from "@/hooks/projects/task/comment/useGetAllTaskComments";
 import { getTimeAgo } from "@/utils";
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { useFormik } from "formik";
+import React, { useState } from "react";
 
 const CommentsTab = ({ activeTask }) => {
+  const [deletePopupOpen, setDeletePopupOpen] = useState(false);
+  const [selectedComment, setSelectedComment] = useState(null);
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editedText, setEditedText] = useState("");
+  const {
+    loading: loadingDeleteComment,
+    error: errorDeleteComment,
+    deleteTaskComment,
+  } = useDeleteComment();
+  const {
+    loading: loadingEditComment,
+    error: errorEditComment,
+    editTaskComment,
+  } = useEditTaskComment();
   const {
     loadingAllTaskComments,
     errorAllTaskComments,
@@ -36,8 +54,38 @@ const CommentsTab = ({ activeTask }) => {
     setAllComments((pre) => (updatedComments ? updatedComments : pre));
     formik.setFieldValue("comment", "");
   };
+  const handleDeletePopupOpen = (commnet) => {
+    setSelectedComment(commnet);
+    setDeletePopupOpen(true);
+  };
+  const handleDeletePopupClose = () => {
+    setDeletePopupOpen(false);
+  };
+  const handleCommentDeleteButton = async () => {
+    await deleteTaskComment(selectedComment?.id);
+    handleDeletePopupClose();
+  };
+  const handleEditComment = async (commentId) => {
+    const updated = await editTaskComment(commentId, editedText);
+    if (updated) {
+      setAllComments((prev) => updated);
+      setEditingCommentId(null);
+      setEditedText("");
+    }
+  };
   return (
     <>
+      {deletePopupOpen && (
+        <ConfirmationPopup
+          title={"Delete Comment"}
+          handleClose={handleDeletePopupClose}
+          open={deletePopupOpen}
+          message={"this comment"}
+          type={"delete"}
+          submitAction={handleCommentDeleteButton}
+          loading={loadingDeleteComment}
+        />
+      )}
       <Box
         sx={{
           padding: "24px 20px",
@@ -69,6 +117,12 @@ const CommentsTab = ({ activeTask }) => {
                   gap={2}
                   className="comments__commentBox"
                   key={comment?.id}
+                  position={"relative"}
+                  sx={{
+                    "&:hover .commentBox__actions": {
+                      opacity: 1,
+                    },
+                  }}
                 >
                   <Box
                     className="commentBox__left"
@@ -87,7 +141,7 @@ const CommentsTab = ({ activeTask }) => {
                     <img
                       src={comment?.user?.avatar || "/dummyUser.svg"}
                       alt="avatar"
-                       referrerPolicy="no-referrer"
+                      referrerPolicy="no-referrer"
                       style={{
                         width: "100%",
                         height: "100%",
@@ -127,13 +181,97 @@ const CommentsTab = ({ activeTask }) => {
                       </Typography>
                     </Box>
                     <Box>
-                      <Typography
-                        fontSize={14}
-                        color={theme?.palette?.primary?.main}
-                      >
-                        {comment?.text || ""}
-                      </Typography>
+                      {editingCommentId === comment?.id ? (
+                        <MyTextField
+                          fullWidth
+                          value={editedText}
+                          onChange={(e) => setEditedText(e.target.value)}
+                          multiline
+                          rows={2}
+                          border="1px solid rgba(145,158,171,0.16)"
+                          loading={loadingEditComment}
+                        />
+                      ) : (
+                        <Typography
+                          fontSize={14}
+                          color={theme?.palette?.primary?.main}
+                        >
+                          {comment?.text || ""}
+                        </Typography>
+                      )}
+                      {editingCommentId === comment?.id ? (
+                        <Box mt={1} display="flex" gap={1}>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => handleEditComment(comment?.id)}
+                            disabled={loadingEditComment}
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            variant="text"
+                            size="small"
+                            onClick={() => {
+                              setEditingCommentId(null);
+                              setEditedText("");
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                        </Box>
+                      ) : null}
                     </Box>
+                  </Box>
+                  <Box
+                    className="commentBox__actions"
+                    pt={"4px"}
+                    sx={{
+                      opacity: 0,
+                      position: "absolute",
+                      display: "flex",
+                      top: "100%",
+                      right: "0px",
+                      transition: "opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)",
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => {
+                        setEditingCommentId(comment?.id);
+                        setEditedText(comment?.text);
+                      }}
+                      sx={{
+                        "&:hover": {
+                          background: "99,115,129,0.08",
+                        },
+                        flex: "0 0 auto",
+                        borderRadius: "50%",
+                        padding: "5px",
+                      }}
+                    >
+                      <img
+                        src="/editIcon.svg"
+                        alt="reply"
+                        style={{ width: "16px", height: "16px", flexShrink: 0 }}
+                      />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handleDeletePopupOpen(comment)}
+                      sx={{
+                        "&:hover": {
+                          background: "99,115,129,0.08",
+                        },
+                        flex: "0 0 auto",
+                        borderRadius: "50%",
+                        padding: "5px",
+                      }}
+                    >
+                      <img
+                        src="/deleteIcon.svg"
+                        alt="delete"
+                        style={{ width: "16px", height: "16px", flexShrink: 0 }}
+                      />
+                    </IconButton>
                   </Box>
                 </Box>
               );
@@ -182,7 +320,7 @@ const CommentsTab = ({ activeTask }) => {
             <img
               src={activeUser?.avatar || "/dummyUser.svg"}
               alt="avatar"
-               referrerPolicy="no-referrer"
+              referrerPolicy="no-referrer"
               style={{
                 width: "100%",
                 height: "100%",

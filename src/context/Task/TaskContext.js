@@ -1,31 +1,30 @@
 import { createContext, useContext, useReducer } from "react";
-import * as actions from './action'
+import * as actions from "./action";
 import { initialState } from "./initialState";
 const TaskContext = createContext();
 
 function taskReducer(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-
-case actions.SET_ACTIVE_TASK_REQUEST:
+    case actions.SET_ACTIVE_TASK_REQUEST:
       return {
         ...state,
-        loadingActiveTask:true,
-        errorActiveTask:null,
+        loadingActiveTask: true,
+        errorActiveTask: null,
       };
 
     case actions.SET_ACTIVE_TASK_SUCCESS:
       return {
         ...state,
         activeTask: payload,
-         loadingActiveTask:false,
+        loadingActiveTask: false,
       };
 
     case actions.SET_ACTIVE_TASK_FAILURE:
       return {
         ...state,
-         loadingActiveTask:false,
-        errorActiveTask:payload,
+        loadingActiveTask: false,
+        errorActiveTask: payload,
       };
 
     case actions.EDIT_TASK: {
@@ -35,11 +34,11 @@ case actions.SET_ACTIVE_TASK_REQUEST:
       };
     }
 
-    case actions.DELETE_ACTIVE_TASK:{
+    case actions.DELETE_ACTIVE_TASK: {
       return {
         ...state,
-        activeTask:{},
-      }
+        activeTask: {},
+      };
     }
 
     case actions.ADD_SUBTASK: {
@@ -49,6 +48,19 @@ case actions.SET_ACTIVE_TASK_REQUEST:
         activeTask: {
           ...state.activeTask,
           subtasks: [...state.activeTask.subtasks, newSubTask],
+        },
+      };
+    }
+
+    case actions.DELETE_SUBTASK: {
+      const updatedSubtasks = state?.activeTask?.subtasks?.filter(
+        (subtask) => subtask?.id !== payload
+      );
+      return {
+        ...state,
+        activeTask: {
+          ...state.activeTask,
+          subtasks: updatedSubtasks,
         },
       };
     }
@@ -88,18 +100,18 @@ case actions.SET_ACTIVE_TASK_REQUEST:
     }
 
     default:
-        return state;
+      return state;
   }
 }
 
-export function TaskContextProvider({children}){
-    const [state,dispatch] = useReducer(taskReducer,initialState);
+export function TaskContextProvider({ children }) {
+  const [state, dispatch] = useReducer(taskReducer, initialState);
 
-    return (
-        <TaskContext.Provider value={{state,dispatch}}>
-            {children}
-        </TaskContext.Provider>
-    )
+  return (
+    <TaskContext.Provider value={{ state, dispatch }}>
+      {children}
+    </TaskContext.Provider>
+  );
 }
 
 export const useTaskContext = () => useContext(TaskContext);

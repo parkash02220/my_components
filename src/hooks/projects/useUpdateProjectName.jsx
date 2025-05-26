@@ -92,6 +92,7 @@ const useUpdateProjectName = (
   };
 
   const handleUpdateProjectName = async (projectId) => {
+    if (loading) return;
     const trimmedProjectName = projectName?.trim();
     if (
       !trimmedProjectName ||
