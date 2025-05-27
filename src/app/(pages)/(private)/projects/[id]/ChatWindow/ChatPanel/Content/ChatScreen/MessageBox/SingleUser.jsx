@@ -5,14 +5,14 @@ import ReceivedMessage from "./ReceivedMessage";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import Loader from "@/components/Loader/Loader";
-const SingleUser = ({ loadingStartChat }) => {
+const SingleUser = ({  }) => {
   const { singleUserChat, loadingSingleUserChat } = useChatContext().state;
   const { messages } = singleUserChat;
   const bottomRef = useRef(null);
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-  if (loadingSingleUserChat || loadingStartChat) {
+  if (loadingSingleUserChat) {
     return (
       <Box height={"100%"} position={"absolute"} width={"100%"}>
         <Loader />

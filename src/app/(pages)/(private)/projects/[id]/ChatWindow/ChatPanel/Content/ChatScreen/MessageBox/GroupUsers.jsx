@@ -5,14 +5,14 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import SentMessage from "./SentMessage";
 import ReceivedMessage from "./ReceivedMessage";
-const GroupUsers = ({ loadingStartGroupChat }) => {
+const GroupUsers = ({ }) => {
   const { groupChat, loadingGroupChat } = useChatContext().state;
   const { messages } = groupChat;
   const bottomRef = useRef(null);
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-  if (loadingGroupChat || loadingStartGroupChat) {
+  if (loadingGroupChat) {
     return (
       <Box height={"100%"} position={"absolute"} width={"100%"}>
         <Loader />

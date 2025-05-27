@@ -3,9 +3,10 @@ import UserDIrectoryItem from "./UserDIrectoryItem";
 import React from "react";
 import { useChatContext } from "@/context/Chat/ChatContext";
 
-const UserDirectory = ({ isExpanded,handleChatStart }) => {
+const UserDirectory = ({ isExpanded,handleChatStart,onlineUsers }) => {
   const {chatWindow} = useChatContext().state;
  const {users,groups} = chatWindow;
+ console.log(":::chat window",chatWindow)
   return (
     <>
       <Box
@@ -35,14 +36,14 @@ const UserDirectory = ({ isExpanded,handleChatStart }) => {
             {
               groups?.map((group)=>{
                 return <React.Fragment key={group?.id}>
-                 <UserDIrectoryItem type={"group__chat"} isExpanded={isExpanded} group={group} handleChatStart={handleChatStart}/>
+                 <UserDIrectoryItem type={"group__chat"} isExpanded={isExpanded} group={group} handleChatStart={handleChatStart} />
                  </React.Fragment>
               })
             }
              {
               users?.map((user)=>{
                 return <React.Fragment key={user?.id}>
-                 <UserDIrectoryItem isExpanded={isExpanded} user={user} handleChatStart={handleChatStart}/>
+                 <UserDIrectoryItem isExpanded={isExpanded} user={user} handleChatStart={handleChatStart} onlineUsers={onlineUsers}/>
                  </React.Fragment>
               })
             }

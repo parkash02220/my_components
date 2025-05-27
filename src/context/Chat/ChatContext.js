@@ -17,7 +17,8 @@ function chatReducer(state = initialState, action) {
     }
    
     case actions.INITIALIZE_CHAT_WINDOW_SUCCESS:{
-        const formattedPayload = formatInitializeChatWindow(payload);
+        const {data,activeUserId} = payload;
+        const formattedPayload = formatInitializeChatWindow(data,activeUserId);
         return {
             ...state,
             chatWindow:formattedPayload || {},
@@ -124,6 +125,34 @@ function chatReducer(state = initialState, action) {
             chatWindow:{
                 ...state.chatWindow,
                 groups:[payload,...state.chatWindow.groups]
+            }
+        }
+    }
+
+    case actions.SET_ONLINE_USERS:{
+        return{
+            ...state,
+            onlineUsers:payload || [],
+        }
+    }
+
+    case actions.ADD_CHAT_ID_TO_USER:{
+        const {userId,chatId} = payload;
+        const updatedUsers = state.chatWindow.users.map((user)=>{
+            if(user.id === userId){
+                return {
+                    ...user,
+                    chatId,
+                }
+            }
+            return user;
+        });
+
+        return {
+            ...state,
+            chatWindow:{
+                ...state.chatWindow,
+                users:updatedUsers,
             }
         }
     }

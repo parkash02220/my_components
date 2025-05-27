@@ -11,12 +11,13 @@ import { NotificationsContextProvider } from "@/context/Notifications/Notificati
 import { ProjectsContextProvider } from "@/context/Projects/ProjectsContex";
 import { TaskContextProvider } from "@/context/Task/TaskContext";
 import { ChatContextProvider } from "@/context/Chat/ChatContext";
+import { SocketProvider } from "@/context/Socket/SocketContext";
 
 export default function HomeLayout({ children }) {
   const { isMd } = useBreakpointFlags();
   const [open, setOpen] = useState(true);
   const [hasMounted, setHasMounted] = useState(false);
-    const { loadingActiveUser } = useGetActiveUser();
+    const { loadingActiveUser,activeUser } = useGetActiveUser();
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -32,6 +33,7 @@ export default function HomeLayout({ children }) {
       <ProjectsContextProvider>
         <TaskContextProvider>
         <ChatContextProvider>
+          <SocketProvider userId={activeUser?.id}>
       <Box sx={{ display: "flex" }} className="privateLayout__container">
         <MySideDrawer open={open} setOpen={setOpen} />
         <Box
@@ -49,7 +51,7 @@ export default function HomeLayout({ children }) {
               display: "flex",
               flexDirection: "column",
               flexGrow: 1,
-              minHeight: 0, // 🧠 KEY: allows children to shrink
+              minHeight: 0,
               padding: isMd ? "24px 16px 8px 16px" : "24px",
               paddingBottom: "4px",
             }}
@@ -58,6 +60,7 @@ export default function HomeLayout({ children }) {
           </main>
       </Box>
       </Box>
+      </SocketProvider>
       </ChatContextProvider>
       </TaskContextProvider>
       </ProjectsContextProvider>

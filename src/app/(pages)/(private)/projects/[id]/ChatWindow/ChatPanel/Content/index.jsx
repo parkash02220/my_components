@@ -6,21 +6,19 @@ const Content = ({
   isExpanded,
   chatType,
   selectedDirectoryItem,
-  loadingStartChat,
-  loadingStartGroupChat,
   selectedUsers,
   handleChatStart,
+  setSelectedDirectoryItem,
 }) => {
   return (
     <>
       <Box minHeight={0} flex={"1 1 auto"} display={"flex"}>
         <ChatScreen
           selectedDirectoryItem={selectedDirectoryItem}
-          loadingStartChat={loadingStartChat}
           chatType={chatType}
-          loadingStartGroupChat={loadingStartGroupChat}
           selectedUsers={selectedUsers}
           handleChatStart={handleChatStart}
+          setSelectedDirectoryItem={setSelectedDirectoryItem}
         />
         {selectedDirectoryItem && (
           <ChatDetails

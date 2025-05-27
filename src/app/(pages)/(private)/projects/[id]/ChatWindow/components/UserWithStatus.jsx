@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-export default function UserWithStatus({ width, height, type, avatar }) {
+export default function UserWithStatus({ width, height, type, avatar,isOnline=false }) {
   if (type === "group__chat") {
     return (
       <Box position={"relative"} display={"inline-flex"} flexShrink={0}>
@@ -67,7 +67,7 @@ export default function UserWithStatus({ width, height, type, avatar }) {
             />
           </Box>
         </Box>
-        <Box
+        {/* <Box
           sx={{
             width: "10px",
             height: "10px",
@@ -79,7 +79,7 @@ export default function UserWithStatus({ width, height, type, avatar }) {
             background: "#22C55E",
             borderRadius: "10px",
           }}
-        ></Box>
+        ></Box> */}
       </Box>
     );
   }
@@ -112,19 +112,23 @@ export default function UserWithStatus({ width, height, type, avatar }) {
             }}
           />
         </Box>
-        <Box
-          sx={{
-            width: "10px",
-            height: "10px",
-            position: "absolute",
-            top: "auto",
-            right: "14%",
-            bottom: "14%",
-            transform: "scale(1) translate(50%,50%)",
-            background: "#22C55E",
-            borderRadius: "10px",
-          }}
-        ></Box>
+        {
+          isOnline && (
+            <Box
+            sx={{
+              width: "10px",
+              height: "10px",
+              position: "absolute",
+              top: "auto",
+              right: "14%",
+              bottom: "14%",
+              transform: "scale(1) translate(50%,50%)",
+              background: "#22C55E",
+              borderRadius: "10px",
+            }}
+          ></Box>
+          )
+        }
       </Box>
     </>
   );

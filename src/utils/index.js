@@ -134,3 +134,15 @@ export  const loginUserWithGoogle = async (router) => {
     router.push(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`);
   }
  }
+
+ export const sendTyping = (socket,roomId, userId) => {
+  if (socket && roomId && userId) {
+    socket.emit("typing", { roomId, userId });
+  }
+};
+
+export const stopTyping = (socket,roomId, userId) => {
+  if (socket && roomId && userId) {
+    socket.emit("stopTyping", { roomId, userId });
+  }
+};

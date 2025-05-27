@@ -5,10 +5,9 @@ import MessageInputBox from "./MessageInputBox";
 const ChatScreen = ({
   selectedDirectoryItem,
   chatType,
-  loadingStartChat,
-  loadingStartGroupChat,
   selectedUsers,
   handleChatStart,
+  setSelectedDirectoryItem,
 }) => {
   return (
     <>
@@ -21,14 +20,13 @@ const ChatScreen = ({
         <MessageBox
           selectedDirectoryItem={selectedDirectoryItem}
           chatType={chatType}
-          loadingStartChat={loadingStartChat}
-          loadingStartGroupChat={loadingStartGroupChat}
         />
         <MessageInputBox
           chatType={chatType}
           selectedUsers={selectedUsers}
           selectedDirectoryItem={selectedDirectoryItem}
           handleChatStart={handleChatStart}
+          setSelectedDirectoryItem={setSelectedDirectoryItem}
         />
       </Box>
     </>

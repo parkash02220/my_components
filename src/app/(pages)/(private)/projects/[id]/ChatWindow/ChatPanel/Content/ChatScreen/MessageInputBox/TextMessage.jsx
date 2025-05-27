@@ -3,13 +3,13 @@ import useCreateCustomGroup from "@/hooks/chat/groupChat/useCreateCustomGroup";
 import useSendMessage from "@/hooks/chat/useSendMessage";
 import { getFullName } from "@/utils";
 import { Box } from "@mui/material";
-
 const TextMessage = ({
   isDisabled,
   isGroupChat,
   selectedUsers,
   handleChatStart,
   selectedDirectoryItem,
+  setSelectedDirectoryItem,
 }) => {
   const {
     loadingMessageSend,
@@ -31,14 +31,14 @@ const TextMessage = ({
       setMessage("");
 
       if (selectedDirectoryItem) {
-        await sendMessage(isGroupChat);
+        await sendMessage();
         return;
       }
 
       if (selectedUsers?.length === 1) {
         const user = selectedUsers[0];
         const room = await handleChatStart(user, "single_user_chat");
-        await sendMessage(false, room);
+        await sendMessage(room, false);
         return;
       }
 
@@ -51,10 +51,11 @@ const TextMessage = ({
 
         const group = await createCustomGroup(participantIds, name);
         await handleChatStart(group, "group__chat");
-        await sendMessage(true, group);
+        await sendMessage(group, true);
       }
     }
   };
+
   return (
     <>
       <Box width={"100%"}>

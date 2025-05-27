@@ -1,15 +1,49 @@
 import { useAppContext } from "../App/AppContext";
 
-export const formatInitializeChatWindow = (payload) => {
-  const groups = (payload?.chatRooms || []).filter(
-    (chatroom) => chatroom?.isGroup
+export const formatInitializeChatWindow = (payload, activeUserId) => {
+  const chatRooms = payload?.chatRooms || [];
+  const usersList = payload?.users || [];
+  const uniqueChatRooms = Array.from(
+    new Map(
+      chatRooms?.map(chatroom => [chatroom.id,{
+        ...chatroom,
+      }])
+    ).values()
   );
+  const groups = uniqueChatRooms.filter(chatroom => chatroom?.isGroup);
+  const existingDms = uniqueChatRooms.filter(chatroom => !chatroom?.isGroup);
+
+  const userIdToChatId = {};
+  existingDms.forEach(chat => {
+    const otherUser = chat.participants.find(
+      participant => participant.id !== activeUserId
+    );
+  
+    if (otherUser) {
+      userIdToChatId[otherUser.id] = chat.id;
+    } else {
+      console.warn(`:::No other user found for chat ${chat.id}`);
+    }
+  });
+
+
   const users = Array.from(
-    new Map((payload?.users || []).map(user => [user.id, user])).values()
+    new Map(
+      usersList.map(user => [
+        user.id,
+        {
+          ...user,
+          chatId: userIdToChatId[user.id] || null,
+        },
+      ])
+    ).values()
   );
-  const formattedPayload = { ...payload, groups,users };
+
+
+  const formattedPayload = { ...payload, groups, users };
   return formattedPayload;
 };
+
 
 export const formatAllMessages = (payload, activeUser) => {
   const { page, messages = [], totalMessages } = payload;

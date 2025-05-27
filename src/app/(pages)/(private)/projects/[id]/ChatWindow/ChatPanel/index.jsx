@@ -8,11 +8,10 @@ const ChatPanel = ({
   chatWindow,
   chatType,
   selectedDirectoryItem,
-  loadingStartChat,
-  loadingStartGroupChat,
   handleChatStart,
   selectedUsers,
   setSelectedUsers,
+  setSelectedDirectoryItem,
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const toggleExpand = () => {
@@ -40,10 +39,9 @@ const ChatPanel = ({
           isExpanded={isExpanded}
           chatType={chatType}
           selectedDirectoryItem={selectedDirectoryItem}
-          loadingStartChat={loadingStartChat}
-          loadingStartGroupChat={loadingStartGroupChat}
           selectedUsers={selectedUsers}
           handleChatStart={handleChatStart}
+          setSelectedDirectoryItem={setSelectedDirectoryItem}
         />
       </Box>
     </>

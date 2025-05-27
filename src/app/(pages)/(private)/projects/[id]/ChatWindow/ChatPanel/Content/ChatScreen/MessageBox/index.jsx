@@ -6,7 +6,7 @@ import SingleUser from "./SingleUser";
 import { useAppContext } from "@/context/App/AppContext";
 import GroupUsers from "./GroupUsers";
 
-const MessageBox = ({ selectedDirectoryItem, chatType,loadingStartChat,loadingStartGroupChat }) => {
+const MessageBox = ({ selectedDirectoryItem, chatType }) => {
   return (
     <>
       <Box
@@ -39,10 +39,10 @@ const MessageBox = ({ selectedDirectoryItem, chatType,loadingStartChat,loadingSt
           >
             {chatType === "group__chat" ? (
               <>
-               <GroupUsers loadingStartGroupChat={loadingStartGroupChat}/>
+               <GroupUsers/>
               </>
             ) : (
-              <SingleUser loadingStartChat={loadingStartChat}/>
+              <SingleUser />
             )}
           </Box>
         ) : (

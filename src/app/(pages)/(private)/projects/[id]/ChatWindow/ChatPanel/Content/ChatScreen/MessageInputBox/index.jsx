@@ -7,6 +7,7 @@ const MessageInputBox = ({
   selectedUsers,
   selectedDirectoryItem,
   handleChatStart,
+  setSelectedDirectoryItem,
 }) => {
   const isGroupChat = chatType === "group__chat";
   const isDisabled = !selectedDirectoryItem && selectedUsers?.length === 0;
@@ -66,6 +67,7 @@ const MessageInputBox = ({
             selectedUsers={selectedUsers}
             handleChatStart={handleChatStart}
             selectedDirectoryItem={selectedDirectoryItem}
+            setSelectedDirectoryItem={setSelectedDirectoryItem}
           />
         </Box>
         <Box display={"flex"} alignItems={"space-between"}>

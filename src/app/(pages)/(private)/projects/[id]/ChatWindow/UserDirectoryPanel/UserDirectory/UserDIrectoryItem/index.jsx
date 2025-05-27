@@ -9,6 +9,7 @@ export default function UserDIrectoryItem({
   group = {},
   user = {},
   handleChatStart,
+  onlineUsers=[],
 }) {
   return (
     <>
@@ -23,6 +24,7 @@ export default function UserDIrectoryItem({
           isExpanded={isExpanded}
           user={user}
           handleChatStart={handleChatStart}
+          onlineUsers={onlineUsers}
         />
       )}
     </>

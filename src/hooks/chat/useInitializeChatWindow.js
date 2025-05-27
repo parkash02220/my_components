@@ -1,6 +1,7 @@
 const { ApiCall } = require("@/utils/ApiCall");
 const { useState, useEffect, useRef } = require("react");
 const { default: useToast } = require("../common/useToast");
+import { useAppContext } from "@/context/App/AppContext";
 import * as actions from "@/context/Chat/action";
 import { useChatContext } from "@/context/Chat/ChatContext";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
@@ -10,6 +11,7 @@ const useInitializeChatWindow = () => {
   const { dispatch } = useChatContext();
   const {activeProject} = useProjectsContext()?.state;
   const projectId = activeProject?.id;
+  const {activeUser} = useAppContext()?.state;
   const initializeChatWindow = async () => {
     dispatch({ type: actions.INITIALIZE_CHAT_WINDOW_REQUEST });
     const res = await ApiCall({
@@ -33,7 +35,7 @@ const useInitializeChatWindow = () => {
 
     dispatch({
       type: actions.INITIALIZE_CHAT_WINDOW_SUCCESS,
-      payload: formattedIdResponse,
+      payload: {data:formattedIdResponse,activeUserId:activeUser?.id},
     });
   };
 
