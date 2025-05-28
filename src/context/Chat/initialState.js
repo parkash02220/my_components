@@ -25,4 +25,5 @@ export const initialState = {
     loadingGroupChat:false,
     errorGroupChat:null,
     onlineUsers:[],
+    typingUsers:[],
 }

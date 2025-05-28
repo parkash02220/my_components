@@ -3,10 +3,8 @@ import SingleUserDetails from "./SingleUserDetails";
 import HeaderIconButtons from "./HeaderIconButtons";
 import GroupUsersDetails from "./GroupUsersDetails";
 import InitialHeader from "./InitialHeader";
-import { useState } from "react";
 
 const Header = ({ toggleExpand, chatType, selectedDirectoryItem,selectedUsers,setSelectedUsers }) => {
-
   return (
     <>
       <Box

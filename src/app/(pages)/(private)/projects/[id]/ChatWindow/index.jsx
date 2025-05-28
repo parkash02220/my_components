@@ -9,7 +9,9 @@ import useGetAllMessages from "@/hooks/chat/useGetAllMessages";
 import BackButton from "@/components/BackButton";
 import useCreateChatRoom from "@/hooks/chat/singleUserChat/useCreateChatRoom";
 import * as actions from "@/context/Chat/action";
-import useJoinRoomSocket from "@/hooks/chat/singleUserChat/useJoinRoomSocket";
+import useJoinRoomSocket from "@/hooks/chat/useJoinRoomSocket";
+import useNewMessageSocket from "@/hooks/chat/useNewMessageSocket";
+import useMarkAllMsgAsReadSocket from "@/hooks/chat/useMarkAllMsgAsReadSocket";
 const ChatWindow = ({ projectId }) => {
   const {joinRoom} = useJoinRoomSocket({
     onRoomJoined: (data) => {
@@ -24,6 +26,8 @@ const ChatWindow = ({ projectId }) => {
       // maybe remove from typingUsers state
     }
   });
+  const markAllMsgAsRead = useMarkAllMsgAsReadSocket();
+  useNewMessageSocket();
 
   const { createChatRoom } = useCreateChatRoom();
   const { getAllMessages } = useGetAllMessages();
@@ -46,11 +50,13 @@ const ChatWindow = ({ projectId }) => {
     setSelectedDirectoryItem(data);
     if (type === "group__chat") {
       joinRoom(data?.id);
+      markAllMsgAsRead(data?.id,true);
       dispatch({ type: actions.SET_CHAT_ROOM, payload: data });
       await getAllMessages(data?.id, true);
     } else {
       if (data?.chatId) {
         joinRoom(data?.chatId);
+        markAllMsgAsRead(data?.chatId,false);
         dispatch({
           type: actions.SET_CHAT_ROOM,
           payload: { id: data?.chatId, isGroup: false },

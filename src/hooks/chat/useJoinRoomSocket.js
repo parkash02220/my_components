@@ -1,13 +1,15 @@
 import { useEffect } from "react";
 const { useSocketContext } = require("@/context/Socket/SocketContext");
-
+import * as actions from '@/context/Chat/action';
+import { useChatContext } from "@/context/Chat/ChatContext";
 const useJoinRoomSocket = ({
   onRoomJoined,
   onUserTyping,
   onUserStoppedTyping
 } = {}) => {
   const socket = useSocketContext();
-
+  const {dispatch,state} = useChatContext();
+  const {users} = state?.chatWindow;
   const joinRoom = (roomId) => {
     if (!socket || !roomId) return;
     console.log(":::📡 Emitting joinRoom for:", roomId);
@@ -25,11 +27,14 @@ const useJoinRoomSocket = ({
     const handleUserTyping = ({ userId }) => {
       console.log("✍️ User typing:", userId);
       onUserTyping?.(userId);
+      const user = users?.find((user)=> user?.id === userId);
+      dispatch({type:actions.ADD_USER_IN_TYPING_USERS,payload:{user}})
     };
 
     const handleUserStoppedTyping = ({ userId }) => {
       console.log(":::🛑 User stopped typing:", userId);
       onUserStoppedTyping?.(userId);
+      dispatch({type:actions.REMOVE_USER_IN_TYPING_USERS,payload:{userId}})
     };
 
     socket.on("roomJoined", handleRoomJoined);

@@ -1,12 +1,19 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import SentMessage from "./SentMessage";
 import ReceivedMessage from "./ReceivedMessage";
 import InitialMessageBox from "./InitialMessageBox";
 import SingleUser from "./SingleUser";
 import { useAppContext } from "@/context/App/AppContext";
 import GroupUsers from "./GroupUsers";
+import { useChatContext } from "@/context/Chat/ChatContext";
+import React from "react";
+import TypingIndicator from "./TypingIndicator";
+import { getFullName } from "@/utils";
 
 const MessageBox = ({ selectedDirectoryItem, chatType }) => {
+  const { typingUsers } = useChatContext().state;
+  const isSomeoneTyping = typingUsers?.length > 0;
+  const typingUser = typingUsers[typingUsers?.length - 1];
   return (
     <>
       <Box
@@ -39,11 +46,16 @@ const MessageBox = ({ selectedDirectoryItem, chatType }) => {
           >
             {chatType === "group__chat" ? (
               <>
-               <GroupUsers/>
+                <GroupUsers typingUsers={typingUsers} />
               </>
             ) : (
-              <SingleUser />
+              <SingleUser typingUsers={typingUsers} />
             )}
+            {isSomeoneTyping &&
+                 (
+                    <TypingIndicator username={getFullName(typingUser?.firstName,typingUser?.lastName)}/>
+                )
+          }
           </Box>
         ) : (
           <InitialMessageBox />

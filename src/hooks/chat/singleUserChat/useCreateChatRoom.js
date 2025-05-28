@@ -32,7 +32,6 @@ const useCreateChatRoom = () => {
             return;
         }
 
-        console.log("::res in create chat room",res?.data);
         const convertedIdResponse = convertIdFields(res?.data?.chatRoom);
         dispatch({type:actions.SET_CHAT_ROOM,payload:convertedIdResponse});
         dispatch({type:actions.ADD_CHAT_ID_TO_USER,payload:{userId:targetUserId,chatId:convertedIdResponse?.id}});

@@ -156,6 +156,109 @@ function chatReducer(state = initialState, action) {
             }
         }
     }
+
+    case actions.ADD_NEW_MESSAGE_IN_CHAT:{
+        const {newMessageData} = payload;
+        const {chatRoomId,message} = newMessageData;
+        const isChatOpened = chatRoomId === state?.chatRoom?.id;
+        if(!isChatOpened) return state;
+        const isGroupChat = state?.chatRoom?.isGroup;
+
+        if(isGroupChat){
+             return {
+                ...state,
+                groupChat:{
+                    ...state?.groupChat,
+                    messages:[...state?.groupChat?.messages,message],
+                    totalMessages: (state?.groupChat?.totalMessages || 0) + 1,
+                }
+             }
+        }
+
+        return {
+            ...state,
+            singleUserChat:{
+                ...state?.singleUserChat,
+                messages:[...state?.singleUserChat?.messages,message],
+                totalMessages: (state?.singleUserChat?.totalMessages || 0) + 1,
+            }
+         }
+    }
+    
+    case actions.ADD_USER_IN_TYPING_USERS:{
+        const {user} = payload;
+
+        return {
+            ...state,
+            typingUsers:[...new Set([...state?.typingUsers,user])],
+        }
+    }
+
+    case actions.REMOVE_USER_IN_TYPING_USERS:{
+        const {userId} = payload;
+
+        return {
+            ...state,
+            typingUsers: state?.typingUsers?.filter((user)=>user?.id !== userId)
+        }
+    }
+
+    case actions.MARK_CHAT_AS_READ:{
+        const {isGroupChat,chatId,readerId} = payload;
+        console.log(":::groups",isGroupChat,chatId)
+        if(isGroupChat){
+            const updatedGroups = state.chatWindow.groups?.map((group)=> {
+                 if(group?.id === chatId){
+                    console.log(":::groupss",group)
+                    return {
+                        ...group,
+                        lastMessage:{
+                            ...group.lastMessage,
+                            readBy:[...(group.lastMessage.readBy || []),readerId ],
+                            isSeenByActiveUser:true,
+                        }
+                    }
+                 }
+                 return group;
+            })
+
+            console.log(":::updated groups",updatedGroups)
+            return {
+                ...state,
+                chatWindow:{
+                    ...state.chatWindow,
+                    groups:updatedGroups,
+                }
+            }
+        }else{
+            console.log(":::inside else")
+            const updatedUsers = state.chatWindow.users?.map((user)=> {
+                console.log(":::user and chat id",user,chatId)
+                if(user?.chatId === chatId){
+                   console.log(":::users",user)
+                   return {
+                       ...user,
+                       lastMessage:{
+                           ...user.lastMessage,
+                           readBy:[...(user.lastMessage.readBy || []),readerId ],
+                           isSeenByActiveUser:true,
+                       }
+                   }
+                }
+                return user;
+           })
+
+           console.log(":::updated users",updatedUsers)
+           return {
+               ...state,
+               chatWindow:{
+                   ...state.chatWindow,
+                   users:updatedUsers,
+               }
+           }
+        }
+       
+    }
     
     default:
         return state;
