@@ -1,278 +1,247 @@
 import { createContext, useContext, useReducer } from "react";
 import { initialState } from "./initialState";
-import * as actions from './action';
-import { formatAddMessageInUserMsgs, formatAllMessages, formatInitializeChatWindow } from "./payloadFormatter";
+import * as actions from "./action";
+import {
+  formatAddMessageInCHatMessages,
+  formatAllMessages,
+  formatInitializeChatWindow,
+  formatNewChatRoomPayload,
+} from "./payloadFormatter";
 const ChatContext = createContext();
 
 function chatReducer(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-
-    case actions.INITIALIZE_CHAT_WINDOW_REQUEST:{
-        return {
-            ...state,
-            loadingChatWindow:true,
-            errorChatWindow:null,
-        }
-    }
-   
-    case actions.INITIALIZE_CHAT_WINDOW_SUCCESS:{
-        const {data,activeUserId} = payload;
-        const formattedPayload = formatInitializeChatWindow(data,activeUserId);
-        return {
-            ...state,
-            chatWindow:formattedPayload || {},
-            loadingChatWindow:false,
-        }
+    case actions.INITIALIZE_CHAT_WINDOW_REQUEST: {
+      return {
+        ...state,
+        loadingChatWindow: true,
+        errorChatWindow: null,
+      };
     }
 
-    case actions.INITIALIZE_CHAT_WINDOW_ERROR:{
-        return {
-            ...state,
-            loadingChatWindow:false,
-            errorChatWindow:payload,
-        }
+    case actions.INITIALIZE_CHAT_WINDOW_SUCCESS: {
+      const { data, activeUserId } = payload;
+      const formattedPayload = formatInitializeChatWindow(data, activeUserId);
+      return {
+        ...state,
+        chatWindow: formattedPayload || {},
+        loadingChatWindow: false,
+      };
     }
 
-    case actions.SET_CHAT_ROOM :{
-        return {
-            ...state,
-            chatRoom:payload,
-        }
+    case actions.INITIALIZE_CHAT_WINDOW_ERROR: {
+      return {
+        ...state,
+        loadingChatWindow: false,
+        errorChatWindow: payload,
+      };
     }
 
-    case actions.SET_USER_MESSAGES_REQUEST:{
-        return {
-            ...state,
-            loadingSingleUserChat:true,
-            errorSingleUserChat:null,
-        }
-    }
-   
-    case actions.SET_USER_MESSAGES_SUCCESS:{
-        const {data,activeUser} = payload
-        const formattedPayload = formatAllMessages(data,activeUser);
-        return {
-            ...state,
-            singleUserChat:formattedPayload || {},
-            loadingSingleUserChat:false,
-        }
+    case actions.SET_ACTIVE_CHAT_ROOM: {
+      return {
+        ...state,
+        activeChatRoomId: payload?.id,
+        activeChatRoom: payload,
+      };
     }
 
-    case actions.SET_USER_MESSAGES_ERROR:{
-        return {
-            ...state,
-            loadingSingleUserChat:false,
-            errorSingleUserChat:payload,
-        }
+    case actions.SET_CHAT_MESSAGES_REQUEST: {
+      const { chatRoomId } = payload;
+      console.log(":::chat id", chatRoomId);
+      return {
+        ...state,
+        allChatMessages: {
+          ...state.allChatMessages,
+          [chatRoomId]: {
+            ...(state.allChatMessages[chatRoomId] || {}),
+            loading: true,
+            error: null,
+          },
+        },
+      };
+    }
+    case actions.SET_CHAT_MESSAGES_SUCCESS: {
+      const { chatRoomId, chatMessagesData, activeUser } = payload;
+      const formattedChatMessageData = formatAllMessages(
+        chatMessagesData,
+        activeUser
+      );
+      console.log(":::formattedhatmessagedata", formattedChatMessageData);
+      return {
+        ...state,
+        allChatMessages: {
+          ...state.allChatMessages,
+          [chatRoomId]: {
+            loading: false,
+            error: null,
+            ...formattedChatMessageData,
+          },
+        },
+      };
     }
 
-    case actions.ADD_MESSSAGE_IN_USER_MESSAGES:{
-        const {data,activeUser} = payload
-        const message = formatAddMessageInUserMsgs(data,activeUser);
-        return {
-            ...state,
-            singleUserChat:{
-                ...state?.singleUserChat,
-                messages:[...state?.singleUserChat?.messages,message],
-                totalMessages: state?.singleUserChat.totalMessages + 1,
-            }
-        }
+    case actions.SET_CHAT_MESSAGES_ERROR: {
+      const { chatRoomId, error } = payload;
+      return {
+        ...state,
+        allChatMessages: {
+          ...state.allChatMessages,
+          [chatRoomId]: {
+            ...(state.allChatMessages[chatRoomId] || {}),
+            loading: false,
+            error: error || "Failed to load messages.",
+            messages: [],
+          },
+        },
+      };
     }
 
-    case actions.SET_GROUP_MESSAGES_REQUEST:{
-        return {
-            ...state,
-            loadingGroupChat:true,
-            errorGroupChat:null,
-        }
-    }
-   
-    case actions.SET_GROUP_MESSAGES_SUCCESS:{
-        const {data,activeUser} = payload
-        const formattedPayload = formatAllMessages(data,activeUser);
-        return {
-            ...state,
-            groupChat:formattedPayload || {},
-            loadingGroupChat:false,
-        }
-    }
-
-    case actions.SET_USER_MESSAGES_ERROR:{
-        return {
-            ...state,
-            loadingGroupChat:false,
-            errorGroupChat:payload,
-        }
-    }
-   
-    case actions.ADD_MESSSAGE_IN_GROUP_MESSAGES:{
-        const {data,activeUser} = payload
-        const message = formatAddMessageInUserMsgs(data,activeUser);
-        return {
-            ...state,
-            groupChat:{
-                ...state?.groupChat,
-                messages:[...state?.groupChat?.messages,message],
-                totalMessages: state?.groupChat.totalMessages + 1,
-            }
-        }
+    case actions.ADD_MESSSAGE_IN_CHAT_MESSAGES: {
+      const { chatRoomId, data, activeUser } = payload;
+      const message = formatAddMessageInCHatMessages(data, activeUser);
+      return {
+        ...state,
+        allChatMessages: {
+          ...state.allChatMessages,
+          [chatRoomId]: {
+            ...state.allChatMessages[chatRoomId],
+            messages: [
+              ...(state.allChatMessages[chatRoomId].messages || []),
+              message,
+            ],
+            totalMessages:
+              (state.allChatMessages[chatRoomId].totalMessages || 0) + 1,
+          },
+        },
+      };
     }
 
-    case actions.ADD_NEW_GROUP_IN_GROUPS:{
-        return {
-            ...state,
-            chatWindow:{
-                ...state.chatWindow,
-                groups:[payload,...state.chatWindow.groups]
-            }
+    case actions.CREATE_NEW_CHAT_ROOM: {
+      const { chatRoom, activeUser } = payload;
+      const updatedChatRoom = formatNewChatRoomPayload(chatRoom, activeUser);
+      const newState = { ...state };
+    
+      if (!newState.chatWindow.chatRooms.byIds[chatRoom.id]) {
+        newState.chatWindow.chatRooms.byIds[chatRoom.id] = updatedChatRoom;
+        newState.chatWindow.chatRooms.allIds.unshift(chatRoom.id);
+      }
+    
+      if (!chatRoom?.isGroup && updatedChatRoom?.targetUser) {
+        const targetUserId = updatedChatRoom.targetUser.id;
+        const targetUserData =
+          newState.chatWindow.usersWithoutChatRoom.byIds[targetUserId];
+    
+        if (targetUserData) {
+          delete newState.chatWindow.usersWithoutChatRoom.byIds[targetUserId];
+          newState.chatWindow.usersWithoutChatRoom.allIds =
+            newState.chatWindow.usersWithoutChatRoom.allIds.filter(
+              (id) => id !== targetUserId
+            );
         }
-    }
-
-    case actions.SET_ONLINE_USERS:{
-        return{
-            ...state,
-            onlineUsers:payload || [],
+    
+        if (
+          !newState.chatWindow.usersWithChatRoom.byIds[targetUserId] &&
+          targetUserData
+        ) {
+          newState.chatWindow.usersWithChatRoom.byIds[targetUserId] =
+            targetUserData;
+    
+            newState.chatWindow.chatRooms.allIds.unshift(chatRoom.id);
         }
-    }
-
-    case actions.ADD_CHAT_ID_TO_USER:{
-        const {userId,chatId} = payload;
-        const updatedUsers = state.chatWindow.users.map((user)=>{
-            if(user.id === userId){
-                return {
-                    ...user,
-                    chatId,
-                }
-            }
-            return user;
-        });
-
-        return {
-            ...state,
-            chatWindow:{
-                ...state.chatWindow,
-                users:updatedUsers,
-            }
-        }
-    }
-
-    case actions.ADD_NEW_MESSAGE_IN_CHAT:{
-        const {newMessageData} = payload;
-        const {chatRoomId,message} = newMessageData;
-        const isChatOpened = chatRoomId === state?.chatRoom?.id;
-        if(!isChatOpened) return state;
-        const isGroupChat = state?.chatRoom?.isGroup;
-
-        if(isGroupChat){
-             return {
-                ...state,
-                groupChat:{
-                    ...state?.groupChat,
-                    messages:[...state?.groupChat?.messages,message],
-                    totalMessages: (state?.groupChat?.totalMessages || 0) + 1,
-                }
-             }
-        }
-
-        return {
-            ...state,
-            singleUserChat:{
-                ...state?.singleUserChat,
-                messages:[...state?.singleUserChat?.messages,message],
-                totalMessages: (state?.singleUserChat?.totalMessages || 0) + 1,
-            }
-         }
+      }
+    
+      return newState;
     }
     
-    case actions.ADD_USER_IN_TYPING_USERS:{
-        const {user} = payload;
 
-        return {
-            ...state,
-            typingUsers:[...new Set([...state?.typingUsers,user])],
-        }
+    case actions.SET_ONLINE_USERS: {
+      return {
+        ...state,
+        onlineUsers: payload || [],
+      };
     }
 
-    case actions.REMOVE_USER_IN_TYPING_USERS:{
-        const {userId} = payload;
-
-        return {
+    case actions.ADD_NEW_MESSAGE_IN_CHAT: {
+      const { newMessageData,activeUser } = payload;
+      const { chatRoomId, message } = newMessageData;
+      const isRoomExists = state.chatWindow.chatRooms?.allIds?.some((chatroom)=> chatroom?.id === chatRoomId);
+      if(!isRoomExists) return state;
+      const updatedMessage = message;
+      updatedMessage.isSentMessage = message?.sender?.id === activeUser?.id;
+          return {
             ...state,
-            typingUsers: state?.typingUsers?.filter((user)=>user?.id !== userId)
-        }
+            allChatMessages:{
+              ...state.allChatMessages,
+              [chatRoomId]:{
+                ...state.allChatMessages[chatRoomId],
+                messages:[...(state.allChatMessages[chatRoomId].messages || []),updatedMessage]
+              }
+            }
+          }
+    }
+
+    case actions.ADD_USER_IN_TYPING_USERS: {
+      const { user } = payload;
+      if (!user) return state;
+      return {
+        ...state,
+        typingUsers: [...new Set([...(state.typingUsers || []), user])],
+      };
+    }
+
+    case actions.REMOVE_USER_IN_TYPING_USERS: {
+      const { userId } = payload;
+      console.log(":::typing user in remove",state.typingUsers);
+      return {
+        ...state,
+        typingUsers: state?.typingUsers?.filter((user) => user?.id !== userId),
+      };
     }
 
     case actions.MARK_CHAT_AS_READ:{
-        const {isGroupChat,chatId,readerId} = payload;
-        console.log(":::groups",isGroupChat,chatId)
-        if(isGroupChat){
-            const updatedGroups = state.chatWindow.groups?.map((group)=> {
-                 if(group?.id === chatId){
-                    console.log(":::groupss",group)
-                    return {
-                        ...group,
-                        lastMessage:{
-                            ...group.lastMessage,
-                            readBy:[...(group.lastMessage.readBy || []),readerId ],
-                            isSeenByActiveUser:true,
-                        }
-                    }
-                 }
-                 return group;
-            })
+      const { chatId, readerId } = payload;
+      const chatRoom = state.chatWindow.chatRooms.byIds[chatId];
+      
+      if (!chatRoom || !chatRoom.lastMessage) return state; 
+      const updatedLastMessage = {
+        ...chatRoom.lastMessage,
+        readBy: [...new Set([...(chatRoom.lastMessage.readBy || []), readerId])],
+        isSeenByActiveUser:true,
+      };
+      
+      return {
+        ...state,
+        chatWindow: {
+          ...state.chatWindow,
+          chatRooms: {
+            ...state.chatWindow.chatRooms,
+            byIds: {
+              ...state.chatWindow.chatRooms.byIds,
+              [chatId]: {
+                ...chatRoom,
+                lastMessage: updatedLastMessage,
+              },
+            },
+          },
+        },
+      };
 
-            console.log(":::updated groups",updatedGroups)
-            return {
-                ...state,
-                chatWindow:{
-                    ...state.chatWindow,
-                    groups:updatedGroups,
-                }
-            }
-        }else{
-            console.log(":::inside else")
-            const updatedUsers = state.chatWindow.users?.map((user)=> {
-                console.log(":::user and chat id",user,chatId)
-                if(user?.chatId === chatId){
-                   console.log(":::users",user)
-                   return {
-                       ...user,
-                       lastMessage:{
-                           ...user.lastMessage,
-                           readBy:[...(user.lastMessage.readBy || []),readerId ],
-                           isSeenByActiveUser:true,
-                       }
-                   }
-                }
-                return user;
-           })
-
-           console.log(":::updated users",updatedUsers)
-           return {
-               ...state,
-               chatWindow:{
-                   ...state.chatWindow,
-                   users:updatedUsers,
-               }
-           }
-        }
-       
     }
-    
+
     default:
-        return state;
+      return state;
   }
 }
 
-export function ChatContextProvider({children}){
-    const [state,dispatch] = useReducer(chatReducer,initialState);
+export function ChatContextProvider({ children }) {
+  const [state, dispatch] = useReducer(chatReducer, initialState);
 
-    return (
-        <ChatContext.Provider value={{state,dispatch}}>
-            {children}
-        </ChatContext.Provider>
-    )
+  return (
+    <ChatContext.Provider value={{ state, dispatch }}>
+      {children}
+    </ChatContext.Provider>
+  );
 }
 
 export const useChatContext = () => useContext(ChatContext);

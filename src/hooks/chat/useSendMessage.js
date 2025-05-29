@@ -15,7 +15,7 @@ const useSendMessage = () => {
   const [message, setMessage] = useState("");
   const { state, dispatch } = useChatContext();
   const { activeUser } = useAppContext().state;
-  const { chatRoom } = state;
+  const { activeChatRoom } = state;
   const content = useRef("");
   const typingTimeoutRef = useRef(null);
   const socket = useSocketContext();
@@ -25,8 +25,8 @@ const useSendMessage = () => {
     content.current = newMessage;
     setMessage(newMessage);
 
-    if (socket && chatRoom?.id && activeUser?.id) {
-      sendTyping(socket,chatRoom.id, activeUser.id);
+    if (socket && activeChatRoom?.id && activeUser?.id) {
+      sendTyping(socket,activeChatRoom.id, activeUser.id);
     }
   
     if (typingTimeoutRef.current) {
@@ -34,8 +34,8 @@ const useSendMessage = () => {
     }
   
     typingTimeoutRef.current = setTimeout(() => {
-      if (socket && chatRoom?.id && activeUser?.id) {
-        stopTyping(socket,chatRoom.id, activeUser.id);
+      if (socket && activeChatRoom?.id && activeUser?.id) {
+        stopTyping(socket,activeChatRoom.id, activeUser.id);
       }
     }, 2000);
   };
@@ -46,23 +46,11 @@ const useSendMessage = () => {
     }
   };
 
-  const sendMessage = async (chatRoomOverride,isGroupOverride) => {
+  const sendMessage = async (chatRoom) => {
     const msgToSend = content.current;
-    const currentChatRoomId = chatRoomOverride?.id || chatRoom?.id;
-    const currentIsGroup = isGroupOverride || chatRoom?.isGroup;
-    if (!msgToSend?.trim() || !currentChatRoomId) return;
+    if (!msgToSend?.trim() || !chatRoom?.id) return;
     setMessage("");
-    if (currentIsGroup) {
-      dispatch({
-        type: actions.ADD_MESSSAGE_IN_GROUP_MESSAGES,
-        payload: { data: msgToSend, activeUser },
-      });
-    } else {
-      dispatch({
-        type: actions.ADD_MESSSAGE_IN_USER_MESSAGES,
-        payload: { data: msgToSend, activeUser },
-      });
-    }
+    dispatch({type:actions.ADD_MESSSAGE_IN_CHAT_MESSAGES,payload:{chatRoomId:chatRoom?.id,data:msgToSend,activeUser}});
     setLoading(true);
     setError(null);
 
@@ -70,7 +58,7 @@ const useSendMessage = () => {
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/send-message`,
       method: "POST",
       body: {
-        chatRoomId: currentChatRoomId,
+        chatRoomId: chatRoom?.id,
         content: msgToSend,
       },
     });

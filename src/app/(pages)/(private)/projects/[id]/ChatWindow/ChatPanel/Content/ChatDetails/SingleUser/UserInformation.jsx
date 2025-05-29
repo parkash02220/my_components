@@ -1,7 +1,7 @@
 import { Box, Collapse, Typography } from "@mui/material";
 import React, { useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-const UserInformation = () => {
+const UserInformation = ({user}) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const toggleIsExpanded = () => {
     setIsExpanded((pre) => !pre);

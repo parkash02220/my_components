@@ -5,12 +5,14 @@ import { useState } from "react";
 import * as actions from '@/context/Chat/action';
 import { useChatContext } from "@/context/Chat/ChatContext";
 import { convertIdFields } from "@/utils";
+import { useAppContext } from "@/context/App/AppContext";
 const useCreateChatRoom = () => {
     const toastId = "create_chat_room";
     const {showToast} = useToast();
     const [loading,setLoading] = useState(false);
     const [error,setError] = useState(null);
     const {activeProject} = useProjectsContext()?.state;
+    const {activeUser} = useAppContext().state;
     const {dispatch} = useChatContext();
     const createChatRoom = async (targetUserId) => {
         setLoading(true);
@@ -33,8 +35,8 @@ const useCreateChatRoom = () => {
         }
 
         const convertedIdResponse = convertIdFields(res?.data?.chatRoom);
-        dispatch({type:actions.SET_CHAT_ROOM,payload:convertedIdResponse});
-        dispatch({type:actions.ADD_CHAT_ID_TO_USER,payload:{userId:targetUserId,chatId:convertedIdResponse?.id}});
+        dispatch({type:actions.SET_ACTIVE_CHAT_ROOM,payload:convertedIdResponse});
+        dispatch({type:actions.CREATE_NEW_CHAT_ROOM,payload:{chatRoom:convertedIdResponse,activeUser}});
         return convertedIdResponse;
     }
     return {createChatRoom}

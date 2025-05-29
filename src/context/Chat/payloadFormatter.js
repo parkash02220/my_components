@@ -4,75 +4,79 @@ export const formatInitializeChatWindow = (payload, activeUserId) => {
   const chatRooms = payload?.chatRooms || [];
   const usersList = payload?.users || [];
 
-  const uniqueChatRooms = Array.from(
-    new Map(
-      chatRooms.map(chatroom => {
-        const { lastMessage } = chatroom;
-        return [
-          chatroom.id,
-          {
-            ...chatroom,
-            lastMessage: lastMessage
-              ? {
-                  ...lastMessage,
-                  isSentByActiveUser: lastMessage?.sender?.id === activeUserId,
-                  isSeenByActiveUser: lastMessage?.readBy?.some((id)=> id === activeUserId),
-                }
-              : null,
-          },
-        ];
-      })
-    ).values()
+  const updatedChatRooms = chatRooms.map((chatroom) => {
+    const lastMessage = chatroom.lastMessage
+      ? {
+          ...chatroom.lastMessage,
+          isSentByActiveUser: chatroom.lastMessage?.sender?.id === activeUserId,
+          isSeenByActiveUser:
+            chatroom.lastMessage?.readBy?.includes(activeUserId),
+        }
+      : null;
+
+    const targetUser = !chatroom?.isGroup
+      ? chatroom.participants?.find((user) => user.id !== activeUserId)
+      : null;
+
+    return {
+      ...chatroom,
+      targetUser,
+      lastMessage,
+    };
+  });
+
+  const chatRoomsByIds = {};
+  const chatRoomIds = [];
+
+  updatedChatRooms.forEach((chatroom) => {
+    chatRoomsByIds[chatroom.id] = chatroom;
+    chatRoomIds.push(chatroom.id);
+  });
+
+  const directChatParticipantIds = new Set(
+    updatedChatRooms
+      .filter((room) => !room.isGroup)
+      .flatMap((room) => room.participants?.map((user) => user.id) || [])
   );
 
-  const groups = uniqueChatRooms.filter(chatroom => chatroom?.isGroup);
-  const existingDms = uniqueChatRooms.filter(chatroom => !chatroom?.isGroup);
+  const usersInChat = {};
+  const usersInChatIds = [];
 
+  const usersNotInChat = {};
+  const usersNotInChatIds = [];
 
-  const userIdToChatInfo = {};
-  existingDms.forEach(chat => {
-    const otherUser = chat.participants.find(
-      participant => participant.id !== activeUserId
-    );
-
-    if (otherUser) {
-      userIdToChatInfo[otherUser.id] = {
-        chatId: chat.id,
-        lastMessage: chat.lastMessage || null,
-      };
+  usersList.forEach((user) => {
+    if (directChatParticipantIds.has(user.id)) {
+      usersInChat[user.id] = user;
+      usersInChatIds.push(user.id);
     } else {
-      console.warn(`:::No other user found for chat ${chat.id}`);
+      usersNotInChat[user.id] = user;
+      usersNotInChatIds.push(user.id);
     }
   });
 
-  const users = Array.from(
-    new Map(
-      usersList.map(user => {
-        const chatInfo = userIdToChatInfo[user.id] || {};
-        const lastMessage = chatInfo.lastMessage;
-  
-        return [
-          user.id,
-          {
-            ...user,
-            chatId: chatInfo.chatId || null,
-            lastMessage: lastMessage
-              ? {
-                  ...lastMessage,
-                  isSentByActiveUser: lastMessage?.sender?.id === activeUserId,
-                  isSeenByActiveUser: lastMessage?.readBy?.some(id => id === activeUserId),
-                }
-              : null,
-          },
-        ];
-      })
-    ).values()
-  );
-  const formattedPayload = { ...payload, groups, users };
-  return formattedPayload;
+  const formattedPayload = {
+    chatWindow: {
+      allUsers: {
+        byIds: { ...usersInChat, ...usersNotInChat },
+        allIds: [...new Set([...usersInChatIds, ...usersNotInChatIds])],
+      },
+      usersWithoutChatRoom: {
+        byIds: usersNotInChat,
+        allIds: [...new Set(usersNotInChatIds)],
+      },
+      usersWithChatRoom: {
+        byIds: usersInChat,
+        allIds: [...new Set(usersInChatIds)],
+      },
+      chatRooms: {
+        byIds: chatRoomsByIds,
+        allIds: chatRoomIds,
+      },
+    },
+  };
+  return formattedPayload.chatWindow;
 };
-
-
 
 export const formatAllMessages = (payload, activeUser) => {
   const { page, messages = [], totalMessages } = payload;
@@ -92,8 +96,8 @@ export const formatAllMessages = (payload, activeUser) => {
   };
 };
 
-export const formatAddMessageInUserMsgs = (payload, activeUser) => {
-    const time = new Date().toISOString();
+export const formatAddMessageInCHatMessages = (payload, activeUser) => {
+  const time = new Date().toISOString();
   let message = {
     text: payload,
     sender: activeUser,
@@ -102,3 +106,11 @@ export const formatAddMessageInUserMsgs = (payload, activeUser) => {
   };
   return message;
 };
+
+export const formatNewChatRoomPayload = (chatRoom,activeUser) => {
+  let updatedChatRoom = chatRoom;
+  if(!chatRoom?.isGroup){
+    updatedChatRoom.targetUser = chatRoom.participants?.find((user) => user.id !== activeUser?.id);
+  }
+   return updatedChatRoom;
+}

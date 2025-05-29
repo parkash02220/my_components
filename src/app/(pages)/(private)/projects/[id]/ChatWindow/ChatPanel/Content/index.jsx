@@ -4,26 +4,25 @@ import ChatDetails from "./ChatDetails";
 
 const Content = ({
   isExpanded,
-  chatType,
   selectedDirectoryItem,
   selectedUsers,
-  handleChatStart,
-  setSelectedDirectoryItem,
+  onSendMessage,
+  onSendInputMessageChange,
+  sendMessageInputValue,
 }) => {
   return (
     <>
       <Box minHeight={0} flex={"1 1 auto"} display={"flex"}>
         <ChatScreen
           selectedDirectoryItem={selectedDirectoryItem}
-          chatType={chatType}
           selectedUsers={selectedUsers}
-          handleChatStart={handleChatStart}
-          setSelectedDirectoryItem={setSelectedDirectoryItem}
+          onSendMessage={onSendMessage}
+          onSendInputMessageChange={onSendInputMessageChange}
+          sendMessageInputValue={sendMessageInputValue}
         />
         {selectedDirectoryItem && (
           <ChatDetails
             isExpanded={isExpanded}
-            chatType={chatType}
             selectedDirectoryItem={selectedDirectoryItem}
           />
         )}

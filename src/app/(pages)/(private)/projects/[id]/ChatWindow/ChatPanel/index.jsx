@@ -6,12 +6,12 @@ import Loader from "@/components/Loader/Loader";
 
 const ChatPanel = ({
   chatWindow,
-  chatType,
   selectedDirectoryItem,
-  handleChatStart,
   selectedUsers,
   setSelectedUsers,
-  setSelectedDirectoryItem,
+  onSendMessage,
+  onSendInputMessageChange,
+  sendMessageInputValue,
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const toggleExpand = () => {
@@ -30,18 +30,17 @@ const ChatPanel = ({
         <Header
           toggleExpand={toggleExpand}
           chatWindow={chatWindow}
-          chatType={chatType}
           selectedDirectoryItem={selectedDirectoryItem}
           selectedUsers={selectedUsers}
           setSelectedUsers={setSelectedUsers}
         />
         <Content
           isExpanded={isExpanded}
-          chatType={chatType}
           selectedDirectoryItem={selectedDirectoryItem}
           selectedUsers={selectedUsers}
-          handleChatStart={handleChatStart}
-          setSelectedDirectoryItem={setSelectedDirectoryItem}
+          onSendMessage={onSendMessage}
+          onSendInputMessageChange={onSendInputMessageChange}
+          sendMessageInputValue={sendMessageInputValue}
         />
       </Box>
     </>

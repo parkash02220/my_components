@@ -1,135 +1,113 @@
 import { getFullName, getTimeAgo } from "@/utils";
 import { Box, IconButton, Typography } from "@mui/material";
+import { useMemo } from "react";
 
 const ReceivedMessage = ({ msg }) => {
-  const {sender} = msg;
-  const fullName = getFullName(sender?.firstName,sender?.lastName);
+  const { sender } = msg;
+
+  const fullName = useMemo(
+    () => getFullName(sender?.firstName, sender?.lastName),
+    [sender?.firstName, sender?.lastName]
+  );
+
+  const timeAgo = useMemo(() => getTimeAgo(msg?.createdAt), [msg?.createdAt]);
+
+  const actionIcons = [
+    { src: "/replyMsgIcon.svg", alt: "reply" },
+    { src: "/emojiIcon.svg", alt: "react" },
+    { src: "/deleteIcon.svg", alt: "delete" },
+  ];
+
   return (
-    <>
-      <Box mb={5} display={"flex"}>
-        <Box
-          mr={2}
-          width={32}
-          height={32}
-          overflow={"hidden"}
-          borderRadius={"50%"}
-          flexShrink={0}
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          position={"relative"}
+    <Box mb={5} display="flex">
+      <Box
+        mr={2}
+        width={32}
+        height={32}
+        borderRadius="50%"
+        overflow="hidden"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        flexShrink={0}
+      >
+        <img
+          src={sender?.avatar || "/dummyUser.svg"}
+          alt={fullName}
+          referrerPolicy="no-referrer"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            textIndent: "10000px",
+          }}
+        />
+      </Box>
+
+      <Box display="flex" flexDirection="column" alignItems="flex-start">
+        <Typography
+          color="#919EAB"
+          fontSize={12}
+          mb={1}
+          noWrap
         >
-          <img
-            src={sender?.avatar || "/dummyUser.svg"}
-            alt="sender"
-               referrerPolicy="no-referrer"
-            style={{
-              width: "100%",
-              height: "100%",
-              textIndent: "10000px",
-              objectFit: "cover",
-            }}
-          />
-        </Box>
-        <Box
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"flex-start"}
-        >
-          <Box>
-            <Typography
-              color="#919EAB"
-              mb={1}
-              overflow={"hidden"}
-              textOverflow={"ellipsis"}
-              whiteSpace={"nowrap"}
-              fontSize={12}
-              mr={"auto"}
-            >
-              {fullName}, {getTimeAgo(msg?.createdAt)}
-            </Typography>
+          {fullName}, {timeAgo}
+        </Typography>
+
+        <Box display="flex" alignItems="center" position="relative">
+          <Box
+            px={1.5}
+            py={1.5}
+            minWidth={48}
+            maxWidth={320}
+            fontSize={14}
+            borderRadius={1}
+            bgcolor="#F4F6F8"
+            color="#1C252E"
+            display="flex"
+            flexDirection="column"
+          >
+            {msg?.text || ""}
           </Box>
-          <Box display={"flex"} alignItems={"center"} position={"relative"}>
-            <Box
-              display={"flex"}
-              flexDirection={"column"}
-              padding={"12px"}
-              minWidth={48}
-              maxWidth={320}
-              borderRadius={1}
-              fontSize={14}
-              bgcolor={"#F4F6F8"}
-              color={"#1C252E"}
-            >
-              {msg?.text || ""}
-            </Box>
-            <Box
-              pt={"4px"}
-              sx={{
-                opacity: 0,
-                position: "absolute",
-                display: "flex",
-                top: "100%",
-                left: "0px",
-                transition: "opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)",
-                '&:hover':{
-                  opacity:1,
-                }
-              }}
-            >
+
+          <Box
+            sx={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              opacity: 0,
+              display: "flex",
+              pt: "4px",
+              transition: "opacity 200ms ease",
+              '&:hover': {
+                opacity: 1,
+              },
+            }}
+          >
+            {actionIcons.map((icon, index) => (
               <IconButton
+                key={index}
                 sx={{
-                  "&:hover": {
-                    background: "99,115,129,0.08",
-                  },
-                  flex: "0 0 auto",
-                  borderRadius: "50%",
                   padding: "5px",
+                  borderRadius: "50%",
+                  flex: "0 0 auto",
+                  "&:hover": {
+                    backgroundColor: "rgba(99, 115, 129, 0.08)",
+                  },
                 }}
               >
                 <img
-                  src="/replyMsgIcon.svg"
-                  alt="reply"
-                  style={{ width: "16px", height: "16px", flexShrink: 0 }}
+                  src={icon.src}
+                  alt={icon.alt}
+                  style={{ width: 16, height: 16, flexShrink: 0 }}
                 />
               </IconButton>
-              <IconButton
-                sx={{
-                  "&:hover": {
-                    background: "99,115,129,0.08",
-                  },
-                  flex: "0 0 auto",
-                  borderRadius: "50%",
-                  padding: "5px",
-                }}
-              >
-                <img
-                  src="/emojiIcon.svg"
-                  alt="react"
-                  style={{ width: "16px", height: "16px", flexShrink: 0 }}
-                />
-              </IconButton>
-              <IconButton
-                sx={{
-                  "&:hover": {
-                    background: "99,115,129,0.08",
-                  },
-                  flex: "0 0 auto",
-                  borderRadius: "50%",
-                  padding: "5px",
-                }}
-              >
-                <img
-                  src="/deleteIcon.svg"
-                  alt="delete"
-                  style={{ width: "16px", height: "16px", flexShrink: 0 }}
-                />
-              </IconButton>
-            </Box>
+            ))}
           </Box>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
+
 export default ReceivedMessage;

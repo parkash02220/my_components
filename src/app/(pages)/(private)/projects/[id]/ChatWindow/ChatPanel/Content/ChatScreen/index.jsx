@@ -4,10 +4,10 @@ import MessageInputBox from "./MessageInputBox";
 
 const ChatScreen = ({
   selectedDirectoryItem,
-  chatType,
   selectedUsers,
-  handleChatStart,
-  setSelectedDirectoryItem,
+  onSendMessage,
+  onSendInputMessageChange,
+  sendMessageInputValue,
 }) => {
   return (
     <>
@@ -19,14 +19,13 @@ const ChatScreen = ({
       >
         <MessageBox
           selectedDirectoryItem={selectedDirectoryItem}
-          chatType={chatType}
         />
         <MessageInputBox
-          chatType={chatType}
           selectedUsers={selectedUsers}
           selectedDirectoryItem={selectedDirectoryItem}
-          handleChatStart={handleChatStart}
-          setSelectedDirectoryItem={setSelectedDirectoryItem}
+          onSendMessage={onSendMessage}
+          onSendInputMessageChange={onSendInputMessageChange}
+          sendMessageInputValue={sendMessageInputValue}
         />
       </Box>
     </>

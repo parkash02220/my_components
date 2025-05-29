@@ -7,36 +7,97 @@ import Loader from "@/components/Loader/Loader";
 import { useState } from "react";
 import useGetAllMessages from "@/hooks/chat/useGetAllMessages";
 import BackButton from "@/components/BackButton";
-import useCreateChatRoom from "@/hooks/chat/singleUserChat/useCreateChatRoom";
 import * as actions from "@/context/Chat/action";
 import useJoinRoomSocket from "@/hooks/chat/useJoinRoomSocket";
 import useNewMessageSocket from "@/hooks/chat/useNewMessageSocket";
 import useMarkAllMsgAsReadSocket from "@/hooks/chat/useMarkAllMsgAsReadSocket";
+import useCreateChatRoom from "@/hooks/chat/useCreateChatRoom";
+import useSendMessage from "@/hooks/chat/useSendMessage";
+import useCreateCustomGroup from "@/hooks/chat/groupChat/useCreateCustomGroup";
+import { getFullName } from "@/utils";
 const ChatWindow = ({ projectId }) => {
-  const {joinRoom} = useJoinRoomSocket({
-    onRoomJoined: (data) => {
-      console.log(":::🎉 Joined room:", data);
-    },
-    onUserTyping: (userId) => {
-      console.log(":::✍️ Typing:", userId);
-      // maybe set a state like setTypingUsers(prev => [...prev, userId])
-    },
-    onUserStoppedTyping: (userId) => {
-      console.log(":::🛑 Stopped typing:", userId);
-      // maybe remove from typingUsers state
-    }
-  });
-  const markAllMsgAsRead = useMarkAllMsgAsReadSocket();
+  useInitializeChatWindow();
+  const { joinRoom } = useJoinRoomSocket();
   useNewMessageSocket();
+  const {
+    loadingMessageSend,
+    errorMessageSend,
+    sendMessage,
+    handleMessageChange,
+    message,
+    setMessage,
+  } = useSendMessage();
+
+  const {
+    loadingCreateCustomGroup,
+    errorCreateCustomGroup,
+    createCustomGroup,
+  } = useCreateCustomGroup();
+
+
+  const markAllMsgAsRead = useMarkAllMsgAsReadSocket();
 
   const { createChatRoom } = useCreateChatRoom();
   const { getAllMessages } = useGetAllMessages();
-  const [chatType, setChatType] = useState("");
-  useInitializeChatWindow();
   const [selectedDirectoryItem, setSelectedDirectoryItem] = useState(null);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const { state, dispatch } = useChatContext();
-  const { loadingChatWindow, onlineUsers } = state;
+  const { loadingChatWindow,chatWindow } = state;
+  const {chatRooms} = chatWindow;
+  const allChatRooms = chatRooms?.allIds?.map(id => chatRooms?.byIds[id]);
+  const chatRoomsWithSingleUser = allChatRooms?.filter((chatroom)=> !chatroom?.isGroup);
+  const initializeChatRoom = async () => {
+    if (selectedDirectoryItem) return selectedDirectoryItem;
+
+    if (selectedUsers?.length === 1) {
+      const user = selectedUsers[0];
+      const isRoomAlreadyExists = chatRoomsWithSingleUser?.find((chatroom)=> chatroom?.targetUser?.id === user?.id);
+      if(isRoomAlreadyExists?.id){
+        return isRoomAlreadyExists;
+      }
+      const room = await createChatRoom(user?.id);
+      setSelectedDirectoryItem(room);
+      joinRoom(room?.id);
+      return room;
+    }
+
+    if (selectedUsers?.length > 1) {
+      const participantIds = selectedUsers.map((u) => u.id);
+      const groupName = selectedUsers
+        .slice(0, 3)
+        .map((u) => getFullName(u.firstName, u.lastName))
+        .join(", ");
+
+      const group = await createCustomGroup(participantIds, groupName);
+      return group;
+    }
+
+    return null;
+  };
+
+  const handleChatStart = async (chatRoom) => {
+    if (!chatRoom?.id) return;
+
+    setSelectedUsers([]);
+    setSelectedDirectoryItem(chatRoom);
+
+    joinRoom(chatRoom.id);
+    markAllMsgAsRead(chatRoom.id);
+    dispatch({ type: actions.SET_ACTIVE_CHAT_ROOM, payload: chatRoom });
+
+    await getAllMessages(chatRoom.id);
+  };
+  const handleTextMessageSubmit = async () => {
+    setMessage("");
+    setSelectedUsers([]);
+    const chatRoom = await initializeChatRoom();
+
+    if (!chatRoom) return;
+
+    await handleChatStart(chatRoom);
+    await sendMessage(chatRoom);
+  };
+
   if (loadingChatWindow) {
     return (
       <Box height={"100%"}>
@@ -44,31 +105,6 @@ const ChatWindow = ({ projectId }) => {
       </Box>
     );
   }
-  const handleChatStart = async (data, type) => {
-    setSelectedUsers([]);
-    setChatType(type);
-    setSelectedDirectoryItem(data);
-    if (type === "group__chat") {
-      joinRoom(data?.id);
-      markAllMsgAsRead(data?.id,true);
-      dispatch({ type: actions.SET_CHAT_ROOM, payload: data });
-      await getAllMessages(data?.id, true);
-    } else {
-      if (data?.chatId) {
-        joinRoom(data?.chatId);
-        markAllMsgAsRead(data?.chatId,false);
-        dispatch({
-          type: actions.SET_CHAT_ROOM,
-          payload: { id: data?.chatId, isGroup: false },
-        });
-        getAllMessages(data?.chatId, false);
-      } else {
-        const room = await createChatRoom(data?.id);
-        joinRoom(room?.id);
-        return room;
-      }
-    }
-  };
   return (
     <>
       <Box
@@ -113,15 +149,14 @@ const ChatWindow = ({ projectId }) => {
           <UserDirectoryPanel
             handleChatStart={handleChatStart}
             setSelectedDirectoryItem={setSelectedDirectoryItem}
-            onlineUsers={onlineUsers}
           />
           <ChatPanel
-            chatType={chatType}
             selectedDirectoryItem={selectedDirectoryItem}
-            handleChatStart={handleChatStart}
             selectedUsers={selectedUsers}
             setSelectedUsers={setSelectedUsers}
-            setSelectedDirectoryItem={setSelectedDirectoryItem}
+            onSendMessage={handleTextMessageSubmit}
+            onSendInputMessageChange={handleMessageChange}
+            sendMessageInputValue={message}
           />
         </Box>
       </Box>

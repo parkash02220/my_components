@@ -1,16 +1,12 @@
 import { Box, Typography } from "@mui/material";
-import SentMessage from "./SentMessage";
-import ReceivedMessage from "./ReceivedMessage";
 import InitialMessageBox from "./InitialMessageBox";
-import SingleUser from "./SingleUser";
-import { useAppContext } from "@/context/App/AppContext";
-import GroupUsers from "./GroupUsers";
 import { useChatContext } from "@/context/Chat/ChatContext";
 import React from "react";
 import TypingIndicator from "./TypingIndicator";
 import { getFullName } from "@/utils";
+import RenderMessages from "./RenderMessages";
 
-const MessageBox = ({ selectedDirectoryItem, chatType }) => {
+const MessageBox = ({ selectedDirectoryItem }) => {
   const { typingUsers } = useChatContext().state;
   const isSomeoneTyping = typingUsers?.length > 0;
   const typingUser = typingUsers[typingUsers?.length - 1];
@@ -44,18 +40,15 @@ const MessageBox = ({ selectedDirectoryItem, chatType }) => {
               },
             }}
           >
-            {chatType === "group__chat" ? (
-              <>
-                <GroupUsers typingUsers={typingUsers} />
-              </>
-            ) : (
-              <SingleUser typingUsers={typingUsers} />
+            <RenderMessages selectedDirectoryItem={selectedDirectoryItem} />
+            {isSomeoneTyping && (
+              <TypingIndicator
+                username={getFullName(
+                  typingUser?.firstName,
+                  typingUser?.lastName
+                )}
+              />
             )}
-            {isSomeoneTyping &&
-                 (
-                    <TypingIndicator username={getFullName(typingUser?.firstName,typingUser?.lastName)}/>
-                )
-          }
           </Box>
         ) : (
           <InitialMessageBox />

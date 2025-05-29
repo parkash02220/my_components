@@ -3,13 +3,12 @@ import { Box, IconButton } from "@mui/material";
 import TextMessage from "./TextMessage";
 
 const MessageInputBox = ({
-  chatType,
   selectedUsers,
   selectedDirectoryItem,
-  handleChatStart,
-  setSelectedDirectoryItem,
+  onSendMessage,
+  onSendInputMessageChange,
+  sendMessageInputValue,
 }) => {
-  const isGroupChat = chatType === "group__chat";
   const isDisabled = !selectedDirectoryItem && selectedUsers?.length === 0;
   const inputIcons = [
     {
@@ -63,11 +62,9 @@ const MessageInputBox = ({
         <Box flex={"1 1 auto"}>
           <TextMessage
             isDisabled={isDisabled}
-            isGroupChat={isGroupChat}
-            selectedUsers={selectedUsers}
-            handleChatStart={handleChatStart}
-            selectedDirectoryItem={selectedDirectoryItem}
-            setSelectedDirectoryItem={setSelectedDirectoryItem}
+            onSendMessage={onSendMessage}
+            onSendInputMessageChange={onSendInputMessageChange}
+            sendMessageInputValue={sendMessageInputValue}
           />
         </Box>
         <Box display={"flex"} alignItems={"space-between"}>

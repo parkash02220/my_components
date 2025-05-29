@@ -3,11 +3,11 @@ import React, { useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import UserWithStatus from "../../../../components/UserWithStatus";
 import { getFullName } from "@/utils";
-const RoomDetails = ({users=[]}) => {
-  const [isExpanded,setIsExpanded] = useState(true);
+const RoomDetails = ({ users = [] }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
   const toggleIsExpanded = () => {
-    setIsExpanded((pre)=> !pre);
-  }
+    setIsExpanded((pre) => !pre);
+  };
   return (
     <>
       <Box
@@ -21,7 +21,7 @@ const RoomDetails = ({users=[]}) => {
           alignItems: "center",
           cursor: "pointer",
           justifyContent: "space-between",
-          flexShrink:0,
+          flexShrink: 0,
         }}
       >
         <Typography color="#637381" fontWeight={700} fontSize={12}>
@@ -37,25 +37,35 @@ const RoomDetails = ({users=[]}) => {
           }}
         />
       </Box>
-      <Collapse in={isExpanded} timeout="auto" unmountOnExit flex={'1 1 auto'} sx={{overflow:'auto'}}>
-      <Box display={'flex'} flexDirection={'column'}>
-        <Box display={"flex"} flexDirection={"column"} sx={{
+      <Collapse
+        in={isExpanded}
+        timeout="auto"
+        unmountOnExit
+        flex={"1 1 auto"}
+        sx={{ overflow: "auto" }}
+      >
+        <Box display={"flex"} flexDirection={"column"}>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            sx={{
               overflowY: "auto",
               scrollbarWidth: "none",
               "&::-webkit-scrollbar": {
                 display: "none",
               },
-        }}>
-          {users?.map((user) => {
-            return (
-              <React.Fragment key={user?.id}>
-               <RoomRow user={user}/>
-              </React.Fragment>
-            );
-          })}
+            }}
+          >
+            {users?.map((user) => {
+              return (
+                <React.Fragment key={user?.id}>
+                  <RoomRow user={user} />
+                </React.Fragment>
+              );
+            })}
+          </Box>
         </Box>
-      </Box>
-        </Collapse>
+      </Collapse>
     </>
   );
 };
@@ -74,7 +84,7 @@ export const RoomRow = ({ user }) => {
           p: "8px 16px",
         }}
       >
-        <UserWithStatus width={40} height={40} avatar={user?.avatar}/>
+        <UserWithStatus width={40} height={40} avatar={user?.avatar} />
         <Box
           flex={"1 1 auto"}
           minWidth={0}
@@ -90,7 +100,7 @@ export const RoomRow = ({ user }) => {
             color="#1C252E"
             fontSize={14}
           >
-           {getFullName(user?.firstName,user?.lastName)}
+            {getFullName(user?.firstName, user?.lastName)}
           </Typography>
           <Typography
             overflow={"hidden"}
@@ -99,7 +109,7 @@ export const RoomRow = ({ user }) => {
             color="#637381"
             fontSize={12}
           >
-          {user?.role}
+            {user?.role}
           </Typography>
         </Box>
       </Box>

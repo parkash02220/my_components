@@ -1,114 +1,112 @@
-const { Box, Typography } = require("@mui/material")
-const { default: UserWithStatus } = require("../../components/UserWithStatus");
-const { default: MyTooltip } = require("@/components/MyTooltip/MyTooltip");
-const { getFullName } = require("@/utils");
+import { Box, Typography } from "@mui/material";
+import UserWithStatus from "../../components/UserWithStatus";
+import MyTooltip from "@/components/MyTooltip/MyTooltip";
+import { getFullName } from "@/utils";
+import { useMemo } from "react";
 
-const GroupUsersDetails = ({chatType,groupDetails}) => {
-    const users = groupDetails?.participants || [];
-    return <>
-     <Box display={'flex'} flexDirection={'row-reverse'} justifyContent={'flex-end'}>
-     {users?.length > 3 && (
-        <MyTooltip
-          content={
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
-                padding: 1,
-              }}
-            >
-              {users.map((user, index) => {
-                const name = getFullName(user?.firstName, user?.lastName);
-                return (
-                  <Box key={index} display="flex" alignItems="center" gap={1}>
-                    <img
-                      src={user.avatar || '/dummyUser.svg'}
-                       referrerPolicy="no-referrer"
-                      alt={name}
-                      style={{
-                        width: 24,
-                        height: 24,
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                      }}
-                    />
-                    <Typography fontSize={12} fontWeight={500} color="white">
-                      {name}
-                    </Typography>
-                  </Box>
-                );
-              })}
-            </Box>
-          }
-        >
-          <Box
-            fontSize={12}
-            color={"#007867"}
-            width={32}
-            height={32}
-            fontWeight={600}
-            ml={"-8px"}
-            position={"relative"}
-            boxSizing={"content-box"}
-            border={"2px solid #FFFFFF"}
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            borderRadius={"50%"}
-            overflow={"hidden"}
-            sx={{
-              background: "#C8FAD6",
-            }}
-          >
-            +{users?.length - 2}
-          </Box>
-        </MyTooltip>
-      )}
-      {users?.length > 0 && (
-        <Box display={"flex"}>
-          {users
-            ?.slice(0, users?.length > 3 ? 2 : 3)
-            ?.map((item, index) => {
-              const name = `${item?.firstName || ""} ${item?.lastName || ""}`;
-              return (
-                <MyTooltip key={index} title={name} placement="bottom">
-                  <Box
-                    width={32}
-                    height={32}
-                    fontSize={16}
-                    fontWeight={600}
-                    border={"2px solid #FFFFFF"}
-                    boxSizing={"content-box"}
-                    ml={"-8px"}
-                    position={"relative"}
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    borderRadius={"50%"}
-                    overflow={"hidden"}
-                    flexShrink={0}
-                  >
-                    <img
-                      src={item?.avatar || '/dummyUser.svg'}
-                      alt="avatar"
-                       referrerPolicy="no-referrer"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        color: "transparent",
-                        textIndent: "100000px",
-                        maxWidth: "100%",
-                      }}
-                    />
-                  </Box>
-                </MyTooltip>
-              );
-            })}
+const GroupUsersDetails = ({ groupDetails }) => {
+  const users = groupDetails?.participants || [];
+
+  const visibleUsers = useMemo(() => {
+    return users.length > 3 ? users.slice(0, 2) : users.slice(0, 3);
+  }, [users]);
+
+  const extraUsers = useMemo(() => {
+    return users.length > 3 ? users.slice(2) : [];
+  }, [users]);
+
+  const renderExtraUsersTooltip = () => (
+    <MyTooltip
+      content={
+        <Box display="flex" flexDirection="column" gap={1} p={1}>
+          {users.map((user, index) => {
+            const name = getFullName(user?.firstName, user?.lastName);
+            return (
+              <Box key={user?.id || index} display="flex" alignItems="center" gap={1}>
+                <img
+                  src={user.avatar || "/dummyUser.svg"}
+                  alt={name}
+                  referrerPolicy="no-referrer"
+                  style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+                <Typography fontSize={12} fontWeight={500} color="white">
+                  {name}
+                </Typography>
+              </Box>
+            );
+          })}
+        </Box>
+      }
+    >
+      <Box
+        fontSize={12}
+        color="#007867"
+        width={32}
+        height={32}
+        fontWeight={600}
+        ml="-8px"
+        position="relative"
+        border="2px solid #FFFFFF"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        borderRadius="50%"
+        overflow="hidden"
+        sx={{ background: "#C8FAD6" }}
+      >
+        +{users.length - 2}
+      </Box>
+    </MyTooltip>
+  );
+
+  return (
+    <Box display="flex" flexDirection="row-reverse" justifyContent="flex-end">
+      {users.length > 3 && renderExtraUsersTooltip()}
+      {users.length > 0 && (
+        <Box display="flex">
+          {visibleUsers.map((user, index) => {
+            const name = getFullName(user?.firstName, user?.lastName);
+            return (
+              <MyTooltip key={user?.id || index} title={name} placement="bottom">
+                <Box
+                  width={32}
+                  height={32}
+                  border="2px solid #FFFFFF"
+                  ml="-8px"
+                  position="relative"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  borderRadius="50%"
+                  overflow="hidden"
+                  flexShrink={0}
+                >
+                  <img
+                    src={user?.avatar || "/dummyUser.svg"}
+                    alt={name}
+                    referrerPolicy="no-referrer"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      color: "transparent",
+                      textIndent: "100000px",
+                      maxWidth: "100%",
+                    }}
+                  />
+                </Box>
+              </MyTooltip>
+            );
+          })}
         </Box>
       )}
     </Box>
-    </>
-}
+  );
+};
+
 export default GroupUsersDetails;

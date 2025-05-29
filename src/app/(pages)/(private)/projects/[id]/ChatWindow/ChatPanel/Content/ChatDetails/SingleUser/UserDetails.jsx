@@ -2,6 +2,7 @@ import { getFullName } from "@/utils";
 import { Box, Typography } from "@mui/material";
 
 const UserDetails = ({ user }) => {
+
   return (
     <>
       <Box
@@ -25,7 +26,7 @@ const UserDetails = ({ user }) => {
           <img
             src={user?.avatar || "/dummyUser.svg"}
             alt="user"
-             referrerPolicy="no-referrer"
+            referrerPolicy="no-referrer"
             style={{
               width: "100%",
               height: "100%",

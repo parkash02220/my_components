@@ -1,29 +1,34 @@
 export const initialState = {
     chatWindow:{
-        users:[],
-        groups:[],
+        allUsers:{
+            byIds:{},
+            allIds:[],
+        },
+        usersWithoutChatRoom:{
+            byIds:{},
+            allIds:[],
+        },
+        usersWithChatRoom:{
+            byIds:{},
+            allIds:[],
+        },
+        chatRooms:{
+            byIds:{},
+            allIds:[],
+        },
     },
     loadingChatWindow:false,
     errorChatWindow:null,
-    chatRoom:{},
-    singleUserChat:{
-        page:0,
-        pageSize:20,
-        totalMessages:0,
-        messages:[],
-        hasMore:false,
-    },
-    loadingSingleUserChat:false,
-    errorSingleUserChat:null,
-    groupChat:{
-        page:0,
-        pageSize:20,
-        totalMessages:0,
-        messages:[],
-        hasMore:false,
-    },
-    loadingGroupChat:false,
-    errorGroupChat:null,
+    activeChatRoomId:null,
+    activeChatRoom:{},
+    allChatMessages:{},
+    // groupChat:{
+    //     page:0,
+    //     pageSize:20,
+    //     totalMessages:0,
+    //     messages:[],
+    //     hasMore:false,
+    // },
     onlineUsers:[],
     typingUsers:[],
 }

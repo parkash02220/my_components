@@ -9,7 +9,8 @@ const useJoinRoomSocket = ({
 } = {}) => {
   const socket = useSocketContext();
   const {dispatch,state} = useChatContext();
-  const {users} = state?.chatWindow;
+  const {activeChatRoom} = state;
+
   const joinRoom = (roomId) => {
     if (!socket || !roomId) return;
     console.log(":::📡 Emitting joinRoom for:", roomId);
@@ -25,10 +26,17 @@ const useJoinRoomSocket = ({
     };
 
     const handleUserTyping = ({ userId }) => {
-      console.log("✍️ User typing:", userId);
+      console.log(":::✍️ User typing:", userId);
       onUserTyping?.(userId);
-      const user = users?.find((user)=> user?.id === userId);
-      dispatch({type:actions.ADD_USER_IN_TYPING_USERS,payload:{user}})
+      const user = activeChatRoom?.participants?.find((user)=> user?.id === userId);
+      if (user) {
+        dispatch({
+          type: actions.ADD_USER_IN_TYPING_USERS,
+          payload: { user },
+        });
+      } else {
+        console.warn("⚠️ Typing user not found in activeChatRoom participants", { userId, activeChatRoom });
+      }
     };
 
     const handleUserStoppedTyping = ({ userId }) => {

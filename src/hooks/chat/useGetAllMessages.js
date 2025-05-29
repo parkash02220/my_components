@@ -10,33 +10,21 @@ const useGetAllMessages = () => {
     const {showToast} = useToast();
     const {dispatch,state} = useChatContext();
     const {activeUser} = useAppContext().state;
-    const getAllMessages = async (chatRoomId,isGroupChat) => {
-           if(isGroupChat){
-            dispatch({type:actions.SET_GROUP_MESSAGES_REQUEST});
-           }else{
-               dispatch({type:actions.SET_USER_MESSAGES_REQUEST});
-           }
+    const getAllMessages = async (chatRoomId) => {
+          dispatch({type:actions.SET_CHAT_MESSAGES_REQUEST,payload:{chatRoomId}});
         const res = await ApiCall({
             url:`${process.env.NEXT_PUBLIC_BASE_URL}/get-messages?chatRoomId=${chatRoomId}`,
             method:"GET",
         });
 
         if(res.error){
-            if(isGroupChat){
-                dispatch({type:actions.SET_GROUP_MESSAGES_ERROR});
-            }else{
-                dispatch({type:actions.SET_USER_MESSAGES_ERROR});
-            }
+            dispatch({type:actions.SET_CHAT_MESSAGES_ERROR,payload:{chatRoomId}});
             showToast({toastId,type:"error",message:res?.error?.message || "Something went wrong while loading messages."});
             return;
         }
 
         const formattedIdResponse = convertIdFields(res?.data)
-        if(isGroupChat){
-            dispatch({type:actions.SET_GROUP_MESSAGES_SUCCESS,payload:{data:formattedIdResponse,activeUser}});
-        }else{
-            dispatch({type:actions.SET_USER_MESSAGES_SUCCESS,payload:{data:formattedIdResponse,activeUser}});
-        }
+        dispatch({type:actions.SET_CHAT_MESSAGES_SUCCESS,payload:{chatRoomId,chatMessagesData:formattedIdResponse,activeUser}});
     }
     return {getAllMessages};
 }

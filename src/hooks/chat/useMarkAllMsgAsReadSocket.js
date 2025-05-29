@@ -8,7 +8,7 @@ const useMarkAllMsgAsReadSocket = () => {
   const socket = useSocketContext();
   const {activeUser} = useAppContext().state;
   const {dispatch} = useChatContext();
-  const markAllMsgAsRead = (chatId,isGroupChat) => {
+  const markAllMsgAsRead = (chatId) => {
     const readerId = activeUser?.id
     if (!chatId || !readerId) return;
 
@@ -17,7 +17,7 @@ const useMarkAllMsgAsReadSocket = () => {
       readerId,
     });
 
-    dispatch({type:actions.MARK_CHAT_AS_READ,payload:{isGroupChat,chatId,readerId}})
+    dispatch({type:actions.MARK_CHAT_AS_READ,payload:{chatId,readerId}})
   };
 
   useEffect(() => {

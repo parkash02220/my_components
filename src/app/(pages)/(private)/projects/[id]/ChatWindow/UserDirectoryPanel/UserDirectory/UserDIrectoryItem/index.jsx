@@ -4,27 +4,25 @@ import GroupUsers from "./GroupUsers";
 import SingleUser from "./SingleUser";
 
 export default function UserDIrectoryItem({
-  type,
   isExpanded = true,
-  group = {},
+  chatroom = {},
   user = {},
   handleChatStart,
-  onlineUsers=[],
 }) {
   return (
     <>
-      {type === "group__chat" ? (
+      { chatroom?.isGroup ? (
         <GroupUsers
           isExpanded={isExpanded}
-          group={group}
+          chatroom={chatroom}
           handleChatStart={handleChatStart}
         />
       ) : (
         <SingleUser
           isExpanded={isExpanded}
-          user={user}
+          chatroom={chatroom}
           handleChatStart={handleChatStart}
-          onlineUsers={onlineUsers}
+          userWithoutChatroom={user}
         />
       )}
     </>
