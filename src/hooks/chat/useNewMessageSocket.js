@@ -11,13 +11,10 @@ const useNewMessageSocket = () => {
     const { showToast } = useToast();
     const {activeUser} = useAppContext().state;
     const toastId = "new_message";
-   console.log(":::entering message socket",socket)
     useEffect(() => {
       if (!socket) return;
       const handleNewMessage = (data) => {
-        console.log(":::inside socket",data)
         const convertedData = convertIdFields(data || {});
-        console.log(":::converted data",convertedData)
     //     showToast({ toastId, type: "info", message: data?.message || "" });
         dispatch({
           type: actions.ADD_NEW_MESSAGE_IN_CHAT,

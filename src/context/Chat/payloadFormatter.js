@@ -80,7 +80,8 @@ export const formatInitializeChatWindow = (payload, activeUserId) => {
 
 export const formatAllMessages = (payload, activeUser) => {
   const { page, messages = [], totalMessages } = payload;
-  const hasMore = page * 20 < totalMessages;
+  const pageSize = 20;
+  const hasMore = page * pageSize < totalMessages;
   const updatedMessages = messages?.map((msg) => {
     return {
       ...msg,
@@ -92,7 +93,7 @@ export const formatAllMessages = (payload, activeUser) => {
     messages: updatedMessages,
     totalMessages,
     hasMore,
-    pageSize: 20,
+    pageSize,
   };
 };
 

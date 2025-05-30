@@ -3,6 +3,7 @@ import UserWithStatus from "../../../components/UserWithStatus";
 import { getFullName, getTimeAgo } from "@/utils";
 import { useChatContext } from "@/context/Chat/ChatContext";
 import { useMemo } from "react";
+import useCreateChatRoom from "@/hooks/chat/useCreateChatRoom";
 
 const SingleUser = ({
   isExpanded,
@@ -10,6 +11,7 @@ const SingleUser = ({
   userWithoutChatroom,
   handleChatStart,
 }) => {
+  const { createChatRoom } = useCreateChatRoom();
   const user = chatroom?.targetUser || userWithoutChatroom;
   const { firstName, lastName, avatar, id: userId } = user || {};
 
@@ -39,8 +41,12 @@ const SingleUser = ({
     return `${senderName}: ${lastMessage?.text}`;
   }, [lastMessage]);
 
-  const handleItemClick = () => {
-    handleChatStart(chatroom, user);
+  const handleItemClick = async () => {
+    let room = chatroom
+    if(!room?.id){
+       room = await createChatRoom(user?.id);
+    }
+    await handleChatStart(room);
   };
 
   return (

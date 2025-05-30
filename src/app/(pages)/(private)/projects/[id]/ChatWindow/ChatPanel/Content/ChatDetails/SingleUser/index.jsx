@@ -12,6 +12,7 @@ const SingleUser = ({ selectedDirectoryItem }) => {
         flexDirection={"column"}
         overflow={"auto"}
         flex={"1 1 auto"}
+        minHeight={0}
       >
         <UserDetails user={user} />
         <UserInformation user={user}/>

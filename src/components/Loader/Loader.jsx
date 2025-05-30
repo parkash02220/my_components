@@ -1,7 +1,7 @@
 import React from "react";
 import { Box } from "@mui/material";
 
-const Loader = () => {
+const Loader = ({width,height}) => {
   return (
     <Box sx={{
       width:"100%",
@@ -12,8 +12,8 @@ const Loader = () => {
     }}>
     <Box
       sx={{
-        width: 60,
-        height: 60,
+        width: width || 60,
+        height: height || 60,
         borderRadius: "50%",
         border: "6px solid transparent",}}>
           <img src="/iosLoader.gif" alt="loader" style={{width:"100%",height:"100%",objectFit:'cover',textIndent:"10000px"}} />

@@ -13,7 +13,7 @@ const useJoinRoomSocket = ({
 
   const joinRoom = (roomId) => {
     if (!socket || !roomId) return;
-    console.log(":::📡 Emitting joinRoom for:", roomId);
+    console.log(":::Emitting joinRoom for:", roomId);
     socket.emit("joinRoom", roomId);
   };
 
@@ -21,12 +21,12 @@ const useJoinRoomSocket = ({
     if (!socket) return;
 
     const handleRoomJoined = (data) => {
-      console.log(":::✅ Room joined:", data);
+      console.log("::: Room joined:", data);
       onRoomJoined?.(data);
     };
 
     const handleUserTyping = ({ userId }) => {
-      console.log(":::✍️ User typing:", userId);
+      console.log("::: User typing:", userId);
       onUserTyping?.(userId);
       const user = activeChatRoom?.participants?.find((user)=> user?.id === userId);
       if (user) {
@@ -40,7 +40,7 @@ const useJoinRoomSocket = ({
     };
 
     const handleUserStoppedTyping = ({ userId }) => {
-      console.log(":::🛑 User stopped typing:", userId);
+      console.log("::: User stopped typing:", userId);
       onUserStoppedTyping?.(userId);
       dispatch({type:actions.REMOVE_USER_IN_TYPING_USERS,payload:{userId}})
     };

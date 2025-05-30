@@ -6,6 +6,7 @@ const UserInformation = ({user}) => {
   const toggleIsExpanded = () => {
     setIsExpanded((pre) => !pre);
   };
+  const {email,role} = user;
   const inoformationData = [
     {
       label: {
@@ -26,7 +27,7 @@ const UserInformation = ({user}) => {
         src: "/emailIcon.svg",
         alt: "location",
       },
-      value: "parkash@gmail.com",
+      value: email,
     },
   ];
   return (
@@ -57,7 +58,7 @@ const UserInformation = ({user}) => {
           }}
         />
       </Box>
-      <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+      <Collapse in={isExpanded} timeout="auto" unmountOnExit sx={{overflow:'auto',flex:'1 1 auto'}}>
         <Box minHeight={0}>
           <Box
             display={"flex"}

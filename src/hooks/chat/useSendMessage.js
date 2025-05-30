@@ -49,6 +49,17 @@ const useSendMessage = () => {
   const sendMessage = async (chatRoom) => {
     const msgToSend = content.current;
     if (!msgToSend?.trim() || !chatRoom?.id) return;
+
+  if (socket && chatRoom?.id && activeUser?.id) {
+    stopTyping(socket, chatRoom.id, activeUser.id);
+  }
+
+  if (typingTimeoutRef.current) {
+    clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = null;
+  }
+
+
     setMessage("");
     dispatch({type:actions.ADD_MESSSAGE_IN_CHAT_MESSAGES,payload:{chatRoomId:chatRoom?.id,data:msgToSend,activeUser}});
     setLoading(true);

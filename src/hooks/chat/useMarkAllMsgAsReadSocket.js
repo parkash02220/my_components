@@ -23,7 +23,6 @@ const useMarkAllMsgAsReadSocket = () => {
   useEffect(() => {
     if (!socket) return;
     const handleAllMsgRead = (data) => {
-      console.log(":::data in read socket",data);
       // const convertedData = convertIdFields(data || {});
   //     showToast({ toastId, type: "info", message: data?.message || "" });
       // dispatch({

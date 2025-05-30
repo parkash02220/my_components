@@ -38,8 +38,10 @@ const ChatWindow = ({ projectId }) => {
   const markAllMsgAsRead = useMarkAllMsgAsReadSocket();
 
   const { createChatRoom } = useCreateChatRoom();
-  const { getAllMessages } = useGetAllMessages();
   const [selectedDirectoryItem, setSelectedDirectoryItem] = useState(null);
+  const {
+    initMessages,
+  } = useGetAllMessages(selectedDirectoryItem);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const { state, dispatch } = useChatContext();
   const { loadingChatWindow,chatWindow } = state;
@@ -56,8 +58,8 @@ const ChatWindow = ({ projectId }) => {
         return isRoomAlreadyExists;
       }
       const room = await createChatRoom(user?.id);
-      setSelectedDirectoryItem(room);
-      joinRoom(room?.id);
+      // setSelectedDirectoryItem(room);
+      // joinRoom(room?.id);
       return room;
     }
 
@@ -78,18 +80,26 @@ const ChatWindow = ({ projectId }) => {
   const handleChatStart = async (chatRoom) => {
     if (!chatRoom?.id) return;
 
-    setSelectedUsers([]);
+    if(selectedUsers?.length > 0){
+      setSelectedUsers([]);
+    }
     setSelectedDirectoryItem(chatRoom);
 
     joinRoom(chatRoom.id);
     markAllMsgAsRead(chatRoom.id);
     dispatch({ type: actions.SET_ACTIVE_CHAT_ROOM, payload: chatRoom });
 
-    await getAllMessages(chatRoom.id);
+    await initMessages(chatRoom.id);
   };
   const handleTextMessageSubmit = async () => {
     setMessage("");
-    setSelectedUsers([]);
+    if(selectedUsers?.length > 0){
+      setSelectedUsers([]);
+    }
+    if (selectedDirectoryItem?.id) {
+      await sendMessage(selectedDirectoryItem);
+      return;
+    }
     const chatRoom = await initializeChatRoom();
 
     if (!chatRoom) return;

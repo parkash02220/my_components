@@ -29,7 +29,7 @@ const MessageBox = ({ selectedDirectoryItem }) => {
             flexDirection={"column"}
             minHeight={0}
             paddingInline={3}
-            pt={5}
+            pt={2}
             pb={3}
             width={"100%"}
             sx={{

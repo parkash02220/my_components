@@ -12,12 +12,17 @@ const UserDirectory = ({ isExpanded, handleChatStart }) => {
       type: "chatroom",
       data: chatRooms.byIds[id],
     })) || [];
-
-    const userItems = usersWithoutChatRoom?.allIds?.map(id => ({
-      type: "user",
-      data: usersWithoutChatRoom.byIds[id],
-    })) || [];
-
+  
+    const userItems = usersWithoutChatRoom?.allIds
+      ?.filter(id => !chatRooms.allIds.some(roomId => {
+        const room = chatRooms.byIds[roomId];
+        return room?.targetUser?.id === id;
+      }))
+      .map(id => ({
+        type: "user",
+        data: usersWithoutChatRoom.byIds[id],
+      })) || [];
+  
     return [...chatroomItems, ...userItems];
   }, [chatRooms, usersWithoutChatRoom]);
 

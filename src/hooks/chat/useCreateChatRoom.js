@@ -1,11 +1,12 @@
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 import useToast from "@/hooks/common/useToast";
 import { ApiCall } from "@/utils/ApiCall";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as actions from '@/context/Chat/action';
 import { useChatContext } from "@/context/Chat/ChatContext";
 import { convertIdFields } from "@/utils";
 import { useAppContext } from "@/context/App/AppContext";
+import { useSocketContext } from "@/context/Socket/SocketContext";
 const useCreateChatRoom = () => {
     const toastId = "create_chat_room";
     const {showToast} = useToast();
@@ -14,6 +15,23 @@ const useCreateChatRoom = () => {
     const {activeProject} = useProjectsContext()?.state;
     const {activeUser} = useAppContext().state;
     const {dispatch} = useChatContext();
+    const socket = useSocketContext();
+
+    useEffect(() => {
+        if (!socket) return;
+        const handleNewChatroomCreate = (data) => {
+          const convertedData = convertIdFields(data || {});
+          dispatch({type:actions.CREATE_NEW_CHAT_ROOM,payload:{chatRoom:convertedData?.chatRoom,activeUser}});
+          showToast({ toastId, type: "info", message: "New Group has been created." });
+        };
+    
+        socket.on("group-chat-created", handleNewChatroomCreate);
+        return () => {
+          socket.off("group-chat-created", handleNewChatroomCreate);
+        };
+      }, [socket]);
+
+
     const createChatRoom = async (targetUserId) => {
         setLoading(true);
         setError(null);

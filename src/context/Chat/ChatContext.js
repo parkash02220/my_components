@@ -47,8 +47,7 @@ function chatReducer(state = initialState, action) {
     }
 
     case actions.SET_CHAT_MESSAGES_REQUEST: {
-      const { chatRoomId } = payload;
-      console.log(":::chat id", chatRoomId);
+      const { chatRoomId,page } = payload;
       return {
         ...state,
         allChatMessages: {
@@ -57,6 +56,7 @@ function chatReducer(state = initialState, action) {
             ...(state.allChatMessages[chatRoomId] || {}),
             loading: true,
             error: null,
+            page,
           },
         },
       };
@@ -67,7 +67,21 @@ function chatReducer(state = initialState, action) {
         chatMessagesData,
         activeUser
       );
-      console.log(":::formattedhatmessagedata", formattedChatMessageData);
+
+      const existingMessages =
+      state.allChatMessages[chatRoomId]?.messages || [];
+  
+    const mergedMessages =
+      formattedChatMessageData.page === 1
+        ? formattedChatMessageData.messages
+        : [...formattedChatMessageData.messages, ...existingMessages];
+
+        const uniqueMessages = Array.from(
+          new Map(
+            mergedMessages.map((msg) => [msg.id, msg])
+          ).values()
+        );
+
       return {
         ...state,
         allChatMessages: {
@@ -76,6 +90,7 @@ function chatReducer(state = initialState, action) {
             loading: false,
             error: null,
             ...formattedChatMessageData,
+            messages: uniqueMessages,
           },
         },
       };
@@ -146,8 +161,6 @@ function chatReducer(state = initialState, action) {
         ) {
           newState.chatWindow.usersWithChatRoom.byIds[targetUserId] =
             targetUserData;
-    
-            newState.chatWindow.chatRooms.allIds.unshift(chatRoom.id);
         }
       }
     
@@ -165,7 +178,7 @@ function chatReducer(state = initialState, action) {
     case actions.ADD_NEW_MESSAGE_IN_CHAT: {
       const { newMessageData,activeUser } = payload;
       const { chatRoomId, message } = newMessageData;
-      const isRoomExists = state.chatWindow.chatRooms?.allIds?.some((chatroom)=> chatroom?.id === chatRoomId);
+      const isRoomExists = state.chatWindow.chatRooms?.allIds?.includes(chatRoomId);
       if(!isRoomExists) return state;
       const updatedMessage = message;
       updatedMessage.isSentMessage = message?.sender?.id === activeUser?.id;
@@ -175,7 +188,7 @@ function chatReducer(state = initialState, action) {
               ...state.allChatMessages,
               [chatRoomId]:{
                 ...state.allChatMessages[chatRoomId],
-                messages:[...(state.allChatMessages[chatRoomId].messages || []),updatedMessage]
+                messages:[...(state.allChatMessages[chatRoomId]?.messages || []),updatedMessage]
               }
             }
           }
@@ -192,7 +205,6 @@ function chatReducer(state = initialState, action) {
 
     case actions.REMOVE_USER_IN_TYPING_USERS: {
       const { userId } = payload;
-      console.log(":::typing user in remove",state.typingUsers);
       return {
         ...state,
         typingUsers: state?.typingUsers?.filter((user) => user?.id !== userId),
