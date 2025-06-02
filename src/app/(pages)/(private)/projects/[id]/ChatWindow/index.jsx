@@ -16,7 +16,7 @@ import useSendMessage from "@/hooks/chat/useSendMessage";
 import useCreateCustomGroup from "@/hooks/chat/groupChat/useCreateCustomGroup";
 import { getFullName } from "@/utils";
 const ChatWindow = ({ projectId }) => {
-  useInitializeChatWindow();
+  const {isCHatWindowAvailable} = useInitializeChatWindow();
   const { joinRoom } = useJoinRoomSocket();
   useNewMessageSocket();
   const {
@@ -26,6 +26,7 @@ const ChatWindow = ({ projectId }) => {
     handleMessageChange,
     message,
     setMessage,
+    clearInput,
   } = useSendMessage();
 
   const {
@@ -82,9 +83,10 @@ const ChatWindow = ({ projectId }) => {
 
     if(selectedUsers?.length > 0){
       setSelectedUsers([]);
+    }else{
+      clearInput();
     }
     setSelectedDirectoryItem(chatRoom);
-
     joinRoom(chatRoom.id);
     markAllMsgAsRead(chatRoom.id);
     dispatch({ type: actions.SET_ACTIVE_CHAT_ROOM, payload: chatRoom });
@@ -108,13 +110,14 @@ const ChatWindow = ({ projectId }) => {
     await sendMessage(chatRoom);
   };
 
-  if (loadingChatWindow) {
+  if (loadingChatWindow || !isCHatWindowAvailable) {
     return (
       <Box height={"100%"}>
         <Loader />
       </Box>
     );
   }
+  
   return (
     <>
       <Box
@@ -156,7 +159,7 @@ const ChatWindow = ({ projectId }) => {
             minHeight: 0,
           }}
         >
-          <UserDirectoryPanel
+           <UserDirectoryPanel
             handleChatStart={handleChatStart}
             setSelectedDirectoryItem={setSelectedDirectoryItem}
           />

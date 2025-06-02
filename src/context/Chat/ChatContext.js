@@ -4,7 +4,8 @@ import * as actions from "./action";
 import {
   formatAddMessageInCHatMessages,
   formatAllMessages,
-  formatInitializeChatWindow,
+  formatChatroomsAndUsers,
+  formatLastMessage,
   formatNewChatRoomPayload,
 } from "./payloadFormatter";
 const ChatContext = createContext();
@@ -12,30 +13,47 @@ const ChatContext = createContext();
 function chatReducer(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-    case actions.INITIALIZE_CHAT_WINDOW_REQUEST: {
-      return {
-        ...state,
-        loadingChatWindow: true,
-        errorChatWindow: null,
-      };
-    }
 
-    case actions.INITIALIZE_CHAT_WINDOW_SUCCESS: {
-      const { data, activeUserId } = payload;
-      const formattedPayload = formatInitializeChatWindow(data, activeUserId);
+    case actions.SET_CHATROOMS_AND_USERS_IN_CHATWINDOW: {
+      const { data, activeUserId, page } = payload;
+      const formattedPayload = formatChatroomsAndUsers(
+        data,
+        activeUserId,
+        page === 1 ? null : state.chatWindow
+      );
+    
       return {
         ...state,
         chatWindow: formattedPayload || {},
-        loadingChatWindow: false,
       };
     }
 
-    case actions.INITIALIZE_CHAT_WINDOW_ERROR: {
+    case actions.CLEAR_CHATWINDOW_DATA :{
       return {
         ...state,
-        loadingChatWindow: false,
-        errorChatWindow: payload,
-      };
+        chatWindow:{
+          allUsers:{
+            byIds:{},
+            allIds:[],
+        },
+        usersWithoutChatRoom:{
+            byIds:{},
+            allIds:[],
+        },
+        usersWithChatRoom:{
+            byIds:{},
+            allIds:[],
+        },
+        chatRooms:{
+            byIds:{},
+            allIds:[],
+        },
+        page:0,
+        pageSize:10,
+        totalChatroomsAndUsers:0,
+        hasMore:false,
+        }
+      }
     }
 
     case actions.SET_ACTIVE_CHAT_ROOM: {
@@ -130,6 +148,29 @@ function chatReducer(state = initialState, action) {
           },
         },
       };
+    }
+
+    case actions.UPDATE_LAST_MESSAGE: {
+         const {message,activeUserId,chatRoomId} = payload;
+         console.log(":::payload in last message",message,activeUserId,chatRoomId)
+         const formattedLastMessage = formatLastMessage(message,activeUserId);
+         const newState = {
+          ...state,
+          chatWindow:{
+            ...state?.chatWindow,
+            chatRooms:{
+              ...state?.chatWindow?.chatRooms,
+              byIds:{
+                ...state?.chatWindow?.chatRooms?.byIds,
+                [chatRoomId]:{
+                  ...state?.chatWindow?.chatRooms?.byIds[chatRoomId],
+                  lastMessage:formattedLastMessage,
+                }
+            },
+            }
+          }
+         }
+         return newState
     }
 
     case actions.CREATE_NEW_CHAT_ROOM: {

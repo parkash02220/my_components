@@ -1,3 +1,4 @@
+import useGetChatWindowUsers from "@/hooks/chat/useGetChatWindowUsers";
 import { getFullName } from "@/utils";
 import { useMemo, useState } from "react";
 
@@ -8,30 +9,29 @@ const { Typography, Chip } = require("@mui/material");
 const MyAutoCompleteVarient = ({selectedUsers,setSelectedUsers,type}) => {
     if(type ==="user"){
         const {
-            allUsers,
-            loadingAllUsers,
-            errorAllUsers,
-            helperTextAllUsers,
-            searchValue,
-            handleSearchValueChange,
-            getAllUsersFromBackend,
-            setSearchValue,
-            setPage,
-            loadMoreRef,
-            setAllUsers,
-            debouncedSearchValue,
-            totalUsers,
-            hasMore,
-            page,
-          } = useGetAllUsers("board");
+          users,
+          loading,
+          loadingMore,
+          error,
+          getChatroomsAndUsers,
+          loadMoreRef,
+          hasMore,
+          page,
+          searchValue,
+          debouncedSearchValue,
+          handleSearchClear,
+          handleSearchValueChange,
+          setSearchValue,
+          resetAllStates,
+        } = useGetChatWindowUsers();
         
         
           const filteredUsers = useMemo(() => {
-            return allUsers?.filter(
+            return users?.filter(
               (user) =>
                 !selectedUsers?.some((selectedUser) => selectedUser?.id === user?.id)
             );
-          }, [allUsers, selectedUsers]);
+          }, [users, selectedUsers]);
         
           const handleUserSelect = (_, newValue) => {
             setSelectedUsers(newValue);
@@ -41,16 +41,16 @@ const MyAutoCompleteVarient = ({selectedUsers,setSelectedUsers,type}) => {
             handleSearchValueChange(event);
           };
         
-          const handleAutoCompleteClose = () => {
-            setSearchValue("");
-          };
+          // const handleAutoCompleteClose = () => {
+          //   handleSearchClear();
+          // };
           return (
             <>
               <MyAutoComplete
                 fullWidth={true}
                 multiple={true}
                 value={selectedUsers}
-                loading={loadingAllUsers && page <= 1}
+                loading={loading}
                 options={filteredUsers}
                 filterOptions={(options) => options}
                 getOptionLabel={(option) =>
@@ -60,7 +60,7 @@ const MyAutoCompleteVarient = ({selectedUsers,setSelectedUsers,type}) => {
                   const { key, ...rest } = props;
                   return (
                     <li
-                      key={key}
+                    key={option?.id || key}
                       {...rest}
                       style={{ display: "flex", alignItems: "center" }}
                     >
@@ -109,11 +109,11 @@ const MyAutoCompleteVarient = ({selectedUsers,setSelectedUsers,type}) => {
                 }
                 loadMoreRef={loadMoreRef}
                 hasMore={hasMore}
-                loadingMore={loadingAllUsers && page > 1}
+                loadingMore={loadingMore}
                 label={"Select users"}
                 fontSize={14}
                 labelFontSize={14}
-                onClose={handleAutoCompleteClose}
+                // onClose={handleAutoCompleteClose}
                 borderColor={'#ccc'}
                 hoverBorderColor={'#1C252E'}
                 focusedBorder={'2px solid #1C252E'}
@@ -121,5 +121,6 @@ const MyAutoCompleteVarient = ({selectedUsers,setSelectedUsers,type}) => {
             </>
           );
     }
+    return ""
 };
 export default MyAutoCompleteVarient;

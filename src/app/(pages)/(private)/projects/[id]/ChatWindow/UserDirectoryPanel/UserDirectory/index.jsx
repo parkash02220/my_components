@@ -1,31 +1,18 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import UserDIrectoryItem from "./UserDIrectoryItem";
-import React, { useMemo } from "react";
-import { useChatContext } from "@/context/Chat/ChatContext";
+import React from "react";
+import Loader from "@/components/Loader/Loader";
 
-const UserDirectory = ({ isExpanded, handleChatStart }) => {
-  const { chatWindow } = useChatContext().state;
-  const { usersWithoutChatRoom, chatRooms } = chatWindow;
-
-  const combinedList = useMemo(() => {
-    const chatroomItems = chatRooms?.allIds?.map(id => ({
-      type: "chatroom",
-      data: chatRooms.byIds[id],
-    })) || [];
-  
-    const userItems = usersWithoutChatRoom?.allIds
-      ?.filter(id => !chatRooms.allIds.some(roomId => {
-        const room = chatRooms.byIds[roomId];
-        return room?.targetUser?.id === id;
-      }))
-      .map(id => ({
-        type: "user",
-        data: usersWithoutChatRoom.byIds[id],
-      })) || [];
-  
-    return [...chatroomItems, ...userItems];
-  }, [chatRooms, usersWithoutChatRoom]);
-
+const UserDirectory = ({
+  isExpanded,
+  handleChatStart,
+  combinedList,
+  loadMoreRef,
+  hasMore,
+  loading,
+  loadingMore,
+  debouncedSearchValue,
+}) => {
   return (
     <Box
       minWidth={0}
@@ -49,17 +36,63 @@ const UserDirectory = ({ isExpanded, handleChatStart }) => {
             display: "none",
           },
         }}
+        position={'relative'}
       >
         <Box pb={1} display="flex" flexDirection="column">
-          {combinedList.map(({ type, data }) => (
-            <UserDIrectoryItem
-              key={data?.id}
-              isExpanded={isExpanded}
-              chatroom={type === "chatroom" ? data : undefined}
-              user={type === "user" ? data : undefined}
-              handleChatStart={handleChatStart}
-            />
-          ))}
+          {loading && combinedList?.length === 0 && (
+            <Box position={'absolute'} width={'100%'} height={'100%'}>
+              <Loader />
+            </Box>
+          )}
+          {!loading &&
+            combinedList?.length > 0 &&
+            combinedList.map(({ type, data }) => (
+              <UserDIrectoryItem
+                key={data?.id}
+                isExpanded={isExpanded}
+                chatroom={type === "chatroom" ? data : undefined}
+                user={type === "user" ? data : undefined}
+                handleChatStart={handleChatStart}
+              />
+            ))}
+          {hasMore && (
+            <Box ref={loadMoreRef} sx={{ height: "1px" }} />
+          )}
+          {loadingMore && (
+            <Box>
+              <Loader width={40} height={40}/>
+            </Box>
+          )}
+          {!loading && combinedList?.length === 0 && (
+            <Box
+              display="flex"
+              flexDirection="column"
+              gap={1}
+              mt={3}
+              mb={10}
+              alignItems="center"
+            >
+              <Typography
+                variant="h6"
+                fontSize="18px"
+                color={"#1C252E"}
+                fontWeight={600}
+              >
+                Not found
+              </Typography>
+              <Box display="flex" gap={1}>
+                <Typography fontSize="14px" color={"#1C252E"}>
+                  No results found for
+                </Typography>
+                <Typography fontSize="14px" fontWeight={700} color={"#1C252E"}>
+                  {`"${debouncedSearchValue}".`}
+                </Typography>
+              </Box>
+              <Typography fontSize="14px" color={"#1C252E"}>
+                Try checking for typos or using complete words.
+              </Typography>
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>

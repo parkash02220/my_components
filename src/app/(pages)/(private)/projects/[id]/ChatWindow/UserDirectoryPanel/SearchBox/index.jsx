@@ -2,14 +2,8 @@ import MySearch from "@/components/MySearch/MySearch";
 import { Box } from "@mui/material";
 import { useState } from "react";
 
-const SearchBox = () => {
-    const [value,setValue] = useState('');
-    const onChange = (e) => {
-        setValue(e.target.value);
-    }
-    const handleSearchClear = () => {
-        setValue('');
-    }
+const SearchBox = ({handleSearchClear,handleSearchValueChange,searchValue}) => {
+
   return (
     <>
       <Box
@@ -32,9 +26,9 @@ const SearchBox = () => {
             placeholder="Search contacts..."
             hoverBorderColor={"#1C252E"}
             focusedBorder="2px solid #1C252E"
-            value={value}
-            onChange={onChange}
-            onClear={() => handleSearchClear()}
+            value={searchValue}
+            onChange={handleSearchValueChange}
+            onClear={handleSearchClear}
           />
         </Box>
       </Box>

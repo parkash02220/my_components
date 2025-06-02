@@ -23,28 +23,22 @@ const RenderMessages = ({ selectedDirectoryItem }) => {
   const preFirstMessage = useRef(null);
   useEffect(() => {
     if (messages.length === 0) return;
-
+  
+    const firstMessageChanged = preFirstMessage.current?.id !== messages[0]?.id;
+    const newMessage = messages[messages.length - 1];
+    const prevLastMessage = messages[messages.length - 2];
+  
+    const isNewer =
+      !firstMessageChanged &&
+      (!prevLastMessage || new Date(newMessage.createdAt) > new Date(prevLastMessage.createdAt));
+  
     if (isFirstLoad.current) {
       bottomRef.current?.scrollIntoView({ behavior: "auto" });
       isFirstLoad.current = false;
-      preFirstMessage.current = messages[0];
+    } else if (isNewer) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-
-    if (messages.length > prevMessagesLength.current) {
-      const isLoadedMoreMessages =
-        preFirstMessage.current?.id !== messages[0]?.id;
-      const newMessage = messages[messages.length - 1];
-      const prevLastMessage = messages[messages.length - 2];
-
-      const isNewer =
-        !isLoadedMoreMessages &&
-        (!prevLastMessage || newMessage.createdAt > prevLastMessage.createdAt);
-
-      if (isNewer) {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-
+  
     prevMessagesLength.current = messages.length;
     preFirstMessage.current = messages[0];
   }, [messages]);

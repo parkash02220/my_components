@@ -160,7 +160,7 @@ const CreateProjectDialog = ({
                 const { key, ...rest } = props;
                 return (
                   <li
-                  key={key}
+                  key={option?.id || key}
                   {...rest}
                     style={{ display: "flex", alignItems: "center" }}
                   >

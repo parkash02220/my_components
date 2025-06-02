@@ -5,7 +5,7 @@ const { default: useToast } = require("../common/useToast");
 import { useAppContext } from "@/context/App/AppContext";
 import * as actions from "@/context/Chat/action";
 import { useSocketContext } from "@/context/Socket/SocketContext";
-import { sendTyping, stopTyping } from "@/utils";
+import { convertIdFields, sendTyping, stopTyping } from "@/utils";
 
 const useSendMessage = () => {
   const toastId = "send_message";
@@ -19,6 +19,11 @@ const useSendMessage = () => {
   const content = useRef("");
   const typingTimeoutRef = useRef(null);
   const socket = useSocketContext();
+
+  const clearInput = () => {
+    setMessage("");
+    content.current = "";
+  };
   const handleMessageChange = (e) => {
     sendTyping();
     const newMessage = e?.target?.value;
@@ -26,16 +31,16 @@ const useSendMessage = () => {
     setMessage(newMessage);
 
     if (socket && activeChatRoom?.id && activeUser?.id) {
-      sendTyping(socket,activeChatRoom.id, activeUser.id);
+      sendTyping(socket, activeChatRoom.id, activeUser.id);
     }
-  
+
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-  
+
     typingTimeoutRef.current = setTimeout(() => {
       if (socket && activeChatRoom?.id && activeUser?.id) {
-        stopTyping(socket,activeChatRoom.id, activeUser.id);
+        stopTyping(socket, activeChatRoom.id, activeUser.id);
       }
     }, 2000);
   };
@@ -47,21 +52,25 @@ const useSendMessage = () => {
   };
 
   const sendMessage = async (chatRoom) => {
+    
     const msgToSend = content.current;
+    console.log(":::sending message ",chatRoom,msgToSend)
     if (!msgToSend?.trim() || !chatRoom?.id) return;
 
-  if (socket && chatRoom?.id && activeUser?.id) {
-    stopTyping(socket, chatRoom.id, activeUser.id);
-  }
+    if (socket && chatRoom?.id && activeUser?.id) {
+      stopTyping(socket, chatRoom.id, activeUser.id);
+    }
 
-  if (typingTimeoutRef.current) {
-    clearTimeout(typingTimeoutRef.current);
-    typingTimeoutRef.current = null;
-  }
-
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
 
     setMessage("");
-    dispatch({type:actions.ADD_MESSSAGE_IN_CHAT_MESSAGES,payload:{chatRoomId:chatRoom?.id,data:msgToSend,activeUser}});
+    dispatch({
+      type: actions.ADD_MESSSAGE_IN_CHAT_MESSAGES,
+      payload: { chatRoomId: chatRoom?.id, data: msgToSend, activeUser },
+    });
     setLoading(true);
     setError(null);
 
@@ -84,7 +93,15 @@ const useSendMessage = () => {
       });
       return;
     }
-
+    const formattedIdResponse = convertIdFields(res?.data?.data);
+    dispatch({
+      type: actions.UPDATE_LAST_MESSAGE,
+      payload: {
+        message: formattedIdResponse,
+        activeUserId: activeUser?.id,
+        chatRoomId: chatRoom?.id,
+      },
+    });
     setLoading(false);
   };
 
@@ -96,6 +113,7 @@ const useSendMessage = () => {
     message,
     handleKeyDown,
     setMessage,
+    clearInput,
   };
 };
 

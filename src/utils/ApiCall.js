@@ -27,6 +27,10 @@ export async function ApiCall({
     const response = await axiosInstance(config);
     return { data: response.data };
   } catch (error) {
+    if (error.name === "CanceledError") {
+      return { aborted: true };
+    }
+
     const status = error.response?.status;
     const message = error.response?.data?.message;
     const data = error.response?.data;

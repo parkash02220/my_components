@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 const { useSocketContext } = require("@/context/Socket/SocketContext");
 import * as actions from '@/context/Chat/action';
 import { useChatContext } from "@/context/Chat/ChatContext";
@@ -9,7 +9,11 @@ const useJoinRoomSocket = ({
 } = {}) => {
   const socket = useSocketContext();
   const {dispatch,state} = useChatContext();
-  const {activeChatRoom} = state;
+  const activeChatRoomRef = useRef(state.activeChatRoom);
+
+  useEffect(() => {
+    activeChatRoomRef.current = state.activeChatRoom;
+  }, [state.activeChatRoom]);
 
   const joinRoom = (roomId) => {
     if (!socket || !roomId) return;
@@ -21,12 +25,14 @@ const useJoinRoomSocket = ({
     if (!socket) return;
 
     const handleRoomJoined = (data) => {
-      console.log("::: Room joined:", data);
+      console.log(":::Room joined:", data);
       onRoomJoined?.(data);
     };
 
     const handleUserTyping = ({ userId }) => {
-      console.log("::: User typing:", userId);
+      const activeChatRoom = activeChatRoomRef.current;
+      console.log(":::User typing:", userId);
+      console.log(":::active chatroom",activeChatRoom)
       onUserTyping?.(userId);
       const user = activeChatRoom?.participants?.find((user)=> user?.id === userId);
       if (user) {
@@ -35,12 +41,12 @@ const useJoinRoomSocket = ({
           payload: { user },
         });
       } else {
-        console.warn("⚠️ Typing user not found in activeChatRoom participants", { userId, activeChatRoom });
+        console.warn(":::⚠️ Typing user not found in activeChatRoom participants", { userId, activeChatRoom });
       }
     };
 
     const handleUserStoppedTyping = ({ userId }) => {
-      console.log("::: User stopped typing:", userId);
+      console.log(":::User stopped typing:", userId);
       onUserStoppedTyping?.(userId);
       dispatch({type:actions.REMOVE_USER_IN_TYPING_USERS,payload:{userId}})
     };

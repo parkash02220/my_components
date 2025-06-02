@@ -2,13 +2,54 @@ import { Box, IconButton } from "@mui/material";
 import Header from "./Header";
 import SearchBox from "./SearchBox";
 import UserDirectory from "./UserDirectory";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useChatContext } from "@/context/Chat/ChatContext";
+import useGetChatroomsAndUsers from "@/hooks/chat/useGetChatroomsAndUsers";
 
 const UserDirectoryPanel = ({ handleChatStart, setSelectedDirectoryItem }) => {
+  const {
+    loading,
+    loadingMore,
+    error,
+    getChatroomsAndUsers,
+    loadMoreRef,
+    hasMore,
+    page,
+    searchValue,
+    debouncedSearchValue,
+    handleSearchClear,
+    handleSearchValueChange,
+  } = useGetChatroomsAndUsers();
+  const { chatWindow } = useChatContext().state;
+  const { usersWithoutChatRoom, chatRooms } = chatWindow;
   const [isExpanded, setIsExpanded] = useState(true);
   const toggleExpand = () => {
     setIsExpanded((pre) => !pre);
   };
+  const combinedList = useMemo(() => {
+    const chatroomItems =
+      chatRooms?.allIds?.map((id) => ({
+        type: "chatroom",
+        data: chatRooms.byIds[id],
+      })) || [];
+
+    const userItems =
+      usersWithoutChatRoom?.allIds
+        ?.filter(
+          (id) =>
+            !chatRooms.allIds.some((roomId) => {
+              const room = chatRooms.byIds[roomId];
+              return room?.targetUser?.id === id;
+            })
+        )
+        .map((id) => ({
+          type: "user",
+          data: usersWithoutChatRoom.byIds[id],
+        })) || [];
+
+    return [...chatroomItems, ...userItems];
+  }, [chatRooms, usersWithoutChatRoom]);
+
   return (
     <>
       <Box
@@ -58,10 +99,22 @@ const UserDirectoryPanel = ({ handleChatStart, setSelectedDirectoryItem }) => {
             toggleExpand={toggleExpand}
             setSelectedDirectoryItem={setSelectedDirectoryItem}
           />
-          {isExpanded && <SearchBox />}
+          {isExpanded && (
+            <SearchBox
+              handleSearchClear={handleSearchClear}
+              handleSearchValueChange={handleSearchValueChange}
+              searchValue={searchValue}
+            />
+          )}
           <UserDirectory
             isExpanded={isExpanded}
             handleChatStart={handleChatStart}
+            combinedList={combinedList}
+            loadMoreRef={loadMoreRef}
+            hasMore={hasMore}
+            loading={loading}
+            loadingMore={loadingMore}
+            debouncedSearchValue={debouncedSearchValue}
           />
         </Box>
       </Box>

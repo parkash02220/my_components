@@ -16,6 +16,14 @@ const useNewMessageSocket = () => {
       const handleNewMessage = (data) => {
         const convertedData = convertIdFields(data || {});
     //     showToast({ toastId, type: "info", message: data?.message || "" });
+    dispatch({
+      type: actions.UPDATE_LAST_MESSAGE,
+      payload: {
+        message: convertedData?.message,
+        activeUserId: activeUser?.id,
+        chatRoomId: convertedData?.chatRoomId,
+      },
+    });
         dispatch({
           type: actions.ADD_NEW_MESSAGE_IN_CHAT,
           payload: { newMessageData: convertedData,activeUser },
