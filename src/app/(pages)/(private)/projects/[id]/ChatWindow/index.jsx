@@ -162,6 +162,7 @@ const ChatWindow = ({ projectId }) => {
            <UserDirectoryPanel
             handleChatStart={handleChatStart}
             setSelectedDirectoryItem={setSelectedDirectoryItem}
+            clearInput={clearInput}
           />
           <ChatPanel
             selectedDirectoryItem={selectedDirectoryItem}

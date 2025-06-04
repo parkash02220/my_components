@@ -58,7 +58,7 @@ const UserInformation = ({user}) => {
           }}
         />
       </Box>
-      <Collapse in={isExpanded} timeout="auto" unmountOnExit sx={{overflow:'auto',flex:'1 1 auto'}}>
+      <Collapse in={isExpanded} timeout="auto" unmountOnExit sx={{overflow:'auto',flex:'1 1 auto',minHeight:'100px !important'}}>
         <Box minHeight={0}>
           <Box
             display={"flex"}

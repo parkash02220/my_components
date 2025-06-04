@@ -31,6 +31,13 @@ function projectsReducer(state = initialState, action) {
        loadingActiveUser:false,
         errorActiveUser:payload,
       };
+
+      case actions.REMOVE_ACTIVE_USER:{
+        return {
+          ...state,
+          activeUser:{},
+        }
+      }
      
     default:
       return state;

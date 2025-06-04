@@ -32,13 +32,6 @@ const MessageBox = ({ selectedDirectoryItem }) => {
             pt={2}
             pb={3}
             width={"100%"}
-            sx={{
-              overflowY: "auto",
-              scrollbarWidth: "none",
-              "&::-webkit-scrollbar": {
-                display: "none",
-              },
-            }}
           >
             <RenderMessages selectedDirectoryItem={selectedDirectoryItem} />
             {isSomeoneTyping && (

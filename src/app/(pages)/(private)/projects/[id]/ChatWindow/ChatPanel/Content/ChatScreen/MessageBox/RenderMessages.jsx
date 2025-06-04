@@ -20,32 +20,58 @@ const RenderMessages = ({ selectedDirectoryItem }) => {
   const bottomRef = useRef(null);
   const isFirstLoad = useRef(true);
   const prevMessagesLength = useRef(0);
-  const preFirstMessage = useRef(null);
+  const scrollContainerRef = useRef(null);
+  const preFirstMessageId = useRef(null);
+  const prevScrollHeight = useRef(0);
+  
   useEffect(() => {
-    if (messages.length === 0) return;
-  
-    const firstMessageChanged = preFirstMessage.current?.id !== messages[0]?.id;
-    const newMessage = messages[messages.length - 1];
-    const prevLastMessage = messages[messages.length - 2];
-  
-    const isNewer =
-      !firstMessageChanged &&
-      (!prevLastMessage || new Date(newMessage.createdAt) > new Date(prevLastMessage.createdAt));
-  
-    if (isFirstLoad.current) {
-      bottomRef.current?.scrollIntoView({ behavior: "auto" });
-      isFirstLoad.current = false;
-    } else if (isNewer) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    if (loadingMore) {
+      prevScrollHeight.current = scrollContainer.scrollHeight;
+    } else if (prevScrollHeight.current) {
+        const newScrollHeight = scrollContainer.scrollHeight;
+        const heightDiff = newScrollHeight - prevScrollHeight.current;
+        scrollContainer.scrollTop += heightDiff;
+        prevScrollHeight.current = 0;
     }
-  
-    prevMessagesLength.current = messages.length;
-    preFirstMessage.current = messages[0];
-  }, [messages]);
+  }, [loadingMore, messages]);
+
+  useEffect(()=>{
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer || messages.length === 0) return;
+
+    if (
+      messages.length > prevMessagesLength.current &&
+      preFirstMessageId.current === messages[0]?.id){
+      requestAnimationFrame(() => {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      });
+    }
+  },[messages]);
+
 
   useEffect(() => {
     isFirstLoad.current = true;
+    preFirstMessageId.current = null;
+    prevMessagesLength.current = 0;
   }, [selectedDirectoryItem?.id]);
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer || messages.length === 0) return;
+  
+    if (isFirstLoad.current) {
+      requestAnimationFrame(() => {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      });
+      isFirstLoad.current = false;
+    }
+    preFirstMessageId.current=messages[0]?.id;
+    prevMessagesLength.current = messages?.length;
+  }, [messages]);
+  
 
   if (loading) {
     return (
@@ -54,10 +80,18 @@ const RenderMessages = ({ selectedDirectoryItem }) => {
       </Box>
     );
   }
-
   return (
     <>
-      <Box>
+      <Box
+        ref={scrollContainerRef}
+        sx={{
+          overflowY: "auto",
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        }}
+      >
         {loadingMore && (
           <Box textAlign="center" mb={1}>
             <Loader width={40} height={40} />

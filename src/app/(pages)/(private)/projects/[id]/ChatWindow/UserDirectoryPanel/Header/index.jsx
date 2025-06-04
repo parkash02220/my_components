@@ -1,8 +1,12 @@
 import { useAppContext } from "@/context/App/AppContext";
 import { Box, IconButton } from "@mui/material";
 
-const Header = ({ isExpanded, toggleExpand, setSelectedDirectoryItem }) => {
+const Header = ({ isExpanded, toggleExpand, setSelectedDirectoryItem,clearInput }) => {
   const { activeUser } = useAppContext()?.state;
+  const handleResetDirectory = () => {
+         setSelectedDirectoryItem(null);
+         clearInput();
+  }
   return (
     <>
       <Box
@@ -76,7 +80,7 @@ const Header = ({ isExpanded, toggleExpand, setSelectedDirectoryItem }) => {
         </IconButton>
         {isExpanded && (
           <IconButton
-            onClick={() => setSelectedDirectoryItem(null)}
+            onClick={handleResetDirectory}
             sx={{
               borderRadius: "50%",
               flex: "0 0 auto",

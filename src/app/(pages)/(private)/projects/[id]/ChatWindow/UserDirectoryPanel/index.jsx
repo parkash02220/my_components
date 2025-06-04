@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useChatContext } from "@/context/Chat/ChatContext";
 import useGetChatroomsAndUsers from "@/hooks/chat/useGetChatroomsAndUsers";
 
-const UserDirectoryPanel = ({ handleChatStart, setSelectedDirectoryItem }) => {
+const UserDirectoryPanel = ({ handleChatStart, setSelectedDirectoryItem,clearInput }) => {
   const {
     loading,
     loadingMore,
@@ -98,6 +98,7 @@ const UserDirectoryPanel = ({ handleChatStart, setSelectedDirectoryItem }) => {
             isExpanded={isExpanded}
             toggleExpand={toggleExpand}
             setSelectedDirectoryItem={setSelectedDirectoryItem}
+            clearInput={clearInput}
           />
           {isExpanded && (
             <SearchBox
