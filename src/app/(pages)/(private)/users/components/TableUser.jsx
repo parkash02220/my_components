@@ -71,7 +71,7 @@ const TableUser = ({
               !isAllUserSelected &&
               selectedUsers?.length < totalUsers
             }
-            checked={isAllUserSelected || (!isLoading && selectedUsers?.length === totalUsers)}
+            checked={isAllUserSelected || (!isLoading && totalUsers?.length > 0 && selectedUsers?.length === totalUsers)}
             onChange={(e) => handleSelectAllUsers(e.target.checked)}
           />
         </Box>
