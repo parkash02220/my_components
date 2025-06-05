@@ -94,7 +94,7 @@ const ConfirmationPopup = ({
           content={
             <Box>
               <Typography fontSize={14} color={theme?.palette?.primary?.main}>
-                Are you sure want to logut ?
+                Are you sure want to logout ?
               </Typography>
             </Box>
           }

@@ -8,12 +8,12 @@ import { useState } from "react";
 import useGetAllMessages from "@/hooks/chat/useGetAllMessages";
 import BackButton from "@/components/BackButton";
 import * as actions from "@/context/Chat/action";
-import useJoinRoomSocket from "@/hooks/chat/useJoinRoomSocket";
-import useNewMessageSocket from "@/hooks/chat/useNewMessageSocket";
-import useMarkAllMsgAsReadSocket from "@/hooks/chat/useMarkAllMsgAsReadSocket";
+import useJoinRoomSocket from "@/hooks/chat/chatSockets/useJoinRoomSocket";
+import useNewMessageSocket from "@/hooks/chat/chatSockets/useNewMessageSocket";
+import useMarkAllMsgAsReadSocket from "@/hooks/chat/chatSockets/useMarkAllMsgAsReadSocket";
 import useCreateChatRoom from "@/hooks/chat/useCreateChatRoom";
 import useSendMessage from "@/hooks/chat/useSendMessage";
-import useCreateCustomGroup from "@/hooks/chat/groupChat/useCreateCustomGroup";
+import useCreateCustomGroup from "@/hooks/chat/useCreateCustomGroup";
 import { getFullName } from "@/utils";
 const ChatWindow = ({ projectId }) => {
   const {isCHatWindowAvailable} = useInitializeChatWindow();

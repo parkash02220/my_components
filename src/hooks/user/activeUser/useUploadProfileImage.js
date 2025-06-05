@@ -11,7 +11,7 @@ const useUploadProfileImage = () => {
   const { showToast } = useToast();
   const toastId = "upload_profile_image";
 
-  const uploadProfileImage = useCallback(async (file) => {
+  const uploadProfileImage = useCallback(async (file,userId=null) => {
     setLoading(true);
     setError(null);
     setProgress(0);
@@ -19,9 +19,14 @@ const useUploadProfileImage = () => {
 
     const formData = new FormData();
     formData.append("avatar", file);
-
+     let url;
+     if(userId){
+       url = `${process.env.NEXT_PUBLIC_BASE_URL}/upload-profile-image?userId=${userId}`;
+     }else{
+       url = `${process.env.NEXT_PUBLIC_BASE_URL}/upload-profile-image`;
+     }
     const res = await ApiCall({
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/upload-profile-image`,
+      url,
       method: "POST",
       body: formData,
       onUploadProgress: (event) => {

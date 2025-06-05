@@ -54,7 +54,6 @@ const useSendMessage = () => {
   const sendMessage = async (chatRoom) => {
     
     const msgToSend = content.current;
-    console.log(":::sending message ",chatRoom,msgToSend)
     if (!msgToSend?.trim() || !chatRoom?.id) return;
 
     if (socket && chatRoom?.id && activeUser?.id) {

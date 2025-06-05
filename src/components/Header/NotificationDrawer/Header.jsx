@@ -2,7 +2,8 @@ import useMarkAllNotificationAsRead from "@/hooks/notifications/useMarkAllNotifi
 import { Box, IconButton, Typography } from "@mui/material";
 
 
-export const Header = ({ activeTask,handleDrawer }) => {
+export const Header = ({ activeTask,handleDrawer,currentTab }) => {
+  const showMarkAllAsReadButton = currentTab === "unread";
   const {loadingMarkAllAsRead,errorMarkAllAsRead,markAllNotificationsAsRead} = useMarkAllNotificationAsRead();
   const handleMarkAllAsReadButton = async () => {
         await markAllNotificationsAsRead();
@@ -14,26 +15,30 @@ export const Header = ({ activeTask,handleDrawer }) => {
             <Typography color="#1C252E" variant="h6" fontSize={18} fontWeight={600}>Notifications</Typography>
         </Box>
         <Box display={'flex'}>
-            <IconButton
-            onClick={handleMarkAllAsReadButton}
-            sx={{
-                display:'flex',
-                alignItems:'center',
-                justifyContent:'center',
-                background:"transparent",
-                fontSize:'1.5rem',
-                color:"#00A76F",
-                padding:"8px",
-                borderRadius:"50%",
-                overflow:"hidden",
-                '&:hover':{
-                    background:"rgba(0,167,111,0.08)",
-                },
-            }}
-            >
-              <img src="/markAllReadIcon.svg" alt="mark all as read" style={{width:"20px",height:"20px",flexShrink:0}} />
-            </IconButton>
-            <IconButton
+          {
+            showMarkAllAsReadButton && (
+              <IconButton
+              onClick={handleMarkAllAsReadButton}
+              sx={{
+                  display:'flex',
+                  alignItems:'center',
+                  justifyContent:'center',
+                  background:"transparent",
+                  fontSize:'1.5rem',
+                  color:"#00A76F",
+                  padding:"8px",
+                  borderRadius:"50%",
+                  overflow:"hidden",
+                  '&:hover':{
+                      background:"rgba(0,167,111,0.08)",
+                  },
+              }}
+              >
+                <img src="/markAllReadIcon.svg" alt="mark all as read" style={{width:"20px",height:"20px",flexShrink:0}} />
+              </IconButton>
+            )
+          }
+            {/* <IconButton
             sx={{
                 display:'flex',
                 alignItems:'center',
@@ -50,7 +55,7 @@ export const Header = ({ activeTask,handleDrawer }) => {
             }}
             >
               <img src="/settingIcon.svg" alt="mark all as read" style={{width:"20px",height:"20px",flexShrink:0}} />
-            </IconButton>
+            </IconButton> */}
         </Box>
       </Box>
     </>

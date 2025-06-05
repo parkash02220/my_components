@@ -126,7 +126,7 @@ const ListUsers = () => {
               />
             </Box>
             <Box>
-                <IconButton onClick={handleMenuOpen} sx={{
+                {/* <IconButton onClick={handleMenuOpen} sx={{
                   padding:1,
                   borderRadius:"50%",
                   color:"#637381",
@@ -135,7 +135,7 @@ const ListUsers = () => {
                   }
                 }}>
                   <img src="/menuVerticalIcon.svg" alt="menu" style={{width:'20px',height:"20px"}} />
-                </IconButton>
+                </IconButton> */}
                 <MyMenu 
                 type={'list_user'}
                 options={menuItems}

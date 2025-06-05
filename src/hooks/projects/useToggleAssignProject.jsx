@@ -4,7 +4,11 @@ import { ApiCall } from "@/utils/ApiCall";
 import { useState } from "react";
 import * as projectsActions from "@/context/Projects/action";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
+import useAddUserInChatroom from "../chat/useAddUserInChatroom";
+import useRemoveUserInChatroom from "../chat/useRemoveUserInChatroom";
 const useToggleAssignProject = () => {
+  const {addUserInChatRoom} = useAddUserInChatroom();
+  const {removeUserInChatRoom} = useRemoveUserInChatroom();
   const toastId = "add_user_in_project";
   const { showToast } = useToast();
   const { dispatch: projectsDispatch } = useProjectsContext();
@@ -44,8 +48,12 @@ const useToggleAssignProject = () => {
       setErrorAssignProject(true);
       return;
     }
-    const formattedIdResponse = convertIdFields(res?.data?.updatedTask || {});
-
+    const formattedIdResponse = convertIdFields(res?.data?.board || {});
+    if(type==="add_user"){
+     await addUserInChatRoom(null,userId);
+    }else{
+     await removeUserInChatRoom(null,userId);
+    }
     showToast({
       toastId,
       type: "success",

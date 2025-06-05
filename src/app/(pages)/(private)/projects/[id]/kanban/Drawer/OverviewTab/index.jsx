@@ -206,9 +206,9 @@ const OverviewTab = ({ isDrawerOpen }) => {
                               gap={1}
                             >
                               <img
-                                src={user.avatar || '/dummyUser.svg'}
+                                src={user.avatar || "/dummyUser.svg"}
                                 alt={name}
-                                 referrerPolicy="no-referrer"
+                                referrerPolicy="no-referrer"
                                 style={{
                                   width: 24,
                                   height: 24,
@@ -257,6 +257,10 @@ const OverviewTab = ({ isDrawerOpen }) => {
                     activeTask?.assigned_to
                       ?.slice(0, activeTask?.assigned_to?.length > 6 ? 5 : 6)
                       ?.map((item, index) => {
+                        const name = getFullName(
+                          item?.firstName,
+                          item?.lastName
+                        );
                         return (
                           <MyTooltip
                             key={index}
@@ -264,7 +268,6 @@ const OverviewTab = ({ isDrawerOpen }) => {
                             placement="bottom"
                           >
                             <AvatarBox
-                              key={index}
                               src={item?.avatar}
                               user={item}
                               withToolTip
@@ -380,7 +383,7 @@ const OverviewTab = ({ isDrawerOpen }) => {
           >
             <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
               {attachments.map((file, index) => {
-                const imagePath = typeof file === "string" ? file : file.name;
+               const imagePath = typeof file === "string" ? file : file?.name || "";
                 const isDeleting = deleteImagePath?.includes(imagePath);
 
                 return (
@@ -397,7 +400,7 @@ const OverviewTab = ({ isDrawerOpen }) => {
                   >
                     <img
                       src={
-                        file instanceof File ? URL.createObjectURL(file) : file
+                       file instanceof File ? URL.createObjectURL(file) : file ?? ""
                       }
                       onClick={() => handleAttachmentViewerOpen(index)}
                       alt="preview"
@@ -570,9 +573,9 @@ const AvatarBox = ({ src, alt = "user", user, withToolTip }) =>
         }}
       >
         <img
-          src={src || '/dummyUser.svg'}
+          src={src || "/dummyUser.svg"}
           alt={alt}
-           referrerPolicy="no-referrer"
+          referrerPolicy="no-referrer"
           style={{
             width: "100%",
             height: "100%",
@@ -596,7 +599,7 @@ const AvatarBox = ({ src, alt = "user", user, withToolTip }) =>
       <img
         src={src || "/dummyUser.svg"}
         alt={alt}
-         referrerPolicy="no-referrer"
+        referrerPolicy="no-referrer"
         style={{
           width: "100%",
           height: "100%",

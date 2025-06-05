@@ -11,8 +11,7 @@ const ProfileImageBox = ({
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      handleImageUpload(imageUrl);
+      handleImageUpload(file);
     }
   };
   return (

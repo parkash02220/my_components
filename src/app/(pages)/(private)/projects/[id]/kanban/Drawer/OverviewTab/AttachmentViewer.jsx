@@ -52,7 +52,7 @@ const AttachmentViewer = ({ attachments, selectedImage, open, handleClose }) => 
                   borderRadius="8px"
                 >
                   <img
-                    src={typeof src === "string" ? src : URL.createObjectURL(src)}
+                 src={src ? (typeof src === "string" ? src : URL.createObjectURL(src)) : ""}
                     alt={`Image ${index}`}
                     style={{
                       maxHeight: "100%",

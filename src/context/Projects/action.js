@@ -26,7 +26,7 @@ export const UPDATE_SECTION_NAME = "UPDATE_SECTION_NAME"
 
 export const Move_SECTION = "Move_SECTION"
 
-export const MOVE_TASK = "SWITCH_PROJECT"
+export const MOVE_TASK = "MOVE_TASK"
 
 export const EDIT_TASK_IN_PROJECT = "EDIT_TASK_IN_PROJECT"
 

@@ -40,6 +40,7 @@ const GeneralTab = ({ formik, isAdmin, avatar }) => {
   const handleImageUpload = async (imgFile) => {
     if (imgFile) {
       const uploadedUrl = await uploadProfileImage(imgFile);
+      console.log(":::uploaded url",uploadedUrl)
       if (uploadedUrl) {
         setImgSrc(uploadedUrl);
         formik.setFieldValue("avatar", uploadedUrl);

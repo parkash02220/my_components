@@ -70,7 +70,7 @@ const NotificatoinMsg = ({
             }}
           >
             <img
-              src={notification?.sender?.avatar}
+              src={notification?.sender?.avatar || '/dummyUser.svg'}
               alt="avatar"
                referrerPolicy="no-referrer"
               style={{

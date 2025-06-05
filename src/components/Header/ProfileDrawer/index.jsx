@@ -241,7 +241,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                   </Typography>
                 </Box>
               </Box>
-              <Box
+              {/* <Box
                 sx={{
                   padding: 3,
                   gap: 1,
@@ -308,13 +308,14 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     />
                   </Box>
                 </MyTooltip>
-              </Box>
+              </Box> */}
               <Box
                 sx={{
                   position: "relative",
                   padding: "24px 24px 20px 20px",
                   borderTop: "1px dashed rgba(145,158,171,0.2)",
                   borderBottom: "1px dashed rgba(145,158,171,0.2)",
+                  mt:2,
                 }}
               >
                 {userDrawerRoutes?.map((item, index) => {

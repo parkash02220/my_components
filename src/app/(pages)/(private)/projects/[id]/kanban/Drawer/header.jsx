@@ -194,7 +194,7 @@ export const Header = ({ activeTask, handleDrawer }) => {
           </Menu>
         </Box>
         <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
-          <MyTooltip title={"Like"} placement="bottom">
+          {/* <MyTooltip title={"Like"} placement="bottom">
             <IconButton
               sx={{
                 padding: "8px",
@@ -215,7 +215,7 @@ export const Header = ({ activeTask, handleDrawer }) => {
                 style={{ width: "20px", height: "20px" }}
               />
             </IconButton>
-          </MyTooltip>
+          </MyTooltip> */}
           <MyTooltip title={"Delete task"} placement="bottom">
             <IconButton
               onClick={() => setOpenDeletePopup(true)}
@@ -239,7 +239,7 @@ export const Header = ({ activeTask, handleDrawer }) => {
               />
             </IconButton>
           </MyTooltip>
-          <IconButton
+          {/* <IconButton
             sx={{
               padding: "8px",
               borderRadius: "50%",
@@ -258,7 +258,7 @@ export const Header = ({ activeTask, handleDrawer }) => {
               alt="menu"
               style={{ width: "20px", height: "20px" }}
             />
-          </IconButton>
+          </IconButton> */}
         </Box>
       </Box>
     </>

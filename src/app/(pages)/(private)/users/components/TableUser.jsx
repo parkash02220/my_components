@@ -98,7 +98,7 @@ const TableUser = ({
       type: "multipleIconButton",
       icons: [
         { icon: "edit", onClick: handleEditClick, tooltip: "Edit Task" },
-        { icon: "menu", onClick: handleMenuClick, tooltip: "menu" },
+        // { icon: "menu", onClick: handleMenuClick, tooltip: "menu" },
       ],
       sx: { minWidth: "40px", maxWidth: "50px", padding: "4px" },
     },

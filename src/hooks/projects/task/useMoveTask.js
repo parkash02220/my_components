@@ -12,6 +12,7 @@ const useMoveTask = () => {
     const moveTask = async (taskId,toSectionId,newPosition) => {
         setLoading(true);
         setTimeout(() => {
+          console.log(":::console before move task dispatch")
             dispatch({type:actions.MOVE_TASK,payload:{taskId,toSectionId,newPosition:newPosition-1}});
         }, 0);
         const res = await ApiCall({

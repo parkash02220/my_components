@@ -11,7 +11,6 @@ const useLogout = () => {
    const logoutUser = async () => {
     setLoadingLogout(true);
     Cookies.remove("auth_token", { path: "/" });
-    console.log(":::inside logout")
     dispatch({type:actions.REMOVE_ACTIVE_USER});
      router.push("/signin");
     setLoadingLogout(false);

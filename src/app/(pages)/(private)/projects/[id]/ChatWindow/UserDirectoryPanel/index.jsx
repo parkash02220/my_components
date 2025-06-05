@@ -49,7 +49,6 @@ const UserDirectoryPanel = ({ handleChatStart, setSelectedDirectoryItem,clearInp
 
     return [...chatroomItems, ...userItems];
   }, [chatRooms, usersWithoutChatRoom]);
-
   return (
     <>
       <Box

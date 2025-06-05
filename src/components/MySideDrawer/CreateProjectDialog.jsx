@@ -184,13 +184,16 @@ const CreateProjectDialog = ({
               renderTags={(value, getTagProps) => {
                 const visibleTags = value.slice(0, 4);
                 return [
-                  ...visibleTags.map((option, index) => (
-                    <Chip
-                      key={option?.id}
-                      label={getFullName(option?.firstName, option?.lastName)}
-                      {...getTagProps({ index })}
-                    />
-                  )),
+                  ...visibleTags.map((option, index) => {
+                    const { key, ...tagProps } = getTagProps({ index });
+                    return (
+                      <Chip
+                        key={option?.id || key}
+                        label={getFullName(option?.firstName, option?.lastName)}
+                        {...tagProps}
+                      />
+                    );
+                  }),
                   value.length > 4 && (
                     <Typography key="more" fontSize={14}>
                       +{value.length - 4} more
@@ -198,6 +201,7 @@ const CreateProjectDialog = ({
                   ),
                 ];
               }}
+              
               onChange={(_, newValue) => {
                 handleUserSelect(_, newValue);
               }}

@@ -74,7 +74,7 @@ const CommentInput = ({avatar,formik,loadingAddCommnet,theme}) => {
             </Box>
             <Box display={"flex"} alignItems={"space-between"}>
               <Box display={"flex"} flexGrow={1}>
-                <IconButton
+                {/* <IconButton
                   sx={{
                     borderRadius: "50%",
                     overflow: "hidden",
@@ -101,7 +101,7 @@ const CommentInput = ({avatar,formik,loadingAddCommnet,theme}) => {
                     src="/uploadAttachmentIcon.svg"
                     alt="upload image"
                   />
-                </IconButton>
+                </IconButton> */}
               </Box>
               <Box>
                 <MyButton

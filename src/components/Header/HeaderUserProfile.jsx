@@ -155,7 +155,7 @@ const HeaderUserProfile = ({ activeUser }) => {
               }}
             >
               <img
-                src={activeUser?.avatar}
+                src={activeUser?.avatar || '/dummyUser.svg'}
                 alt="avatar"
                  referrerPolicy="no-referrer"
                 style={{

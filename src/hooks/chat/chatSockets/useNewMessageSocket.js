@@ -1,5 +1,5 @@
 import { useSocketContext } from "@/context/Socket/SocketContext";
-import useToast from "../common/useToast";
+import useToast from "../../common/useToast";
 import { useEffect } from "react";
 import { useChatContext } from "@/context/Chat/ChatContext";
 import * as actions from '@/context/Chat/action';

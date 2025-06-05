@@ -152,7 +152,6 @@ function chatReducer(state = initialState, action) {
 
     case actions.UPDATE_LAST_MESSAGE: {
          const {message,activeUserId,chatRoomId} = payload;
-         console.log(":::payload in last message",message,activeUserId,chatRoomId)
          const formattedLastMessage = formatLastMessage(message,activeUserId);
          const newState = {
           ...state,
@@ -281,6 +280,123 @@ function chatReducer(state = initialState, action) {
       };
 
     }
+
+    case actions.ADD_USER_IN_CHATROOM: {
+      const { chatRoomId, addedUser } = payload;
+      const chatRooms = state?.chatWindow?.chatRooms?.byIds || {};
+      const existingChatRoom = chatRooms[chatRoomId] || { participants: [] };
+    
+      const isAlreadyParticipant = existingChatRoom.participants.some(
+        user => user?.id === addedUser?.id
+      );
+    
+      const updatedParticipants = isAlreadyParticipant
+        ? existingChatRoom.participants
+        : [...existingChatRoom.participants, addedUser];
+    
+      const updatedChatRoom = {
+        ...existingChatRoom,
+        participants: updatedParticipants,
+      };
+    
+      const addToAllIds = (allIds = [], id) =>
+        allIds.includes(id) ? allIds : [...allIds, id];
+    
+      return {
+        ...state,
+        chatWindow: {
+          ...state.chatWindow,
+          chatRooms: {
+            ...state.chatWindow.chatRooms,
+            byIds: {
+              ...chatRooms,
+              [chatRoomId]: updatedChatRoom,
+            },
+          },
+          allUsers: {
+            ...state.chatWindow.allUsers,
+            byIds: {
+              ...state.chatWindow.allUsers?.byIds,
+              [addedUser.id]: addedUser,
+            },
+            allIds: addToAllIds(state.chatWindow.allUsers?.allIds, addedUser.id),
+          },
+          usersWithoutChatRoom: {
+            ...state.chatWindow.usersWithoutChatRoom,
+            byIds: {
+              ...state.chatWindow.usersWithoutChatRoom?.byIds,
+              [addedUser.id]: addedUser,
+            },
+            allIds: addToAllIds(state.chatWindow.usersWithoutChatRoom?.allIds, addedUser.id),
+          },
+          totalChatroomsAndUsers: state.chatWindow.totalChatroomsAndUsers + 1,
+        },
+      };
+    }
+
+    case actions.REMOVE_USER_IN_CHATROOM: {
+      const { removedFrom = [], deletedRooms = [], removedUserId } = payload;
+      console.log(":::payload in remove user", payload);
+    
+      const updatedChatRoomsByIds = { ...state.chatWindow.chatRooms?.byIds };
+      let updatedChatRoomsAllIds = [...state.chatWindow.chatRooms?.allIds];
+    
+      removedFrom.forEach(chatRoomId => {
+        const chatRoom = updatedChatRoomsByIds[chatRoomId];
+        if (chatRoom) {
+          updatedChatRoomsByIds[chatRoomId] = {
+            ...chatRoom,
+            participants: chatRoom.participants.filter(
+              user => user?.id !== removedUserId
+            ),
+          };
+        }
+      });
+    
+      deletedRooms.forEach(roomId => {
+        delete updatedChatRoomsByIds[roomId];
+        updatedChatRoomsAllIds = updatedChatRoomsAllIds.filter(id => id !== roomId);
+      });
+    
+      const removeFromAllIds = (allIds = [], idToRemove) =>
+        allIds.filter(id => id !== idToRemove);
+    
+      return {
+        ...state,
+        chatWindow: {
+          ...state.chatWindow,
+          chatRooms: {
+            ...state.chatWindow.chatRooms,
+            byIds: updatedChatRoomsByIds,
+            allIds: updatedChatRoomsAllIds,
+          },
+          allUsers: {
+            ...state.chatWindow.allUsers,
+            byIds: {
+              ...state.chatWindow.allUsers.byIds,
+            },
+            allIds: removeFromAllIds(state.chatWindow.allUsers.allIds, removedUserId),
+          },
+          usersWithoutChatRoom: {
+            ...state.chatWindow.usersWithoutChatRoom,
+            byIds: {
+              ...state.chatWindow.usersWithoutChatRoom.byIds,
+            },
+            allIds: removeFromAllIds(
+              state.chatWindow.usersWithoutChatRoom.allIds,
+              removedUserId
+            ),
+          },
+          totalChatroomsAndUsers: Math.max(
+            0,
+            state.chatWindow.totalChatroomsAndUsers - removedFrom.length
+          ),
+        },
+      };
+    }
+    
+    
+    
 
     default:
       return state;

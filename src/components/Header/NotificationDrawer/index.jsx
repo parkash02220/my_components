@@ -60,7 +60,7 @@ const index = ({
           width={420}
           overflowY={"hidden"}
           noFooterBorderTop
-          header={<Header handleDrawer={handleRightDrawerClose} />}
+          header={<Header handleDrawer={handleRightDrawerClose} currentTab={currentTab}/>}
           handleDrawer={handleRightDrawerClose}
           children={
             <Content
@@ -77,7 +77,7 @@ const index = ({
               page={page}
             />
           }
-          footer={<Footer />}
+          // footer={<Footer />}
         />
       </Box>
     </>
