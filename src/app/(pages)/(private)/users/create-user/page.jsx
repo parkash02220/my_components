@@ -8,8 +8,8 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
 const CreateUser = () => {
-  const {loadingCreateUser,errorCreateUser,createUser} = useCreateUser();
-  const [profileImg,setProfileImg] = useState(null);
+  const { loadingCreateUser, errorCreateUser, createUser } = useCreateUser();
+  const [profileImg, setProfileImg] = useState(null);
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -30,21 +30,21 @@ const CreateUser = () => {
       gender: Yup.string().required("This field is required"),
     }),
     onSubmit: async (values) => {
-
       handleCreateUser(values);
     },
   });
   const handleCreateUser = async (values) => {
-   const isSuccess =  await createUser(values);
-    if(isSuccess){
+    const isSuccess = await createUser(values, profileImg?.file);
+    if (isSuccess) {
       formik.resetForm();
+      setProfileImg(null);
     }
   };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      setProfileImg(imageUrl);
+      setProfileImg({ imageUrl, file });
     }
   };
   return (
@@ -126,41 +126,41 @@ const CreateUser = () => {
                                 overflow={"hidden"}
                                 borderRadius={"50%"}
                                 position={"relative"}
-                                sx={{cursor:'pointer'}}
+                                sx={{ cursor: "pointer" }}
                               >
-                                {
-                                  profileImg ? (
-                                    <Box
-                                  sx={{
-                                    top: "0px",
-                                    left: "0px",
-                                    width: "100%",
-                                    height: "100%",
-                                    zIndex: 9,
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    position: "absolute",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    color: "#919EAB",
-                                    background: "rgba(145,158,171,0.08)",
-                                    gap: 1,
-                                    borderRadius: "50%",
-                                  }}
-                                >
-                                  <img
-                                    src={profileImg}
-                                    alt="profile img"
-                                    style={{
+                                {profileImg?.imageUrl ? (
+                                  <Box
+                                    sx={{
+                                      top: "0px",
+                                      left: "0px",
                                       width: "100%",
                                       height: "100%",
-                                      flexShrink: 0,
-                                      objectFit:'cover',
-                                      textIndent:"10000px",
+                                      zIndex: 9,
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      position: "absolute",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      color: "#919EAB",
+                                      background: "rgba(145,158,171,0.08)",
+                                      gap: 1,
+                                      borderRadius: "50%",
                                     }}
-                                  />
-                                </Box>
-                                  ) : (<Box
+                                  >
+                                    <img
+                                      src={profileImg?.imageUrl}
+                                      alt="profile img"
+                                      style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        flexShrink: 0,
+                                        objectFit: "cover",
+                                        textIndent: "10000px",
+                                      }}
+                                    />
+                                  </Box>
+                                ) : (
+                                  <Box
                                     sx={{
                                       top: "0px",
                                       left: "0px",
@@ -190,11 +190,10 @@ const CreateUser = () => {
                                     <Typography fontSize={12} color="#919EAB">
                                       Upload photo
                                     </Typography>
-                                  </Box>)
-                                }
+                                  </Box>
+                                )}
                               </Box>
                             </label>
-                            
                           </Box>
                           <Box>
                             <Typography
@@ -202,7 +201,7 @@ const CreateUser = () => {
                               mt={3}
                               fontSize={12}
                               color="#919EAB"
-                              textAlign={'center'}
+                              textAlign={"center"}
                             >
                               Allowed *.jpeg, *.jpg, *.png, *.gif
                             </Typography>
@@ -249,10 +248,22 @@ const CreateUser = () => {
                             alignItems={"center"}
                             justifyContent={"flex-end"}
                             mt={1}
-                          >{
-                            errorCreateUser && <Typography width={'100%'} color="red" fontSize={12}>{errorCreateUser}</Typography>
-                          }
-                            <MyButton type="submit" disabled={loadingCreateUser}>Create user</MyButton>
+                          >
+                            {errorCreateUser && (
+                              <Typography
+                                width={"100%"}
+                                color="red"
+                                fontSize={12}
+                              >
+                                {errorCreateUser}
+                              </Typography>
+                            )}
+                            <MyButton
+                              type="submit"
+                              disabled={loadingCreateUser}
+                            >
+                              Create user
+                            </MyButton>
                           </Box>
                         </Box>
                       </Box>

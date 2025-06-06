@@ -1,10 +1,14 @@
 "use client";
-import React, { createContext, useReducer, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useReducer,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
 import { initialState } from "./initialState";
 import * as actions from "./action";
 const AppContext = createContext();
-
-
 
 function projectsReducer(state = initialState, action) {
   const { type, payload } = action;
@@ -12,8 +16,8 @@ function projectsReducer(state = initialState, action) {
     case actions.SET_ACTIVE_USER_REQUEST:
       return {
         ...state,
-        loadingActiveUser:true,
-        errorActiveUser:null,
+        loadingActiveUser: true,
+        errorActiveUser: null,
       };
 
     case actions.SET_ACTIVE_USER_SUCCESS:
@@ -22,23 +26,33 @@ function projectsReducer(state = initialState, action) {
       return {
         ...state,
         activeUser,
-         loadingActiveUser:false,
+        loadingActiveUser: false,
       };
 
     case actions.SET_ACTIVE_USER_FAILURE:
       return {
         ...state,
-       loadingActiveUser:false,
-        errorActiveUser:payload,
+        loadingActiveUser: false,
+        errorActiveUser: payload,
       };
 
-      case actions.REMOVE_ACTIVE_USER:{
-        return {
-          ...state,
-          activeUser:{},
-        }
-      }
-     
+    case actions.REMOVE_ACTIVE_USER: {
+      return {
+        ...state,
+        activeUser: {},
+      };
+    }
+
+    case actions.EDIT_ACTIVE_USER: {
+      return {
+        ...state,
+        activeUser: {
+          ...state?.activeUser,
+          ...payload,
+        },
+      };
+    }
+
     default:
       return state;
   }

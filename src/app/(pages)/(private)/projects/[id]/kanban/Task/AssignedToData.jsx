@@ -21,9 +21,9 @@ export default function AssignedToData({ assigned_to }) {
                 return (
                   <Box key={index} display="flex" alignItems="center" gap={1}>
                     <img
-                      src={user.avatar || '/dummyUser.svg'}
+                      src={user?.avatar || "/dummyUser.svg"}
                       alt={name}
-                       referrerPolicy="no-referrer"
+                      referrerPolicy="no-referrer"
                       style={{
                         width: 24,
                         height: 24,
@@ -87,9 +87,9 @@ export default function AssignedToData({ assigned_to }) {
                     overflow={"hidden"}
                   >
                     <img
-                      src={item?.avatar || '/dummyUser.svg'}
+                      src={item?.avatar || "/dummyUser.svg"}
                       alt="avatar"
-                       referrerPolicy="no-referrer"
+                      referrerPolicy="no-referrer"
                       style={{
                         width: "100%",
                         height: "100%",

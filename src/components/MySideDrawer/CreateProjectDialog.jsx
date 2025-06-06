@@ -23,7 +23,7 @@ const CreateProjectDialog = ({
   const [helperText, setHelperText] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [message, loading, available] = useProjectNameAvailability(projectName);
-  const {showToast} = useToast();
+  const { showToast } = useToast();
   const {
     allUsers,
     loadingAllUsers,
@@ -73,8 +73,8 @@ const CreateProjectDialog = ({
   };
 
   const handleCreateProject = async () => {
-    if(selectedUsers?.length===0){
-      showToast({type:"error",message:"Please select atleast one user."})
+    if (selectedUsers?.length === 0) {
+      showToast({ type: "error", message: "Please select atleast one user." });
       return;
     }
     const trimmedName = projectName.trim();
@@ -88,7 +88,6 @@ const CreateProjectDialog = ({
   const handleSearchUser = (event, inputValue) => {
     handleSearchValueChange(event);
   };
-
 
   useEffect(() => {
     if (!open) {
@@ -135,15 +134,17 @@ const CreateProjectDialog = ({
               inputFontSize="14px"
               labelFontSize="14px"
             />
-            <Typography
-              fontSize={12}
-              fontWeight={700}
-              color={available ? "green" : "red"}
-              mt={0}
-              ml={1}
-            >
-              {message}
-            </Typography>
+            {!error && (
+              <Typography
+                fontSize={12}
+                fontWeight={700}
+                color={available ? "green" : "red"}
+                mt={0}
+                ml={1}
+              >
+                {message}
+              </Typography>
+            )}
           </Box>
           <Box mt={2}>
             <MyAutoComplete
@@ -160,14 +161,14 @@ const CreateProjectDialog = ({
                 const { key, ...rest } = props;
                 return (
                   <li
-                  key={option?.id || key}
-                  {...rest}
+                    key={option?.id || key}
+                    {...rest}
                     style={{ display: "flex", alignItems: "center" }}
                   >
                     <img
-                      src={option.avatar || "/dummyUser.svg"}
-                      alt={option.firstName}
-                       referrerPolicy="no-referrer"
+                      src={option?.avatar || "/dummyUser.svg"}
+                      alt={option?.firstName}
+                      referrerPolicy="no-referrer"
                       style={{
                         width: 30,
                         height: 30,
@@ -201,7 +202,6 @@ const CreateProjectDialog = ({
                   ),
                 ];
               }}
-              
               onChange={(_, newValue) => {
                 handleUserSelect(_, newValue);
               }}

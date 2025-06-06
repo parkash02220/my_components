@@ -20,7 +20,6 @@ const useDeleteSection = () => {
         if(res.error){
              setLoading(false);
             showToast({toastId,type:"error",message:"Failed to delete section. Please try again."});
-             console.log("::error while deleting the section",res);
              return;
          }
           setLoading(false);

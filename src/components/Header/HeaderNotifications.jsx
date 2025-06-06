@@ -81,29 +81,31 @@ const HeaderNotifications = () => {
             display: "inline-flex",
           }}
         />
-        <Typography
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "absolute",
-            fontWeight: 500,
-            fontSize: 12,
-            minWidth: 20,
-            height: 20,
-            zIndex: 1,
-            background: "#FF5630",
-            color: "#FFFFFF",
-            top: "8px",
-            right: "4px",
-            transform: "scale(1) translate(50%,-50%)",
-            transformOrigin: "100% 0%",
-            padding: "0px 6px",
-            borderRadius: "10px",
-          }}
-        >
-          {unReadCount || 0}
-        </Typography>
+        {unReadCount > 0 && (
+          <Typography
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "absolute",
+              fontWeight: 500,
+              fontSize: 12,
+              minWidth: 20,
+              height: 20,
+              zIndex: 1,
+              background: "#FF5630",
+              color: "#FFFFFF",
+              top: "8px",
+              right: "4px",
+              transform: "scale(1) translate(50%,-50%)",
+              transformOrigin: "100% 0%",
+              padding: "0px 6px",
+              borderRadius: "10px",
+            }}
+          >
+            {unReadCount || 0}
+          </Typography>
+        )}
       </IconButton>
     </>
   );

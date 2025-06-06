@@ -5,8 +5,12 @@ import RightDrawer from "@/components/RightDrawer";
 import { Box } from "@mui/material";
 import useGetTask from "@/hooks/projects/task/useGetTask";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function KanbanRightDrawer({ open, handleDrawer, taskId }) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const tab = searchParams.get("tab");
   const { isXs } = useBreakpointFlags();
   const { activeTask, loadingActiveTask, errorActiveTask, getTaskFromBackend } =
     useGetTask();
@@ -31,6 +35,9 @@ function KanbanRightDrawer({ open, handleDrawer, taskId }) {
 
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    current.set("tab", newValue);
+    router.push(`?${current.toString()}`);
   };
 
   useEffect(() => {
@@ -41,10 +48,31 @@ function KanbanRightDrawer({ open, handleDrawer, taskId }) {
 
   const handleRightDrawerClose = () => {
     handleDrawer();
+
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    current.delete("tab");
+    router.replace(`?${current.toString()}`);
+
     setTimeout(() => {
       setCurrentTab("overview");
     }, 0);
   };
+
+  useEffect(() => {
+    if (!open) return;
+    if (tab === "overview" || tab === "subtasks" || tab === "comments") {
+      setCurrentTab(tab);
+    }
+  }, [tab, open]);
+
+  useEffect(() => {
+    if (!open) return;
+    if (!tab) {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      current.set("tab", "overview");
+      router.replace(`?${current.toString()}`);
+    }
+  }, [open]);
   return (
     <>
       <Box>

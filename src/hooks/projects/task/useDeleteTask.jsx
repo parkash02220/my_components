@@ -27,7 +27,6 @@ const useDeleteTask = () => {
         type: "error",
         message: "Failed to delete task.Please try again.",
       });
-      console.log("::error while deleting the task", res);
       return;
     }
     setLoading(false);

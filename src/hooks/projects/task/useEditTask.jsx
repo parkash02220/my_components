@@ -35,7 +35,6 @@ const useEditTask = () => {
         type: "error",
         message: "Failed to update the task. Please refresh the page.",
       });
-      console.log("::error while editing task", true);
       return;
     }
     setLoading(false);

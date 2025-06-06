@@ -34,7 +34,6 @@ const useSignUp = () => {
         type: "error",
         message: "Registration failed. Please try again.",
       });
-      console.log("::error while signing up user", res);
       setError(true);
       setResponseMsg(res?.error?.data?.error || "");
       return;

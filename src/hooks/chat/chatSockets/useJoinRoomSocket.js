@@ -32,7 +32,6 @@ const useJoinRoomSocket = ({
     const handleUserTyping = ({ userId }) => {
       const activeChatRoom = activeChatRoomRef.current;
       console.log(":::User typing:", userId);
-      console.log(":::active chatroom",activeChatRoom)
       onUserTyping?.(userId);
       const user = activeChatRoom?.participants?.find((user)=> user?.id === userId);
       if (user) {

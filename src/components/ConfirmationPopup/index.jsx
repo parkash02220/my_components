@@ -16,7 +16,7 @@ const ConfirmationPopup = ({
   loading,
   loadingText,
 }) => {
-  const {isXs} = useBreakpointFlags();
+  const { isXs } = useBreakpointFlags();
   const theme = useTheme();
   if (type === "delete") {
     return (
@@ -29,11 +29,12 @@ const ConfirmationPopup = ({
           titlepadding="24px 24px 16px"
           contentpadding="0px 24px !important"
           actionpadding="24px !important"
-          width={isXs ? '100%':'auto'} 
+          width={isXs ? "100%" : "auto"}
           content={
             <Box>
               <Typography fontSize={14} color={theme?.palette?.primary?.main}>
-                Are you sure want to delete <span style={{fontWeight:700}}>{message}</span>?
+                Are you sure you want to delete{" "}
+                <span style={{ fontWeight: 700 }}>{message}</span>?
               </Typography>
             </Box>
           }
@@ -79,7 +80,7 @@ const ConfirmationPopup = ({
         />
       </>
     );
-  }else if(type="logout"){
+  } else if ((type = "logout")) {
     return (
       <>
         <MyDialog
@@ -90,11 +91,11 @@ const ConfirmationPopup = ({
           titlepadding="24px 24px 16px"
           contentpadding="0px 24px !important"
           actionpadding="24px !important"
-          width={isXs ? '100%':'auto'} 
+          width={isXs ? "100%" : "auto"}
           content={
             <Box>
               <Typography fontSize={14} color={theme?.palette?.primary?.main}>
-                Are you sure want to logout ?
+                Are you sure you want to logout ?
               </Typography>
             </Box>
           }
@@ -139,7 +140,6 @@ const ConfirmationPopup = ({
       </>
     );
   }
-
 };
 
 export default ConfirmationPopup;

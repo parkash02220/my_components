@@ -40,7 +40,6 @@ export default function Profile() {
       gender: Yup.string().required("This field is required"),
     }),
     onSubmit: async (values) => {
-      console.log("::formik values", values);
     },
   });
   useEffect(() => {

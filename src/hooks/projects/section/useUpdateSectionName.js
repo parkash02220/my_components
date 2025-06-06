@@ -68,7 +68,6 @@ const useUpdateSectionName = (initialName = "",setShowEditTextfield) => {
       if (res.error) {
         setLoading(false);
         showToast({toastId,type:"error",message:"Failed to update section name. Please try again."})
-        console.log("::error while renaming column", res.error);
         return;
       }
       setLoading(false);

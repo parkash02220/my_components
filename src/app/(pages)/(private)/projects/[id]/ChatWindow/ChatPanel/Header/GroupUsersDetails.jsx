@@ -22,9 +22,14 @@ const GroupUsersDetails = ({ groupDetails }) => {
           {users.map((user, index) => {
             const name = getFullName(user?.firstName, user?.lastName);
             return (
-              <Box key={user?.id || index} display="flex" alignItems="center" gap={1}>
+              <Box
+                key={user?.id || index}
+                display="flex"
+                alignItems="center"
+                gap={1}
+              >
                 <img
-                  src={user.avatar || "/dummyUser.svg"}
+                  src={user?.avatar || "/dummyUser.svg"}
                   alt={name}
                   referrerPolicy="no-referrer"
                   style={{
@@ -72,7 +77,11 @@ const GroupUsersDetails = ({ groupDetails }) => {
           {visibleUsers.map((user, index) => {
             const name = getFullName(user?.firstName, user?.lastName);
             return (
-              <MyTooltip key={user?.id || index} title={name} placement="bottom">
+              <MyTooltip
+                key={user?.id || index}
+                title={name}
+                placement="bottom"
+              >
                 <Box
                   width={32}
                   height={32}

@@ -6,7 +6,10 @@ import * as taskActions from "@/context/Task/action";
 import * as projectsActions from "@/context/Projects/action";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 import { useTaskContext } from "@/context/Task/TaskContext";
+import useToast from "@/hooks/common/useToast";
 const useAddTaskComment = () => {
+  const toastId = "add_comment_to_task";
+  const {showToast} = useToast();
   const { dispatch: projectsDispatch } = useProjectsContext();
   const { dispatch: taskDispatch } = useTaskContext();
   const [loading, setLoading] = useState(false);
@@ -25,7 +28,7 @@ const useAddTaskComment = () => {
     if (res.error) {
       setLoading(false);
       setError(true);
-      console.log("::error while adding task to backend", res);
+      showToast({toastId,type:"error",message:res?.error?.message || "Failed to add comment to task."});
       return;
     }
     setLoading(false);

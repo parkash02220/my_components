@@ -61,7 +61,6 @@ const useCreateSection = (boardId="", setShowAddColumnButton) => {
         message: "Failed to create the section. Please try again.",
       });
       setError(res.error);
-        console.log("::error while creating Column");
         return;
     }
   setLoading(false);

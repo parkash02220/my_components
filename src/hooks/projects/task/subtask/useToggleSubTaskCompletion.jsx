@@ -27,7 +27,6 @@ const useToggleSubTaskCompletion = () => {
         type: "error",
         message: "Failed to mark subtask completion. Please try again.",
       });
-      console.log("::error while toggling the completion state", res);
       return;
     }
 

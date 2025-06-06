@@ -207,7 +207,6 @@ function projectsReducer(state = initialState, action) {
 
     case actions.MOVE_TASK: {
       const { taskId, toSectionId, newPosition } = payload;
-      console.log(":::inside move task context",payload)
       const sectionsCopy = state.activeProject.sections?.map((section) => ({
         ...section,
         tasks: [...section.tasks],

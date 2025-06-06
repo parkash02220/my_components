@@ -26,6 +26,7 @@ export default function SearchUser({
           onClear={handleSearchClear}
           minWidth="0px"
           padding={"7px"}
+          placeholder="Search user..."
         />
       </Box>
     </>

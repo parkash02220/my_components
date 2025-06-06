@@ -119,7 +119,6 @@ const useUpdateProjectName = (
         type: "error",
         message: "Failed to update project name. Please try again.",
       });
-      console.log("::error while changing project name", res);
       return;
     }
     setLoading(false);

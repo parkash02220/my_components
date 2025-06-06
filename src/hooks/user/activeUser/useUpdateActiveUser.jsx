@@ -1,14 +1,16 @@
 import { useAppContext } from "@/context/App/AppContext";
 import useToast from "@/hooks/common/useToast";
+import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
 import { useState } from "react";
-
+import * as actions from "@/context/App/action";
 const useUpdateActiveUser = () => {
   const toastId = "update_active_user";
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const userId = useAppContext()?.state?.activeUser?.id;
+  const { dispatch, state } = useAppContext();
+  const userId = state?.activeUser?.id;
   const updateActiveUser = async (userDetails) => {
     if (!userId) {
       showToast({ toastId, type: "error", message: "User id is missing..." });
@@ -34,6 +36,11 @@ const useUpdateActiveUser = () => {
       return;
     }
     setLoading(false);
+    const convertIdResponse = convertIdFields(res?.data?.user || {});
+    dispatch({
+      type: actions.SET_ACTIVE_USER_SUCCESS,
+      payload: convertIdResponse,
+    });
     showToast({
       toastId,
       type: "success",

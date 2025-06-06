@@ -26,7 +26,6 @@ const useCreateSubTask = () => {
         type: "error",
         message: "Failed to create subtask. Please try again.",
       });
-      console.log("::error while adding subtask", res);
       return;
     }
     setLoading(false);

@@ -59,7 +59,6 @@ const useCreateTask = (sectionId="", setCreateTaskOpen) => {
       setLoading(false);
       setError(true);
         showToast({toastId,type:"error",message:"Failed to create the task. Please try again."});
-        console.log("::error while creating task");
         return;
     }
   setLoading(false);

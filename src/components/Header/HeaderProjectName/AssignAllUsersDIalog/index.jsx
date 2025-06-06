@@ -128,20 +128,21 @@ const AssignAllUsersDialog = ({
                   value={searchValue}
                   onChange={handleSearchValueChange}
                   onClear={handleSearchClear}
+                  placeholder="Search contact..."
                 />
               </Box>
- 
-               <Content 
-               hasFetchedOnce={hasFetchedOnce}
-               loadingAllUsers={loadingAllUsers}
-               allUsers={allUsers}
-               loadMoreRef={loadMoreRef}
-               handleAssignToggle={handleAssignToggle}
-               assignedUsers={assignedUsers}
-               hasMore={hasMore}
-               loadingAssignProjectIds={loadingAssignProjectIds}
-               debouncedSearchValue={debouncedSearchValue}
-               />
+
+              <Content
+                hasFetchedOnce={hasFetchedOnce}
+                loadingAllUsers={loadingAllUsers}
+                allUsers={allUsers}
+                loadMoreRef={loadMoreRef}
+                handleAssignToggle={handleAssignToggle}
+                assignedUsers={assignedUsers}
+                hasMore={hasMore}
+                loadingAssignProjectIds={loadingAssignProjectIds}
+                debouncedSearchValue={debouncedSearchValue}
+              />
             </Box>
           }
         />
@@ -150,4 +151,3 @@ const AssignAllUsersDialog = ({
   );
 };
 export default AssignAllUsersDialog;
-

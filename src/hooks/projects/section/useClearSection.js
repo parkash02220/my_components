@@ -23,7 +23,6 @@ const useClearSection = () => {
                 type: "error",
                 message: "Failed to clear the section. Please refresh the page.",
               });
-             console.log("::error while clearing the section",res);
              return;
          }
            setLoading(false);

@@ -336,7 +336,6 @@ function chatReducer(state = initialState, action) {
 
     case actions.REMOVE_USER_IN_CHATROOM: {
       const { removedFrom = [], deletedRooms = [], removedUserId } = payload;
-      console.log(":::payload in remove user", payload);
     
       const updatedChatRoomsByIds = { ...state.chatWindow.chatRooms?.byIds };
       let updatedChatRoomsAllIds = [...state.chatWindow.chatRooms?.allIds];

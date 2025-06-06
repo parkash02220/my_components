@@ -61,24 +61,24 @@ const ListUsers = () => {
     {
       label: "Print",
       icon: "/printIcon.svg",
-      onClick: ()=>{
-        console.log("::print button clicked")
+      onClick: () => {
+        console.log("::print button clicked");
         handleMenuClose();
-      } 
+      },
     },
     {
       label: "Import",
       icon: "/importIcon.svg",
-      onClick: ()=>{
-        console.log("::import button clicked")
+      onClick: () => {
+        console.log("::import button clicked");
         handleMenuClose();
-      } 
+      },
     },
     {
       label: "Export",
       icon: "/exportIcon.svg",
-      onClick: ()=>{
-        console.log("::export button clicked")
+      onClick: () => {
+        console.log("::export button clicked");
         handleMenuClose();
       },
     },
@@ -115,9 +115,9 @@ const ListUsers = () => {
             alignItems={"center"}
             gap={2}
           >
-            <Box width={200} flexShrink={0}>
+            {/* <Box width={200} flexShrink={0}>
               <SelectUserRole />
-            </Box>
+            </Box> */}
             <Box flexGrow={1}>
               <SearchUser
                 searchValue={searchValue}
@@ -126,7 +126,7 @@ const ListUsers = () => {
               />
             </Box>
             <Box>
-                {/* <IconButton onClick={handleMenuOpen} sx={{
+              {/* <IconButton onClick={handleMenuOpen} sx={{
                   padding:1,
                   borderRadius:"50%",
                   color:"#637381",
@@ -136,14 +136,13 @@ const ListUsers = () => {
                 }}>
                   <img src="/menuVerticalIcon.svg" alt="menu" style={{width:'20px',height:"20px"}} />
                 </IconButton> */}
-                <MyMenu 
-                type={'list_user'}
+              <MyMenu
+                type={"list_user"}
                 options={menuItems}
                 menuAnchorEl={menuAnchorEl}
                 onClose={handleMenuClose}
-
-                />
-              </Box>
+              />
+            </Box>
           </Box>
           <TableUser
             data={data}

@@ -27,7 +27,6 @@ const useToggleAssignTask = () => {
 
     if (res.error) {
       showToast({ type: "error", message: "Request failed." });
-      console.log("::error while changing state of assign task", res);
       setErrorAssignTask(true);
       return;
     }

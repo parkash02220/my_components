@@ -2,7 +2,8 @@
 import { useState, useCallback } from "react";
 import { ApiCall } from "@/utils/ApiCall";
 import useToast from "@/hooks/common/useToast";
-
+import * as actions from "@/context/App/action";
+import { useAppContext } from "@/context/App/AppContext";
 const useUploadProfileImage = () => {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -10,8 +11,8 @@ const useUploadProfileImage = () => {
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
   const { showToast } = useToast();
   const toastId = "upload_profile_image";
-
-  const uploadProfileImage = useCallback(async (file,userId=null) => {
+  const { dispatch } = useAppContext();
+  const uploadProfileImage = useCallback(async (file, userId = null) => {
     setLoading(true);
     setError(null);
     setProgress(0);
@@ -19,12 +20,12 @@ const useUploadProfileImage = () => {
 
     const formData = new FormData();
     formData.append("avatar", file);
-     let url;
-     if(userId){
-       url = `${process.env.NEXT_PUBLIC_BASE_URL}/upload-profile-image?userId=${userId}`;
-     }else{
-       url = `${process.env.NEXT_PUBLIC_BASE_URL}/upload-profile-image`;
-     }
+    let url;
+    if (userId) {
+      url = `${process.env.NEXT_PUBLIC_BASE_URL}/upload-profile-image?userId=${userId}`;
+    } else {
+      url = `${process.env.NEXT_PUBLIC_BASE_URL}/upload-profile-image`;
+    }
     const res = await ApiCall({
       url,
       method: "POST",
@@ -49,6 +50,12 @@ const useUploadProfileImage = () => {
 
     const imageUrl = res?.data?.avatar;
     setUploadedImageUrl(imageUrl);
+    if (!userId) {
+      dispatch({
+        type: actions.EDIT_ACTIVE_USER,
+        payload: { avatar: imageUrl },
+      });
+    }
     showToast({
       toastId,
       type: "success",

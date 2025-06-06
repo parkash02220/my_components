@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 
 const ProfileImageBox = ({
   avatar,
@@ -55,8 +55,40 @@ const ProfileImageBox = ({
                 borderRadius={"50%"}
                 position={"relative"}
                 sx={{ cursor: "pointer" }}
+                className="parkash mishra"
               >
-                {avatar ? (
+                {loading ? (
+                  <Box
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      position: "relative",
+                      backgroundColor: "#eee",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flexDirection: "column",
+                      padding: "8px",
+                      pb: "2px",
+                      gap: "4px",
+                    }}
+                  >
+                    <CircularProgress
+                      variant="determinate"
+                      value={progress}
+                      sx={{
+                        width: "28px !important",
+                        height: "28px !important",
+                        color: "#637381",
+                      }}
+                    />
+                    <Typography variant="body2" fontSize={11}>
+                      {progress}%
+                    </Typography>
+                  </Box>
+                ) : avatar ? (
                   <Box
                     sx={{
                       top: "0px",
@@ -77,7 +109,8 @@ const ProfileImageBox = ({
                     }}
                   >
                     <img
-                      src={avatar}
+                      src={avatar || "/dummyUser.svg"}
+                      referrerPolicy="no-referrer"
                       alt="profile img"
                       style={{
                         width: "100%",

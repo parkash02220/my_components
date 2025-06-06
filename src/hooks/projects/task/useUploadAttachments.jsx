@@ -45,7 +45,6 @@ const useUploadAttachments = () => {
         type: "error",
         message: "Failed to upload image. Please try again.",
       });
-      console.log("::errro while uploading image", res.error);
       setErrorUploadAttachments(true);
       return;
     }

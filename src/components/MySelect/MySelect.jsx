@@ -114,12 +114,14 @@ export default function MySelect({
           ) : menuDesignType === "withAvatar" ? (
             <Box display="flex" alignItems="center" gap={1}>
               <img
-                src={option.avatar || '/dummyUser.svg'}
-                  referrerPolicy="no-referrer"
+                src={option?.avatar || "/dummyUser.svg"}
+                referrerPolicy="no-referrer"
                 alt={option.label}
                 style={{ width: 24, height: 24, borderRadius: "50%" }}
               />
-              <Typography fontSize={menuItemFontSize}>{option.label}</Typography>
+              <Typography fontSize={menuItemFontSize}>
+                {option.label}
+              </Typography>
             </Box>
           ) : (
             option.label
@@ -154,7 +156,6 @@ export default function MySelect({
       ));
     }
   }, [options, menuItemFontSize, optionItemClassName, value, menuDesignType]);
-  
 
   const renderMenuItems = () => {
     return menuItems;
@@ -162,7 +163,7 @@ export default function MySelect({
 
   const getRenderValue = ({ multiple, menuDesignType, options }) => {
     if (!multiple) return undefined;
-  
+
     if (menuDesignType === "withAvatar") {
       return (selected) => (
         <Box display="flex" flexWrap="wrap" gap={1} alignItems="center">
@@ -183,9 +184,9 @@ export default function MySelect({
                 }}
               >
                 <img
-                  src={opt.avatar || '/dummyUser.svg'}
+                  src={opt?.avatar || "/dummyUser.svg"}
                   alt={opt.label}
-                   referrerPolicy="no-referrer"
+                  referrerPolicy="no-referrer"
                   style={{
                     width: 20,
                     height: 20,
@@ -213,7 +214,6 @@ export default function MySelect({
         .map((opt) => opt.label)
         .join(", ");
   };
-  
 
   return (
     <Box sx={{ minWidth }}>

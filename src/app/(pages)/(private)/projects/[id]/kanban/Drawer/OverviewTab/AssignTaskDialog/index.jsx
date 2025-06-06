@@ -131,6 +131,7 @@ const AssignDialog = ({
                   value={searchValue}
                   onChange={handleSearchValueChange}
                   onClear={handleSearchClear}
+                  placeholder="Search contact..."
                 />
               </Box>
               <Content

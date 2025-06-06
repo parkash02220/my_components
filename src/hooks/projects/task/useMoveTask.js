@@ -12,7 +12,6 @@ const useMoveTask = () => {
     const moveTask = async (taskId,toSectionId,newPosition) => {
         setLoading(true);
         setTimeout(() => {
-          console.log(":::console before move task dispatch")
             dispatch({type:actions.MOVE_TASK,payload:{taskId,toSectionId,newPosition:newPosition-1}});
         }, 0);
         const res = await ApiCall({
@@ -29,7 +28,6 @@ const useMoveTask = () => {
                 type: "error",
                 message: "Failed to move the task. Please refresh the page.",
               });
-            console.log("::error whhile updating task");
             return;
         }
  setLoading(false);

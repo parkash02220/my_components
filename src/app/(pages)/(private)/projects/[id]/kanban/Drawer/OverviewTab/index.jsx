@@ -1,7 +1,7 @@
 import useEditTask from "@/hooks/projects/task/useEditTask";
 import useUploadAttachments from "@/hooks/projects/task/useUploadAttachments";
 import { useFormik } from "formik";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AssignDialog from "./AssignTaskDialog/index";
 import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
@@ -11,6 +11,7 @@ import DueDateDialog from "./DueDateDialog.jsx";
 import AttachmentViewer from "./AttachmentViewer.jsx";
 import { formatDueDateRange, getFullName } from "@/utils/index.js";
 import { useTaskContext } from "@/context/Task/TaskContext.js";
+import isEqual from "lodash/isEqual";
 const OverviewTab = ({ isDrawerOpen }) => {
   const { state } = useTaskContext();
   const { activeTask } = state || {};
@@ -39,18 +40,33 @@ const OverviewTab = ({ isDrawerOpen }) => {
     { label: "High", value: "high", icon: "/highPriorityIcon.svg" },
   ];
 
-  const formik = useFormik({
-    enableReinitialize: true,
-    initialValues: {
+  const initialTaskValues = useMemo(
+    () => ({
       title: activeTask?.title || "",
       description: activeTask?.description || "",
       priority: activeTask?.priority || "medium",
-      assigned_to: activeTask?.assigned_to || [],
+      assigned_to: activeTask?.assigned_to?.map((u) => u?.id) || [],
       due_start_date: activeTask?.due_start_date?.slice(0, 10) || "",
       due_end_date: activeTask?.due_end_date?.slice(0, 10) || "",
-    },
+    }),
+    [activeTask]
+  );
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: initialTaskValues,
     onSubmit: async (values) => {
-      updateTaskInBackend(values, activeTask?.id);
+      const formData = {
+        ...values,
+        assigned_to: values.assigned_to.map((user) => user?.id),
+      };
+
+      if (isEqual(values, initialTaskValues)) {
+        console.log(":::No changes detected. Skipping update");
+        return;
+      }
+
+      updateTaskInBackend(formData, activeTask?.id);
     },
   });
 
@@ -206,7 +222,7 @@ const OverviewTab = ({ isDrawerOpen }) => {
                               gap={1}
                             >
                               <img
-                                src={user.avatar || "/dummyUser.svg"}
+                                src={user?.avatar || "/dummyUser.svg"}
                                 alt={name}
                                 referrerPolicy="no-referrer"
                                 style={{
@@ -312,13 +328,13 @@ const OverviewTab = ({ isDrawerOpen }) => {
               </Box>
             </MyTooltip>
           </SectionRow>
-          <SectionRow label="Labels" className="editTask__labelsBox">
+          {/* <SectionRow label="Labels" className="editTask__labelsBox">
             {["Technology", "Health and wellness", "Finance"].map(
               (label, i) => (
                 <LabelTag key={i} text={label} />
               )
             )}
-          </SectionRow>
+          </SectionRow> */}
           <SectionRow label="Due date" className="editTask__dueDateBox">
             <Typography
               fontWeight={700}
@@ -383,7 +399,8 @@ const OverviewTab = ({ isDrawerOpen }) => {
           >
             <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
               {attachments.map((file, index) => {
-               const imagePath = typeof file === "string" ? file : file?.name || "";
+                const imagePath =
+                  typeof file === "string" ? file : file?.name || "";
                 const isDeleting = deleteImagePath?.includes(imagePath);
 
                 return (
@@ -400,7 +417,9 @@ const OverviewTab = ({ isDrawerOpen }) => {
                   >
                     <img
                       src={
-                       file instanceof File ? URL.createObjectURL(file) : file ?? ""
+                        file instanceof File
+                          ? URL.createObjectURL(file)
+                          : file ?? ""
                       }
                       onClick={() => handleAttachmentViewerOpen(index)}
                       alt="preview"

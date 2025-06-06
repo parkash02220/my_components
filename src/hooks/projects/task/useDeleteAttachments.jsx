@@ -33,7 +33,6 @@ const useDeleteAttachments = () => {
         type: "error",
         message: "Failed to delete image. Please try again.",
       });
-      console.log("::error while deleting the image", res);
       return;
     }
     setLoading(false);

@@ -31,7 +31,6 @@ const useUpdateColumnPosition = () => {
                 type: "error",
                 message: "Failed to move the section. Please refresh the page.",
               });
-            console.log("::error while changing coloumn order",res);
             return;
         }
         setLoading(false);
