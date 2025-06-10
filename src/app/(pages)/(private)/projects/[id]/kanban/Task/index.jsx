@@ -3,16 +3,11 @@
 import React, { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  Card,
-  CardContent,
-  Box,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Card, CardContent, Box, Typography, useTheme } from "@mui/material";
 import PriorityIcon from "./PriorityIcon";
 import SubComments from "./SubComments";
-import AssignedToData from "./AssignedToData";
+import DueDatePopper from "./DueDatePopper";
+import AssignedTo from "./AssignedTo";
 
 export function TaskCard({ task, isOverlay }) {
   const taskData = task?.content;
@@ -96,7 +91,7 @@ export function TaskCard({ task, isOverlay }) {
               position={"relative"}
             >
               {taskData?.priority && (
-                 <PriorityIcon priority={taskData?.priority}/>
+                <PriorityIcon priority={taskData?.priority} />
               )}
 
               <Box>
@@ -113,19 +108,31 @@ export function TaskCard({ task, isOverlay }) {
               <Box
                 className="taskCard__footer"
                 display={"flex"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
+                justifyContent={"center"}
+                alignItems={"flex-start"}
                 mt={2}
+                flexDirection={"column"}
+                gap={1}
               >
                 <Box
-                  className="taskCard__footer--left"
+                  className="taskCard__footer--top"
+                  display={"flex"}
+                  flexDirection={"row-reverse"}
+                  justifyContent={"flex-start"}
+                  width={"100%"}
+                >
+                  <AssignedTo assigned_to={taskData?.assigned_to} />
+                </Box>
+                <Box
+                  className="taskCard__footer--bottom"
                   display={"flex"}
                   gap={1}
+                  alignItems={"center"}
                 >
                   {taskData?.subComments &&
-                  taskData?.subComments?.length > 0 && (
-                   <SubComments subComments={taskData?.subComments}/>
-                  )}
+                    taskData?.subComments?.length > 0 && (
+                      <SubComments subComments={taskData?.subComments} />
+                    )}
                   {taskData?.images && taskData?.images?.length > 0 && (
                     <Box display={"flex"} gap={"2px"}>
                       <Box width={16} height={16}>
@@ -140,14 +147,11 @@ export function TaskCard({ task, isOverlay }) {
                       </Typography>
                     </Box>
                   )}
-                </Box>
-                <Box
-                  className="taskCard__footer--right"
-                  display={"flex"}
-                  flexDirection={"row-reverse"}
-                  justifyContent={"flex-end"}
-                >
-                 <AssignedToData assigned_to={taskData?.assigned_to} />
+                  <DueDatePopper
+                    taskStartDate={taskData?.due_start_date}
+                    taskEndDate={taskData?.due_end_date}
+                    taskId={task?.id}
+                  />
                 </Box>
               </Box>
             </Box>

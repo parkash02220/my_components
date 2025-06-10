@@ -1,8 +1,8 @@
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
-import { getFullName } from "@/utils";
+import { getFullName, getInitialsOfString } from "@/utils";
 import { Box, Typography } from "@mui/material";
 
-export default function AssignedToData({ assigned_to }) {
+export default function AssignedTo({ assigned_to }) {
   return (
     <>
       {assigned_to?.length > 4 && (
@@ -72,8 +72,8 @@ export default function AssignedToData({ assigned_to }) {
               return (
                 <MyTooltip key={index} title={name} placement="bottom">
                   <Box
-                    width={24}
-                    height={24}
+                    width={20}
+                    height={20}
                     fontSize={16}
                     fontWeight={600}
                     border={"2px solid #FFFFFF"}
@@ -85,8 +85,10 @@ export default function AssignedToData({ assigned_to }) {
                     alignItems={"center"}
                     borderRadius={"50%"}
                     overflow={"hidden"}
+                    bgcolor={"#637381"}
+                    padding={"4px"}
                   >
-                    <img
+                    {/* <img
                       src={item?.avatar || "/dummyUser.svg"}
                       alt="avatar"
                       referrerPolicy="no-referrer"
@@ -98,7 +100,17 @@ export default function AssignedToData({ assigned_to }) {
                         textIndent: "100000px",
                         maxWidth: "100%",
                       }}
-                    />
+                    /> */}
+                    <Typography
+                      sx={{
+                        fontSize: 10,
+                        color: "white",
+                        whiteSpace: "nowrap",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {getInitialsOfString(name)}
+                    </Typography>
                   </Box>
                 </MyTooltip>
               );

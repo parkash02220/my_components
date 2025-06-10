@@ -1,50 +1,48 @@
-
 import Cookies from "js-cookie";
 export const getAuthTokenFromCookies = () => {
-    return Cookies.get("auth_token");
-}
+  return Cookies.get("auth_token");
+};
 
 export const setAuthTokenToCookies = (token) => {
-    if(!token) return;
-    return Cookies.set("auth_token",token,{expires: 1});
-}
-export const setCookie = (name,value) => {
-  if(!name || !value) return;
-  return Cookies.set(name,value,{expires:1});
-}
+  if (!token) return;
+  return Cookies.set("auth_token", token, { expires: 1 });
+};
+export const setCookie = (name, value) => {
+  if (!name || !value) return;
+  return Cookies.set(name, value, { expires: 1 });
+};
 export const getCookie = (name) => {
-  if(!name) return;
+  if (!name) return;
   return Cookies.get(name);
-
-}
+};
 export const isUserLoggedIn = () => {
-    const token =  getAuthTokenFromCookies();
-    return !!token && token !== null && token !== "undefined";
-}
+  const token = getAuthTokenFromCookies();
+  return !!token && token !== null && token !== "undefined";
+};
 
 export function convertIdFields(data) {
-    if (Array.isArray(data)) {
-      return data.map(convertIdFields);
-    } else if (data && typeof data === 'object') {
-      const newObj = {};
-  
-      for (const key in data) {
-        const value = data[key];
-  
-        if (key === '_id') {
-          newObj['id'] = convertIdFields(value);
-        } else {
-          newObj[key] = convertIdFields(value);
-        }
+  if (Array.isArray(data)) {
+    return data.map(convertIdFields);
+  } else if (data && typeof data === "object") {
+    const newObj = {};
+
+    for (const key in data) {
+      const value = data[key];
+
+      if (key === "_id") {
+        newObj["id"] = convertIdFields(value);
+      } else {
+        newObj[key] = convertIdFields(value);
       }
-  
-      return newObj;
     }
 
-    return data;
+    return newObj;
   }
-  
-  import debounce from "lodash.debounce";
+
+  return data;
+}
+
+import debounce from "lodash.debounce";
 
 const uploadImage = async (file) => {
   const formData = new FormData();
@@ -69,7 +67,6 @@ const uploadImage = async (file) => {
 
 const debouncedUpload = debounce(uploadImage, 1000);
 
-
 export function getTimeAgo(updatedAt) {
   const updatedDate = new Date(updatedAt);
   const now = new Date();
@@ -90,17 +87,36 @@ export function getTimeAgo(updatedAt) {
 }
 
 export function formatDueDateRange(due_start_date, due_end_date) {
-  if(!due_start_date && !due_end_date) return "Select due date";
+  if (!due_start_date && !due_end_date) return "Select due date";
+
   const start = new Date(due_start_date);
   const end = new Date(due_end_date);
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
 
-  const optionsDay = { day: 'numeric' };
-  const optionsMonth = { month: 'short' };
-  const optionsMonthDay = { month: 'short', day: 'numeric' };
-  const optionsFull = { month: 'short', day: 'numeric', year: 'numeric' };
+  const isSameDay = (date1, date2) =>
+    date1.getDate() === date2.getDate() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getFullYear() === date2.getFullYear();
+
+  if (isSameDay(end, today)) return "Today";
+  if (isSameDay(end, tomorrow)) return "Tomorrow";
+
+  const optionsDay = { day: "numeric" };
+  const optionsMonthDay = { month: "short", day: "numeric" };
+  const optionsFull = { month: "short", day: "numeric", year: "numeric" };
 
   const sameYear = start.getFullYear() === end.getFullYear();
   const sameMonth = start.getMonth() === end.getMonth() && sameYear;
+
+  if (isSameDay(start, today)) {
+    return end.toLocaleDateString(undefined, optionsFull);
+  }
+
+  if (isSameDay(start, end)) {
+    return end.toLocaleDateString(undefined, optionsFull);
+  }
 
   if (sameMonth) {
     const startDay = start.toLocaleDateString(undefined, optionsDay);
@@ -117,32 +133,49 @@ export function formatDueDateRange(due_start_date, due_end_date) {
   }
 }
 
-export function getFullName(firstName,lastName){
-  if(!firstName && !lastName) return "";
-  const name = `${firstName?.trim() || ''} ${lastName?.trim() || ''}`;
-  return name || '';
+export function getFullName(firstName, lastName) {
+  if (!firstName && !lastName) return "";
+  const name = `${firstName?.trim() || ""} ${lastName?.trim() || ""}`;
+  return name || "";
 }
-export function capitalizeFirstLetter(string){
-    if(typeof(string) !== "string") return string;
-    if(string?.trim() === "") return "";
-    const formattedString = string?.charAt(0)?.toUpperCase() + string?.slice(1);
-    return formattedString;
+export function capitalizeFirstLetter(string) {
+  if (typeof string !== "string") return string;
+  if (string?.trim() === "") return "";
+  const formattedString = string?.charAt(0)?.toUpperCase() + string?.slice(1);
+  return formattedString;
 }
 
-export  const loginUserWithGoogle = async (router) => {
-  if(router){
+export const loginUserWithGoogle = async (router) => {
+  if (router) {
     router.push(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`);
   }
- }
+};
 
- export const sendTyping = (socket,roomId, userId) => {
+export const sendTyping = (socket, roomId, userId) => {
   if (socket && roomId && userId) {
     socket.emit("typing", { roomId, userId });
   }
 };
 
-export const stopTyping = (socket,roomId, userId) => {
+export const stopTyping = (socket, roomId, userId) => {
   if (socket && roomId && userId) {
     socket.emit("stopTyping", { roomId, userId });
   }
+};
+
+export const getInitialsOfString = (input) => {
+  if (typeof input !== "string" || !input.trim()) return "";
+
+  const words = input.trim().split(/\s+/).filter(Boolean);
+
+  const initials = words.slice(0, 2).map((word) => {
+    const firstLetter = [...word].find((char) => /\p{L}/u.test(char));
+    return firstLetter ? firstLetter.toUpperCase() : "";
+  });
+
+  if (initials.length === 1) {
+    return initials[0] + "+";
+  }
+
+  return initials.join("");
 };

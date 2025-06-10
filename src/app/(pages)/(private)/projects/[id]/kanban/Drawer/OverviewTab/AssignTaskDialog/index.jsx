@@ -37,7 +37,7 @@ const AssignDialog = ({
   const [assignedUserIds, setAssignedUserIds] = useState([]);
   useEffect(() => {
     if (open && assignedUsers) {
-      setAssignedUserIds(assignedUsers.map((user) => user?.id));
+      setAssignedUserIds(assignedUsers);
     }
   }, [open, assignedUsers]);
 

@@ -62,7 +62,6 @@ const OverviewTab = ({ isDrawerOpen }) => {
       };
 
       if (isEqual(values, initialTaskValues)) {
-        console.log(":::No changes detected. Skipping update");
         return;
       }
 
