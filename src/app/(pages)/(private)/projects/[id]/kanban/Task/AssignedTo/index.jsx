@@ -43,8 +43,8 @@ export default function AssignedTo({ assigned_to }) {
           <Box
             fontSize={12}
             color={"#007867"}
-            width={24}
-            height={24}
+            width={28}
+            height={28}
             fontWeight={600}
             ml={"-8px"}
             position={"relative"}

@@ -45,7 +45,7 @@ const OverviewTab = ({ isDrawerOpen }) => {
       title: activeTask?.title || "",
       description: activeTask?.description || "",
       priority: activeTask?.priority || "medium",
-      assigned_to: activeTask?.assigned_to?.map((u) => u?.id) || [],
+      assigned_to: activeTask?.assigned_to || [],
       due_start_date: activeTask?.due_start_date?.slice(0, 10) || "",
       due_end_date: activeTask?.due_end_date?.slice(0, 10) || "",
     }),

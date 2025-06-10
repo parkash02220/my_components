@@ -7,6 +7,7 @@ import * as projectsActions from "@/context/Projects/action";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 import { useTaskContext } from "@/context/Task/TaskContext";
 const useToggleAssignTask = () => {
+  const toastId = 'assign_task';
   const { showToast } = useToast();
   const { dispatch: projectsDispatch } = useProjectsContext();
   const { dispatch: taskDispatch } = useTaskContext();
@@ -26,7 +27,7 @@ const useToggleAssignTask = () => {
     setLoadingAssignTaskIds((pre) => pre?.filter((id) => id !== userId));
 
     if (res.error) {
-      showToast({ type: "error", message: "Request failed." });
+      showToast({ toastId,type: "error", message: "Request failed." });
       setErrorAssignTask(true);
       return;
     }
@@ -40,6 +41,7 @@ const useToggleAssignTask = () => {
       payload: formattedIdResponse,
     });
     showToast({
+      toastId,
       type: "success",
       message: "Changes saved and synced with the server.",
     });
