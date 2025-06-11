@@ -60,9 +60,10 @@ const useNotifications = (open) => {
     dispatch({ type: actions.CLEAR_NOTIFICATIONS });
   };
   useEffect(() => {
+    if(!open) return;
     clearNotifications();
     fetchNotifications(true);
-  }, [notifications?.tab]);
+  }, [notifications?.tab,open]);
 
   useEffect(() => {
     if (inView && open && hasMore && !loadingNotifications) {

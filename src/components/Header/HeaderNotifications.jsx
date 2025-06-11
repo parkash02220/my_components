@@ -7,9 +7,12 @@ const {
 const { IconButton, Typography } = require("@mui/material");
 const { useState } = require("react");
 import NotificationDrawer from "@/components/Header/NotificationDrawer";
+import useGetNotificationCount from "@/hooks/notifications/useGetNotificationCount";
 const HeaderNotifications = () => {
-  const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
+  useGetNotificationCount();
   useNotificationsSocket();
+
+  const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
   const {
     notifications,
     loadingNotifications,
@@ -26,6 +29,7 @@ const HeaderNotifications = () => {
     setNotificationDrawerOpen(true);
     await fetchNotifications(true);
   };
+
 
   const handleNotificationDrawerClose = () => {
     clearNotifications();

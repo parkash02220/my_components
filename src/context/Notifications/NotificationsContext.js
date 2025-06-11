@@ -170,6 +170,18 @@ function notificationsReducer(state = initialState, action) {
       };
     }
 
+    case actions.SET_NOTIFICATIONS_COUNT:{
+      const {unreadCount=0,totalCount=0} = payload;
+      return {
+        ...state,
+        notifications:{
+          ...state?.notifications,
+          unReadCount:unreadCount,
+          totalCount,
+        }
+      }
+    }
+
 
     default:
         return state;

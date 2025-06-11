@@ -15,6 +15,7 @@ const toastStyles = {
     minWidth: 300,
     zIndex: "99999",
     position: "relative",
+    maxWidth:800,
   },
   success: {},
   error: {},
@@ -120,7 +121,7 @@ const useToast = () => {
                   }}
                 >
                   <Typography
-                    sx={{ fontSize: 14, fontWeight: 500, color: "#1C252E" }}
+                    sx={{ fontSize: 14, fontWeight: 500, color: "#1C252E",textAlign:'center' }}
                   >
                     {message}
                   </Typography>
