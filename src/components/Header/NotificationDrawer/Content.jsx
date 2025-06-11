@@ -150,6 +150,7 @@ export const Content = ({
                   disableRipple
                   key={tab?.key}
                   value={tab?.value}
+                  disabled={loadingNotifications}
                   label={
                     <Box display="flex" alignItems="center">
                       <Typography
