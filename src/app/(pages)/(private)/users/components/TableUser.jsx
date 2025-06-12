@@ -8,8 +8,6 @@ import ConfirmationPopup from "@/components/ConfirmationPopup";
 const TableUser = ({
   data,
   setData,
-  setPage,
-  setPageSize,
   getAllUsersFromBackend,
   totalUsers,
   selectedUsers,
@@ -18,7 +16,6 @@ const TableUser = ({
   setSelectedUsers,
   debouncedSearchValue,
   pageSize,
-  hasFetchedOnce,
 }) => {
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
@@ -71,7 +68,12 @@ const TableUser = ({
               !isAllUserSelected &&
               selectedUsers?.length < totalUsers
             }
-            checked={isAllUserSelected || (!isLoading && totalUsers?.length > 0 && selectedUsers?.length === totalUsers)}
+            checked={
+              isAllUserSelected ||
+              (!isLoading &&
+                totalUsers?.length > 0 &&
+                selectedUsers?.length === totalUsers)
+            }
             onChange={(e) => handleSelectAllUsers(e.target.checked)}
           />
         </Box>
@@ -84,14 +86,6 @@ const TableUser = ({
     { id: "nameWithAvatar", label: "Name", type: "avatarText" },
     { id: "email", label: "Email", type: "text" },
     { id: "role", label: "Role", type: "text" },
-    // {
-    //   id: 'edit',
-    //   label: '',
-    //   type: 'iconButton',
-    //   icon: 'edit',
-    //   tooltip: 'Edit Task',
-    //   onClick: handleEditClick
-    // },
     {
       id: "edit_menu",
       label: "",
@@ -212,8 +206,6 @@ const TableUser = ({
           columns={columns}
           rows={data}
           fetchMore={({ page, limit }) => {
-            setPage(page);
-            setPageSize(limit);
             getAllUsersFromBackend({
               page,
               search: debouncedSearchValue,
@@ -223,7 +215,7 @@ const TableUser = ({
           }}
           totalCount={totalUsers}
           selectedRows={selectedUsers}
-          isLoading={(loadingAllUsers || page === 0)}
+          isLoading={loadingAllUsers || page === 0}
           isAllRowSelected={isAllUserSelected}
         />
       </Box>

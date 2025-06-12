@@ -1,5 +1,5 @@
 export const initialState = {
-  activeUser: {},
+  activeUser: null,
   loadingActiveUser: false,
   errorActiveUser: null,
 };

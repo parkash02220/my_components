@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MyTable from "@/components/MyTable";
 import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { getFullName } from "@/utils";
@@ -41,21 +41,16 @@ const ListUsers = () => {
     pageSize,
     hasFetchedOnce,
   } = useGetAllUsers("all", "table");
-  const [data, setData] = useState([]);
 
-  useEffect(() => {
-    const usersWithUpdatedKeys = allUsers.map((user) => {
-      const isSelected = selectedUsers.some((u) => u.id === user.id);
-      return {
-        ...user,
-        nameWithAvatar: {
-          name: getFullName(user?.firstName, user?.lastName),
-          avatar: user?.avatar || "",
-        },
-        isSelected: isSelected,
-      };
-    });
-    setData(usersWithUpdatedKeys);
+  const enhancedUsers = useMemo(() => {
+    return allUsers.map((user) => ({
+      ...user,
+      nameWithAvatar: {
+        name: getFullName(user?.firstName, user?.lastName),
+        avatar: user?.avatar || "",
+      },
+      isSelected: selectedUsers.some((u) => u.id === user.id),
+    }));
   }, [allUsers, selectedUsers]);
   const menuItems = [
     {
@@ -145,8 +140,8 @@ const ListUsers = () => {
             </Box>
           </Box>
           <TableUser
-            data={data}
-            setData={setData}
+            data={enhancedUsers}
+            setData={setAllUsers}
             setPage={setPage}
             setPageSize={setPageSize}
             getAllUsersFromBackend={getAllUsersFromBackend}

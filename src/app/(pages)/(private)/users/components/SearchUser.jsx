@@ -1,5 +1,4 @@
 import MySearch from "@/components/MySearch/MySearch";
-import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { useTheme } from "@emotion/react";
 import { Box } from "@mui/system";
 

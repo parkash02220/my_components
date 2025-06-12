@@ -1,140 +1,129 @@
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useInView } from "react-intersection-observer";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
-
-const { default: useDebounce } = require("@/hooks/common/useDebounce");
-const { useState, useEffect, useRef } = require("react");
-const { useInView } = require("react-intersection-observer");
+import useDebounce from "@/hooks/common/useDebounce";
+import useToast from "../common/useToast";
 
 const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
+  const toastId = "all_users";
+  const { showToast } = useToast();
+  const { state: projectState } = useProjectsContext();
+  const activeProjectId = projectState?.activeProject?.id;
+
+  const [searchValue, setSearchValue] = useState("");
+  const debouncedSearchValue = useDebounce(searchValue, 500);
+
+  const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [helperText, setHelperText] = useState("");
-  const [searchValue, setSearchValue] = useState("");
-  const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [allUsers, setAllUsers] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
-  // const [hasFetchedOnce,setHasFetchedOnce] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+
   const hasFetchedOnce = useRef(false);
-  const debouncedSearchValue = useDebounce(searchValue, 500);
   const { ref: loadMoreRef, inView } = useInView();
-  const { state } = useProjectsContext();
-  const activeProjectId = state?.activeProject?.id;
-  const resetAndFetch = () => {
-    setSearchValue("");
-    setAllUsers([]);
-    setPage(1);
-    hasFetchedOnce.current=false;
-    getAllUsersFromBackend({
-      signal: new AbortController().signal,
-      search: "",
-      page: 1,
-      append: false,
-    });
-  };
-  const getAllUsersFromBackend = async ({
-    signal,
-    search = "",
-    page = 1,
-    append = paginationMode === "scroll",
-    pageSize = 10,
-  }) => {
-    setLoading(true);
-    setError(false);
-    setHelperText("");
-    const url =
-      type === "all"
-        ? `${process.env.NEXT_PUBLIC_BASE_URL}/get-users?search=${search}&page=${page}&limit=${pageSize}`
-        : `${process.env.NEXT_PUBLIC_BASE_URL}/get-users?boardId=${activeProjectId}&search=${search}&page=${page}&limit=${pageSize}`;
-    const res = await ApiCall({
-      url,
-      method: "POST",
-      body:{
-        role:[],
-      },
-      signal,
-    });
 
-    if (res?.error) {
+  const fetchUsers = useCallback(
+    async ({ page, append, signal }) => {
+      setLoading(true);
+      setError(false);
+
+      const baseUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/get-users`;
+      const query = new URLSearchParams({
+        search: debouncedSearchValue,
+        page,
+        limit: pageSize,
+        ...(type !== "all" && { boardId: activeProjectId }),
+      });
+
+      const res = await ApiCall({
+        url: `${baseUrl}?${query.toString()}`,
+        method: "POST",
+        body: { role: [] },
+        signal,
+      });
+
+      if (res.aborted) {
+        return;
+      }
+
+      if (res?.error) {
+        setError(true);
+        hasFetchedOnce.current = false;
+        setLoading(false);
+        showToast({
+          toastId,
+          type: "error",
+          message: res.error?.message || "Failed to get users",
+        });
+        return;
+      }
+
+      const { users, totalUsers: total, page: resPage, limit } = res.data;
+      const formattedUsers = convertIdFields(users || []);
+      setTotalUsers(total || 0);
+      setPage(resPage);
+      setPageSize(limit);
+
+      setAllUsers((prev) => {
+        const combined = append
+          ? [...prev, ...formattedUsers]
+          : [...formattedUsers];
+        const deduped = Array.from(
+          new Map(combined.map((u) => [u.id, u])).values()
+        );
+        hasFetchedOnce.current = true;
+        return deduped;
+      });
+
+      setHasMore(resPage * limit < total);
       setLoading(false);
-      hasFetchedOnce.current=false;
-      setError(true);
-      return;
-    }
-    const data = res?.data;
-    const hasMoreUser = data && data?.page * data?.limit < data?.totalUsers;
-    setPage(data?.page);
-    setPageSize(data?.limit);
-    setHasMore(hasMoreUser);
-    setTotalUsers(data?.totalUsers || 0);
-    const formattedUsers = convertIdFields(data?.users || []);
-    const uniqueUsers = Array.from(
-      new Map(formattedUsers.map((user) => [user?.id, user])).values()
-    );
-
-    setAllUsers((prev) => {
-      const combined = append ? [...prev, ...uniqueUsers] : [...uniqueUsers];
-      const deduplicated = Array.from(
-        new Map(combined.map((u) => [u.id, u])).values()
-      );
-      if (hasFetchedOnce) hasFetchedOnce.current = true;
-      return deduplicated;
-    });
-    setLoading(false);
-  };
+    },
+    [activeProjectId, debouncedSearchValue, pageSize, type]
+  );
 
   useEffect(() => {
     const controller = new AbortController();
-    const { signal } = controller;
-    setAllUsers([]);
-    hasFetchedOnce.current = false;
-    getAllUsersFromBackend({
-      signal,
-      search: debouncedSearchValue,
-      page: 1,
-      append: false,
-    });
-
+    fetchUsers({ page: 1, append: false, signal: controller.signal });
     return () => controller.abort();
-  }, [debouncedSearchValue]);
+  }, [debouncedSearchValue, fetchUsers]);
 
   useEffect(() => {
     if (page <= 1) return;
-
     const controller = new AbortController();
-    const { signal } = controller;
-
-    getAllUsersFromBackend({
-      signal,
-      search: debouncedSearchValue,
-      page,
-      pageSize,
-      append: paginationMode === "scroll",
-    });
-
+    fetchUsers({ page, append: true, signal: controller.signal });
     return () => controller.abort();
-  }, [page, debouncedSearchValue, pageSize]);
+  }, [page]);
 
   useEffect(() => {
     if (paginationMode !== "scroll") return;
     if (inView && hasMore && !loading) {
       setPage((prev) => prev + 1);
     }
-  }, [inView, hasMore, loading]);
+  }, [inView, hasMore, loading, paginationMode]);
 
-  const handleSearchValueChange = (e) => {
+  const handleSearchValueChange = useCallback((e) => {
     setSearchValue(e.target.value);
-  };
+    setPage(0);
+    setAllUsers([]);
+    hasFetchedOnce.current = false;
+  }, []);
+
+  const resetAndFetch = useCallback(() => {
+    setSearchValue("");
+    setAllUsers([]);
+    setPage(1);
+    hasFetchedOnce.current = false;
+  }, []);
 
   return {
     allUsers,
     loadingAllUsers: loading,
     errorAllUsers: error,
-    helperTextAllUsers: helperText,
     searchValue,
-    getAllUsersFromBackend,
     handleSearchValueChange,
     setSearchValue,
     setPage,
@@ -148,6 +137,7 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
     pageSize,
     hasFetchedOnce: hasFetchedOnce.current,
     resetAndFetch,
+    getAllUsersFromBackend: fetchUsers,
   };
 };
 

@@ -96,17 +96,8 @@ const CreateProjectDialog = ({
     if (!open && allUsers?.length > 0) {
       setSearchValue("");
       setAllUsers([]);
-      setPage(1);
+      setPage(0);
     }
-  }, [open]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const { signal } = controller;
-    if (open && allUsers?.length === 0) {
-      getAllUsersFromBackend(signal);
-    }
-    return () => controller.abort();
   }, [open]);
 
   const handleAutoCompleteClose = () => {
@@ -151,7 +142,7 @@ const CreateProjectDialog = ({
               fullWidth={true}
               multiple={true}
               value={selectedUsers}
-              loading={loadingAllUsers && page <= 1}
+              loading={loadingAllUsers || page === 0}
               options={filteredUsers}
               filterOptions={(options) => options}
               getOptionLabel={(option) =>

@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { getAuthTokenFromCookies } from '.';
+import axios from "axios";
+import { getAuthTokenFromCookies } from ".";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -7,13 +7,11 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = typeof window !== 'undefined'
-      ? getAuthTokenFromCookies()
-      : null;
+    const token =
+      typeof window !== "undefined" ? getAuthTokenFromCookies() : null;
 
-       // Skip setting content-type for FormData, let browser handle it
     if (!(config.data instanceof FormData)) {
-      config.headers['Content-Type'] = 'application/json';
+      config.headers["Content-Type"] = "application/json";
     }
 
     if (token) {

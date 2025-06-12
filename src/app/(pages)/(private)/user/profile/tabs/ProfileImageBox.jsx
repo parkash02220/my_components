@@ -12,20 +12,19 @@ const ProfileImageBox = ({
 }) => {
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        console.log(":::reader",reader)
         setSelectedImage(reader.result);
         setCropDialogOpen(true);
       };
       reader.readAsDataURL(file);
     }
   };
-  
+
   const handleCropComplete = (croppedBlob) => {
     setCropDialogOpen(false);
     handleImageUpload(croppedBlob);
@@ -34,16 +33,16 @@ const ProfileImageBox = ({
   const handleCropClose = () => {
     setSelectedImage(null);
     setCropDialogOpen(false);
-  }
-  
+  };
+
   return (
     <>
-    <CropImageDialog 
-    imageSrc={selectedImage}
-    open={cropDialogOpen}
-    onClose={handleCropClose}
-    onCropComplete={handleCropComplete}
-    />
+      <CropImageDialog
+        imageSrc={selectedImage}
+        open={cropDialogOpen}
+        onClose={handleCropClose}
+        onCropComplete={handleCropComplete}
+      />
       <Box
         sx={{
           background: "#FFFFFF",

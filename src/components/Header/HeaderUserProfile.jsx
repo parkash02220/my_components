@@ -1,10 +1,13 @@
+import { useAppContext } from "@/context/App/AppContext";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import useGetActiveUser from "@/hooks/user/activeUser/useGetActiveUser";
 const { IconButton, Typography, Box } = require("@mui/material");
 const { useState } = require("react");
 const { default: ProfileDrawer } = require("./ProfileDrawer");
 
-const HeaderUserProfile = ({ activeUser }) => {
+const HeaderUserProfile = () => {
+  const { state } = useAppContext();
+  const { activeUser, loadingActiveUser } = state;
   const { isMd, isSm, isXs } = useBreakpointFlags();
   const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
 
@@ -42,7 +45,7 @@ const HeaderUserProfile = ({ activeUser }) => {
           },
         }}
       >
-        {activeUser ? (
+        {activeUser?.avatar && !loadingActiveUser ? (
           <Box
             sx={{
               minWidth: "unset",
@@ -155,9 +158,9 @@ const HeaderUserProfile = ({ activeUser }) => {
               }}
             >
               <img
-                src={activeUser?.avatar || '/dummyUser.svg'}
+                src={activeUser?.avatar || "/dummyUser.svg"}
                 alt="avatar"
-                 referrerPolicy="no-referrer"
+                referrerPolicy="no-referrer"
                 style={{
                   width: "100%",
                   height: "100%",

@@ -3,7 +3,7 @@
 import { AppBar, Box, IconButton, Typography } from "@mui/material";
 import { useAppContext } from "@/context/App/AppContext";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
-import HeaderProjectName from '@/components/Header/HeaderProjectName/index';
+import HeaderProjectName from "@/components/Header/HeaderProjectName/index";
 import HeaderNotifications from "./HeaderNotifications";
 import HeaderUserProfile from "./HeaderUserProfile";
 import { useNavigationInfo } from "@/hooks/common/useNavigationInfo";
@@ -11,8 +11,6 @@ import { useState } from "react";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 export default function Header() {
   const { isMd, isSm, isXs } = useBreakpointFlags();
-  const { state } = useAppContext();
-  const { activeUser } = state;
   const { projects } = useProjectsContext()?.state;
   const { parent, child } = useNavigationInfo({ projects });
   return (
@@ -77,11 +75,11 @@ export default function Header() {
                 pr: 1,
                 cursor: "pointer",
                 borderRadius: "12px",
-                gap: 1,
+                // gap: 1,
               }}
             >
               <HeaderNotifications />
-              <HeaderUserProfile activeUser={activeUser} />
+              <HeaderUserProfile />
             </Box>
           </Box>
         </Box>

@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { initialState } from "./initialState";
 import * as actions from "./action";
+import { getFullName } from "@/utils";
 const AppContext = createContext();
 
 function projectsReducer(state = initialState, action) {
@@ -23,6 +24,7 @@ function projectsReducer(state = initialState, action) {
     case actions.SET_ACTIVE_USER_SUCCESS:
       let activeUser = payload;
       activeUser.isAdmin = payload?.role === "admin";
+      activeUser.fullName = getFullName(payload?.firstName, payload?.lastName);
       return {
         ...state,
         activeUser,

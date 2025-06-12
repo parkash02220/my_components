@@ -73,11 +73,6 @@ const AssignAllUsersDialog = ({
     }
   }, [open]);
 
-  useEffect(() => {
-    if (open) {
-      resetAndFetch();
-    }
-  }, [open]);
   return (
     <>
       <Box

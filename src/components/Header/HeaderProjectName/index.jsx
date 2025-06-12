@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
-import AssignAllUsersDialog from './AssignAllUsersDIalog/index';
-import * as actions from '@/context/Projects/action';
+import AssignAllUsersDialog from "./AssignAllUsersDIalog/index";
+import * as actions from "@/context/Projects/action";
 import { useAppContext } from "@/context/App/AppContext";
 const {
   Box,
@@ -24,18 +24,18 @@ const { useState, useEffect, useRef } = require("react");
 
 const HeaderProjectName = () => {
   const { isMd, isSm, isXs } = useBreakpointFlags();
-  const { state,dispatch } = useProjectsContext();
+  const { state, dispatch } = useProjectsContext();
   const { activeProject, loadingActiveProject } = state;
   const router = useRouter();
   const inputRef = useRef();
-  const {activeUser} = useAppContext().state;
+  const { activeUser } = useAppContext().state;
   const [showProjectNameTextfield, setShowProjectNameTextfield] =
     useState(false);
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
-  const [openEditUsersPopup,setOpenEditUsersPopup] = useState(false);
+  const [openEditUsersPopup, setOpenEditUsersPopup] = useState(false);
   const handleClose = () => {
     setOpenEditUsersPopup(false);
-  }
+  };
   const {
     loadingUpdateProjectName,
     errorUpdateProjectName,
@@ -80,39 +80,39 @@ const HeaderProjectName = () => {
     setDeletePopupOpen(false);
     router.push("/home");
   };
-  const handleEditUsers= () => {
+  const handleEditUsers = () => {
     handleMenuClose();
-        setOpenEditUsersPopup(true);
-  }
+    setOpenEditUsersPopup(true);
+  };
   const handleChatStart = () => {
     router.push(`/projects/${activeProject?.id}?chat=true`);
-     handleMenuClose();
-  }
+    handleMenuClose();
+  };
   const menuItems = [
     {
       label: "Rename",
       icon: "/rename.svg",
       onClick: handleProjectNameStartEdidting,
-      role:['admin'],
+      role: ["admin"],
     },
     {
-        label: "Edit users",
-        icon: "/usersIcon.svg",
-        onClick: handleEditUsers,
-        role:['admin'],
-      },
-      {
-        label: "Chat",
-        icon: "/chatIcon.svg",
-        onClick: handleChatStart,
-        role:['admin','user'],
-      },
+      label: "Edit users",
+      icon: "/usersIcon.svg",
+      onClick: handleEditUsers,
+      role: ["admin"],
+    },
+    {
+      label: "Chat",
+      icon: "/chatIcon.svg",
+      onClick: handleChatStart,
+      role: ["admin", "user"],
+    },
     {
       label: "Delete",
       icon: "/delete.svg",
       onClick: handleDeletePopupOpen,
       color: "#FF5630",
-      role:['admin'],
+      role: ["admin"],
     },
   ];
   useEffect(() => {
@@ -122,12 +122,14 @@ const HeaderProjectName = () => {
   }, [showProjectNameTextfield]);
   return (
     <>
-    <AssignAllUsersDialog 
-    open={openEditUsersPopup}
-    handleClose={handleClose}
-    assignedUsers={activeProject?.user_id}
-    projectId={activeProject?.id}
-    />
+      {openEditUsersPopup && (
+        <AssignAllUsersDialog
+          open={openEditUsersPopup}
+          handleClose={handleClose}
+          assignedUsers={activeProject?.user_id}
+          projectId={activeProject?.id}
+        />
+      )}
       <ConfirmationPopup
         title={"Delete Project"}
         handleClose={handleDeletePopupClose}
@@ -216,42 +218,44 @@ const HeaderProjectName = () => {
           },
         }}
       >
-        {menuItems?.filter((item)=> item.role.some((r)=> r === activeUser?.role)).map((item) => (
-          <MenuItem
-            key={item.label}
-            onClick={item.onClick}
-            sx={{
-              backgroundColor: "transparent",
-              margin: "0px",
-              marginInline: "3px",
-              cursor: "pointer",
-              padding: "6px 8px",
-              borderRadius: "6px",
-              minHeight: isXs ? 40 : 48,
-            }}
-          >
-            <Box
-              display="flex"
-              gap={2}
-              alignItems="center"
-              minWidth={isXs ? "130px" : "140px"}
-              mb={isXs ? "" : "4px"}
+        {menuItems
+          ?.filter((item) => item.role.some((r) => r === activeUser?.role))
+          .map((item) => (
+            <MenuItem
+              key={item.label}
+              onClick={item.onClick}
+              sx={{
+                backgroundColor: "transparent",
+                margin: "0px",
+                marginInline: "3px",
+                cursor: "pointer",
+                padding: "6px 8px",
+                borderRadius: "6px",
+                minHeight: isXs ? 40 : 48,
+              }}
             >
-              <img
-                src={item.icon}
-                alt={item.label.toLowerCase()}
-                width={isXs ? 16 : 20}
-                height={isXs ? 16 : 20}
-              />
-              <Typography
-                fontSize={isXs ? 13 : 14}
-                color={item.color || "inherit"}
+              <Box
+                display="flex"
+                gap={2}
+                alignItems="center"
+                minWidth={isXs ? "130px" : "140px"}
+                mb={isXs ? "" : "4px"}
               >
-                {item.label}
-              </Typography>
-            </Box>
-          </MenuItem>
-        ))}
+                <img
+                  src={item.icon}
+                  alt={item.label.toLowerCase()}
+                  width={isXs ? 16 : 20}
+                  height={isXs ? 16 : 20}
+                />
+                <Typography
+                  fontSize={isXs ? 13 : 14}
+                  color={item.color || "inherit"}
+                >
+                  {item.label}
+                </Typography>
+              </Box>
+            </MenuItem>
+          ))}
       </Menu>
     </>
   );

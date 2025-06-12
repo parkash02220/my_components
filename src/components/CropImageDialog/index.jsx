@@ -89,7 +89,9 @@ const CropImageDialog = ({ imageSrc, open, onClose, onCropComplete }) => {
           justifyContent="center"
           gap={2}
         >
-          <Typography fontSize={12}>Zoom</Typography>
+          <Typography fontSize={12} fontWeight={700} color="#1C252E">
+            Zoom
+          </Typography>
           <Slider
             orientation="vertical"
             value={zoom}
@@ -156,7 +158,7 @@ const CropImageDialog = ({ imageSrc, open, onClose, onCropComplete }) => {
             borderRadius="8px"
             padding={"5px 12px"}
             border={"1px solid rgba(145,158,171,0.32)"}
-            fontWeight={700}    
+            fontWeight={700}
           >
             Upload
           </MyButton>

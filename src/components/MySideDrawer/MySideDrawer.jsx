@@ -135,14 +135,16 @@ export default function MySideDrawer({ open, setOpen }) {
   // if (!hasMounted) return null;
   return (
     <>
-      <Box className="createProjectDialog">
-        <CreateProjectDialog
-          open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
-          onCreate={handleCreateProject}
-          loadingCreateProject={loading}
-        />
-      </Box>
+      {dialogOpen && (
+        <Box className="createProjectDialog">
+          <CreateProjectDialog
+            open={dialogOpen}
+            onClose={() => setDialogOpen(false)}
+            onCreate={handleCreateProject}
+            loadingCreateProject={loading}
+          />
+        </Box>
+      )}
       <Box sx={{ display: "flex", position: "relative" }}>
         {!isMd ? (
           <IconButton
