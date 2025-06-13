@@ -1,9 +1,9 @@
 import { Box, Checkbox, IconButton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import EditUserPopup from "../list-users/EditUserPopup";
 import MyTable from "@/components/MyTable";
 import useDeleteUser from "@/hooks/user/useDeleteUser";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
+import EditUserPopup from "../EditUserPopup";
 
 const TableUser = ({
   data,

@@ -220,6 +220,11 @@ const UserDetailsForm = ({ formik, type }) => {
     return (
       <>
         <Grid container spacing={isXs ? 2 : 3}>
+          <Grid size={12}>
+            <Typography color="#1C252E" fontWeight={700}>
+              Basic details :
+            </Typography>
+          </Grid>
           <Grid size={6}>
             <MyTextField
               name="firstName"
@@ -427,6 +432,127 @@ const UserDetailsForm = ({ formik, type }) => {
               )}
             </FormControl>
           </Grid>
+          <Grid size={12}>
+            <Typography color="#1C252E" fontWeight={700}>
+              Other details :
+            </Typography>
+          </Grid>
+          <Grid size={6}>
+            <MyTextField
+              name="department"
+              value={formik?.values?.department}
+              onChange={formik.handleChange}
+              error={
+                formik.touched?.department && Boolean(formik.errors?.department)
+              }
+              helperText={formik.errors?.department}
+              label="Department"
+              minWidth="50px"
+              fullWidth={true}
+              borderRadius="8px"
+              borderColor="rgba(145,158,171,0.2)"
+              hoverBorderColor={"#1C252E"}
+              acitveBorder={"2px solid #1C252E"}
+              shrink={true}
+              labelColor="#637381"
+              activeLabelColor={"#1C252E"}
+              labelFontWeight={600}
+              color={"#1C252E"}
+            />
+          </Grid>
+          <Grid size={6}>
+            <MyTextField
+              name="designation"
+              value={formik?.values?.designation}
+              onChange={formik.handleChange}
+              error={
+                formik.touched?.designation &&
+                Boolean(formik.errors?.designation)
+              }
+              helperText={formik.errors?.designation}
+              label="Designation"
+              minWidth="50px"
+              fullWidth={true}
+              borderRadius="8px"
+              borderColor="rgba(145,158,171,0.2)"
+              hoverBorderColor={"#1C252E"}
+              acitveBorder={"2px solid #1C252E"}
+              shrink={true}
+              labelColor="#637381"
+              activeLabelColor={"#1C252E"}
+              labelFontWeight={600}
+              color={"#1C252E"}
+            />
+          </Grid>
+          <Grid size={6}>
+            <MyTextField
+              name="phone"
+              value={formik?.values?.phone}
+              onChange={formik.handleChange}
+              error={formik.touched?.phone && Boolean(formik.errors?.phone)}
+              helperText={formik.errors?.phone}
+              label="Phone number"
+              minWidth="50px"
+              fullWidth={true}
+              borderRadius="8px"
+              borderColor="rgba(145,158,171,0.2)"
+              hoverBorderColor={"#1C252E"}
+              acitveBorder={"2px solid #1C252E"}
+              shrink={true}
+              labelColor="#637381"
+              activeLabelColor={"#1C252E"}
+              labelFontWeight={600}
+              color={"#1C252E"}
+            />
+          </Grid>
+          <Grid size={6}>
+            <MyTextField
+              name="employeeId"
+              value={formik?.values?.employeeId}
+              onChange={formik.handleChange}
+              error={
+                formik.touched?.employeeId && Boolean(formik.errors?.employeeId)
+              }
+              helperText={formik.errors?.employeeId}
+              label="EmployeeId"
+              minWidth="50px"
+              fullWidth={true}
+              borderRadius="8px"
+              borderColor="rgba(145,158,171,0.2)"
+              hoverBorderColor={"#1C252E"}
+              acitveBorder={"2px solid #1C252E"}
+              shrink={true}
+              labelColor="#637381"
+              activeLabelColor={"#1C252E"}
+              labelFontWeight={600}
+              color={"#1C252E"}
+            />
+          </Grid>
+          <Grid size={6}>
+            <MyTextField
+              name="dateOfBirth"
+              value={formik?.values?.dateOfBirth}
+              onChange={formik.handleChange}
+              error={
+                formik.touched?.dateOfBirth &&
+                Boolean(formik.errors?.dateOfBirth)
+              }
+              helperText={formik.errors?.dateOfBirth}
+              label="Date of birth"
+              type="date"
+              minWidth="50px"
+              fullWidth={true}
+              borderRadius="8px"
+              borderColor="rgba(145,158,171,0.2)"
+              hoverBorderColor={"#1C252E"}
+              acitveBorder={"2px solid #1C252E"}
+              shrink={true}
+              labelColor="#637381"
+              activeLabelColor={"#1C252E"}
+              labelFontWeight={600}
+              color={"#1C252E"}
+            />
+          </Grid>
         </Grid>
       </>
     );
@@ -434,6 +560,11 @@ const UserDetailsForm = ({ formik, type }) => {
     return (
       <>
         <Grid container spacing={isXs ? 2 : 3}>
+          <Grid size={12}>
+            <Typography color="#1C252E" fontWeight={700}>
+              Basic details :
+            </Typography>
+          </Grid>
           <Grid size={6}>
             <MyTextField
               name="firstName"
@@ -556,28 +687,6 @@ const UserDetailsForm = ({ formik, type }) => {
               )}
             </FormControl>
           </Grid>
-
-          {/* <Grid size={12}>
-          <MyTextField
-            name="email"
-            value={formik?.values?.email}
-            onChange={formik.handleChange}
-            error={formik.touched?.email && Boolean(formik.errors?.email)}
-            helperText={formik.errors?.email}
-            label="Email address"
-            minWidth="50px"
-            fullWidth={true}
-            borderRadius="8px"
-            borderColor="rgba(145,158,171,0.2)"
-            hoverBorderColor={"#1C252E"}
-            acitveBorder={"2px solid #1C252E"}
-            shrink={true}
-            labelColor="#637381"
-            activeLabelColor={"#1C252E"}
-            labelFontWeight={600}
-            color={"#1C252E"}
-          />
-        </Grid> */}
           <Grid size={12}>
             <FormControl
               component="fieldset"
@@ -640,6 +749,127 @@ const UserDetailsForm = ({ formik, type }) => {
                 </Typography>
               )}
             </FormControl>
+          </Grid>
+          <Grid size={12}>
+            <Typography color="#1C252E" fontWeight={700}>
+              Other details :
+            </Typography>
+          </Grid>
+          <Grid size={6}>
+            <MyTextField
+              name="department"
+              value={formik?.values?.department}
+              onChange={formik.handleChange}
+              error={
+                formik.touched?.department && Boolean(formik.errors?.department)
+              }
+              helperText={formik.errors?.department}
+              label="Department"
+              minWidth="50px"
+              fullWidth={true}
+              borderRadius="8px"
+              borderColor="rgba(145,158,171,0.2)"
+              hoverBorderColor={"#1C252E"}
+              acitveBorder={"2px solid #1C252E"}
+              shrink={true}
+              labelColor="#637381"
+              activeLabelColor={"#1C252E"}
+              labelFontWeight={600}
+              color={"#1C252E"}
+            />
+          </Grid>
+          <Grid size={6}>
+            <MyTextField
+              name="designation"
+              value={formik?.values?.designation}
+              onChange={formik.handleChange}
+              error={
+                formik.touched?.designation &&
+                Boolean(formik.errors?.designation)
+              }
+              helperText={formik.errors?.designation}
+              label="Designation"
+              minWidth="50px"
+              fullWidth={true}
+              borderRadius="8px"
+              borderColor="rgba(145,158,171,0.2)"
+              hoverBorderColor={"#1C252E"}
+              acitveBorder={"2px solid #1C252E"}
+              shrink={true}
+              labelColor="#637381"
+              activeLabelColor={"#1C252E"}
+              labelFontWeight={600}
+              color={"#1C252E"}
+            />
+          </Grid>
+          <Grid size={6}>
+            <MyTextField
+              name="phone"
+              value={formik?.values?.phone}
+              onChange={formik.handleChange}
+              error={formik.touched?.phone && Boolean(formik.errors?.phone)}
+              helperText={formik.errors?.phone}
+              label="Phone number"
+              minWidth="50px"
+              fullWidth={true}
+              borderRadius="8px"
+              borderColor="rgba(145,158,171,0.2)"
+              hoverBorderColor={"#1C252E"}
+              acitveBorder={"2px solid #1C252E"}
+              shrink={true}
+              labelColor="#637381"
+              activeLabelColor={"#1C252E"}
+              labelFontWeight={600}
+              color={"#1C252E"}
+            />
+          </Grid>
+          <Grid size={6}>
+            <MyTextField
+              name="employeeId"
+              value={formik?.values?.employeeId}
+              onChange={formik.handleChange}
+              error={
+                formik.touched?.employeeId && Boolean(formik.errors?.employeeId)
+              }
+              helperText={formik.errors?.employeeId}
+              label="EmployeeId"
+              minWidth="50px"
+              fullWidth={true}
+              borderRadius="8px"
+              borderColor="rgba(145,158,171,0.2)"
+              hoverBorderColor={"#1C252E"}
+              acitveBorder={"2px solid #1C252E"}
+              shrink={true}
+              labelColor="#637381"
+              activeLabelColor={"#1C252E"}
+              labelFontWeight={600}
+              color={"#1C252E"}
+            />
+          </Grid>
+          <Grid size={6}>
+            <MyTextField
+              name="dateOfBirth"
+              value={formik?.values?.dateOfBirth}
+              onChange={formik.handleChange}
+              error={
+                formik.touched?.dateOfBirth &&
+                Boolean(formik.errors?.dateOfBirth)
+              }
+              helperText={formik.errors?.dateOfBirth}
+              label="Date of birth"
+              type="date"
+              minWidth="50px"
+              fullWidth={true}
+              borderRadius="8px"
+              borderColor="rgba(145,158,171,0.2)"
+              hoverBorderColor={"#1C252E"}
+              acitveBorder={"2px solid #1C252E"}
+              shrink={true}
+              labelColor="#637381"
+              activeLabelColor={"#1C252E"}
+              labelFontWeight={600}
+              color={"#1C252E"}
+            />
           </Grid>
         </Grid>
       </>

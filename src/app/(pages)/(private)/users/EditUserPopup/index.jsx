@@ -6,7 +6,9 @@ import useUpdateUser from "@/hooks/user/useUpdateUser";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useFormik } from "formik";
 import { useEffect } from "react";
-import * as Yup from "yup";
+import editUserValidationSchema from "@/validations/editUserValidationSchema";
+import { formikInitialValues, getFormikCompatibleValues } from "./helper";
+
 const EditUserPopup = ({
   title,
   handleClose,
@@ -27,44 +29,24 @@ const EditUserPopup = ({
   const { loadingUpdateUser, errorUpdateUser, updateUser } = useUpdateUser();
   const formik = useFormik({
     enableReinitialize: true,
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      role: "",
-      gender: "",
-      avatar: "",
-    },
-    validationSchema: Yup.object({
-      firstName: Yup.string()
-        .min(3, "First name should be bigger than 2 chars")
-        .required("This field is required"),
-      lastName: Yup.string(),
-      // email: Yup.string()
-      //   .email("invalid email address")
-      //   .required("This field is required"),
-      gender: Yup.string().required("This field is required"),
-    }),
+    initialValues: formikInitialValues,
+    validationSchema: editUserValidationSchema,
     onSubmit: async (values) => {
+      const updatedUser = await updateUser(values, user?.id);
       setData((prev) =>
         prev?.map((data) => {
           if (data?.id === user?.id) {
-            return {
-              ...data,
-              ...values,
-            };
+            return updatedUser;
           }
           return data;
         })
       );
-      delete values?.nameWithAvatar;
-      await updateUser(values, user?.id);
       handleClose();
     },
   });
   useEffect(() => {
     if (open && user) {
-      formik.setValues(user);
+      formik.setValues(getFormikCompatibleValues(user));
     }
   }, [user, open]);
   return (

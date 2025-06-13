@@ -3,7 +3,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import MyTable from "@/components/MyTable";
 import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { getFullName } from "@/utils";
-import EditUserPopup from "./EditUserPopup";
 import { Box, Checkbox, IconButton, Typography } from "@mui/material";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import SelectUserRole from "../components/SelectUserRole";

@@ -1,0 +1,43 @@
+import * as Yup from "yup";
+
+const editUserValidationSchema = Yup.object({
+  firstName: Yup.string()
+    .min(3, "First name should be at least 3 characters")
+    .max(50, "First name should not exceed 50 characters")
+    .matches(/^[a-zA-Z\s]+$/, "First name can only contain letters and spaces")
+    .required("First name is required"),
+
+  lastName: Yup.string()
+    .max(50, "Last name should not exceed 50 characters")
+    .matches(/^[a-zA-Z\s]*$/, "Last name can only contain letters and spaces"),
+
+  role: Yup.string()
+    .oneOf(["admin", "user", "manager", "employee"], "Invalid role")
+    .required("Role is required"),
+
+  gender: Yup.string()
+    .oneOf(["male", "female", "other"], "Invalid gender")
+    .required("Gender is required"),
+
+  department: Yup.string()
+    .max(100, "Department name should not exceed 100 characters")
+    .required("Department is required"),
+
+  designation: Yup.string()
+    .max(100, "Designation should not exceed 100 characters")
+    .required("Designation is required"),
+
+  phone: Yup.string()
+    .matches(/^[6-9]\d{9}$/, "Phone must be a valid 10-digit Indian number")
+    .required("Phone number is required"),
+
+  employeeId: Yup.string()
+    .max(20, "Employee ID should not exceed 20 characters")
+    .required("Employee ID is required"),
+
+  dateOfBirth: Yup.date()
+    .max(new Date(), "Date of birth cannot be in the future")
+    .required("Date of birth is required"),
+});
+
+export default editUserValidationSchema;

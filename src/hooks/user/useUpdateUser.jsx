@@ -1,3 +1,5 @@
+import { convertIdFields } from "@/utils";
+
 const { default: useToast } = require("@/hooks/common/useToast");
 const { ApiCall } = require("@/utils/ApiCall");
 const { useState } = require("react");
@@ -33,6 +35,8 @@ const useUpdateUser = () => {
       type: "success",
       message: "User updted successfully.",
     });
+    const convertedIdResponse = convertIdFields(res?.data?.user);
+    return convertedIdResponse;
   };
 
   return { loadingUpdateUser: loading, errorUpdateUser: error, updateUser };
