@@ -50,6 +50,9 @@ export default function MySelect({
   requiredColor,
   multiple = false,
   menuDesignType = "checkbox",
+  activeLabelColor,
+  labelFontWeight,
+  shrink = false,
   sx,
   ...props
 }) {
@@ -228,26 +231,28 @@ export default function MySelect({
           boxShadow,
           "& .MuiOutlinedInput-root": {
             borderRadius,
-            borderColor: error ? "red" : borderColor,
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              border:
-                hoverBorder ||
-                border ||
-                `1px solid ${error ? "red" : hoverBorderColor || borderColor}`,
+              borderWidth: "1px",
+              borderColor: hoverBorderColor || borderColor,
             },
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              border:
-                focusedBorder ||
-                border ||
-                `1px solid ${error ? "red" : borderColor}`,
+              borderWidth: "2px",
+              borderColor: focusedBorder ? undefined : borderColor,
             },
           },
           "& .MuiInputLabel-root": {
             fontSize: labelFontSize,
-            color: error ? "red" : disabled ? "#a9a9a9" : labelColor,
+            transform: shrink ? "translate(14px, -9px) scale(0.75)" : undefined,
+            backgroundColor: "white",
+            px: "4px",
+          },
+          "& .MuiInputLabel-shrink": {
+            transform: "translate(14px, -9px) scale(0.75)",
+            backgroundColor: "white",
+            px: "4px",
           },
           "& .MuiInputLabel-root.Mui-focused": {
-            color: error ? "red" : labelColor,
+            color: error ? "red" : activeLabelColor || labelColor,
           },
           "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
             {
@@ -255,10 +260,14 @@ export default function MySelect({
             },
         }}
       >
-        <InputLabel id="custom-select-label">
+        <InputLabel id="custom-select-label" shrink={shrink}>
           {required ? (
             <Box display={"flex"} gap={"2px"}>
-              <Typography fontSize={labelFontSize} color={labelColor}>
+              <Typography
+                fontSize={labelFontSize}
+                color={labelColor}
+                fontWeight={labelFontWeight}
+              >
                 {label}
               </Typography>{" "}
               <Typography mt={"-4px"} color={requiredColor || labelColor}>

@@ -1,6 +1,7 @@
+
 import * as Yup from "yup";
 
-const createUserValidationSchema = Yup.object({
+const editActiveUserValidationSchema = Yup.object({
   firstName: Yup.string()
     .min(3, "First name should be at least 3 characters")
     .max(50, "First name should not exceed 50 characters")
@@ -9,15 +10,7 @@ const createUserValidationSchema = Yup.object({
 
   lastName: Yup.string()
     .max(50, "Last name should not exceed 50 characters")
-    .matches(/^[a-zA-Z\s]*$/, "Last name can only contain letters and spaces (optional)"),
-
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-
-  role: Yup.string()
-    .oneOf(["admin", "user", "manager", "employee"], "Invalid role")
-    .required("Role is required"),
+    .matches(/^[a-zA-Z\s]*$/, "Last name can only contain letters and spaces"),
 
   gender: Yup.string()
     .oneOf(["male", "female", "other"], "Invalid gender")
@@ -39,4 +32,4 @@ const createUserValidationSchema = Yup.object({
     .max(new Date(), "Date of birth cannot be in the future"),
 });
 
-export default createUserValidationSchema;
+export default editActiveUserValidationSchema;

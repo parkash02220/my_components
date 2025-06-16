@@ -1,4 +1,4 @@
-import UserDetailsForm from "@/app/(pages)/(public)/signup/UserDetailsForm";
+
 import MyButton from "@/components/MyButton/MyButton";
 import MyDialog from "@/components/MyDialog/MyDialog";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
@@ -8,7 +8,9 @@ import { useFormik } from "formik";
 import { useEffect } from "react";
 import editUserValidationSchema from "@/validations/editUserValidationSchema";
 import { formikInitialValues, getFormikCompatibleValues } from "./helper";
-
+import _ from "lodash";
+import useToast from "@/hooks/common/useToast";
+import { UpdateUserForm } from "@/components/forms";
 const EditUserPopup = ({
   title,
   handleClose,
@@ -26,12 +28,21 @@ const EditUserPopup = ({
 }) => {
   const { isXs } = useBreakpointFlags();
   const theme = useTheme();
+  const {showToast} = useToast();
   const { loadingUpdateUser, errorUpdateUser, updateUser } = useUpdateUser();
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: formikInitialValues,
     validationSchema: editUserValidationSchema,
     onSubmit: async (values) => {
+      const originalValues = getFormikCompatibleValues(user);
+      if(_.isEqual(originalValues,values)){
+          showToast({
+            type:'info',
+            message:"No changes found",
+          });
+          return;
+      }
       const updatedUser = await updateUser(values, user?.id);
       setData((prev) =>
         prev?.map((data) => {
@@ -62,7 +73,7 @@ const EditUserPopup = ({
         width={isXs ? "100%" : "auto"}
         content={
           <Box pt={2} pb={2}>
-            {<UserDetailsForm formik={formik} type={"update_user"} />}
+            {<UpdateUserForm formik={formik} />}
           </Box>
         }
         actions={

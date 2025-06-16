@@ -1,15 +1,42 @@
+import ConfirmationPopup from "@/components/ConfirmationPopup";
+import MyTooltip from "@/components/MyTooltip/MyTooltip";
+import useClearNotifications from "@/hooks/notifications/useClearNotifications";
 import useMarkAllNotificationAsRead from "@/hooks/notifications/useMarkAllNotificationAsRead";
 import { Box, IconButton, Typography } from "@mui/material";
+import { useState } from "react";
 
 
 export const Header = ({ activeTask,handleDrawer,currentTab }) => {
+  const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const showMarkAllAsReadButton = currentTab === "unread";
   const {loadingMarkAllAsRead,errorMarkAllAsRead,markAllNotificationsAsRead} = useMarkAllNotificationAsRead();
+  const {loading:loadingDeleteNotifications,error:errorDeleteNotifications,clearNotification} = useClearNotifications();
   const handleMarkAllAsReadButton = async () => {
         await markAllNotificationsAsRead();
   }
+  const handleDeletePopupOpen = () => {
+    setDeletePopupOpen(true);
+  }
+  const handleDeletePopupClose = () => {
+    setDeletePopupOpen(false);
+  }
+  const handleNotificationsDeleteButton = async () => {
+       await clearNotification();
+       handleDeletePopupClose();
+  };
   return (
     <>
+       {deletePopupOpen && (
+        <ConfirmationPopup
+          title={"Delete Notifications"}
+          handleClose={handleDeletePopupClose}
+          open={deletePopupOpen}
+          message={"all notifications."}
+          type={"delete"}
+          submitAction={handleNotificationsDeleteButton}
+          loading={loadingDeleteNotifications}
+        />
+      )}
       <Box display={'flex'} padding={"16px 8px 16px 20px"} minHeight={68} alignItems={'center'}>
         <Box flexGrow={1}>
             <Typography color="#1C252E" variant="h6" fontSize={18} fontWeight={600}>Notifications</Typography>
@@ -38,7 +65,9 @@ export const Header = ({ activeTask,handleDrawer,currentTab }) => {
               </IconButton>
             )
           }
-            {/* <IconButton
+            <MyTooltip title={"Delete notifications"} placement="bottom">
+            <IconButton
+            onClick={handleDeletePopupOpen}
             sx={{
                 display:'flex',
                 alignItems:'center',
@@ -54,8 +83,9 @@ export const Header = ({ activeTask,handleDrawer,currentTab }) => {
                 },
             }}
             >
-              <img src="/settingIcon.svg" alt="mark all as read" style={{width:"20px",height:"20px",flexShrink:0}} />
-            </IconButton> */}
+              <img src="/delete.svg" alt="mark all as read" style={{width:"20px",height:"20px",flexShrink:0}} />
+            </IconButton>
+            </MyTooltip>
         </Box>
       </Box>
     </>

@@ -39,6 +39,7 @@ const ListUsers = () => {
     setPageSize,
     pageSize,
     hasFetchedOnce,
+    handlePageSizeChange,
   } = useGetAllUsers("all", "table");
 
   const enhancedUsers = useMemo(() => {
@@ -152,6 +153,7 @@ const ListUsers = () => {
             debouncedSearchValue={debouncedSearchValue}
             pageSize={pageSize}
             hasFetchedOnce={hasFetchedOnce}
+            handlePageSizeChange={handlePageSizeChange}
           />
         </Box>
       </Box>

@@ -22,8 +22,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
-import SignUpForm from "./UserDetailsForm";
-import UserDetailsForm from "./UserDetailsForm";
+import { SignUpForm } from "@/components/forms";
 const SignUp = () => {
   const router = useRouter();
   const { isXs, isMd, isLg } = useBreakpointFlags();
@@ -241,7 +240,7 @@ const SignUp = () => {
             </Box>
             <form onSubmit={formik.handleSubmit}>
               <Box display={"flex"} flexDirection={"column"}>
-                {<UserDetailsForm formik={formik} type={'signup'}/>}
+                {<SignUpForm formik={formik} type={'signup'}/>}
                   <MyButton
                     minWidth="50px"
                     fullWidth={true}

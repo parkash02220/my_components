@@ -179,3 +179,20 @@ export const getInitialsOfString = (input) => {
 
   return initials.join("");
 };
+
+export const getCalendarMinMaxDate = (minYear,maxYear) => {
+  const today = new Date();
+  const minDate = new Date(
+    today.getFullYear() - maxYear,
+    today.getMonth(),
+    today.getDate()
+  );
+  const maxDate = new Date(
+    today.getFullYear() - minYear,
+    today.getMonth(),
+    today.getDate()
+  );
+  return {minDate,maxDate}
+}
+
+export const formatDate = (date) => date.toISOString().split("T")[0];

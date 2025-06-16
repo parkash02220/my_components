@@ -20,24 +20,19 @@ const editUserValidationSchema = Yup.object({
     .required("Gender is required"),
 
   department: Yup.string()
-    .max(100, "Department name should not exceed 100 characters")
-    .required("Department is required"),
+    .max(100, "Department name should not exceed 100 characters"),
 
   designation: Yup.string()
-    .max(100, "Designation should not exceed 100 characters")
-    .required("Designation is required"),
+    .max(100, "Designation should not exceed 100 characters"),
 
   phone: Yup.string()
-    .matches(/^[6-9]\d{9}$/, "Phone must be a valid 10-digit Indian number")
-    .required("Phone number is required"),
+    .matches(/^[6-9]\d{9}$/, "Phone must be a valid 10-digit Indian number"),
 
   employeeId: Yup.string()
-    .max(20, "Employee ID should not exceed 20 characters")
-    .required("Employee ID is required"),
+    .max(20, "Employee ID should not exceed 20 characters"),
 
   dateOfBirth: Yup.date()
-    .max(new Date(), "Date of birth cannot be in the future")
-    .required("Date of birth is required"),
+    .max(new Date(), "Date of birth cannot be in the future"),
 });
 
 export default editUserValidationSchema;

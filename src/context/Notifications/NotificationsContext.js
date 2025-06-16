@@ -29,6 +29,9 @@ function notificationsReducer(state = initialState, action) {
           ...state.notifications,
           all: { data: [], page: 0, hasMore: true },
           unread: { data: [], page: 0, hasMore: true },
+          pageSize:10,
+          totalCount:0,
+          unReadCount:0,
         },
       };
     }

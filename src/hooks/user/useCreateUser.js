@@ -46,7 +46,6 @@ const useCreateUser = () => {
         type: "success",
         message: "User created successfully",
       });
-      console.log(":::newly created user",res?.data)
       return true;
     },
     [showToast]

@@ -1,6 +1,5 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import ProfileImageBox from "./ProfileImageBox";
-import UserDetailsForm from "@/app/(pages)/(public)/signup/UserDetailsForm";
 import useUpdateUser from "@/hooks/user/useUpdateUser";
 import { getActiveUser } from "@/utils";
 import useDeleteUser from "@/hooks/user/useDeleteUser";
@@ -9,8 +8,12 @@ import useDeleteActiveUser from "@/hooks/user/activeUser/useDeleteActiveUser";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import useUpdateActiveUser from "@/hooks/user/activeUser/useUpdateActiveUser";
 import useUploadProfileImage from "@/hooks/user/activeUser/useUploadProfileImage";
-
-const GeneralTab = ({ formik, isAdmin, avatar }) => {
+import _ from "lodash";
+import { getFormikCompatibleValues } from "../helper";
+import useToast from "@/hooks/common/useToast";
+import { EditProfileForm } from "@/components/forms";
+const GeneralTab = ({ formik, isAdmin, avatar,activeUser }) => {
+  const {showToast} = useToast();
   const { uploadProfileImage, loadingUploadProfile, progress } =
     useUploadProfileImage();
   const { loadingUpdateActiveUser, errorUpdateActiveUser, updateActiveUser } =
@@ -20,6 +23,11 @@ const GeneralTab = ({ formik, isAdmin, avatar }) => {
     useDeleteActiveUser();
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const handleUpdateUser = async () => {
+    const originalDetails = getFormikCompatibleValues(activeUser);
+    if(_.isEqual(originalDetails,formik.values)){
+      showToast({type:"info",message:"No changes found."});
+      return;
+    }
     await updateActiveUser(formik.values);
   };
 
@@ -116,9 +124,8 @@ const GeneralTab = ({ formik, isAdmin, avatar }) => {
                   >
                     <Box>
                       {
-                        <UserDetailsForm
+                        <EditProfileForm
                           formik={formik}
-                          type={"edit_profile"}
                         />
                       }
                       <Box

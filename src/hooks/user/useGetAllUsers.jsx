@@ -27,7 +27,7 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
   const { ref: loadMoreRef, inView } = useInView();
 
   const fetchUsers = useCallback(
-    async ({ page, append, signal }) => {
+    async ({ page, append, signal,pageSize=10 }) => {
       setLoading(true);
       setError(false);
 
@@ -87,16 +87,29 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetchUsers({ page: 1, append: false, signal: controller.signal });
+    fetchUsers({ page: 1, append: false, signal: controller.signal,pageSize });
     return () => controller.abort();
-  }, [debouncedSearchValue, fetchUsers]);
+  }, [debouncedSearchValue]);
 
   useEffect(() => {
-    if (page <= 1) return;
+    if (page < 1) return;
+  
     const controller = new AbortController();
-    fetchUsers({ page, append: true, signal: controller.signal });
+  
+    fetchUsers({
+      page,
+      append: paginationMode === "scroll" ? true : false,
+      signal: controller.signal,
+      pageSize,
+    });
+  
     return () => controller.abort();
-  }, [page]);
+  }, [page, pageSize]);
+
+  const handlePageSizeChange = (newSize) => {
+    setPage(1);
+    setPageSize(newSize); 
+  };
 
   useEffect(() => {
     if (paginationMode !== "scroll") return;
@@ -118,7 +131,6 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
     setPage(1);
     hasFetchedOnce.current = false;
   }, []);
-
   return {
     allUsers,
     loadingAllUsers: loading,
@@ -138,6 +150,7 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
     hasFetchedOnce: hasFetchedOnce.current,
     resetAndFetch,
     getAllUsersFromBackend: fetchUsers,
+    handlePageSizeChange,
   };
 };
 

@@ -1,5 +1,4 @@
 "use client";
-import UserDetailsForm from "@/app/(pages)/(public)/signup/UserDetailsForm";
 import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import useCreateUser from "@/hooks/user/useCreateUser";
@@ -9,6 +8,7 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
 import UserProfile from "./UserProfile";
+import { CreateUserForm } from "@/components/forms";
 const CreateUser = () => {
   const { loadingCreateUser, errorCreateUser, createUser } = useCreateUser();
   const [profileImg, setProfileImg] = useState(null);
@@ -119,9 +119,8 @@ const CreateUser = () => {
                       >
                         <Box>
                           {
-                            <UserDetailsForm
+                            <CreateUserForm
                               formik={formik}
-                              type={"create_user"}
                             />
                           }
                           <Box

@@ -12,6 +12,8 @@ import { useNavigationInfo } from "@/hooks/common/useNavigationInfo";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ExpandLess } from "@mui/icons-material";
 import BackButton from "@/components/BackButton";
+import { formikInitialValues, getFormikCompatibleValues } from "./helper";
+import editActiveUserValidationSchema from "@/validations/editActiveUserValidationSchema";
 export default function Profile() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -21,38 +23,17 @@ export default function Profile() {
   const { activeUser } = state;
   const formik = useFormik({
     enableReinitialize: true,
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      gender: "",
-      role: "",
-    },
-    validationSchema: Yup.object({
-      firstName: Yup.string()
-        .min(3, "First name should be bigger than 2 chars")
-        .required("This field is required"),
-      lastName: Yup.string(),
-      email: Yup.string()
-        .email("invalid email address")
-        .required("This field is required"),
-      role: Yup.string().required(),
-      gender: Yup.string().required("This field is required"),
-    }),
+    initialValues: formikInitialValues,
+    validationSchema: editActiveUserValidationSchema,
     onSubmit: async (values) => {
     },
   });
   useEffect(() => {
     if (activeUser) {
-      formik.setValues({
-        firstName: activeUser?.firstName || "",
-        lastName: activeUser?.lastName || "",
-        email: activeUser?.email || "",
-        gender: activeUser?.gender || "",
-        role: activeUser?.role || "",
-      });
+      formik.setValues(getFormikCompatibleValues(activeUser));
     }
   }, [activeUser]);
+
 
   useEffect(() => {
     if (tab === "general" || tab === "security") {
@@ -98,6 +79,7 @@ export default function Profile() {
               formik={formik}
               isAdmin={activeUser?.isAdmin}
               avatar={activeUser?.avatar}
+              activeUser={activeUser}
             />
           )}
         </Box>

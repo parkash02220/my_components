@@ -16,26 +16,24 @@ const TableUser = ({
   setSelectedUsers,
   debouncedSearchValue,
   pageSize,
+  setPage,
+  setPageSize,
+  handlePageSizeChange,
 }) => {
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
-  const [isAllUserSelected, setIsAllUserSelected] = useState(false);
   const { loadingDeleteUser, errorDeleteUser, deleteUser } = useDeleteUser();
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const isLoading = loadingAllUsers || page === 0;
-  const msgForDeleteUser =
-    isAllUserSelected || selectedUsers?.length === totalUsers
-      ? "all users."
-      : selectedUsers?.length === 1
+  const isAllRowSelected = selectedUsers?.length > 0 && (selectedUsers?.length === pageSize || selectedUsers?.length === totalUsers);
+  const msgForDeleteUser = selectedUsers?.length === 1
       ? "1 user"
       : `${selectedUsers?.length} users`;
   const handleSelectAllUsers = (checked) => {
     if (checked) {
       setSelectedUsers(data);
-      setIsAllUserSelected(true);
     } else {
       setSelectedUsers([]);
-      setIsAllUserSelected(false);
     }
   };
   const handleSingleUserSelect = (e, row) => {
@@ -64,15 +62,9 @@ const TableUser = ({
           {" "}
           <Checkbox
             indeterminate={
-              selectedUsers.length > 0 &&
-              !isAllUserSelected &&
-              selectedUsers?.length < totalUsers
-            }
+              selectedUsers.length > 0 && !isAllRowSelected }
             checked={
-              isAllUserSelected ||
-              (!isLoading &&
-                totalUsers?.length > 0 &&
-                selectedUsers?.length === totalUsers)
+              (!isLoading && isAllRowSelected)
             }
             onChange={(e) => handleSelectAllUsers(e.target.checked)}
           />
@@ -122,7 +114,7 @@ const TableUser = ({
     });
   };
   const handleDeleteProject = async () => {
-    await deleteUser(selectedUsers, isAllUserSelected, getUpdatedUsers);
+    await deleteUser(selectedUsers, false, getUpdatedUsers);
     setDeletePopupOpen(false);
   };
 
@@ -178,8 +170,7 @@ const TableUser = ({
             </Box>
             <Box flexGrow={1}>
               <Typography color="#00A76F" fontSize={14} fontWeight={600} ml={2}>
-                {isAllUserSelected ? totalUsers : selectedUsers?.length || 0}{" "}
-                selected
+                {`${selectedUsers?.length || 0} selected`}
               </Typography>
             </Box>
             <IconButton
@@ -206,17 +197,17 @@ const TableUser = ({
           columns={columns}
           rows={data}
           fetchMore={({ page, limit }) => {
-            getAllUsersFromBackend({
-              page,
-              search: debouncedSearchValue,
-              append: false,
-              pageSize: limit,
-            });
+            setSelectedUsers([]);
+            if (limit !== pageSize) {
+              handlePageSizeChange(limit);
+            } else {
+              setPage(page);
+            }
           }}
           totalCount={totalUsers}
           selectedRows={selectedUsers}
           isLoading={loadingAllUsers || page === 0}
-          isAllRowSelected={isAllUserSelected}
+          isAllRowSelected={isAllRowSelected}
         />
       </Box>
     </>

@@ -48,7 +48,7 @@ export default function SignIn() {
   }, []);
   const handleGoogleLogin = () => {
     loginUserWithGoogle(router);
-  }
+  };
   return (
     <>
       <Box className="signInContainer" display={"flex"} minHeight={"100vh"}>
@@ -199,7 +199,25 @@ export default function SignIn() {
             </Box>
             <Box>
               <Box>
-                <MyButton variant="outlined" color="#1C252E" fullWidth={true} border={'2px solid #1C252E'} sx={{height:48}} borderRadius="8px" startIcon={<img src="/googleIcon.svg" alt="google" style={{width:"24px",height:"24px"}} />} hoverBgColor="whitesmoke" onClick={handleGoogleLogin}>Login with Google</MyButton>
+                <MyButton
+                  variant="outlined"
+                  color="#1C252E"
+                  fullWidth={true}
+                  border={"2px solid #1C252E"}
+                  sx={{ height: 48 }}
+                  borderRadius="8px"
+                  startIcon={
+                    <img
+                      src="/googleIcon.svg"
+                      alt="google"
+                      style={{ width: "24px", height: "24px" }}
+                    />
+                  }
+                  hoverBgColor="whitesmoke"
+                  onClick={handleGoogleLogin}
+                >
+                  Login with Google
+                </MyButton>
               </Box>
               <Box display="flex" alignItems="center" my={2}>
                 <Divider sx={{ flexGrow: 1 }} />

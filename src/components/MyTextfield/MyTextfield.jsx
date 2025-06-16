@@ -5,6 +5,7 @@ import { TextField, Box, CircularProgress, Typography } from "@mui/material";
 const MyTextField = ({
   value,
   onChange,
+  inputProps,
   label = "Enter text",
   placeholder = "",
   variant = "outlined",
@@ -97,6 +98,7 @@ const MyTextField = ({
         minRows={minRows}
         autoComplete={autoComplete}
         helperText={error && helperText}
+        inputProps={inputProps} 
         InputProps={{
           ...InputProps,
           style: {
