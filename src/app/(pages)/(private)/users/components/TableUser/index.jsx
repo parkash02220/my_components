@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import MyTable from "@/components/MyTable";
 import useDeleteUser from "@/hooks/user/useDeleteUser";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
-import EditUserPopup from "../EditUserPopup";
+import EditUserPopup from "../../EditUserPopup";
+import { getUserTableColumns } from "./GetTableColumns";
+
 
 const TableUser = ({
   data,
@@ -19,6 +21,7 @@ const TableUser = ({
   setPage,
   setPageSize,
   handlePageSizeChange,
+  hasFetchedOnce,
 }) => {
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
@@ -54,41 +57,15 @@ const TableUser = ({
   const handleMenuClick = (e, row) => {
     console.log("::menu click", row);
   };
-  const columns = [
-    {
-      id: "isSelected",
-      label: (
-        <Box>
-          {" "}
-          <Checkbox
-            indeterminate={
-              selectedUsers.length > 0 && !isAllRowSelected }
-            checked={
-              (!isLoading && isAllRowSelected)
-            }
-            onChange={(e) => handleSelectAllUsers(e.target.checked)}
-          />
-        </Box>
-      ),
-      type: "checkbox",
-      onChange: handleSingleUserSelect,
-      align: "center",
-      sx: { width: "40px", minWidth: "40px", maxWidth: "40px" },
-    },
-    { id: "nameWithAvatar", label: "Name", type: "avatarText" },
-    { id: "email", label: "Email", type: "text" },
-    { id: "role", label: "Role", type: "text" },
-    {
-      id: "edit_menu",
-      label: "",
-      type: "multipleIconButton",
-      icons: [
-        { icon: "edit", onClick: handleEditClick, tooltip: "Edit Task" },
-        // { icon: "menu", onClick: handleMenuClick, tooltip: "menu" },
-      ],
-      sx: { minWidth: "40px", maxWidth: "50px", padding: "4px" },
-    },
-  ];
+  const columns = getUserTableColumns({
+    selectedUsers,
+    isAllRowSelected,
+    isLoading,
+    handleSelectAllUsers,
+    handleSingleUserSelect,
+    handleEditClick,
+  });
+  
   const handleOpenEditPopup = () => {
     setOpenEditPopup(true);
   };
@@ -206,7 +183,7 @@ const TableUser = ({
           }}
           totalCount={totalUsers}
           selectedRows={selectedUsers}
-          isLoading={loadingAllUsers || page === 0}
+          isLoading={loadingAllUsers || !hasFetchedOnce}
           isAllRowSelected={isAllRowSelected}
         />
       </Box>

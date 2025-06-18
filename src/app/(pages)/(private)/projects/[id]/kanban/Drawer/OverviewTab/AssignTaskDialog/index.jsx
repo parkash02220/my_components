@@ -21,6 +21,7 @@ const AssignDialog = ({
     loadMoreRef,
     allUsers,
     loadingAllUsers,
+    loadingMoreAllUsers,
     errorAllUsers,
     helperTextAllUsers,
     searchValue,
@@ -31,6 +32,7 @@ const AssignDialog = ({
     totalUsers,
     page,
     hasFetchedOnce,
+    resetStates,
     hasMore,
   } = useGetAllUsers("board");
   const [hasMounted, setHasMounted] = useState(true);
@@ -59,8 +61,7 @@ const AssignDialog = ({
   };
 
   const handleSearchClear = () => {
-    setSearchValue("");
-    setPage(1);
+    resetStates();
   };
 
   const handleAssignDialogClose = () => {
@@ -70,17 +71,10 @@ const AssignDialog = ({
 
   useEffect(() => {
     if (!open && !isDrawerOpen) {
-      setSearchValue("");
-      setAllUsers([]);
-      setPage(0);
+     resetStates();
     }
   }, [open, isDrawerOpen]);
 
-  useEffect(() => {
-    if (open && allUsers.length === 0) {
-      setPage(1);
-    }
-  }, [open]);
   return (
     <>
       <Box
@@ -137,6 +131,8 @@ const AssignDialog = ({
               <Content
                 loadMoreRef={loadMoreRef}
                 loadingAllUsers={loadingAllUsers}
+                loadingMoreAllUsers={loadingMoreAllUsers}
+                errorAllUsers={errorAllUsers}
                 allUsers={allUsers}
                 hasMore={hasMore}
                 hasFetchedOnce={hasFetchedOnce}

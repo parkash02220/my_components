@@ -10,9 +10,10 @@ const InitialHeader = ({ selectedUsers, setSelectedUsers }) => {
         </Typography>
         <Box minWidth={320}>
           <MyAutoCompleteVarient
-            type="user"
-            selectedUsers={selectedUsers}
-            setSelectedUsers={setSelectedUsers}
+            type="chatroom_users"
+            selectedOptions={selectedUsers}
+            setSelectedOptions={setSelectedUsers}
+            label="Select users"
           />
         </Box>
       </Box>

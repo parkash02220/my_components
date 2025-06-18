@@ -60,7 +60,14 @@ const index = ({
           width={420}
           overflowY={"hidden"}
           noFooterBorderTop
-          header={<Header handleDrawer={handleRightDrawerClose} currentTab={currentTab}/>}
+          header={
+            <Header
+              handleDrawer={handleRightDrawerClose}
+              currentTab={currentTab}
+              totalCount={totalCount}
+              unReadCount={unReadCount}
+            />
+          }
           handleDrawer={handleRightDrawerClose}
           children={
             <Content

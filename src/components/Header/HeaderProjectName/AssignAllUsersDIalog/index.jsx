@@ -24,6 +24,7 @@ const AssignAllUsersDialog = ({
     loadMoreRef,
     allUsers,
     loadingAllUsers,
+    loadingMoreAllUsers,
     errorAllUsers,
     helperTextAllUsers,
     searchValue,
@@ -34,7 +35,7 @@ const AssignAllUsersDialog = ({
     totalUsers,
     page,
     hasFetchedOnce,
-    resetAndFetch,
+    resetStates,
     hasMore,
   } = useGetAllUsers("all");
 
@@ -56,23 +57,14 @@ const AssignAllUsersDialog = ({
   };
 
   const handleSearchClear = () => {
-    setSearchValue("");
-    setPage(1);
+     resetStates();
   };
 
   const handleAssignDialogClose = () => {
-    setSearchValue("");
+    resetStates();
     handleClose();
   };
-
-  useEffect(() => {
-    if (!open && allUsers.length > 0) {
-      setSearchValue("");
-      setAllUsers([]);
-      setPage(0);
-    }
-  }, [open]);
-
+  
   return (
     <>
       <Box
@@ -130,6 +122,8 @@ const AssignAllUsersDialog = ({
               <Content
                 hasFetchedOnce={hasFetchedOnce}
                 loadingAllUsers={loadingAllUsers}
+                loadingMoreAllUsers={loadingMoreAllUsers}
+                errorAllUsers={errorAllUsers}
                 allUsers={allUsers}
                 loadMoreRef={loadMoreRef}
                 handleAssignToggle={handleAssignToggle}

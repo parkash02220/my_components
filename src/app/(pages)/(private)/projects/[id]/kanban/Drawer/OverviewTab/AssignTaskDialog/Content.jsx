@@ -4,6 +4,8 @@ import UserRow from "./UserRow";
 const Content = ({
   hasFetchedOnce,
   loadingAllUsers,
+  loadingMoreAllUsers,
+  errorAllUsers,
   allUsers,
   loadMoreRef,
   debouncedSearchValue,
@@ -13,7 +15,16 @@ const Content = ({
   loadingAssignTaskIds,
 }) => {
   const theme = useTheme();
-  if (!hasFetchedOnce || (loadingAllUsers && allUsers.length === 0)) {
+  const hasError = !!errorAllUsers;
+  if (hasError) {
+    return (
+      <Box display="flex" alignItems="center" justifyContent="center" minHeight={200}>
+        <Typography color="error">Something went wrong. Please try again.</Typography>
+      </Box>
+    );
+  }
+
+  if (loadingAllUsers || !hasFetchedOnce) {
     return (
       <Box
         className="assignDialog__loadingBox"
@@ -22,12 +33,12 @@ const Content = ({
         justifyContent="center"
         minHeight={200}
       >
-        <img src="/iosLoader.gif" width="40px" height="40px" />
+        <img src="/iosLoader.gif" width="40px" height="40px" alt="Loading..." />
       </Box>
     );
   }
 
-  if (hasFetchedOnce && !loadingAllUsers && allUsers.length === 0) {
+  if (hasFetchedOnce && !loadingAllUsers && allUsers?.length === 0) {
     return (
       <Box
         className="assignDialog__emptyBox"
@@ -46,21 +57,25 @@ const Content = ({
         >
           Not found
         </Typography>
-        <Box display="flex" gap={1}>
-          <Typography fontSize="14px" color={theme.palette.primary.main}>
-            No results found for
-          </Typography>
-          <Typography
-            fontSize="14px"
-            fontWeight={700}
-            color={theme.palette.primary.main}
-          >
-            {`"${debouncedSearchValue}".`}
-          </Typography>
-        </Box>
-        <Typography fontSize="14px" color={theme.palette.primary.main}>
-          Try checking for typos or using complete words.
-        </Typography>
+        {debouncedSearchValue && (
+          <>
+            <Box display="flex" gap={1}>
+              <Typography fontSize="14px" color={theme.palette.primary.main}>
+                No results found for
+              </Typography>
+              <Typography
+                fontSize="14px"
+                fontWeight={700}
+                color={theme.palette.primary.main}
+              >
+                {`"${debouncedSearchValue}".`}
+              </Typography>
+            </Box>
+            <Typography fontSize="14px" color={theme.palette.primary.main}>
+              Try checking for typos or using complete words.
+            </Typography>
+          </>
+        )}
       </Box>
     );
   }
@@ -92,12 +107,12 @@ const Content = ({
         );
       })}
       {hasMore &&
-        (loadingAllUsers ? (
+        (loadingMoreAllUsers ? (
           <Box display="flex" justifyContent="center" py={2}>
             <img
               src="/iosLoader.gif"
               style={{ width: "32px", minHeight: "32px" }}
-              alt="Loading..."
+              alt="Loading more..."
             />
           </Box>
         ) : (
@@ -106,4 +121,5 @@ const Content = ({
     </Box>
   );
 };
+
 export default Content;

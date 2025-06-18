@@ -2,7 +2,7 @@ import MySelect from "@/components/MySelect/MySelect";
 import { Box } from "@mui/material";
 import { useState } from "react";
 
-const SelectUserRole = () => {
+const SelectUserDesignation = () => {
   const roleList = [
     { id: 1, value: "user", label: "User" },
     { id: 1, value: "admin", label: "Admin" },
@@ -19,7 +19,7 @@ const SelectUserRole = () => {
         <MySelect
           minWidth="0px"
           fullWidth={true}
-          label="Role"
+          label="Designation"
           options={roleList}
           multiple={true}
           onChange={handleRoleSelect}
@@ -31,4 +31,4 @@ const SelectUserRole = () => {
     </>
   );
 };
-export default SelectUserRole;
+export default SelectUserDesignation;

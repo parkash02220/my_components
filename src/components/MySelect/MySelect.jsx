@@ -52,7 +52,7 @@ export default function MySelect({
   menuDesignType = "checkbox",
   activeLabelColor,
   labelFontWeight,
-  shrink = false,
+  shrink,
   sx,
   ...props
 }) {

@@ -5,7 +5,7 @@ import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { getFullName } from "@/utils";
 import { Box, Checkbox, IconButton, Typography } from "@mui/material";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
-import SelectUserRole from "../components/SelectUserRole";
+import SelectUserDesignation from "../components/SelectUserDesignation";
 import TableUser from "../components/TableUser";
 import SearchUser from "../components/SearchUser";
 import MyMenu from "@/components/MyMenu";
@@ -23,6 +23,7 @@ const ListUsers = () => {
   const {
     allUsers,
     loadingAllUsers,
+    loadingMoreAllUsers,
     errorAllUsers,
     helperTextAllUsers,
     searchValue,
@@ -40,6 +41,7 @@ const ListUsers = () => {
     pageSize,
     hasFetchedOnce,
     handlePageSizeChange,
+    resetStates,
   } = useGetAllUsers("all", "table");
 
   const enhancedUsers = useMemo(() => {
@@ -50,8 +52,10 @@ const ListUsers = () => {
         avatar: user?.avatar || "",
       },
       isSelected: selectedUsers.some((u) => u.id === user.id),
+      designation: user?.userProfile?.designation,
     }));
   }, [allUsers, selectedUsers]);
+  console.log(":::enhanced users",enhancedUsers)
   const menuItems = [
     {
       label: "Print",
@@ -110,14 +114,15 @@ const ListUsers = () => {
             alignItems={"center"}
             gap={2}
           >
-            {/* <Box width={200} flexShrink={0}>
-              <SelectUserRole />
-            </Box> */}
+            <Box width={200} flexShrink={0}>
+              <SelectUserDesignation />
+            </Box>
             <Box flexGrow={1}>
               <SearchUser
                 searchValue={searchValue}
                 setSearchValue={setSearchValue}
                 handleSearchValueChange={handleSearchValueChange}
+                resetStates={resetStates}
               />
             </Box>
             <Box>

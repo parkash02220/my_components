@@ -18,7 +18,7 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalUsers, setTotalUsers] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -26,8 +26,22 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
   const hasFetchedOnce = useRef(false);
   const { ref: loadMoreRef, inView } = useInView();
 
+  const handleSearchValueChange = useCallback((e) => {
+    setSearchValue(e.target.value);
+    setPage(1);
+    setAllUsers([]);
+    hasFetchedOnce.current = false;
+  }, []);
+
+  const resetStates = useCallback(() => {
+    setSearchValue("");
+    setAllUsers([]);
+    setPage(1);
+    hasFetchedOnce.current = false;
+  }, []);
+
   const fetchUsers = useCallback(
-    async ({ page, append, signal,pageSize=10 }) => {
+    async ({ page, append, signal, pageSize = 10 }) => {
       setLoading(true);
       setError(false);
 
@@ -52,7 +66,7 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
 
       if (res?.error) {
         setError(true);
-        hasFetchedOnce.current = false;
+        hasFetchedOnce.current = true;
         setLoading(false);
         showToast({
           toastId,
@@ -85,30 +99,48 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
     [activeProjectId, debouncedSearchValue, pageSize, type]
   );
 
+  const resetStatesAndFetch = useCallback(() => {
+    const controller = new AbortController();
+  
+    const shouldManuallyFetch = debouncedSearchValue.trim() === "";
+  
+    resetStates();
+  
+    if (shouldManuallyFetch) {
+      fetchUsers({
+        page: 1,
+        append: false,
+        signal: controller.signal,
+        pageSize,
+      });
+    }
+  
+  }, [debouncedSearchValue, fetchUsers, resetStates, pageSize]);
+
   useEffect(() => {
     const controller = new AbortController();
-    fetchUsers({ page: 1, append: false, signal: controller.signal,pageSize });
+    fetchUsers({ page: 1, append: false, signal: controller.signal, pageSize });
     return () => controller.abort();
   }, [debouncedSearchValue]);
 
   useEffect(() => {
-    if (page < 1) return;
-  
+    if (!hasFetchedOnce.current) return;
+
     const controller = new AbortController();
-  
+
     fetchUsers({
       page,
       append: paginationMode === "scroll" ? true : false,
       signal: controller.signal,
       pageSize,
     });
-  
+
     return () => controller.abort();
   }, [page, pageSize]);
 
   const handlePageSizeChange = (newSize) => {
     setPage(1);
-    setPageSize(newSize); 
+    setPageSize(newSize);
   };
 
   useEffect(() => {
@@ -118,22 +150,13 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
     }
   }, [inView, hasMore, loading, paginationMode]);
 
-  const handleSearchValueChange = useCallback((e) => {
-    setSearchValue(e.target.value);
-    setPage(0);
-    setAllUsers([]);
-    hasFetchedOnce.current = false;
-  }, []);
-
-  const resetAndFetch = useCallback(() => {
-    setSearchValue("");
-    setAllUsers([]);
-    setPage(1);
-    hasFetchedOnce.current = false;
-  }, []);
   return {
     allUsers,
-    loadingAllUsers: loading,
+    loadingAllUsers:
+      paginationMode === "scroll"
+        ? loading && !hasFetchedOnce.current
+        : loading,
+    loadingMoreAllUsers: loading && hasFetchedOnce.current,
     errorAllUsers: error,
     searchValue,
     handleSearchValueChange,
@@ -148,9 +171,10 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
     page,
     pageSize,
     hasFetchedOnce: hasFetchedOnce.current,
-    resetAndFetch,
+    resetStates,
     getAllUsersFromBackend: fetchUsers,
     handlePageSizeChange,
+    resetStatesAndFetch,
   };
 };
 

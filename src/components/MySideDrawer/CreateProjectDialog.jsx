@@ -1,16 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import MyButton from "../MyButton/MyButton";
-import { Box, Chip, CircularProgress, List, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import MyTextField from "../MyTextfield/MyTextfield";
 import MyDialog from "../MyDialog/MyDialog";
-import { ApiCall } from "@/utils/ApiCall";
 import useProjectNameAvailability from "@/hooks/projects/useProjectNameAvailability";
 import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
-import MySelect from "../MySelect/MySelect";
-import useGetAllUsers from "@/hooks/user/useGetAllUsers";
-import { getFullName } from "@/utils";
-import MyAutoComplete from "../MyAutoComplete/MyAutoComplete";
 import useToast from "@/hooks/common/useToast";
+import MyAutoCompleteVarient from "../MyAutoComplete/MyAutoCompleteVarient";
 const CreateProjectDialog = ({
   open,
   onClose,
@@ -23,37 +19,14 @@ const CreateProjectDialog = ({
   const [helperText, setHelperText] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [message, loading, available] = useProjectNameAvailability(projectName);
-  const { showToast } = useToast();
-  const {
-    allUsers,
-    loadingAllUsers,
-    errorAllUsers,
-    helperTextAllUsers,
-    searchValue,
-    handleSearchValueChange,
-    getAllUsersFromBackend,
-    setSearchValue,
-    setPage,
-    loadMoreRef,
-    setAllUsers,
-    debouncedSearchValue,
-    totalUsers,
-    hasMore,
-    page,
-  } = useGetAllUsers();
+  const { showToast } = useToast(); 
   const handleDialogClose = () => {
     setProjectName("");
     setError(false);
     setHelperText("");
+    setSelectedUsers([]);
     onClose();
   };
-
-  const filteredUsers = useMemo(() => {
-    return allUsers?.filter(
-      (user) =>
-        !selectedUsers?.some((selectedUser) => selectedUser?.id === user?.id)
-    );
-  }, [allUsers, selectedUsers]);
 
   const handleProjectInputfieldChange = (e) => {
     const newName = e.target.value;
@@ -80,28 +53,6 @@ const CreateProjectDialog = ({
     const trimmedName = projectName.trim();
     await onCreate(trimmedName, selectedUsers);
     handleDialogClose();
-  };
-  const handleUserSelect = (_, newValue) => {
-    setSelectedUsers(newValue);
-  };
-
-  const handleSearchUser = (event, inputValue) => {
-    handleSearchValueChange(event);
-  };
-
-  useEffect(() => {
-    if (!open) {
-      setSelectedUsers([]);
-    }
-    if (!open && allUsers?.length > 0) {
-      setSearchValue("");
-      setAllUsers([]);
-      setPage(0);
-    }
-  }, [open]);
-
-  const handleAutoCompleteClose = () => {
-    setSearchValue("");
   };
 
   return (
@@ -138,75 +89,12 @@ const CreateProjectDialog = ({
             )}
           </Box>
           <Box mt={2}>
-            <MyAutoComplete
-              fullWidth={true}
-              multiple={true}
-              value={selectedUsers}
-              loading={loadingAllUsers || page === 0}
-              options={filteredUsers}
-              filterOptions={(options) => options}
-              getOptionLabel={(option) =>
-                getFullName(option?.firstName, option?.lastName)
-              }
-              renderOption={(props, option) => {
-                const { key, ...rest } = props;
-                return (
-                  <li
-                    key={option?.id || key}
-                    {...rest}
-                    style={{ display: "flex", alignItems: "center" }}
-                  >
-                    <img
-                      src={option?.avatar || "/dummyUser.svg"}
-                      alt={option?.firstName}
-                      referrerPolicy="no-referrer"
-                      style={{
-                        width: 30,
-                        height: 30,
-                        marginRight: 10,
-                        borderRadius: "50%",
-                      }}
-                    />
-                    <Typography>
-                      {getFullName(option.firstName, option.lastName)}
-                    </Typography>
-                  </li>
-                );
-              }}
-              renderTags={(value, getTagProps) => {
-                const visibleTags = value.slice(0, 4);
-                return [
-                  ...visibleTags.map((option, index) => {
-                    const { key, ...tagProps } = getTagProps({ index });
-                    return (
-                      <Chip
-                        key={option?.id || key}
-                        label={getFullName(option?.firstName, option?.lastName)}
-                        {...tagProps}
-                      />
-                    );
-                  }),
-                  value.length > 4 && (
-                    <Typography key="more" fontSize={14}>
-                      +{value.length - 4} more
-                    </Typography>
-                  ),
-                ];
-              }}
-              onChange={(_, newValue) => {
-                handleUserSelect(_, newValue);
-              }}
-              onInputChange={(event, inputValue) =>
-                handleSearchUser(event, inputValue)
-              }
-              loadMoreRef={loadMoreRef}
-              hasMore={hasMore}
-              loadingMore={loadingAllUsers && page > 1}
-              label={"Select users"}
-              fontSize={14}
-              labelFontSize={14}
-              onClose={handleAutoCompleteClose}
-            />
+           <MyAutoCompleteVarient 
+            type={"all_users"}
+            selectedOptions={selectedUsers}
+            setSelectedOptions={setSelectedUsers}
+            label="Select users"
+           />
           </Box>
         </Box>
       }

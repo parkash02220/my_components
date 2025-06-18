@@ -6,6 +6,8 @@ import { Box, Typography, useTheme } from "@mui/material";
 const Content = ({
   hasFetchedOnce,
   loadingAllUsers,
+  loadingMoreAllUsers,
+  errorAllUsers,
   allUsers,
   loadMoreRef,
   handleAssignToggle,
@@ -14,23 +16,31 @@ const Content = ({
   loadingAssignProjectIds,
   debouncedSearchValue,
 }) => {
-    const theme = useTheme();
-  if (!hasFetchedOnce || (loadingAllUsers && allUsers?.length === 0)) {
+  const theme = useTheme();
+  const hasError = !!errorAllUsers;
+  if (hasError) {
     return (
-      <>
-        <Box
-          className="assignDialog__loadingBox"
-          display={"flex"}
-          alignItems={"center"}
-          justifyContent={"center"}
-          minHeight={200}
-        >
-          <img src="/iosLoader.gif" width={"40px"} height={"40px"} />
-        </Box>
-      </>
+      <Box display="flex" alignItems="center" justifyContent="center" minHeight={200}>
+        <Typography color="error">Something went wrong. Please try again.</Typography>
+      </Box>
     );
   }
-  if (hasFetchedOnce && allUsers.length === 0 && !loadingAllUsers) {
+
+  if (loadingAllUsers || !hasFetchedOnce) {
+    return (
+      <Box
+        className="assignDialog__loadingBox"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        minHeight={200}
+      >
+        <img src="/iosLoader.gif" width="40px" height="40px" alt="Loading..." />
+      </Box>
+    );
+  }
+
+    if (hasFetchedOnce && !loadingAllUsers && allUsers?.length === 0) {
     return (
       <>
         <Box
@@ -102,7 +112,7 @@ const Content = ({
         })}
 
         {hasMore &&
-          (loadingAllUsers ? (
+          (loadingMoreAllUsers ? (
             <Box display="flex" justifyContent="center" py={2}>
               <img
                 src="/iosLoader.gif"

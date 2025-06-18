@@ -6,11 +6,11 @@ export default function SearchUser({
   searchValue,
   setSearchValue,
   handleSearchValueChange,
+  resetStates,
 }) {
   const theme = useTheme();
   const handleSearchClear = () => {
-    setSearchValue("");
-    setPage(1);
+    resetStates();
   };
   return (
     <>
