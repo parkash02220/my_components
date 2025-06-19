@@ -4,8 +4,8 @@ import { getFullName } from "@/utils";
 export const getRenderTags = (type) => {
   switch (type) {
     case "all_users":
-    case "chatroom_users":
-      return (value, getTagProps) => {
+    case "chatroom_users": {
+      const UsersRenderTags = (value, getTagProps) => {
         const visibleTags = value.slice(0, 4);
         return [
           ...visibleTags.map((option, index) => {
@@ -26,13 +26,25 @@ export const getRenderTags = (type) => {
         ];
       };
 
-    default:
-      return (value, getTagProps) =>
+      UsersRenderTags.displayName = "UsersRenderTags";
+      return UsersRenderTags;
+    }
+
+    default: {
+      const DefaultRenderTags = (value, getTagProps) =>
         value.map((option, index) => {
           const { key, ...tagProps } = getTagProps({ index });
           return (
-            <Chip key={option.id || key} label={option.name} {...tagProps} />
+            <Chip
+              key={option.id || key}
+              label={option.name}
+              {...tagProps}
+            />
           );
         });
+
+      DefaultRenderTags.displayName = "DefaultRenderTags";
+      return DefaultRenderTags;
+    }
   }
 };

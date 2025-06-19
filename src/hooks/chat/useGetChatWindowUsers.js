@@ -82,7 +82,7 @@ const useGetChatWindowUsers = () => {
       hasFetchedOnce.current = true;
       return;
     },
-    [debouncedSearchValue, projectId, pageSize]
+    [debouncedSearchValue, projectId, pageSize,showToast,loading]
   );
 
   const resetStatesAndFetch = useCallback(() => {

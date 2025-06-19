@@ -29,7 +29,7 @@ const useCreateChatRoom = () => {
         return () => {
           socket.off("group-chat-created", handleNewChatroomCreate);
         };
-      }, [socket]);
+      }, [socket,dispatch,activeUser,showToast]);
 
 
     const createChatRoom = async (targetUserId) => {

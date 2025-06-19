@@ -1,11 +1,11 @@
-import { Typography } from "@mui/material";
 import { getFullName } from "@/utils";
+import { Typography } from "@mui/material";
 
 export const getRenderOptions = (type) => {
   switch (type) {
     case "all_users":
-    case "chatroom_users":
-      return (props, option) => {
+    case "chatroom_users": {
+      const UsersOption = (props, option) => {
         const { key, ...rest } = props;
         return (
           <li
@@ -31,11 +31,21 @@ export const getRenderOptions = (type) => {
         );
       };
 
-    default:
-      return (props, option) => (
+      UsersOption.displayName = "UsersOption";
+
+      return UsersOption;
+    }
+
+    default: {
+      const DefaultOption = (props, option) => (
         <li key={option?.id || props.key} {...props}>
           {option?.name || "Unknown"}
         </li>
       );
+
+      DefaultOption.displayName = "DefaultOption";
+
+      return DefaultOption;
+    }
   }
 };

@@ -34,6 +34,6 @@ const useNewMessageSocket = () => {
       return () => {
         socket.off("new-message", handleNewMessage);
       };
-    }, [socket]);
+    }, [socket,dispatch,activeUser]);
 }
 export default useNewMessageSocket;

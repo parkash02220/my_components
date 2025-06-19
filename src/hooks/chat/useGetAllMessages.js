@@ -70,7 +70,7 @@ const useGetAllMessages = (selectedDirectoryItem = {}) => {
     ) {
       fetchMessages(selectedDirectoryItem.id);
     }
-  }, [inView, hasMore, loading, selectedDirectoryItem?.id]);
+  }, [inView, hasMore, loading, selectedDirectoryItem?.id,messages?.length]);
 
   const initMessages = async (chatRoomId) => {
     await fetchMessages(chatRoomId, 1);

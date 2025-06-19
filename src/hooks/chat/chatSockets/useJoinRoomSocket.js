@@ -59,7 +59,7 @@ const useJoinRoomSocket = ({
       socket.off("userTyping", handleUserTyping);
       socket.off("userStoppedTyping", handleUserStoppedTyping);
     };
-  }, [socket, onRoomJoined, onUserTyping, onUserStoppedTyping]);
+  }, [socket, onRoomJoined, onUserTyping, onUserStoppedTyping,dispatch]);
 
   return { joinRoom };
 };
