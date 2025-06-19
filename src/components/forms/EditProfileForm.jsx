@@ -5,6 +5,7 @@ import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import { formatDate, getCalendarMinMaxDate } from "@/utils";
 import MySelect from "../MySelect/MySelect";
 import { departmentOptions, designationOptions } from "./formsData";
+import MySelectVariant from "../MySelect/MySelectVarient";
 const EditProfileForm = ({formik}) => {
     const {isXs} = useBreakpointFlags();
     const {minDate,maxDate} = getCalendarMinMaxDate(13,130);
@@ -133,7 +134,7 @@ const EditProfileForm = ({formik}) => {
             </Typography>
           </Grid>
           <Grid size={6}>
-          <MySelect
+          {/* <MySelect
               name="department"
               value={formik?.values?.department}
               onChange={formik.handleChange}
@@ -156,10 +157,23 @@ const EditProfileForm = ({formik}) => {
               activeLabelColor="#1C252E"
               labelFontWeight={600}
               shrink={true}
-            />
+            /> */}
+             <MySelectVariant
+            type="all_departments"
+            label="Select department"
+            selectedValue={formik?.values?.department}
+            setSelectedValue={(val) => {
+              formik.setFieldValue("department", val);
+              formik.setFieldValue("designation", "");
+            }}
+            error={
+              formik.touched.department && Boolean(formik.errors.department)
+            }
+            helperText={formik.touched.department && formik.errors.department}
+          />
           </Grid>
           <Grid size={6}>
-          <MySelect
+          {/* <MySelect
               name="designation"
               value={formik?.values?.designation}
               onChange={formik.handleChange}
@@ -183,7 +197,19 @@ const EditProfileForm = ({formik}) => {
               labelFontWeight={600}
               shrink={true}
               disabled={!Boolean(formik.values.department)}
-            />
+            /> */}
+             <MySelectVariant
+            type="designation_by_department"
+            hookParam={formik?.values?.department?.id}
+            label="Select designation"
+            selectedValue={formik?.values?.designation}
+            setSelectedValue={(val) => formik.setFieldValue("designation", val)}
+            error={
+              formik.touched.designation && Boolean(formik.errors.designation)
+            }
+            helperText={formik.touched.designation && formik.errors.designation}
+            disabled={!formik.values?.department}
+          />
           </Grid>
           <Grid size={6}>
             <MyTextField

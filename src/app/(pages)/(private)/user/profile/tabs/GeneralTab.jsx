@@ -28,7 +28,12 @@ const GeneralTab = ({ formik, isAdmin, avatar,activeUser }) => {
       showToast({type:"info",message:"No changes found."});
       return;
     }
-    await updateActiveUser(formik.values);
+    const userDetails = {
+      ...formik.values,
+      designation:formik.values?.designation?.id,
+      department:formik.values?.department?.id,
+    }
+    await updateActiveUser(userDetails);
   };
 
   const handleMenuDeleteButton = async () => {

@@ -55,7 +55,6 @@ const ListUsers = () => {
       designation: user?.userProfile?.designation,
     }));
   }, [allUsers, selectedUsers]);
-  console.log(":::enhanced users",enhancedUsers)
   const menuItems = [
     {
       label: "Print",

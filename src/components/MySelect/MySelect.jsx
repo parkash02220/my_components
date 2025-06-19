@@ -1,18 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import {
+  Box,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Checkbox,
   CircularProgress,
   FormHelperText,
   InputAdornment,
-  Typography,
 } from "@mui/material";
-import { typography } from "storybook/internal/theming";
 
 export default function MySelect({
   value,
@@ -54,6 +53,14 @@ export default function MySelect({
   labelFontWeight,
   shrink,
   sx,
+  renderOption,
+  renderValue,
+  loadMoreRef,
+  hasMore,
+  loadingMore,
+  onClose,
+  menuMaxHeight,
+  selectValueMaxHeight,
   ...props
 }) {
   const customStyleForSelect = {
@@ -64,158 +71,46 @@ export default function MySelect({
       cursor: disabled ? "not-allowed" : "text",
     },
     "& .MuiOutlinedInput-notchedOutline": {
-      borderColor: error ? "red" : "rgba(0, 0, 0, 0.23)",
-      border: error
-        ? "1px solid red"
-        : border || `1px solid ${borderColor || rgba(0, 0, 0, 0.23)}`,
+      borderColor: error ? "red" : borderColor,
+      border: error ? "1px solid red" : border || `1px solid ${borderColor}`,
     },
     "& .MuiSelect-select": {
       fontSize: selectFontSize,
-      cursor: disabled ? "not-allowed" : "default",
-      color: color || labelColor,
+      color: disabled ? "#a9a9a9" : color || labelColor,
+      maxHeight: selectValueMaxHeight || "80px",
+      overflowY: "auto",
     },
     ...sx,
   };
 
-  const menuItems = React.useMemo(() => {
-    if (multiple) {
-      return options.map((option) => (
-        <MenuItem
-          key={option.value}
-          value={option.value}
-          selected={value.includes(option.value)}
-          sx={{
-            fontSize: menuItemFontSize,
-            padding: "6px 8px",
-            mb: "4px",
-            borderRadius: "6px",
-            bgcolor: "transparent",
-            "&.Mui-selected": {
-              bgcolor: "rgba(145 158 171 / 0.08)",
-            },
-            "&:hover": {
-              bgcolor: "rgba(145 158 171 / 0.08)",
-            },
-            "&.Mui-selected:hover": {
-              bgcolor: "rgba(145 158 171 / 0.08)",
-            },
-          }}
-          className={`mySelect__option ${optionItemClassName}`}
-        >
-          {menuDesignType === "checkbox" ? (
-            <Box display="flex" alignItems="center" gap={1}>
-              <Checkbox
-                checked={value?.includes(option.value)}
-                sx={{
-                  color: "#00A76F !important",
-                  padding: "4px",
-                  borderRadius: "50%",
-                }}
-              />
-              {option.label}
-            </Box>
-          ) : menuDesignType === "withAvatar" ? (
-            <Box display="flex" alignItems="center" gap={1}>
-              <img
-                src={option?.avatar || "/dummyUser.svg"}
-                referrerPolicy="no-referrer"
-                alt={option.label}
-                style={{ width: 24, height: 24, borderRadius: "50%" }}
-              />
-              <Typography fontSize={menuItemFontSize}>
-                {option.label}
-              </Typography>
-            </Box>
-          ) : (
-            option.label
-          )}
-        </MenuItem>
-      ));
-    } else {
-      return options.map((option) => (
-        <MenuItem
-          key={option.value}
-          value={option.value}
-          selected={value === option.value}
-          sx={{
-            fontSize: menuItemFontSize,
-            mb: "4px",
-            padding: "6px 8px",
-            bgcolor: value === option.value ? "#e0f7fa" : "transparent",
-            "&.Mui-selected": {
-              bgcolor: "rgba(145 158 171 / 0.08)",
-            },
-            "&:hover": {
-              bgcolor: "rgba(145 158 171 / 0.08)",
-            },
-            "&.Mui-selected:hover": {
-              bgcolor: "rgba(145 158 171 / 0.08)",
-            },
-          }}
-          className={`mySelect__option ${optionItemClassName}`}
-        >
+  const renderDefaultOption = (option) => {
+    if (multiple && menuDesignType === "checkbox") {
+      return (
+        <Box display="flex" alignItems="center" gap={1}>
+          <Checkbox
+            checked={value.includes(option.value)}
+            sx={{ color: "#00A76F !important", padding: "4px" }}
+          />
           {option.label}
-        </MenuItem>
-      ));
-    }
-  }, [options, menuItemFontSize, optionItemClassName, value, menuDesignType]);
-
-  const renderMenuItems = () => {
-    return menuItems;
-  };
-
-  const getRenderValue = ({ multiple, menuDesignType, options }) => {
-    if (!multiple) return undefined;
-
-    if (menuDesignType === "withAvatar") {
-      return (selected) => (
-        <Box display="flex" flexWrap="wrap" gap={1} alignItems="center">
-          {options
-            .filter((opt) => selected.includes(opt.value))
-            .map((opt) => (
-              <Box
-                key={opt.value}
-                display="flex"
-                alignItems="center"
-                gap={0.5}
-                px={1}
-                py={0.5}
-                sx={{
-                  border: "1px solid #ccc",
-                  borderRadius: "12px",
-                  background: "#f5f5f5",
-                }}
-              >
-                <img
-                  src={opt?.avatar || "/dummyUser.svg"}
-                  alt={opt.label}
-                  referrerPolicy="no-referrer"
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                  }}
-                />
-                <Typography
-                  fontSize="13px"
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                >
-                  {opt.label}
-                </Typography>
-              </Box>
-            ))}
         </Box>
       );
     }
 
-    return (selected) =>
-      options
-        .filter((opt) => selected.includes(opt.value))
-        .map((opt) => opt.label)
-        .join(", ");
+    if (multiple && menuDesignType === "withAvatar") {
+      return (
+        <Box display="flex" alignItems="center" gap={1}>
+          <img
+            src={option.avatar || "/dummyUser.svg"}
+            alt={option.label}
+            referrerPolicy="no-referrer"
+            style={{ width: 24, height: 24, borderRadius: "50%" }}
+          />
+          <Typography fontSize={menuItemFontSize}>{option.label}</Typography>
+        </Box>
+      );
+    }
+
+    return option.label;
   };
 
   return (
@@ -229,67 +124,65 @@ export default function MySelect({
         sx={{
           borderRadius,
           boxShadow,
+          "& .MuiOutlinedInput-root.Mui-disabled": {
+            backgroundColor: "#f5f5f5",
+          },
           "& .MuiOutlinedInput-root": {
             borderRadius,
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderWidth: "1px",
               borderColor: hoverBorderColor || borderColor,
             },
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderWidth: "2px",
               borderColor: focusedBorder ? undefined : borderColor,
             },
           },
           "& .MuiInputLabel-root": {
             fontSize: labelFontSize,
-            transform: shrink ? "translate(14px, -9px) scale(0.75)" : undefined,
-            backgroundColor: "white",
-            px: "4px",
-          },
-          "& .MuiInputLabel-shrink": {
-            transform: "translate(14px, -9px) scale(0.75)",
+            color: labelColor,
+            fontWeight: labelFontWeight,
             backgroundColor: "white",
             px: "4px",
           },
           "& .MuiInputLabel-root.Mui-focused": {
             color: error ? "red" : activeLabelColor || labelColor,
           },
-          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-            {
-              borderColor: error ? "red" : borderColor,
-            },
+          "& .MuiInputLabel-shrink": {
+            transform: "translate(14px, -9px) scale(0.75)",
+            backgroundColor: "white",
+            px: "4px",
+          },
         }}
       >
         <InputLabel id="custom-select-label" shrink={shrink}>
           {required ? (
-            <Box display={"flex"} gap={"2px"}>
-              <Typography
-                fontSize={labelFontSize}
-                color={labelColor}
-                fontWeight={labelFontWeight}
-              >
-                {label}
-              </Typography>{" "}
-              <Typography mt={"-4px"} color={requiredColor || labelColor}>
-                *
-              </Typography>
+            <Box display="flex" gap={"2px"}>
+              <Typography fontSize={labelFontSize}>{label}</Typography>
+              <Typography color={requiredColor || labelColor}>*</Typography>
             </Box>
           ) : (
-            <Box>
-              <Typography fontSize={labelFontSize} color={labelColor}>
-                {label}
-              </Typography>
-            </Box>
+            label
           )}
         </InputLabel>
+
         <Select
-          multiple={multiple}
           labelId="custom-select-label"
           id="custom-select"
+          multiple={multiple}
           className={`mySelect ${className}`}
           value={multiple ? value || [] : value}
-          renderValue={getRenderValue({ multiple, menuDesignType, options })}
+          renderValue={(selected) => {
+            if (renderValue) {
+              return renderValue(selected, { options });
+            }
+            if (!multiple) return options.find((opt) => opt.value === selected)?.label || "";
+          
+            return options
+              .filter((opt) => selected.includes(opt.value))
+              .map((opt) => opt.label)
+              .join(", ");
+          }}
           onChange={onChange}
+          onClose={onClose}
           label={label}
           sx={customStyleForSelect}
           endAdornment={
@@ -305,10 +198,9 @@ export default function MySelect({
               sx: {
                 borderRadius,
                 bgcolor: menuBackgroundColor || "white",
-                paddingInline: "4px",
-                "& .MuiMenuItem-root:hover": {
-                  bgcolor: menuHoverColor || "",
-                },
+                px: "4px",
+                maxHeight: menuMaxHeight || "300px",
+                overflowY: "auto",
               },
             },
           }}
@@ -319,20 +211,71 @@ export default function MySelect({
               {placeholder}
             </MenuItem>
           )}
+
           {loading ? (
             <MenuItem disabled>
-              <CircularProgress size={16} sx={{ marginRight: "8px" }} />{" "}
+              <CircularProgress size={16} sx={{ marginRight: "8px" }} />
               Loading...
             </MenuItem>
-          ) : (
-            renderMenuItems()
-          )}
+          ) : [
+            ...options.map((option) => (
+              <MenuItem
+                key={option?.id || option.value}
+                value={option.value}
+                selected={
+                  multiple
+                    ? value.includes(option.value)
+                    : value === option.value
+                }
+                className={`mySelect__option ${optionItemClassName}`}
+                sx={{
+                  fontSize: menuItemFontSize,
+                  padding: "6px 8px",
+                  mb: "4px",
+                  borderRadius: "6px",
+                  bgcolor: "transparent",
+                  "&.Mui-selected": {
+                    bgcolor: "rgba(145 158 171 / 0.08)",
+                  },
+                  "&:hover": {
+                    bgcolor: "rgba(145 158 171 / 0.08)",
+                  },
+                }}
+              >
+                {renderOption ? renderOption(option) : renderDefaultOption(option)}
+              </MenuItem>
+            )),
+            loadingMore && (
+              <MenuItem key="loadingMore" disabled>
+                <CircularProgress size={16} sx={{ marginRight: "8px" }} />
+                Loading more...
+              </MenuItem>
+            ),
+            hasMore && !loadingMore && (
+              <Box key="loadMoreRef" ref={loadMoreRef} sx={{ height: "1px" }} />
+            )
+          ]          
+          }
         </Select>
+
         {error && helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>
     </Box>
   );
 }
+
+MySelect.propTypes = {
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  label: PropTypes.string,
+  options: PropTypes.array,
+  multiple: PropTypes.bool,
+  renderOption: PropTypes.func,
+  renderValue: PropTypes.func,
+  loadMoreRef: PropTypes.any,
+  hasMore: PropTypes.bool,
+  loadingMore: PropTypes.bool,
+};
 
 MySelect.defaultProps = {
   label: "Select",
@@ -346,8 +289,11 @@ MySelect.defaultProps = {
   selectFontSize: "14px",
   menuItemFontSize: "14px",
   boxShadow: "none",
-  helperText: "Please select valid input.",
   borderColor: "black",
   labelColor: "black",
   required: false,
+  multiple: false,
+  hasMore: false,
+  loadingMore: false,
+  menuMaxHeight: "300px",
 };

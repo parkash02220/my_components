@@ -17,7 +17,7 @@ export const formikInitialValues = {
       if (!isoDate) return "";
       return new Date(isoDate).toISOString().split("T")[0];
     };
-  
+  console.log(":::user profile",user)
     return {
       firstName: user?.firstName || "",
       lastName: user?.lastName || "",

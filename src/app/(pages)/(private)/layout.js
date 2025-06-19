@@ -12,6 +12,7 @@ import { ProjectsContextProvider } from "@/context/Projects/ProjectsContex";
 import { TaskContextProvider } from "@/context/Task/TaskContext";
 import { ChatContextProvider } from "@/context/Chat/ChatContext";
 import { SocketProvider } from "@/context/Socket/SocketContext";
+import { OrganizationContextProvider } from "@/context/Organization/OrganizationContext";
 
 export default function HomeLayout({ children }) {
   const { isMd } = useBreakpointFlags();
@@ -32,6 +33,7 @@ export default function HomeLayout({ children }) {
   }
   return (
     <NotificationsContextProvider>
+      <OrganizationContextProvider>
       <ProjectsContextProvider>
         <TaskContextProvider>
           <ChatContextProvider>
@@ -74,6 +76,7 @@ export default function HomeLayout({ children }) {
           </ChatContextProvider>
         </TaskContextProvider>
       </ProjectsContextProvider>
+      </OrganizationContextProvider>
     </NotificationsContextProvider>
   );
 }

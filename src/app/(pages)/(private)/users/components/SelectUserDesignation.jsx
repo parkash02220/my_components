@@ -1,4 +1,5 @@
 import MySelect from "@/components/MySelect/MySelect";
+import MySelectVariant from "@/components/MySelect/MySelectVarient";
 import { Box } from "@mui/material";
 import { useState } from "react";
 
@@ -16,7 +17,7 @@ const SelectUserDesignation = () => {
   return (
     <>
       <Box width={"100%"}>
-        <MySelect
+        {/* <MySelect
           minWidth="0px"
           fullWidth={true}
           label="Designation"
@@ -26,6 +27,13 @@ const SelectUserDesignation = () => {
           value={selectedRoles}
           border={`undefined`}
           focusedBorder={`2px solid #1C252E`}
+        /> */}
+        <MySelectVariant 
+           selectedValue={selectedRoles}
+           setSelectedValue={setSelectedRoles}
+           type={"all_users"}
+           multiple={true}
+           label="Select User"
         />
       </Box>
     </>

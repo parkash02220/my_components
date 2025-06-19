@@ -118,11 +118,7 @@ const CreateUser = () => {
                         }}
                       >
                         <Box>
-                          {
-                            <CreateUserForm
-                              formik={formik}
-                            />
-                          }
+                          {<CreateUserForm formik={formik} />}
                           <Box
                             display={"flex"}
                             alignItems={"center"}
