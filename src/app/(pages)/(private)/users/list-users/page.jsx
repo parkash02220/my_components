@@ -42,6 +42,8 @@ const ListUsers = () => {
     hasFetchedOnce,
     handlePageSizeChange,
     resetStates,
+    designations,
+    setDesignations,
   } = useGetAllUsers("all", "table");
 
   const enhancedUsers = useMemo(() => {
@@ -114,7 +116,10 @@ const ListUsers = () => {
             gap={2}
           >
             <Box width={200} flexShrink={0}>
-              <SelectUserDesignation />
+              <SelectUserDesignation
+                designations={designations}
+                setDesignations={setDesignations}
+              />
             </Box>
             <Box flexGrow={1}>
               <SearchUser

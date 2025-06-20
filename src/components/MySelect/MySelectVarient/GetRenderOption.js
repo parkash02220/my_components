@@ -28,7 +28,13 @@ export const getRenderOptions = (type, isMultiple, selected = []) => {
     case "label": {
       const LabelOption = (option) => (
         <Box display="flex" alignItems="center" gap={1}>
-          {isMultiple && <Checkbox size="small" checked={isSelected(option)} />}
+          {isMultiple && (
+            <Checkbox
+              size="small"
+              sx={{ padding: "2px" }}
+              checked={isSelected(option)}
+            />
+          )}
           <Typography fontSize={14}>{option?.label}</Typography>
         </Box>
       );

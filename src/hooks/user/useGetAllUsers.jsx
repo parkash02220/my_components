@@ -102,7 +102,7 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
       setHasMore(resPage * limit < total);
       setLoading(false);
     },
-    [activeProjectId, debouncedSearchValue, pageSize, type]
+    [activeProjectId, debouncedSearchValue, pageSize, type, designations]
   );
 
   const resetStatesAndFetch = useCallback(() => {

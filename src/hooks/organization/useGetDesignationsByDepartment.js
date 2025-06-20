@@ -45,11 +45,10 @@ const useGetDesignationsByDepartment = (departmentId) => {
   }, [departmentId, showToast]);
 
   useEffect(() => {
-    if (!departmentId) return;
-
+    if (!departmentId || designations?.length > 0) return;
     hasFetchedOnce.current = false;
     fetchDesignationByDepartment();
-  }, [departmentId, fetchDesignationByDepartment]);
+  }, [departmentId, fetchDesignationByDepartment, designations]);
 
   return {
     designations,
