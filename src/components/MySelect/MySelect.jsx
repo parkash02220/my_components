@@ -174,8 +174,9 @@ export default function MySelect({
             if (renderValue) {
               return renderValue(selected, { options });
             }
-            if (!multiple) return options.find((opt) => opt.value === selected)?.label || "";
-          
+            if (!multiple)
+              return options.find((opt) => opt.value === selected)?.label || "";
+
             return options
               .filter((opt) => selected.includes(opt.value))
               .map((opt) => opt.label)
@@ -201,6 +202,18 @@ export default function MySelect({
                 px: "4px",
                 maxHeight: menuMaxHeight || "300px",
                 overflowY: "auto",
+                "&::-webkit-scrollbar": {
+                  width: 0,
+                  height: 0,
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "transparent",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  background: "transparent",
+                },
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
               },
             },
           }}
@@ -217,45 +230,52 @@ export default function MySelect({
               <CircularProgress size={16} sx={{ marginRight: "8px" }} />
               Loading...
             </MenuItem>
-          ) : [
-            ...options.map((option) => (
-              <MenuItem
-                key={option?.id || option.value}
-                value={option.value}
-                selected={
-                  multiple
-                    ? value.includes(option.value)
-                    : value === option.value
-                }
-                className={`mySelect__option ${optionItemClassName}`}
-                sx={{
-                  fontSize: menuItemFontSize,
-                  padding: "6px 8px",
-                  mb: "4px",
-                  borderRadius: "6px",
-                  bgcolor: "transparent",
-                  "&.Mui-selected": {
-                    bgcolor: "rgba(145 158 171 / 0.08)",
-                  },
-                  "&:hover": {
-                    bgcolor: "rgba(145 158 171 / 0.08)",
-                  },
-                }}
-              >
-                {renderOption ? renderOption(option) : renderDefaultOption(option)}
-              </MenuItem>
-            )),
-            loadingMore && (
-              <MenuItem key="loadingMore" disabled>
-                <CircularProgress size={16} sx={{ marginRight: "8px" }} />
-                Loading more...
-              </MenuItem>
-            ),
-            hasMore && !loadingMore && (
-              <Box key="loadMoreRef" ref={loadMoreRef} sx={{ height: "1px" }} />
-            )
-          ]          
-          }
+          ) : (
+            [
+              ...options.map((option) => (
+                <MenuItem
+                  key={option?.id || option.value}
+                  value={option.value}
+                  selected={
+                    multiple
+                      ? value.includes(option.value)
+                      : value === option.value
+                  }
+                  className={`mySelect__option ${optionItemClassName}`}
+                  sx={{
+                    fontSize: menuItemFontSize,
+                    padding: "6px 8px",
+                    mb: "4px",
+                    borderRadius: "6px",
+                    bgcolor: "transparent",
+                    "&.Mui-selected": {
+                      bgcolor: "rgba(145 158 171 / 0.08)",
+                    },
+                    "&:hover": {
+                      bgcolor: "rgba(145 158 171 / 0.08)",
+                    },
+                  }}
+                >
+                  {renderOption
+                    ? renderOption(option)
+                    : renderDefaultOption(option)}
+                </MenuItem>
+              )),
+              loadingMore && (
+                <MenuItem key="loadingMore" disabled>
+                  <CircularProgress size={16} sx={{ marginRight: "8px" }} />
+                  Loading more...
+                </MenuItem>
+              ),
+              hasMore && !loadingMore && (
+                <Box
+                  key="loadMoreRef"
+                  ref={loadMoreRef}
+                  sx={{ height: "1px" }}
+                />
+              ),
+            ]
+          )}
         </Select>
 
         {error && helperText && <FormHelperText>{helperText}</FormHelperText>}

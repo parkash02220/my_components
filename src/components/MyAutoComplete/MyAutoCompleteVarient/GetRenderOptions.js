@@ -3,9 +3,8 @@ import { Typography } from "@mui/material";
 
 export const getRenderOptions = (type) => {
   switch (type) {
-    case "all_users":
-    case "chatroom_users": {
-      const UsersOption = (props, option) => {
+    case "user_with_avatar": {
+      const UserWithAvatarOption = (props, option) => {
         const { key, ...rest } = props;
         return (
           <li
@@ -31,9 +30,9 @@ export const getRenderOptions = (type) => {
         );
       };
 
-      UsersOption.displayName = "UsersOption";
+      UserWithAvatarOption.displayName = "UserWithAvatarOption";
 
-      return UsersOption;
+      return UserWithAvatarOption;
     }
 
     default: {

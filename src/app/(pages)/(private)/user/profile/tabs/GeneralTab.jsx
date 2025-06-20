@@ -12,8 +12,8 @@ import _ from "lodash";
 import { getFormikCompatibleValues } from "../helper";
 import useToast from "@/hooks/common/useToast";
 import { EditProfileForm } from "@/components/forms";
-const GeneralTab = ({ formik, isAdmin, avatar,activeUser }) => {
-  const {showToast} = useToast();
+const GeneralTab = ({ formik, isAdmin, avatar, activeUser }) => {
+  const { showToast } = useToast();
   const { uploadProfileImage, loadingUploadProfile, progress } =
     useUploadProfileImage();
   const { loadingUpdateActiveUser, errorUpdateActiveUser, updateActiveUser } =
@@ -24,16 +24,12 @@ const GeneralTab = ({ formik, isAdmin, avatar,activeUser }) => {
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const handleUpdateUser = async () => {
     const originalDetails = getFormikCompatibleValues(activeUser);
-    if(_.isEqual(originalDetails,formik.values)){
-      showToast({type:"info",message:"No changes found."});
+    if (_.isEqual(originalDetails, formik.values)) {
+      showToast({ type: "info", message: "No changes found." });
       return;
     }
-    const userDetails = {
-      ...formik.values,
-      designation:formik.values?.designation?.id,
-      department:formik.values?.department?.id,
-    }
-    await updateActiveUser(userDetails);
+
+    await updateActiveUser(formik.values);
   };
 
   const handleMenuDeleteButton = async () => {
@@ -128,11 +124,7 @@ const GeneralTab = ({ formik, isAdmin, avatar,activeUser }) => {
                     }}
                   >
                     <Box>
-                      {
-                        <EditProfileForm
-                          formik={formik}
-                        />
-                      }
+                      {<EditProfileForm formik={formik} />}
                       <Box
                         display={"flex"}
                         alignItems={"center"}

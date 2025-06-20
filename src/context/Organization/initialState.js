@@ -1,8 +1,13 @@
 export const initialState = {
-    allDepartments: [],
-    allDesignations: [],
-    designationsByDepartment: {},
-    loading: false,
-    error: null, 
-  };
-  
+  allDepartments: {
+    allIds: [],
+    byIds: {},
+  },
+  allDesignations: {
+    allIds: [],
+    byIds: {},
+  },
+  designationsByDepartment: {},
+  loading: false,
+  error: null,
+};

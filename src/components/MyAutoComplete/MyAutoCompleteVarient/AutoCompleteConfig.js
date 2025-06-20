@@ -7,9 +7,7 @@ export const autocompleteConfigMap = {
   all_users: {
     useHook: useGetAllUsers,
     getFilteredOptions: (result, selected) =>
-      result?.allUsers?.filter(
-        (u) => !selected?.some((s) => s.id === u.id)
-      ),
+      result?.allUsers?.filter((u) => !selected?.some((s) => s.id === u.id)),
     selectors: (result) => ({
       options: result?.allUsers,
       loading: result?.loadingAllUsers,
@@ -21,18 +19,16 @@ export const autocompleteConfigMap = {
       setSearchValue: result?.setSearchValue,
       resetStates: result?.resetStates,
       hasFetchedOnce: result?.hasFetchedOnce,
-      refetchOptions:result?.resetStatesAndFetch,
+      refetchOptions: result?.resetStatesAndFetch,
     }),
-    renderTags: getRenderTags("all_users"),
-    renderOption: getRenderOptions("all_users"),
+    renderTags: getRenderTags("username"),
+    renderOption: getRenderOptions("user_with_avatar"),
   },
 
   chatroom_users: {
     useHook: useGetChatWindowUsers,
     getFilteredOptions: (result, selected) =>
-      result?.users?.filter(
-        (u) => !selected?.some((s) => s.id === u.id)
-      ),
+      result?.users?.filter((u) => !selected?.some((s) => s.id === u.id)),
     selectors: (result) => ({
       options: result?.users,
       loading: result?.loading,
@@ -44,9 +40,9 @@ export const autocompleteConfigMap = {
       setSearchValue: result?.setSearchValue,
       resetStates: result?.resetStates,
       hasFetchedOnce: result?.hasFetchedOnce,
-      refetchOptions:result?.resetStatesAndFetch,
+      refetchOptions: result?.resetStatesAndFetch,
     }),
-    renderTags: getRenderTags("chatroom_users"),
-    renderOption: getRenderOptions("chatroom_users"),
+    renderTags: getRenderTags("username"),
+    renderOption: getRenderOptions("user_with_avatar"),
   },
 };

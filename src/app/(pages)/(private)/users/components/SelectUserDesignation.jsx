@@ -17,23 +17,12 @@ const SelectUserDesignation = () => {
   return (
     <>
       <Box width={"100%"}>
-        {/* <MySelect
-          minWidth="0px"
-          fullWidth={true}
-          label="Designation"
-          options={roleList}
+        <MySelectVariant
+          selectedValue={selectedRoles}
+          setSelectedValue={setSelectedRoles}
+          type={"multi_all_designations"}
           multiple={true}
-          onChange={handleRoleSelect}
-          value={selectedRoles}
-          border={`undefined`}
-          focusedBorder={`2px solid #1C252E`}
-        /> */}
-        <MySelectVariant 
-           selectedValue={selectedRoles}
-           setSelectedValue={setSelectedRoles}
-           type={"all_users"}
-           multiple={true}
-           label="Select User"
+          label="Select designation"
         />
       </Box>
     </>

@@ -8,10 +8,10 @@ const MySelectVariant = ({
   hookParam,
   type,
   label = "Select",
-  multiple=false,
+  multiple = false,
   error,
   helperText,
-  disabled=false,
+  disabled = false,
 }) => {
   const config = selectConfig[type];
   if (!config) return null;
@@ -23,13 +23,25 @@ const MySelectVariant = ({
 
   const handleSelect = (event) => {
     const newValue = event.target.value;
-    console.log(":::handle select value",event.target.value)
     setSelectedValue(newValue);
   };
+  const safeValue = useMemo(() => {
+    if (!selectors?.options) return isMultiple ? [] : "";
+
+    const optionValues = selectors.options.map((opt) => opt.value);
+
+    if (isMultiple) {
+      if (!Array.isArray(selectedValue)) return [];
+      return selectedValue.filter((val) => optionValues.includes(val));
+    }
+
+    return optionValues.includes(selectedValue) ? selectedValue : "";
+  }, [selectedValue, selectors?.options, isMultiple]);
+
   return (
     <MySelect
       label={label}
-      value={selectedValue}
+      value={safeValue}
       onChange={handleSelect}
       disabled={disabled}
       error={error}
@@ -37,7 +49,11 @@ const MySelectVariant = ({
       multiple={isMultiple}
       loading={selectors.loading}
       options={selectors?.options}
-      renderOption={config.renderOption}
+      renderOption={
+        config.renderOption
+          ? config.renderOption(isMultiple, selectedValue)
+          : undefined
+      }
       renderValue={config.renderValue}
       loadMoreRef={selectors.loadMoreRef}
       hasMore={selectors.hasMore}

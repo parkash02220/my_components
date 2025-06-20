@@ -1,19 +1,23 @@
 import { Box, Typography } from "@mui/material";
 import { getFullName } from "@/utils";
 
-export const getRenderValue = (type) => {
+export const getRenderValue = (type, isMultiple = false) => {
   switch (type) {
-    case "all_users": {
-      return (selected, context) => {
-        const selectedObjects = context?.options?.filter((opt) =>
-          selected.includes(opt.id || opt.value)
-        ) || [];
+    case "user_with_avatar": {
+      const UserWithAvatarValue = (selected, context) => {
+        const selectedArray = Array.isArray(selected) ? selected : [selected];
+        const selectedObjects =
+          context?.options?.filter((opt) =>
+            selectedArray.includes(opt?.id || opt?.value)
+          ) || [];
+
+        if (selectedObjects.length === 0) return "";
 
         return (
           <Box display="flex" flexWrap="wrap" gap={1}>
             {selectedObjects.map((opt) => (
               <Box
-                key={opt.id}
+                key={opt?.id || opt?.value}
                 display="flex"
                 alignItems="center"
                 gap={0.5}
@@ -27,7 +31,7 @@ export const getRenderValue = (type) => {
               >
                 <img
                   src={opt?.avatar || "/dummyUser.svg"}
-                  alt={opt.label}
+                  alt={opt?.label || opt?.firstName}
                   referrerPolicy="no-referrer"
                   style={{
                     width: 20,
@@ -44,41 +48,69 @@ export const getRenderValue = (type) => {
           </Box>
         );
       };
+
+      UserWithAvatarValue.displayName = "UserWithAvatarValue";
+      return UserWithAvatarValue;
     }
 
-    case "all_departments":
-    case "designation_by_department"
-    : {
-        return (selected, context) => {
-            const value = Array.isArray(selected) ? selected[0] : selected;
-            const selectedOption = context?.options?.find(
-              (opt) => (opt.id || opt.value) === value?.id
-            );
-            
-            if (!selectedOption) return selected || ""; 
+    case "label": {
+      const LabelRenderValue = (selected, context) => {
+        if (isMultiple) {
+          const selectedArray = Array.isArray(selected) ? selected : [selected];
+          const selectedObjects =
+            context?.options?.filter((opt) =>
+              selectedArray.includes(opt?.value || opt?.id)
+            ) || [];
+
+          if (selectedObjects.length > 0) {
+            return selectedObjects
+              .map((s) => s.label || s.name || s)
+              .join(", ");
+          }
+          return selectedArray
+            .map((s) => (typeof s === "string" ? s : s?.label || s?.name || s))
+            .join(", ");
+        } else {
+          const value = Array.isArray(selected) ? selected[0] : selected;
+          const selectedOption = context?.options?.find(
+            (opt) => (opt?.value || opt?.id) === (value || value?.id)
+          );
+
+          if (!selectedOption)
+            return value?.label || value?.name || value || "";
+
           return (
-            <Box
-              display="flex"
-              alignItems="center"
-              gap={1}
-              px={1}
-            >
+            <Box display="flex" alignItems="center" gap={1} px={1}>
               <Typography fontSize="13px">
                 {selectedOption.label || selectedOption.name}
               </Typography>
             </Box>
           );
-        };
-      }
-      
-    default: {
-      return (selected, context) => {
-        const selectedObjects = context?.options?.filter((opt) =>
-          selected.includes(opt?.id || opt?.value)
-        ) || [];
-
-        return selectedObjects.map((s) => s.label || s.name || s).join(", ");
+        }
       };
+
+      LabelRenderValue.displayName = "LabelRenderValue";
+      return LabelRenderValue;
+    }
+
+    default: {
+      const DefaultRenderValue = (selected, context) => {
+        const selectedArray = Array.isArray(selected) ? selected : [selected];
+        const selectedObjects =
+          context?.options?.filter((opt) =>
+            selectedArray.includes(opt?.id || opt?.value)
+          ) || [];
+
+        if (selectedObjects.length > 0) {
+          return selectedObjects.map((s) => s.label || s.name || s).join(", ");
+        }
+        return selectedArray
+          .map((s) => (typeof s === "string" ? s : s?.label || s?.name || s))
+          .join(", ");
+      };
+
+      DefaultRenderValue.displayName = "DefaultRenderValue";
+      return DefaultRenderValue;
     }
   }
 };

@@ -4,50 +4,58 @@ import { getRenderOptions } from "./GetRenderOption";
 import { getFullName } from "@/utils";
 import useGetAllDepartments from "@/hooks/organization/useGetAllDepartments";
 import useGetDesignationsByDepartment from "@/hooks/organization/useGetDesignationsByDepartment";
+import useGetAllDesignations from "@/hooks/organization/useGetAllDesignations";
+const baseStyleProps = {
+  shrink: true,
+  borderColor: "#ccc",
+  hoverBorderColor: "#1C252E",
+  focusedBorder: "2px solid #1C252E",
+  labelColor: "#637381",
+  labelFontWeight: 700,
+  fullWidth: true,
+  minWidth: "100px",
+};
+
 export const selectConfig = {
-  all_users: {
-    useHook: useGetAllUsers,
+  multi_all_designations: {
+    useHook: useGetAllDesignations,
     multiple: true,
     selectors: (result) => ({
-      options: result?.allUsers?.map((user) => ({
-        ...user,
-        label: getFullName(user?.firstName, user?.lastName),
-        value: user?.id,
+      options: result?.allDesignations?.map((designation) => ({
+        id: designation?.id,
+        label: designation?.name,
+        value: designation?.id,
       })),
-      loading: result?.loadingAllUsers,
-      loadingMore: result?.loadingMoreAllUsers,
-      loadMoreRef: result?.loadMoreRef,
-      hasMore: result?.hasMore,
-      resetStates: result?.resetStates,
+      loading: result?.loading,
       hasFetchedOnce: result?.hasFetchedOnce,
-      refetchOptions: result?.resetStatesAndFetch,
     }),
-    renderValue: getRenderValue("all_users"),
-    renderOption: getRenderOptions("all_users"),
+    renderValue: getRenderValue("label", true),
+    renderOption: (isMultiple, selected) =>
+      getRenderOptions("label", isMultiple, selected),
+    styleProps: {
+      ...baseStyleProps,
+      shrink: undefined,
+      labelFontWeight: 500,
+      color: "#1C252E",
+    },
   },
   all_departments: {
     useHook: useGetAllDepartments,
     multiple: false,
     selectors: (result) => ({
       options: result?.allDepartments?.map((department) => ({
-        id:department?.id,
+        id: department?.id,
         label: department?.name,
-        value: department,
+        value: department?.id,
       })),
       loading: result?.loading,
       hasFetchedOnce: result?.hasFetchedOnce,
     }),
-    renderValue: getRenderValue("all_departments"),
-    renderOption: getRenderOptions("all_departments"),
+    renderValue: getRenderValue("label"),
+    renderOption: (isMultiple, selected) =>
+      getRenderOptions("label", isMultiple, selected),
     styleProps: {
-      shrink: true,
-      borderColor: "#ccc",
-      hoverBorderColor: "#1C252E",
-      focusedBorder: "2px solid #1C252E",
-      labelColor: "#637381",
-      labelFontWeight: 700,
-      fullWidth: true,
-      minWidth: "100px",
+      ...baseStyleProps,
     },
   },
   designation_by_department: {
@@ -55,24 +63,18 @@ export const selectConfig = {
     multiple: false,
     selectors: (result) => ({
       options: result?.designations?.map((designation) => ({
-        id:designation?.id,
+        id: designation?.id,
         label: designation?.name,
-        value: designation,
+        value: designation?.id,
       })),
       loading: result?.loading,
       hasFetchedOnce: result?.hasFetchedOnce,
     }),
-    renderValue: getRenderValue("designation_by_department"),
-    renderOption: getRenderOptions("designation_by_department"),
+    renderValue: getRenderValue("label"),
+    renderOption: (isMultiple, selected) =>
+      getRenderOptions("label", isMultiple, selected),
     styleProps: {
-      shrink: true,
-      borderColor: "#ccc",
-      hoverBorderColor: "#1C252E",
-      focusedBorder: "2px solid #1C252E",
-      labelColor: "#637381",
-      labelFontWeight: 700,
-      fullWidth: true,
-      minWidth: "100px",
+      ...baseStyleProps,
     },
   },
 };

@@ -22,7 +22,7 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
   const [pageSize, setPageSize] = useState(10);
   const [totalUsers, setTotalUsers] = useState(0);
   const [hasMore, setHasMore] = useState(false);
-
+  const [designations, setDesignations] = useState([]);
   const hasFetchedOnce = useRef(false);
   const { ref: loadMoreRef, inView } = useInView();
 
@@ -41,13 +41,19 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
   }, []);
 
   const fetchUsers = useCallback(
-    async ({ page, append, signal, pageSize = 10 }) => {
+    async ({
+      page,
+      append,
+      signal,
+      pageSize = 10,
+      search = debouncedSearchValue,
+    }) => {
       setLoading(true);
       setError(false);
 
       const baseUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/get-users`;
       const query = new URLSearchParams({
-        search: debouncedSearchValue,
+        search,
         page,
         limit: pageSize,
         ...(type !== "all" && { boardId: activeProjectId }),
@@ -56,7 +62,7 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
       const res = await ApiCall({
         url: `${baseUrl}?${query.toString()}`,
         method: "POST",
-        body: { role: [] },
+        body: { designations },
         signal,
       });
 
@@ -101,11 +107,11 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
 
   const resetStatesAndFetch = useCallback(() => {
     const controller = new AbortController();
-  
+
     const shouldManuallyFetch = debouncedSearchValue.trim() === "";
-  
+
     resetStates();
-  
+
     if (shouldManuallyFetch) {
       fetchUsers({
         page: 1,
@@ -114,14 +120,13 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
         pageSize,
       });
     }
-  
   }, [debouncedSearchValue, fetchUsers, resetStates, pageSize]);
 
   useEffect(() => {
     const controller = new AbortController();
     fetchUsers({ page: 1, append: false, signal: controller.signal, pageSize });
     return () => controller.abort();
-  }, [debouncedSearchValue]);
+  }, [debouncedSearchValue, designations]);
 
   useEffect(() => {
     if (!hasFetchedOnce.current) return;
@@ -175,6 +180,8 @@ const useGetAllUsers = (type = "all", paginationMode = "scroll") => {
     getAllUsersFromBackend: fetchUsers,
     handlePageSizeChange,
     resetStatesAndFetch,
+    designations,
+    setDesignations,
   };
 };
 

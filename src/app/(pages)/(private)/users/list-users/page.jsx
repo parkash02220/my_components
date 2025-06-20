@@ -52,7 +52,7 @@ const ListUsers = () => {
         avatar: user?.avatar || "",
       },
       isSelected: selectedUsers.some((u) => u.id === user.id),
-      designation: user?.userProfile?.designation,
+      designation: user?.userProfile?.designation?.name,
     }));
   }, [allUsers, selectedUsers]);
   const menuItems = [
