@@ -41,7 +41,7 @@ const useGetAllDepartments = () => {
   useEffect(() => {
     if (hasFetchedOnce.current || allDepartments?.allIds?.length > 0) return;
     fetchAllDepartments();
-  }, []);
+  }, [hasFetchedOnce.current,allDepartments]);
 
   return {
     loading,

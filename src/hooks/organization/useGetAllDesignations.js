@@ -39,9 +39,9 @@ const useGetAllDesignations = () => {
   }, [showToast, dispatch]);
 
   useEffect(() => {
-    if (allDesignations?.allIds?.length > 0) return;
+    if (hasFetchedOnce.current || allDesignations?.allIds?.length > 0) return;
     fetchAllDesignations();
-  }, [allDesignations]);
+  }, [allDesignations,hasFetchedOnce.current]);
 
   return {
     loading,
