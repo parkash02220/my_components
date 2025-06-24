@@ -15,6 +15,8 @@ import useCreateChatRoom from "@/hooks/chat/useCreateChatRoom";
 import useSendMessage from "@/hooks/chat/useSendMessage";
 import useCreateCustomGroup from "@/hooks/chat/useCreateCustomGroup";
 import { getFullName } from "@/utils";
+import useGetAllDesignations from "@/hooks/organization/useGetAllDesignations";
+import useGetAllDepartments from "@/hooks/organization/useGetAllDepartments";
 const ChatWindow = ({ projectId }) => {
   const {isCHatWindowAvailable} = useInitializeChatWindow();
   const { joinRoom } = useJoinRoomSocket();
@@ -49,6 +51,8 @@ const ChatWindow = ({ projectId }) => {
   const {chatRooms} = chatWindow;
   const allChatRooms = chatRooms?.allIds?.map(id => chatRooms?.byIds[id]);
   const chatRoomsWithSingleUser = allChatRooms?.filter((chatroom)=> !chatroom?.isGroup);
+  const { allDesignations } = useGetAllDesignations();
+  const { allDepartments } = useGetAllDepartments();
   const initializeChatRoom = async () => {
     if (selectedDirectoryItem) return selectedDirectoryItem;
 

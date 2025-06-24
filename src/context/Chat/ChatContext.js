@@ -153,12 +153,16 @@ function chatReducer(state = initialState, action) {
     case actions.UPDATE_LAST_MESSAGE: {
          const {message,activeUserId,chatRoomId} = payload;
          const formattedLastMessage = formatLastMessage(message,activeUserId);
+         const allChatrooms = state?.chatWindow?.chatRooms?.allIds || [];
+         if(!allChatrooms?.includes(chatRoomId)) return state;
+         const updatedChatroomAllIds = [chatRoomId,...(allChatrooms?.filter((id)=> id !== chatRoomId) || [])];
          const newState = {
           ...state,
           chatWindow:{
             ...state?.chatWindow,
             chatRooms:{
               ...state?.chatWindow?.chatRooms,
+              allIds:updatedChatroomAllIds,
               byIds:{
                 ...state?.chatWindow?.chatRooms?.byIds,
                 [chatRoomId]:{

@@ -8,8 +8,8 @@ const editUserValidationSchema = Yup.object({
     .required("First name is required"),
 
   lastName: Yup.string()
-    .max(50, "Last name should not exceed 50 characters")
-    .matches(/^[a-zA-Z\s]*$/, "Last name can only contain letters and spaces"),
+  .max(50, "Last name should not exceed 50 characters")
+  .matches(/^[a-zA-Z0-9\s]*$/, "Last name can only contain letters, numbers, and spaces"),
 
   role: Yup.string()
     .oneOf(["admin", "user", "manager", "employee"], "Invalid role")

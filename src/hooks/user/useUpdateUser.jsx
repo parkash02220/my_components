@@ -13,10 +13,15 @@ const useUpdateUser = () => {
     showToast({ toastId, type: "loading", message: "Updating user..." });
     setLoading(true);
     setError(null);
+    
+    const filteredUserDetails = Object.fromEntries(
+      Object.entries(userDetails).filter(([key, value]) => value?.trim() !== "" && value !== undefined && value !== null)
+    );
+    
     const res = await ApiCall({
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/update-user/${userId}`,
       method: "PUT",
-      body: userDetails,
+      body: filteredUserDetails,
     });
 
     if (res.error) {

@@ -195,4 +195,12 @@ export const getCalendarMinMaxDate = (minYear,maxYear) => {
   return {minDate,maxDate}
 }
 
+export const getDesignationName = (allDesignations,designationId) => {
+   return allDesignations?.byIds?.[designationId]?.name || "";
+}
+
+export const getDepartmentName = (allDepartments,departmentId) => {
+  return allDepartments?.byIds?.[departmentId]?.name || "";
+}
+
 export const formatDate = (date) => date.toISOString().split("T")[0];

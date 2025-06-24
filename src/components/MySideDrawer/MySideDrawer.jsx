@@ -79,7 +79,7 @@ export default function MySideDrawer({ open, setOpen }) {
   const { state, dispatch } = useAppContext();
   const { activeUser } = state;
   const { projects } = useProjectsContext()?.state;
-  const { isAdmin } = activeUser;
+  const { isAdmin } = activeUser || {};
   const [loading, isCreated, createProject] = useCreateProject();
   const router = useRouter();
   const pathname = usePathname();
@@ -130,7 +130,8 @@ export default function MySideDrawer({ open, setOpen }) {
   }, [NAVIGATION, activeSegment]);
 
   const handleCreateProject = async (name, users) => {
-    await createProject(name, users);
+    const projectId = await createProject(name, users);
+    router.replace(`/projects/${projectId}`);
   };
   // if (!hasMounted) return null;
   return (

@@ -8,9 +8,9 @@ const editActiveUserValidationSchema = Yup.object({
     .matches(/^[a-zA-Z\s]+$/, "First name can only contain letters and spaces")
     .required("First name is required"),
 
-  lastName: Yup.string()
+    lastName: Yup.string()
     .max(50, "Last name should not exceed 50 characters")
-    .matches(/^[a-zA-Z\s]*$/, "Last name can only contain letters and spaces"),
+    .matches(/^[a-zA-Z0-9\s]*$/, "Last name can only contain letters, numbers, and spaces"),
 
   gender: Yup.string()
     .oneOf(["male", "female", "other"], "Invalid gender")

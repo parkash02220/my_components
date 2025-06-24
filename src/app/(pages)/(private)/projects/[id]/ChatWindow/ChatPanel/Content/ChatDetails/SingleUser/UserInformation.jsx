@@ -1,26 +1,39 @@
 import { Box, Collapse, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { useOrganizationContext } from "@/context/Organization/OrganizationContext";
+import { getDepartmentName } from "@/utils";
 const UserInformation = ({user}) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const toggleIsExpanded = () => {
     setIsExpanded((pre) => !pre);
   };
-  const {email,role} = user;
+  const {email,userProfile} = user;
+  const {allDepartments} = useOrganizationContext()?.state;
+  const department = useMemo(()=>{
+     return getDepartmentName(allDepartments,userProfile?.department);
+  },[allDepartments,user]);
   const inoformationData = [
+    // {
+    //   label: {
+    //     src: "/locationIcon.svg",
+    //     alt: "location",
+    //   },
+    //   value: "2089 Runolfsson Harbors Suite 886 - Chapel Hill, TX / 32827",
+    // },
     {
       label: {
-        src: "/locationIcon.svg",
-        alt: "location",
+        src: "/department.svg",
+        alt: "department",
       },
-      value: "2089 Runolfsson Harbors Suite 886 - Chapel Hill, TX / 32827",
+      value: department,
     },
     {
       label: {
         src: "/mobileNumberIcon.svg",
-        alt: "location",
+        alt: "phone number",
       },
-      value: "999999999",
+      value: userProfile?.phone,
     },
     {
       label: {
@@ -82,6 +95,7 @@ const UserInformation = ({user}) => {
 export default UserInformation;
 
 export const InformationRow = ({ label, value }) => {
+  if(!value) return null;
   return (
     <>
       <Box display={"flex"} gap={1} alignItems={"center"}>

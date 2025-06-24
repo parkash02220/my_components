@@ -1,8 +1,13 @@
-import { getFullName } from "@/utils";
+import { useOrganizationContext } from "@/context/Organization/OrganizationContext";
+import { getDesignationName, getFullName } from "@/utils";
 import { Box, Typography } from "@mui/material";
+import { useMemo } from "react";
 
 const UserDetails = ({ user }) => {
-
+  const { allDesignations } = useOrganizationContext()?.state;
+  const designation = useMemo(() => {
+    return getDesignationName(allDesignations,user?.userProfile?.designation);
+  }, [allDesignations, user]);
   return (
     <>
       <Box
@@ -39,7 +44,7 @@ const UserDetails = ({ user }) => {
           {getFullName(user?.firstName, user?.lastName)}
         </Typography>
         <Typography color="#637381" fontSize={14} mt={"4px"}>
-          {user?.role}
+          {designation}
         </Typography>
       </Box>
     </>

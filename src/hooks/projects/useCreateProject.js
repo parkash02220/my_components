@@ -33,6 +33,7 @@ const useCreateProject = () => {
     setIsCreated(true);
     dispatch({type:actions.CREATE_PROJECT,payload:formattedIdResponse})
     showToast({toastId,type:"success",message:"Project created successfully."})
+    return formattedIdResponse?.id;
   };
 
   return [loading, isCreated, createProject];

@@ -25,8 +25,11 @@ const useProjectNameAvailability = (name) => {
       signal: controller.signal,
     });
 
+    if(res.aborted){
+      return null;
+    }
+
     if (res.error) {
-      if (res.error.message.includes("abort")) return;
       console.error("Error checking project name:", res.error);
       setMessage(res.error.message);
       setAvailable(false);

@@ -16,7 +16,7 @@ const SingleUser = ({ selectedDirectoryItem }) => {
       >
         <UserDetails user={user} />
         <UserInformation user={user}/>
-        <UserAttachments />
+        {/* <UserAttachments /> */}
       </Box>
     </>
   );

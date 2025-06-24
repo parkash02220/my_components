@@ -1,8 +1,10 @@
 import { Box, Collapse, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import UserWithStatus from "../../../../components/UserWithStatus";
-import { getFullName } from "@/utils";
+import { getDesignationName, getFullName } from "@/utils";
+import { useOrganizationContext } from "@/context/Organization/OrganizationContext";
+import { useChatContext } from "@/context/Chat/ChatContext";
 const RoomDetails = ({ users = [] }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const toggleIsExpanded = () => {
@@ -72,6 +74,16 @@ const RoomDetails = ({ users = [] }) => {
 export default RoomDetails;
 
 export const RoomRow = ({ user }) => {
+  const { allDesignations } = useOrganizationContext()?.state;
+  const { onlineUsers } = useChatContext().state;
+  const designation = useMemo(() => {
+    return getDesignationName(allDesignations,user?.userProfile?.designation);
+  }, [allDesignations, user]);
+
+  const isOnline = useMemo(
+    () => onlineUsers?.includes(user?.id),
+    [onlineUsers, user]
+  );
   return (
     <>
       <Box
@@ -84,7 +96,7 @@ export const RoomRow = ({ user }) => {
           p: "8px 16px",
         }}
       >
-        <UserWithStatus width={40} height={40} avatar={user?.avatar} />
+        <UserWithStatus width={40} height={40} avatar={user?.avatar} isOnline={isOnline}/>
         <Box
           flex={"1 1 auto"}
           minWidth={0}
@@ -109,7 +121,7 @@ export const RoomRow = ({ user }) => {
             color="#637381"
             fontSize={12}
           >
-            {user?.role}
+            {designation}
           </Typography>
         </Box>
       </Box>

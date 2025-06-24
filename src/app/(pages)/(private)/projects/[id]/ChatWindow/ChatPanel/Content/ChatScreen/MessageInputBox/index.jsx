@@ -41,6 +41,7 @@ const MessageInputBox = ({
         alignItems={"center"}
         sx={{ cursor: "text" }}
         position={"relative"}
+        overflow={'hidden'}
       >
         <IconButton
           disabled={isDisabled}

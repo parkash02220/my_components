@@ -20,10 +20,12 @@ const useCreateUser = () => {
       showToast({ toastId, type: "loading", message: "Creating user..." });
       setLoading(true);
       setError(null);
+      const filteredUser = Object.fromEntries(Object.entries(userData)?.filter(([key,value]) => value?.trim() !== "" && value !== undefined && value !== null));
+
       const res = await ApiCall({
         url: `${process.env.NEXT_PUBLIC_BASE_URL}/add-user`,
         method: "POST",
-        body: userData,
+        body: filteredUser,
       });
 
       if (res.error) {

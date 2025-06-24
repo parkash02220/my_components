@@ -13,7 +13,7 @@ const MultipleUsers = ({ selectedDirectoryItem }) => {
         minHeight={0}
       >
         <RoomDetails users={selectedDirectoryItem?.participants} />
-        <RoomAttachments />
+        {/* <RoomAttachments /> */}
       </Box>
     </>
   );

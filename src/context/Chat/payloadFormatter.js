@@ -29,6 +29,18 @@ export const formatChatroomsAndUsers = (payload, activeUserId,prevChatWindow = n
       lastMessage,
     };
   });
+
+  updatedChatRooms.sort((a, b) => {
+    const aTime = a.lastMessage?.createdAt
+      ? new Date(a.lastMessage.createdAt).getTime()
+      : new Date(a.updatedAt).getTime();
+    const bTime = b.lastMessage?.createdAt
+      ? new Date(b.lastMessage.createdAt).getTime()
+      : new Date(b.updatedAt).getTime();
+  
+    return bTime - aTime;
+  });
+
   
 
   const chatRoomsByIds = {};

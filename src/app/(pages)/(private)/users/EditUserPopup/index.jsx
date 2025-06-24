@@ -11,6 +11,7 @@ import { formikInitialValues, getFormikCompatibleValues } from "./helper";
 import _ from "lodash";
 import useToast from "@/hooks/common/useToast";
 import { UpdateUserForm } from "@/components/forms";
+import { useOrganizationContext } from "@/context/Organization/OrganizationContext";
 const EditUserPopup = ({
   title,
   handleClose,
@@ -30,6 +31,8 @@ const EditUserPopup = ({
   const theme = useTheme();
   const {showToast} = useToast();
   const { loadingUpdateUser, errorUpdateUser, updateUser } = useUpdateUser();
+  const {state} = useOrganizationContext();
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: formikInitialValues,
@@ -44,10 +47,19 @@ const EditUserPopup = ({
           return;
       }
       const updatedUser = await updateUser(values, user?.id);
+      const designation = state?.allDesignations?.byIds?.[updatedUser?.userProfile?.designation] || updatedUser?.userProfile?.designation || "";
+      const department = state?.allDepartments?.byIds?.[updatedUser?.userProfile?.department] || updatedUser?.userProfile?.department || "";
       setData((prev) =>
         prev?.map((data) => {
           if (data?.id === user?.id) {
-            return updatedUser;
+            return {
+              ...updatedUser,
+              userProfile:{
+                ...updatedUser?.userProfile,
+                designation,
+                department,
+              }
+            };
           }
           return data;
         })

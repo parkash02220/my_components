@@ -2,13 +2,19 @@ import { Box, Typography } from "@mui/material";
 import UserWithStatus from "../../components/UserWithStatus";
 import { getFullName } from "@/utils";
 import { useMemo } from "react";
+import { useChatContext } from "@/context/Chat/ChatContext";
 
 const SingleUserDetails = ({ userDetails }) => {
   const user = userDetails?.targetUser;
-
+  const { onlineUsers } = useChatContext().state;
   const fullName = useMemo(() => {
     return getFullName(user?.firstName, user?.lastName);
   }, [user?.firstName, user?.lastName]);
+
+  const isOnline = useMemo(
+    () => onlineUsers?.includes(user?.id),
+    [onlineUsers, user]
+  );
 
   return (
     <Box display="flex" gap={2} alignItems="center">
@@ -22,8 +28,8 @@ const SingleUserDetails = ({ userDetails }) => {
         <Typography color="#1C252E" fontSize={14} fontWeight={600} noWrap>
           {fullName}
         </Typography>
-        <Typography color="#637381" fontSize={14} noWrap>
-          always
+        <Typography color={ isOnline ? "green" : "#637381"} fontSize={12} fontWeight={500} noWrap>
+         {isOnline ? "Online" : "Offline"}
         </Typography>
       </Box>
     </Box>
