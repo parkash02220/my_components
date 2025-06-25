@@ -1,10 +1,9 @@
-
 import { useEffect } from "react";
 import { useNotificationContext } from "@/context/Notifications/NotificationsContext";
 import * as actions from "@/context/Notifications/action";
 import { convertIdFields } from "@/utils";
-import useToast from "../common/useToast";
 import { useSocketContext } from "@/context/Socket/SocketContext";
+import useToast from "@/hooks/common/useToast";
 
 export const useNotificationsSocket = () => {
   const socket = useSocketContext();

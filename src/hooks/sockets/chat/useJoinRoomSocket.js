@@ -1,14 +1,14 @@
 import { useEffect, useRef } from "react";
 const { useSocketContext } = require("@/context/Socket/SocketContext");
-import * as actions from '@/context/Chat/action';
+import * as actions from "@/context/Chat/action";
 import { useChatContext } from "@/context/Chat/ChatContext";
 const useJoinRoomSocket = ({
   onRoomJoined,
   onUserTyping,
-  onUserStoppedTyping
+  onUserStoppedTyping,
 } = {}) => {
   const socket = useSocketContext();
-  const {dispatch,state} = useChatContext();
+  const { dispatch, state } = useChatContext();
   const activeChatRoomRef = useRef(state.activeChatRoom);
 
   useEffect(() => {
@@ -33,21 +33,29 @@ const useJoinRoomSocket = ({
       const activeChatRoom = activeChatRoomRef.current;
       console.log(":::User typing:", userId);
       onUserTyping?.(userId);
-      const user = activeChatRoom?.participants?.find((user)=> user?.id === userId);
+      const user = activeChatRoom?.participants?.find(
+        (user) => user?.id === userId
+      );
       if (user) {
         dispatch({
           type: actions.ADD_USER_IN_TYPING_USERS,
           payload: { user },
         });
       } else {
-        console.warn(":::⚠️ Typing user not found in activeChatRoom participants", { userId, activeChatRoom });
+        console.warn(
+          ":::⚠️ Typing user not found in activeChatRoom participants",
+          { userId, activeChatRoom }
+        );
       }
     };
 
     const handleUserStoppedTyping = ({ userId }) => {
       console.log(":::User stopped typing:", userId);
       onUserStoppedTyping?.(userId);
-      dispatch({type:actions.REMOVE_USER_IN_TYPING_USERS,payload:{userId}})
+      dispatch({
+        type: actions.REMOVE_USER_IN_TYPING_USERS,
+        payload: { userId },
+      });
     };
 
     socket.on("roomJoined", handleRoomJoined);
@@ -59,7 +67,7 @@ const useJoinRoomSocket = ({
       socket.off("userTyping", handleUserTyping);
       socket.off("userStoppedTyping", handleUserStoppedTyping);
     };
-  }, [socket, onRoomJoined, onUserTyping, onUserStoppedTyping,dispatch]);
+  }, [socket, onRoomJoined, onUserTyping, onUserStoppedTyping, dispatch]);
 
   return { joinRoom };
 };

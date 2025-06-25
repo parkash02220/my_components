@@ -7,13 +7,13 @@ import {
   formatChatroomsAndUsers,
   formatLastMessage,
   formatNewChatRoomPayload,
+  formatNewPrivateChatroomPayload,
 } from "./payloadFormatter";
 const ChatContext = createContext();
 
 function chatReducer(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-
     case actions.SET_CHATROOMS_AND_USERS_IN_CHATWINDOW: {
       const { data, activeUserId, page } = payload;
       const formattedPayload = formatChatroomsAndUsers(
@@ -21,39 +21,39 @@ function chatReducer(state = initialState, action) {
         activeUserId,
         page === 1 ? null : state.chatWindow
       );
-    
+
       return {
         ...state,
         chatWindow: formattedPayload || {},
       };
     }
 
-    case actions.CLEAR_CHATWINDOW_DATA :{
+    case actions.CLEAR_CHATWINDOW_DATA: {
       return {
         ...state,
-        chatWindow:{
-          allUsers:{
-            byIds:{},
-            allIds:[],
+        chatWindow: {
+          allUsers: {
+            byIds: {},
+            allIds: [],
+          },
+          usersWithoutChatRoom: {
+            byIds: {},
+            allIds: [],
+          },
+          usersWithChatRoom: {
+            byIds: {},
+            allIds: [],
+          },
+          chatRooms: {
+            byIds: {},
+            allIds: [],
+          },
+          page: 0,
+          pageSize: 10,
+          totalChatroomsAndUsers: 0,
+          hasMore: false,
         },
-        usersWithoutChatRoom:{
-            byIds:{},
-            allIds:[],
-        },
-        usersWithChatRoom:{
-            byIds:{},
-            allIds:[],
-        },
-        chatRooms:{
-            byIds:{},
-            allIds:[],
-        },
-        page:0,
-        pageSize:10,
-        totalChatroomsAndUsers:0,
-        hasMore:false,
-        }
-      }
+      };
     }
 
     case actions.SET_ACTIVE_CHAT_ROOM: {
@@ -65,7 +65,7 @@ function chatReducer(state = initialState, action) {
     }
 
     case actions.SET_CHAT_MESSAGES_REQUEST: {
-      const { chatRoomId,page } = payload;
+      const { chatRoomId, page } = payload;
       return {
         ...state,
         allChatMessages: {
@@ -87,18 +87,16 @@ function chatReducer(state = initialState, action) {
       );
 
       const existingMessages =
-      state.allChatMessages[chatRoomId]?.messages || [];
-  
-    const mergedMessages =
-      formattedChatMessageData.page === 1
-        ? formattedChatMessageData.messages
-        : [...formattedChatMessageData.messages, ...existingMessages];
+        state.allChatMessages[chatRoomId]?.messages || [];
 
-        const uniqueMessages = Array.from(
-          new Map(
-            mergedMessages.map((msg) => [msg.id, msg])
-          ).values()
-        );
+      const mergedMessages =
+        formattedChatMessageData.page === 1
+          ? formattedChatMessageData.messages
+          : [...formattedChatMessageData.messages, ...existingMessages];
+
+      const uniqueMessages = Array.from(
+        new Map(mergedMessages.map((msg) => [msg.id, msg])).values()
+      );
 
       return {
         ...state,
@@ -151,46 +149,49 @@ function chatReducer(state = initialState, action) {
     }
 
     case actions.UPDATE_LAST_MESSAGE: {
-         const {message,activeUserId,chatRoomId} = payload;
-         const formattedLastMessage = formatLastMessage(message,activeUserId);
-         const allChatrooms = state?.chatWindow?.chatRooms?.allIds || [];
-         if(!allChatrooms?.includes(chatRoomId)) return state;
-         const updatedChatroomAllIds = [chatRoomId,...(allChatrooms?.filter((id)=> id !== chatRoomId) || [])];
-         const newState = {
-          ...state,
-          chatWindow:{
-            ...state?.chatWindow,
-            chatRooms:{
-              ...state?.chatWindow?.chatRooms,
-              allIds:updatedChatroomAllIds,
-              byIds:{
-                ...state?.chatWindow?.chatRooms?.byIds,
-                [chatRoomId]:{
-                  ...state?.chatWindow?.chatRooms?.byIds[chatRoomId],
-                  lastMessage:formattedLastMessage,
-                }
+      const { message, activeUserId, chatRoomId } = payload;
+      const formattedLastMessage = formatLastMessage(message, activeUserId);
+      const allChatrooms = state?.chatWindow?.chatRooms?.allIds || [];
+      if (!allChatrooms?.includes(chatRoomId)) return state;
+      const updatedChatroomAllIds = [
+        chatRoomId,
+        ...(allChatrooms?.filter((id) => id !== chatRoomId) || []),
+      ];
+      const newState = {
+        ...state,
+        chatWindow: {
+          ...state?.chatWindow,
+          chatRooms: {
+            ...state?.chatWindow?.chatRooms,
+            allIds: updatedChatroomAllIds,
+            byIds: {
+              ...state?.chatWindow?.chatRooms?.byIds,
+              [chatRoomId]: {
+                ...state?.chatWindow?.chatRooms?.byIds[chatRoomId],
+                lastMessage: formattedLastMessage,
+              },
             },
-            }
-          }
-         }
-         return newState
+          },
+        },
+      };
+      return newState;
     }
 
     case actions.CREATE_NEW_CHAT_ROOM: {
       const { chatRoom, activeUser } = payload;
       const updatedChatRoom = formatNewChatRoomPayload(chatRoom, activeUser);
       const newState = { ...state };
-    
+
       if (!newState.chatWindow.chatRooms.byIds[chatRoom.id]) {
         newState.chatWindow.chatRooms.byIds[chatRoom.id] = updatedChatRoom;
         newState.chatWindow.chatRooms.allIds.unshift(chatRoom.id);
       }
-    
+
       if (!chatRoom?.isGroup && updatedChatRoom?.targetUser) {
         const targetUserId = updatedChatRoom.targetUser.id;
         const targetUserData =
           newState.chatWindow.usersWithoutChatRoom.byIds[targetUserId];
-    
+
         if (targetUserData) {
           delete newState.chatWindow.usersWithoutChatRoom.byIds[targetUserId];
           newState.chatWindow.usersWithoutChatRoom.allIds =
@@ -198,7 +199,7 @@ function chatReducer(state = initialState, action) {
               (id) => id !== targetUserId
             );
         }
-    
+
         if (
           !newState.chatWindow.usersWithChatRoom.byIds[targetUserId] &&
           targetUserData
@@ -207,10 +208,9 @@ function chatReducer(state = initialState, action) {
             targetUserData;
         }
       }
-    
+
       return newState;
     }
-    
 
     case actions.SET_ONLINE_USERS: {
       return {
@@ -220,22 +220,26 @@ function chatReducer(state = initialState, action) {
     }
 
     case actions.ADD_NEW_MESSAGE_IN_CHAT: {
-      const { newMessageData,activeUser } = payload;
+      const { newMessageData, activeUser } = payload;
       const { chatRoomId, message } = newMessageData;
-      const isRoomExists = state.chatWindow.chatRooms?.allIds?.includes(chatRoomId);
-      if(!isRoomExists) return state;
+      const isRoomExists =
+        state.chatWindow.chatRooms?.allIds?.includes(chatRoomId);
+      if (!isRoomExists) return state;
       const updatedMessage = message;
       updatedMessage.isSentMessage = message?.sender?.id === activeUser?.id;
-          return {
-            ...state,
-            allChatMessages:{
-              ...state.allChatMessages,
-              [chatRoomId]:{
-                ...state.allChatMessages[chatRoomId],
-                messages:[...(state.allChatMessages[chatRoomId]?.messages || []),updatedMessage]
-              }
-            }
-          }
+      return {
+        ...state,
+        allChatMessages: {
+          ...state.allChatMessages,
+          [chatRoomId]: {
+            ...state.allChatMessages[chatRoomId],
+            messages: [
+              ...(state.allChatMessages[chatRoomId]?.messages || []),
+              updatedMessage,
+            ],
+          },
+        },
+      };
     }
 
     case actions.ADD_USER_IN_TYPING_USERS: {
@@ -255,17 +259,19 @@ function chatReducer(state = initialState, action) {
       };
     }
 
-    case actions.MARK_CHAT_AS_READ:{
+    case actions.MARK_CHAT_AS_READ: {
       const { chatId, readerId } = payload;
       const chatRoom = state.chatWindow.chatRooms.byIds[chatId];
-      
-      if (!chatRoom || !chatRoom.lastMessage) return state; 
+
+      if (!chatRoom || !chatRoom.lastMessage) return state;
       const updatedLastMessage = {
         ...chatRoom.lastMessage,
-        readBy: [...new Set([...(chatRoom.lastMessage.readBy || []), readerId])],
-        isSeenByActiveUser:true,
+        readBy: [
+          ...new Set([...(chatRoom.lastMessage.readBy || []), readerId]),
+        ],
+        isSeenByActiveUser: true,
       };
-      
+
       return {
         ...state,
         chatWindow: {
@@ -282,30 +288,29 @@ function chatReducer(state = initialState, action) {
           },
         },
       };
-
     }
 
     case actions.ADD_USER_IN_CHATROOM: {
       const { chatRoomId, addedUser } = payload;
       const chatRooms = state?.chatWindow?.chatRooms?.byIds || {};
       const existingChatRoom = chatRooms[chatRoomId] || { participants: [] };
-    
+
       const isAlreadyParticipant = existingChatRoom.participants.some(
-        user => user?.id === addedUser?.id
+        (user) => user?.id === addedUser?.id
       );
-    
+
       const updatedParticipants = isAlreadyParticipant
         ? existingChatRoom.participants
         : [...existingChatRoom.participants, addedUser];
-    
+
       const updatedChatRoom = {
         ...existingChatRoom,
         participants: updatedParticipants,
       };
-    
+
       const addToAllIds = (allIds = [], id) =>
         allIds.includes(id) ? allIds : [...allIds, id];
-    
+
       return {
         ...state,
         chatWindow: {
@@ -323,7 +328,10 @@ function chatReducer(state = initialState, action) {
               ...state.chatWindow.allUsers?.byIds,
               [addedUser.id]: addedUser,
             },
-            allIds: addToAllIds(state.chatWindow.allUsers?.allIds, addedUser.id),
+            allIds: addToAllIds(
+              state.chatWindow.allUsers?.allIds,
+              addedUser.id
+            ),
           },
           usersWithoutChatRoom: {
             ...state.chatWindow.usersWithoutChatRoom,
@@ -331,7 +339,10 @@ function chatReducer(state = initialState, action) {
               ...state.chatWindow.usersWithoutChatRoom?.byIds,
               [addedUser.id]: addedUser,
             },
-            allIds: addToAllIds(state.chatWindow.usersWithoutChatRoom?.allIds, addedUser.id),
+            allIds: addToAllIds(
+              state.chatWindow.usersWithoutChatRoom?.allIds,
+              addedUser.id
+            ),
           },
           totalChatroomsAndUsers: state.chatWindow.totalChatroomsAndUsers + 1,
         },
@@ -340,30 +351,32 @@ function chatReducer(state = initialState, action) {
 
     case actions.REMOVE_USER_IN_CHATROOM: {
       const { removedFrom = [], deletedRooms = [], removedUserId } = payload;
-    
+
       const updatedChatRoomsByIds = { ...state.chatWindow.chatRooms?.byIds };
       let updatedChatRoomsAllIds = [...state.chatWindow.chatRooms?.allIds];
-    
-      removedFrom.forEach(chatRoomId => {
+
+      removedFrom.forEach((chatRoomId) => {
         const chatRoom = updatedChatRoomsByIds[chatRoomId];
         if (chatRoom) {
           updatedChatRoomsByIds[chatRoomId] = {
             ...chatRoom,
             participants: chatRoom.participants.filter(
-              user => user?.id !== removedUserId
+              (user) => user?.id !== removedUserId
             ),
           };
         }
       });
-    
-      deletedRooms.forEach(roomId => {
+
+      deletedRooms.forEach((roomId) => {
         delete updatedChatRoomsByIds[roomId];
-        updatedChatRoomsAllIds = updatedChatRoomsAllIds.filter(id => id !== roomId);
+        updatedChatRoomsAllIds = updatedChatRoomsAllIds.filter(
+          (id) => id !== roomId
+        );
       });
-    
+
       const removeFromAllIds = (allIds = [], idToRemove) =>
-        allIds.filter(id => id !== idToRemove);
-    
+        allIds.filter((id) => id !== idToRemove);
+
       return {
         ...state,
         chatWindow: {
@@ -378,7 +391,10 @@ function chatReducer(state = initialState, action) {
             byIds: {
               ...state.chatWindow.allUsers.byIds,
             },
-            allIds: removeFromAllIds(state.chatWindow.allUsers.allIds, removedUserId),
+            allIds: removeFromAllIds(
+              state.chatWindow.allUsers.allIds,
+              removedUserId
+            ),
           },
           usersWithoutChatRoom: {
             ...state.chatWindow.usersWithoutChatRoom,
@@ -397,9 +413,20 @@ function chatReducer(state = initialState, action) {
         },
       };
     }
-    
-    
-    
+
+    case actions.NEW_PRIVATE_ROOM_CREATED: {
+      const { chatRoom, activeUserId } = payload;
+      const updatedChatWindow = formatNewPrivateChatroomPayload(
+        chatRoom,
+        state?.chatWindow,
+        activeUserId
+      );
+
+      return {
+        ...state,
+        chatWindow: updatedChatWindow,
+      };
+    }
 
     default:
       return state;

@@ -8,19 +8,21 @@ import { useState } from "react";
 import useGetAllMessages from "@/hooks/chat/useGetAllMessages";
 import BackButton from "@/components/BackButton";
 import * as actions from "@/context/Chat/action";
-import useJoinRoomSocket from "@/hooks/chat/chatSockets/useJoinRoomSocket";
-import useNewMessageSocket from "@/hooks/chat/chatSockets/useNewMessageSocket";
-import useMarkAllMsgAsReadSocket from "@/hooks/chat/chatSockets/useMarkAllMsgAsReadSocket";
 import useCreateChatRoom from "@/hooks/chat/useCreateChatRoom";
 import useSendMessage from "@/hooks/chat/useSendMessage";
 import useCreateCustomGroup from "@/hooks/chat/useCreateCustomGroup";
 import { getFullName } from "@/utils";
 import useGetAllDesignations from "@/hooks/organization/useGetAllDesignations";
 import useGetAllDepartments from "@/hooks/organization/useGetAllDepartments";
+import useJoinRoomSocket from "@/hooks/sockets/chat/useJoinRoomSocket";
+import useMarkAllMsgAsReadSocket from "@/hooks/sockets/chat/useMarkAllMsgAsReadSocket";
+import useNewMessageSocket from "@/hooks/sockets/chat/useNewMessageSocket";
+import useNewChatroomCreatedSocket from "@/hooks/sockets/chat/usePrivateChatroomCreatedSocket";
 const ChatWindow = ({ projectId }) => {
-  const {isCHatWindowAvailable} = useInitializeChatWindow();
+  const { isCHatWindowAvailable } = useInitializeChatWindow();
   const { joinRoom } = useJoinRoomSocket();
   useNewMessageSocket();
+  useNewChatroomCreatedSocket();
   const {
     loadingMessageSend,
     errorMessageSend,
@@ -37,20 +39,19 @@ const ChatWindow = ({ projectId }) => {
     createCustomGroup,
   } = useCreateCustomGroup();
 
-
   const markAllMsgAsRead = useMarkAllMsgAsReadSocket();
 
   const { createChatRoom } = useCreateChatRoom();
   const [selectedDirectoryItem, setSelectedDirectoryItem] = useState(null);
-  const {
-    initMessages,
-  } = useGetAllMessages(selectedDirectoryItem);
+  const { initMessages } = useGetAllMessages(selectedDirectoryItem);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const { state, dispatch } = useChatContext();
-  const { loadingChatWindow,chatWindow } = state;
-  const {chatRooms} = chatWindow;
-  const allChatRooms = chatRooms?.allIds?.map(id => chatRooms?.byIds[id]);
-  const chatRoomsWithSingleUser = allChatRooms?.filter((chatroom)=> !chatroom?.isGroup);
+  const { loadingChatWindow, chatWindow } = state;
+  const { chatRooms } = chatWindow;
+  const allChatRooms = chatRooms?.allIds?.map((id) => chatRooms?.byIds[id]);
+  const chatRoomsWithSingleUser = allChatRooms?.filter(
+    (chatroom) => !chatroom?.isGroup
+  );
   const { allDesignations } = useGetAllDesignations();
   const { allDepartments } = useGetAllDepartments();
   const initializeChatRoom = async () => {
@@ -58,8 +59,10 @@ const ChatWindow = ({ projectId }) => {
 
     if (selectedUsers?.length === 1) {
       const user = selectedUsers[0];
-      const isRoomAlreadyExists = chatRoomsWithSingleUser?.find((chatroom)=> chatroom?.targetUser?.id === user?.id);
-      if(isRoomAlreadyExists?.id){
+      const isRoomAlreadyExists = chatRoomsWithSingleUser?.find(
+        (chatroom) => chatroom?.targetUser?.id === user?.id
+      );
+      if (isRoomAlreadyExists?.id) {
         return isRoomAlreadyExists;
       }
       const room = await createChatRoom(user?.id);
@@ -85,9 +88,9 @@ const ChatWindow = ({ projectId }) => {
   const handleChatStart = async (chatRoom) => {
     if (!chatRoom?.id) return;
 
-    if(selectedUsers?.length > 0){
+    if (selectedUsers?.length > 0) {
       setSelectedUsers([]);
-    }else{
+    } else {
       clearInput();
     }
     setSelectedDirectoryItem(chatRoom);
@@ -99,7 +102,7 @@ const ChatWindow = ({ projectId }) => {
   };
   const handleTextMessageSubmit = async () => {
     setMessage("");
-    if(selectedUsers?.length > 0){
+    if (selectedUsers?.length > 0) {
       setSelectedUsers([]);
     }
     if (selectedDirectoryItem?.id) {
@@ -121,7 +124,7 @@ const ChatWindow = ({ projectId }) => {
       </Box>
     );
   }
-  
+
   return (
     <>
       <Box
@@ -163,7 +166,7 @@ const ChatWindow = ({ projectId }) => {
             minHeight: 0,
           }}
         >
-           <UserDirectoryPanel
+          <UserDirectoryPanel
             handleChatStart={handleChatStart}
             setSelectedDirectoryItem={setSelectedDirectoryItem}
             clearInput={clearInput}

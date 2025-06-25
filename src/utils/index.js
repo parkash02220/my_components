@@ -180,7 +180,7 @@ export const getInitialsOfString = (input) => {
   return initials.join("");
 };
 
-export const getCalendarMinMaxDate = (minYear,maxYear) => {
+export const getCalendarMinMaxDate = (minYear, maxYear) => {
   const today = new Date();
   const minDate = new Date(
     today.getFullYear() - maxYear,
@@ -192,15 +192,32 @@ export const getCalendarMinMaxDate = (minYear,maxYear) => {
     today.getMonth(),
     today.getDate()
   );
-  return {minDate,maxDate}
-}
+  return { minDate, maxDate };
+};
 
-export const getDesignationName = (allDesignations,designationId) => {
-   return allDesignations?.byIds?.[designationId]?.name || "";
-}
+export const getDesignationName = (allDesignations, designationId) => {
+  return allDesignations?.byIds?.[designationId]?.name || "";
+};
 
-export const getDepartmentName = (allDepartments,departmentId) => {
+export const getDepartmentName = (allDepartments, departmentId) => {
   return allDepartments?.byIds?.[departmentId]?.name || "";
-}
+};
 
 export const formatDate = (date) => date.toISOString().split("T")[0];
+
+export const isValidPrivateChatRoom = (chatRoom, currentUserId) => {
+  if (
+    chatRoom?.isGroup !== false ||
+    !Array.isArray(chatRoom?.participants) ||
+    chatRoom.participants.length !== 2 ||
+    !currentUserId
+  ) {
+    return false;
+  }
+
+  const userIds = chatRoom.participants.map((user) => user?.id);
+  return (
+    userIds.includes(currentUserId) &&
+    userIds.some((id) => id !== currentUserId)
+  );
+};
