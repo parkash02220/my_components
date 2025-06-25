@@ -97,10 +97,9 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
                   alignItems={"center"}
                 >
                   <Typography
-                    fontSize={"14px"}
+                    variant="disabled"
                     textAlign={"center"}
                     fontWeight={"600"}
-                    color="#919EAB"
                   >
                     Looks like this section is empty. Let's add some tasks!
                   </Typography>

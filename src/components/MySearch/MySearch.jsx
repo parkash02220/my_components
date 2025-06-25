@@ -110,7 +110,7 @@ export default function MySearch({
             ...iconStyle,
           }}
         >
-          <SearchIcon />
+          <SearchIcon sx={{width:'inherit',height:'inherit'}}/>
         </IconButton>
         <StyledInputBase
           value={value}

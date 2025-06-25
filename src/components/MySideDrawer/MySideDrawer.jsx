@@ -34,6 +34,7 @@ import { NavigationGenerator } from "./NavigationGenerator";
 import MyMenu from "../MyMenu";
 import NavItemList from "./NavItemList";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
+import ResponsiveImage from "../ResponsiveImage";
 
 export default function MySideDrawer({ open, setOpen }) {
   const {
@@ -197,11 +198,13 @@ export default function MySideDrawer({ open, setOpen }) {
                   },
                 }}
               >
-                <img
-                  src="/websperoLogo.svg"
-                  alt="logo"
-                  style={{ height: "40px", width: open ? "80px" : "50px" }}
+                <ResponsiveImage 
+                 src={"/websperoLogo.svg"}
+                 alt={"logo"}
+                 height={40}
+                 width={open ? 80 : 50}
                 />
+                
               </IconButton>
             ) : (
               <IconButton
