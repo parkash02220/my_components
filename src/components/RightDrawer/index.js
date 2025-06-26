@@ -1,6 +1,7 @@
 import React from "react";
-import { Drawer, Paper, Box } from "@mui/material";
-
+import { Drawer, Paper, Box, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 const RightDrawer = ({
   open,
   handleDrawer,
@@ -12,6 +13,7 @@ const RightDrawer = ({
   overflowY,
   noFooterBorderTop,
 }) => {
+  const { isDownXs } = useResponsiveBreakpoints();
   return (
     <Drawer
       className={className}
@@ -27,10 +29,30 @@ const RightDrawer = ({
         zIndex: (theme) => theme.zIndex.drawer + 2,
       }}
     >
+      {isDownXs && (
+        <IconButton
+          aria-label="close"
+          onClick={handleDrawer}
+          sx={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            color: "#1C252E",
+            zIndex: 1,
+          }}
+        >
+          <CloseIcon
+            sx={{
+              width: "18px",
+              height: "18px",
+            }}
+          />
+        </IconButton>
+      )}
       <Paper
         className="right_drawer_paper"
         sx={{
-          width: width || 480,
+          width: isDownXs ? "100vw" : width || 480,
           height: "100%",
           display: "flex",
           flexDirection: "column",

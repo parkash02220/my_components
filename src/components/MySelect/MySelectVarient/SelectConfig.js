@@ -14,6 +14,8 @@ const baseStyleProps = {
   labelFontWeight: 700,
   fullWidth: true,
   minWidth: "100px",
+  selectFontSize: { xs: "12px", sm: "13px", lg: "14px" },
+  labelFontSize: { xs: "12px", sm: "13px", lg: "14px" },
 };
 
 export const selectConfig = {

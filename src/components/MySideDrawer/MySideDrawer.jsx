@@ -28,13 +28,13 @@ import { usePathname, useRouter } from "next/navigation";
 import useCreateProject from "@/hooks/projects/useCreateProject";
 import { useAppContext } from "@/context/App/AppContext";
 import useGetAllProjects from "@/hooks/projects/useGetAllProjects";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import MobileSideDrawer from "./MobileSideDrawer";
 import { NavigationGenerator } from "./NavigationGenerator";
 import MyMenu from "../MyMenu";
 import NavItemList from "./NavItemList";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 import ResponsiveImage from "../ResponsiveImage";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 export default function MySideDrawer({ open, setOpen }) {
   const {
@@ -85,7 +85,7 @@ export default function MySideDrawer({ open, setOpen }) {
   const router = useRouter();
   const pathname = usePathname();
   // const [hasMounted, setHasMounted] = useState(false);
-  const { isXs, isLg, isMd } = useBreakpointFlags();
+  const { isDownXs, isDownMd, isDownSm } = useResponsiveBreakpoints();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const handleMobileDrawerOpen = () => {
     setMobileDrawerOpen(true);
@@ -114,7 +114,7 @@ export default function MySideDrawer({ open, setOpen }) {
       return;
     }
     router.push(`/${path}`);
-    if (isMd) handleMobileDrawerClose();
+    if (isDownMd) handleMobileDrawerClose();
   };
 
   const NAVIGATION = NavigationGenerator({
@@ -148,7 +148,7 @@ export default function MySideDrawer({ open, setOpen }) {
         </Box>
       )}
       <Box sx={{ display: "flex", position: "relative" }}>
-        {!isMd ? (
+        {!isDownMd ? (
           <IconButton
             color="inherit"
             onClick={toggleDrawer}
@@ -187,9 +187,20 @@ export default function MySideDrawer({ open, setOpen }) {
         ) : null}
 
         <CssBaseline />
-        <AppBar position="fixed" open={open} ismd={isMd} isxs={isXs}>
-          <Toolbar sx={{ justifyContent: open ? "space-between" : "center" }}>
-            {!isMd ? (
+        <AppBar
+          position="fixed"
+          open={open}
+          ismd={isDownMd}
+          isxs={isDownXs}
+          issm={isDownSm}
+        >
+          <Toolbar
+            sx={{
+              justifyContent: open ? "space-between" : "center",
+              minHeight: "100% !important",
+            }}
+          >
+            {!isDownMd ? (
               <IconButton
                 onClick={() => router.push("/home")}
                 sx={{
@@ -198,20 +209,19 @@ export default function MySideDrawer({ open, setOpen }) {
                   },
                 }}
               >
-                <ResponsiveImage 
-                 src={"/websperoLogo.svg"}
-                 alt={"logo"}
-                 height={40}
-                 width={open ? 80 : 50}
+                <ResponsiveImage
+                  src={"/websperoLogo.svg"}
+                  alt={"logo"}
+                  height={40}
+                  width={open ? 80 : 50}
                 />
-                
               </IconButton>
             ) : (
               <IconButton
                 onClick={handleMobileDrawerOpen}
                 sx={{
-                  width: "24px",
-                  height: "24px",
+                  width: { xs: "18px", sm: "20px", md: "22px", lg: "24px" },
+                  height: { xs: "18px", sm: "20px", md: "22px", lg: "24px" },
                   padding: "0px",
                 }}
               >
@@ -224,7 +234,7 @@ export default function MySideDrawer({ open, setOpen }) {
             )}
           </Toolbar>
         </AppBar>
-        {!isMd ? (
+        {!isDownMd ? (
           <Drawer variant="permanent" open={open}>
             <DrawerHeader />
             <List sx={{ padding: open ? "8px 16px" : "8px" }}>

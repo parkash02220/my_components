@@ -1,25 +1,25 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import { styled } from '@mui/material/styles';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import useBreakpointFlags from '@/hooks/common/useBreakpointsFlag';
+import * as React from "react";
+import PropTypes from "prop-types";
+import { styled } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
+  "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
   },
-  '& .MuiDialogActions-root': {
+  "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
   },
 }));
 
 const MyDialog = ({ open, handleClose, title, content, actions, ...props }) => {
-  const {isXs} = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
   return (
     <div>
       <BootstrapDialog
@@ -27,31 +27,40 @@ const MyDialog = ({ open, handleClose, title, content, actions, ...props }) => {
         aria-labelledby="customized-dialog-title"
         open={open ? true : false}
         sx={{
-          backdropFilter: 'blur(5px)',
+          backdropFilter: "blur(5px)",
         }}
         PaperProps={{
-            sx: {
-              minWidth: isXs ? "300px" : props?.minwidth || "500px",
-              borderRadius: props.borderRadius || '16px',
-              maxWidth: isXs ? "calc(100% - 16px)" : props?.maxwidth || "600px",
-              boxShadow : props?.boxShadow,
-              width:props?.width,
-              maxHeight:props?.maxheight,
-              height:props?.height,
-              minHeight:props?.minheight,
-            },
-          }}
+          sx: {
+            minWidth: isDownXs ? "300px" : props?.minwidth || "500px",
+            borderRadius: props.borderRadius || "16px",
+            maxWidth: isDownXs
+              ? "calc(100% - 16px)"
+              : props?.maxwidth || "600px",
+            boxShadow: props?.boxShadow,
+            width: props?.width,
+            maxHeight: props?.maxheight,
+            height: props?.height,
+            minHeight: props?.minheight,
+          },
+        }}
         {...props}
       >
         <BootstrapDialogTitle
           id="customized-dialog-title"
+          fontSize={props?.fontSize}
           onClose={handleClose}
           // {...props}
         >
           {title}
         </BootstrapDialogTitle>
-        <DialogContent  sx={{ p: props?.contentpadding || 2 }}>{content}</DialogContent>
-        {actions && <DialogActions sx={{p: props?.actionpadding || 1}}>{actions}</DialogActions>}
+        <DialogContent sx={{ p: props?.contentpadding || 2 }}>
+          {content}
+        </DialogContent>
+        {actions && (
+          <DialogActions sx={{ p: props?.actionpadding || 1 }}>
+            {actions}
+          </DialogActions>
+        )}
       </BootstrapDialog>
     </div>
   );
@@ -62,14 +71,17 @@ function BootstrapDialogTitle(props) {
   const { children, onClose, ...other } = props;
 
   return (
-    <DialogTitle sx={{ m: 0, p: props?.titlepadding || 2, fontSize: props?.fontSize }} {...other}>
+    <DialogTitle
+      sx={{ m: 0, p: props?.titlepadding || 2, fontSize: props?.fontSize }}
+      {...other}
+    >
       {children}
       {onClose ? (
         <IconButton
           aria-label="close"
           onClick={onClose}
           sx={{
-            position: 'absolute',
+            position: "absolute",
             right: 8,
             top: 8,
             color: (theme) => theme.palette.grey[500],

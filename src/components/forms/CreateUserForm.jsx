@@ -8,28 +8,27 @@ import {
   Typography,
 } from "@mui/material";
 import MyTextField from "../MyTextfield/MyTextfield";
-import { useEffect, useState } from "react";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import { formatDate, getCalendarMinMaxDate } from "@/utils";
-import { departmentOptions, designationOptions } from "./formsData";
-import MySelect from "../MySelect/MySelect";
 import MySelectVariant from "../MySelect/MySelectVarient";
 import useGetDesignationsByDepartment from "@/hooks/organization/useGetDesignationsByDepartment";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 const CreateUserForm = ({ formik }) => {
-  const { isXs } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
+  const fontSize = useResponsiveValue("fontSize");
   const { minDate, maxDate } = getCalendarMinMaxDate(13, 130);
   const { loading, error, fetchDesignationByDepartment, hasFetchedOnce } =
     useGetDesignationsByDepartment();
 
   return (
     <>
-      <Grid container spacing={isXs ? 2 : 3}>
+      <Grid container spacing={3}>
         <Grid size={12}>
-          <Typography color="#1C252E" fontWeight={700}>
+          <Typography variant="title2" fontWeight={700}>
             Basic details :
           </Typography>
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="firstName"
             value={formik?.values?.firstName}
@@ -50,9 +49,10 @@ const CreateUserForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="lastName"
             value={formik?.values?.lastName}
@@ -71,6 +71,7 @@ const CreateUserForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
         <Grid size={12}>
@@ -104,13 +105,18 @@ const CreateUserForm = ({ formik }) => {
               <FormControlLabel
                 value="male"
                 control={
-                  <Radio sx={{ fontSize: 18, transform: "scale(0.8)" }} />
+                  <Radio
+                    sx={{
+                      fontSize: isDownXs ? 14 : 18,
+                      transform: "scale(0.8)",
+                    }}
+                  />
                 }
                 label="Male"
                 sx={{
                   mr: 4,
                   "& .MuiTypography-root": {
-                    fontSize: 14,
+                    fontSize: fontSize,
                     color: "#637381",
                   },
                 }}
@@ -118,12 +124,17 @@ const CreateUserForm = ({ formik }) => {
               <FormControlLabel
                 value="female"
                 control={
-                  <Radio sx={{ fontSize: 18, transform: "scale(0.8)" }} />
+                  <Radio
+                    sx={{
+                      fontSize: isDownXs ? 14 : 18,
+                      transform: "scale(0.8)",
+                    }}
+                  />
                 }
                 label="Female"
                 sx={{
                   "& .MuiTypography-root": {
-                    fontSize: 14,
+                    fontSize: fontSize,
                     color: "#637381",
                   },
                 }}
@@ -169,6 +180,7 @@ const CreateUserForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
         <Grid size={12}>
@@ -202,13 +214,18 @@ const CreateUserForm = ({ formik }) => {
               <FormControlLabel
                 value="admin"
                 control={
-                  <Radio sx={{ fontSize: 18, transform: "scale(0.8)" }} />
+                  <Radio
+                    sx={{
+                      fontSize: isDownXs ? 14 : 18,
+                      transform: "scale(0.8)",
+                    }}
+                  />
                 }
                 label="Admin"
                 sx={{
                   mr: 4,
                   "& .MuiTypography-root": {
-                    fontSize: 14,
+                    fontSize: fontSize,
                     color: "#637381",
                   },
                 }}
@@ -216,12 +233,17 @@ const CreateUserForm = ({ formik }) => {
               <FormControlLabel
                 value="user"
                 control={
-                  <Radio sx={{ fontSize: 18, transform: "scale(0.8)" }} />
+                  <Radio
+                    sx={{
+                      fontSize: isDownXs ? 14 : 18,
+                      transform: "scale(0.8)",
+                    }}
+                  />
                 }
                 label="User"
                 sx={{
                   "& .MuiTypography-root": {
-                    fontSize: 14,
+                    fontSize: fontSize,
                     color: "#637381",
                   },
                 }}
@@ -235,11 +257,11 @@ const CreateUserForm = ({ formik }) => {
           </FormControl>
         </Grid>
         <Grid size={12}>
-          <Typography color="#1C252E" fontWeight={700}>
+          <Typography variant="title2" fontWeight={700}>
             Other details :
           </Typography>
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           {/* <MySelect
               name="department"
               value={formik?.values?.department}
@@ -278,7 +300,7 @@ const CreateUserForm = ({ formik }) => {
             helperText={formik.touched.department && formik.errors.department}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MySelectVariant
             type="designation_by_department"
             hookParam={formik.values.department}
@@ -292,7 +314,7 @@ const CreateUserForm = ({ formik }) => {
             disabled={!formik.values?.department}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="phone"
             value={formik?.values?.phone}
@@ -311,9 +333,10 @@ const CreateUserForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="employeeId"
             value={formik?.values?.employeeId}
@@ -334,9 +357,10 @@ const CreateUserForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="dateOfBirth"
             value={formik?.values?.dateOfBirth}
@@ -362,6 +386,7 @@ const CreateUserForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
       </Grid>

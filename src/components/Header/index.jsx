@@ -1,16 +1,14 @@
 "use client";
 
 import { AppBar, Box, IconButton, Typography } from "@mui/material";
-import { useAppContext } from "@/context/App/AppContext";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import HeaderProjectName from "@/components/Header/HeaderProjectName/index";
 import HeaderNotifications from "./HeaderNotifications";
 import HeaderUserProfile from "./HeaderUserProfile";
 import { useNavigationInfo } from "@/hooks/common/useNavigationInfo";
-import { useState } from "react";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 export default function Header() {
-  const { isMd, isSm, isXs } = useBreakpointFlags();
+  const { isDownMd, isDownSm, isDownXs } = useResponsiveBreakpoints();
   const { projects } = useProjectsContext()?.state;
   const { parent, child } = useNavigationInfo({ projects });
   return (
@@ -22,15 +20,15 @@ export default function Header() {
         sx={{
           borderBottom: "1px solid #eee",
           zIndex: 1101,
-          width: isMd ? "calc(100% - 60px)" : "100%",
+          width: isDownMd ? "calc(100% - 60px)" : "100%",
           alignSelf: "flex-end",
         }}
       >
         <Box
           sx={{
-            pl: isXs ? 0 : isMd ? 3 : 5,
-            pr: isXs ? 0 : isMd ? 3 : 5,
-            height: isXs ? "64px" : "75px",
+            pl: isDownXs ? 0 : isDownMd ? 3 : 5,
+            pr: isDownXs ? 0 : isDownMd ? 3 : 5,
+            height: { xs: "56px", sm: "60px", md: "75px" },
             width: "100%",
             display: "flex",
             justifyContent: "center",
@@ -41,12 +39,7 @@ export default function Header() {
             <HeaderProjectName />
           ) : (
             <Box>
-              <Typography
-                variant="h4"
-                fontSize={isXs ? "1.125rem" : isSm ? "1.25rem" : "1.5rem"}
-                fontWeight={700}
-                color="#1C252E"
-              >
+              <Typography variant="title1" fontWeight={700}>
                 {" "}
                 {child?.title || parent?.title || ""}
               </Typography>

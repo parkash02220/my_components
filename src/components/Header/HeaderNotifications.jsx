@@ -5,12 +5,15 @@ const {
 const { IconButton, Typography } = require("@mui/material");
 const { useState } = require("react");
 import NotificationDrawer from "@/components/Header/NotificationDrawer";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 import useGetNotificationCount from "@/hooks/notifications/useGetNotificationCount";
 import { useNotificationsSocket } from "@/hooks/sockets/notifications/useNotificationsSocket";
 const HeaderNotifications = () => {
   useGetNotificationCount();
   useNotificationsSocket();
-
+  const iconSize = useResponsiveValue("iconSize");
+  const { isDownXs } = useResponsiveBreakpoints();
   const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
   const {
     notifications,
@@ -77,8 +80,8 @@ const HeaderNotifications = () => {
           src={"/notificationIcon.svg"}
           alt={"notification"}
           style={{
-            width: "24px",
-            height: "24px",
+            width: iconSize,
+            height: iconSize,
             flexShrink: 0,
             display: "inline-flex",
           }}
@@ -91,9 +94,9 @@ const HeaderNotifications = () => {
               alignItems: "center",
               position: "absolute",
               fontWeight: 500,
-              fontSize: 12,
-              minWidth: 20,
-              height: 20,
+              fontSize: isDownXs ? 10 : 12,
+              minWidth: isDownXs ? 16 : 20,
+              height: isDownXs ? 16 : 20,
               zIndex: 1,
               background: "#FF5630",
               color: "#FFFFFF",

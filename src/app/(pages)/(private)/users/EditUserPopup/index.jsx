@@ -1,7 +1,5 @@
-
 import MyButton from "@/components/MyButton/MyButton";
 import MyDialog from "@/components/MyDialog/MyDialog";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import useUpdateUser from "@/hooks/user/useUpdateUser";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useFormik } from "formik";
@@ -12,6 +10,8 @@ import _ from "lodash";
 import useToast from "@/hooks/common/useToast";
 import { UpdateUserForm } from "@/components/forms";
 import { useOrganizationContext } from "@/context/Organization/OrganizationContext";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 const EditUserPopup = ({
   title,
   handleClose,
@@ -27,11 +27,12 @@ const EditUserPopup = ({
   user,
   setData,
 }) => {
-  const { isXs } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
+  const fontSize = useResponsiveValue("fontSize");
   const theme = useTheme();
-  const {showToast} = useToast();
+  const { showToast } = useToast();
   const { loadingUpdateUser, errorUpdateUser, updateUser } = useUpdateUser();
-  const {state} = useOrganizationContext();
+  const { state } = useOrganizationContext();
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -39,26 +40,34 @@ const EditUserPopup = ({
     validationSchema: editUserValidationSchema,
     onSubmit: async (values) => {
       const originalValues = getFormikCompatibleValues(user);
-      if(_.isEqual(originalValues,values)){
-          showToast({
-            type:'info',
-            message:"No changes found",
-          });
-          return;
+      if (_.isEqual(originalValues, values)) {
+        showToast({
+          type: "info",
+          message: "No changes found",
+        });
+        return;
       }
       const updatedUser = await updateUser(values, user?.id);
-      const designation = state?.allDesignations?.byIds?.[updatedUser?.userProfile?.designation] || updatedUser?.userProfile?.designation || "";
-      const department = state?.allDepartments?.byIds?.[updatedUser?.userProfile?.department] || updatedUser?.userProfile?.department || "";
+      const designation =
+        state?.allDesignations?.byIds?.[
+          updatedUser?.userProfile?.designation
+        ] ||
+        updatedUser?.userProfile?.designation ||
+        "";
+      const department =
+        state?.allDepartments?.byIds?.[updatedUser?.userProfile?.department] ||
+        updatedUser?.userProfile?.department ||
+        "";
       setData((prev) =>
         prev?.map((data) => {
           if (data?.id === user?.id) {
             return {
               ...updatedUser,
-              userProfile:{
+              userProfile: {
                 ...updatedUser?.userProfile,
                 designation,
                 department,
-              }
+              },
             };
           }
           return data;
@@ -78,11 +87,11 @@ const EditUserPopup = ({
         open={open}
         handleClose={handleClose}
         title={title}
-        fontSize="18px"
+        fontSize={{ xs: "14px", sm: "18px" }}
         titlepadding="24px 24px 16px"
         contentpadding="0px 24px !important"
         actionpadding="24px !important"
-        width={isXs ? "100%" : "auto"}
+        width={isDownXs ? "100%" : "auto"}
         content={
           <Box pt={2} pb={2}>
             {<UpdateUserForm formik={formik} />}
@@ -103,7 +112,7 @@ const EditUserPopup = ({
               padding={"6px 12px"}
               minWidth="64px"
               fontWeight={700}
-              fontSize={14}
+              fontSize={fontSize}
               color="#FFFFFF"
               backgroundColor="#1C252E"
               borderRadius="8px"
@@ -119,7 +128,7 @@ const EditUserPopup = ({
               color={theme?.palette?.primary?.main}
               borderRadius="8px"
               variant="outlined"
-              fontSize={14}
+              fontSize={fontSize}
               hoverBgColor="whitesmoke"
             >
               {cancelText || "Cancel"}

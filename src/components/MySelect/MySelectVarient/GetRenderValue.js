@@ -81,7 +81,7 @@ export const getRenderValue = (type, isMultiple = false) => {
 
           return (
             <Box display="flex" alignItems="center" gap={1} px={1}>
-              <Typography fontSize="13px">
+              <Typography sx={{ fontSize: { xs: 12, sm: 13, lg: 14 } }}>
                 {selectedOption.label || selectedOption.name}
               </Typography>
             </Box>

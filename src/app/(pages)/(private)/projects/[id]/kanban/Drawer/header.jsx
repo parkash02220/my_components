@@ -2,15 +2,15 @@ import ConfirmationPopup from "@/components/ConfirmationPopup";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 import { useTaskContext } from "@/context/Task/TaskContext";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import useDeleteTask from "@/hooks/projects/task/useDeleteTask";
 import useEditTask from "@/hooks/projects/task/useEditTask";
 import useMoveTask from "@/hooks/projects/task/useMoveTask";
 import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import * as actions from "@/context/Task/action";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 export const Header = ({ activeTask, handleDrawer }) => {
-  const { isXs } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
   const { dispatch } = useTaskContext();
   const { loadingMoveTask, moveTask } = useMoveTask();
   const { loadingDeleteTask, errorDeleteTask, deleteTaskFromBackend } =
@@ -90,10 +90,10 @@ export const Header = ({ activeTask, handleDrawer }) => {
         justifyContent={"space-between"}
         padding={"20px 8px 20px 20px"}
         borderBottom={"1px solid rgba(145 158 171 / 0.2)"}
-        pl={isXs ? "8px" : ""}
+        pl={isDownXs ? "8px" : ""}
       >
         <Box display={"flex"} gap={1} alignItems={"center"}>
-          {isXs ? (
+          {isDownXs ? (
             <IconButton
               onClick={handleDrawer}
               sx={{

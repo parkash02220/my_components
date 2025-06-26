@@ -14,6 +14,28 @@ export const getUserTableColumns = ({
       label: (
         <Box>
           <Checkbox
+            sx={{
+              "& .MuiSvgIcon-root": {
+                fontSize: {
+                  xs: "16px",
+                  sm: "18px",
+                  md: "20px",
+                  lg: "22px",
+                },
+              },
+              width: {
+                xs: 20,
+                sm: 24,
+                md: 28,
+                lg: 32,
+              },
+              height: {
+                xs: 20,
+                sm: 24,
+                md: 28,
+                lg: 32,
+              },
+            }}
             indeterminate={selectedUsers.length > 0 && !isAllRowSelected}
             checked={!isLoading && isAllRowSelected}
             onChange={(e) => handleSelectAllUsers(e.target.checked)}
@@ -25,9 +47,19 @@ export const getUserTableColumns = ({
       align: "center",
       sx: { width: "40px", minWidth: "40px", maxWidth: "40px" },
     },
-    { id: "nameWithAvatar", label: "Name", type: "avatarText",sx:{textTransform:"capitalize"} },
+    {
+      id: "nameWithAvatar",
+      label: "Name",
+      type: "avatarText",
+      sx: { textTransform: "capitalize" },
+    },
     { id: "email", label: "Email", type: "text" },
-    { id: "designation", label: "Designation", type: "text",sx:{textTransform:"capitalize"} },
+    {
+      id: "designation",
+      label: "Designation",
+      type: "text",
+      sx: { textTransform: "capitalize" },
+    },
     {
       id: "edit_menu",
       label: "",

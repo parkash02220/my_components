@@ -1,7 +1,8 @@
-
 import React from "react";
 import UserRow from "./UserRow";
 import { Box, Typography, useTheme } from "@mui/material";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 
 const Content = ({
   hasFetchedOnce,
@@ -17,11 +18,20 @@ const Content = ({
   debouncedSearchValue,
 }) => {
   const theme = useTheme();
+  const { isDownXs } = useResponsiveBreakpoints();
+  const fontSize = useResponsiveValue("fontSize");
   const hasError = !!errorAllUsers;
   if (hasError) {
     return (
-      <Box display="flex" alignItems="center" justifyContent="center" minHeight={200}>
-        <Typography color="error">Something went wrong. Please try again.</Typography>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        minHeight={200}
+      >
+        <Typography variant="title2" color="error">
+          Something went wrong. Please try again.
+        </Typography>
       </Box>
     );
   }
@@ -40,7 +50,7 @@ const Content = ({
     );
   }
 
-    if (hasFetchedOnce && !loadingAllUsers && allUsers?.length === 0) {
+  if (hasFetchedOnce && !loadingAllUsers && allUsers?.length === 0) {
     return (
       <>
         <Box
@@ -52,27 +62,16 @@ const Content = ({
           mb={10}
           alignItems={"center"}
         >
-          <Typography
-            variant="h6"
-            fontSize={"18px"}
-            color={theme.palette.primary.main}
-            fontWeight={600}
-          >
+          <Typography variant="title" fontWeight={600}>
             Not found
           </Typography>
           <Box display={"flex"} gap={1}>
-            <Typography fontSize={"14px"} color={theme.palette.primary.main}>
-              No results found for
-            </Typography>
-            <Typography
-              fontSize={"14px"}
-              fontWeight={700}
-              color={theme.palette.primary.main}
-            >
+            <Typography variant="primary">No results found for</Typography>
+            <Typography variant="primary" fontWeight={700}>
               {`"${debouncedSearchValue}".`}
             </Typography>
           </Box>
-          <Typography fontSize={"14px"} color={theme.palette.primary.main}>
+          <Typography variant="primary">
             Try checking for typos or using complete words.
           </Typography>
         </Box>
@@ -99,14 +98,14 @@ const Content = ({
         {allUsers.map((user) => {
           const isAssigned = assignedUsers.includes(user?.id);
           return (
-            <React.Fragment key={user?.id} >
-            <UserRow
-              user={user}
-              isAssigned={isAssigned}
-              handleAssignToggle={handleAssignToggle}
-              loadingAssignProjectIds={loadingAssignProjectIds}
-              theme={theme}
-            />
+            <React.Fragment key={user?.id}>
+              <UserRow
+                user={user}
+                isAssigned={isAssigned}
+                handleAssignToggle={handleAssignToggle}
+                loadingAssignProjectIds={loadingAssignProjectIds}
+                theme={theme}
+              />
             </React.Fragment>
           );
         })}

@@ -1,5 +1,5 @@
 "use client";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 export default function Home() {
   return (
@@ -8,7 +8,7 @@ export default function Home() {
         sx={{ display: "flex", justifyContent: "center" }}
         className="homePage__container"
       >
-        Select or create project
+        <Typography variant="primary">Select or create project</Typography>
       </Box>
     </>
   );

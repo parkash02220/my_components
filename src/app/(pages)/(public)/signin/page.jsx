@@ -8,12 +8,14 @@ import useLogin from "@/hooks/user/activeUser/useLogin";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Link from "next/link";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import { useRouter } from "next/navigation";
 import { loginUserWithGoogle } from "@/utils";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 export default function SignIn() {
   const router = useRouter();
-  const { isXs, isMd, isLg } = useBreakpointFlags();
+  const { isDownXs, isDownMd } = useResponsiveBreakpoints();
+  const fontSize = useResponsiveValue("fontSize");
   const { loadingLogin, loginUser, errorMsg, errorLogin } = useLogin();
   const [showPasswrod, setShowPassword] = useState(false);
   const formik = useFormik({
@@ -52,7 +54,7 @@ export default function SignIn() {
   return (
     <>
       <Box className="signInContainer" display={"flex"} minHeight={"100vh"}>
-        {!isMd ? (
+        {!isDownMd ? (
           <Box
             className="signInContainer__leftBox"
             display={"flex"}
@@ -144,7 +146,7 @@ export default function SignIn() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: isMd ? "24px 16px 80px 16px" : "80px 16px 80px 16px",
+            padding: isDownMd ? "24px 16px 80px 16px" : "80px 16px 80px 16px",
             flex: "1 1 auto",
             flexDirection: "column",
           }}
@@ -162,27 +164,22 @@ export default function SignIn() {
               flexDirection={"column"}
               whiteSpace={"pre-line"}
               gap={"12px"}
-              textAlign={isMd ? "center" : "left"}
+              textAlign={isDownMd ? "center" : "left"}
             >
-              <Typography
-                variant="h5"
-                fontSize={19}
-                fontWeight={700}
-                color="#1C252E"
-              >
+              <Typography variant="title1" fontWeight={700}>
                 Sign in to your account
               </Typography>
               <Box
                 display={"flex"}
                 gap={1}
-                justifyContent={isMd ? "center" : ""}
+                justifyContent={isDownMd ? "center" : ""}
               >
-                <Typography fontSize={14} color="#637381">
+                <Typography variant="secondary">
                   Don’t have an account?
                 </Typography>
                 <Link href="/signup">
                   <Typography
-                    fontSize={14}
+                    fontSize={fontSize}
                     color="#00A76F"
                     fontWeight={600}
                     sx={{
@@ -206,11 +203,15 @@ export default function SignIn() {
                   border={"2px solid #1C252E"}
                   sx={{ height: 48 }}
                   borderRadius="8px"
+                  fontSize={fontSize}
                   startIcon={
                     <img
                       src="/googleIcon.svg"
                       alt="google"
-                      style={{ width: "24px", height: "24px" }}
+                      style={{
+                        width: isDownXs ? "20px" : "24px",
+                        height: isDownXs ? "20px" : "24px",
+                      }}
                     />
                   }
                   hoverBgColor="whitesmoke"
@@ -224,6 +225,7 @@ export default function SignIn() {
                 <Typography
                   sx={{ mx: 2, whiteSpace: "nowrap" }}
                   color="textSecondary"
+                  fontSize={fontSize}
                 >
                   or
                 </Typography>
@@ -232,7 +234,7 @@ export default function SignIn() {
             </Box>
             <form onSubmit={formik.handleSubmit}>
               <Box display={"flex"} flexDirection={"column"}>
-                <Grid container spacing={isXs ? 2 : 3}>
+                <Grid container spacing={isDownXs ? 2 : 3}>
                   <Grid size={12}>
                     <MyTextField
                       name="email"
@@ -254,6 +256,7 @@ export default function SignIn() {
                       activeLabelColor={"#1C252E"}
                       labelFontWeight={600}
                       color={"#1C252E"}
+                      inputFontSize={fontSize}
                     />
                   </Grid>
                   <Grid size={12}>
@@ -264,7 +267,7 @@ export default function SignIn() {
                     >
                       <Typography
                         color="#1C252E"
-                        fontSize={14}
+                        fontSize={fontSize}
                         onClick={() => alert("forgot password button clicked")}
                         sx={{
                           cursor: "pointer",
@@ -318,6 +321,7 @@ export default function SignIn() {
                           </IconButton>
                         )
                       }
+                      inputFontSize={fontSize}
                     />
                   </Grid>
                   <Grid size={12}>
@@ -330,16 +334,21 @@ export default function SignIn() {
                       loadingText={"Signing in..."}
                       padding={"8px 16px"}
                       borderRadius="8px"
-                      fontSize={15}
                       fontWeight={700}
                       sx={{
+                        fontSize: { xs: 13, sm: 14, lg: 16 },
                         height: "48px",
                       }}
                     >
                       Sign in
                     </MyButton>
                     {errorLogin && (
-                      <Typography color="red" mt={1} ml={1} fontSize={12}>
+                      <Typography
+                        color="red"
+                        mt={1}
+                        ml={1}
+                        fontSize={isDownXs ? 10 : 12}
+                      >
                         {errorMsg}
                       </Typography>
                     )}

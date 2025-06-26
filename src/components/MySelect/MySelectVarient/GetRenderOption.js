@@ -35,7 +35,7 @@ export const getRenderOptions = (type, isMultiple, selected = []) => {
               checked={isSelected(option)}
             />
           )}
-          <Typography fontSize={14}>{option?.label}</Typography>
+          <Typography variant="primary">{option?.label}</Typography>
         </Box>
       );
       LabelOption.displayName = "LabelOption";

@@ -1,5 +1,6 @@
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useClearNotifications from "@/hooks/notifications/useClearNotifications";
 import useMarkAllNotificationAsRead from "@/hooks/notifications/useMarkAllNotificationAsRead";
 import { Box, IconButton, Typography } from "@mui/material";
@@ -8,6 +9,7 @@ import { useState } from "react";
 export const Header = ({ currentTab, totalCount, unReadCount }) => {
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const showMarkAllAsReadButton = currentTab === "unread";
+  const { isDownXs } = useResponsiveBreakpoints();
   const {
     loadingMarkAllAsRead,
     errorMarkAllAsRead,
@@ -47,23 +49,19 @@ export const Header = ({ currentTab, totalCount, unReadCount }) => {
       <Box
         display={"flex"}
         padding={"16px 8px 16px 20px"}
+        pb={isDownXs ? "0px" : "16px"}
         minHeight={68}
         alignItems={"center"}
       >
         <Box flexGrow={1}>
-          <Typography
-            color="#1C252E"
-            variant="h6"
-            fontSize={18}
-            fontWeight={600}
-          >
+          <Typography variant="title" fontWeight={600}>
             Notifications
           </Typography>
         </Box>
         <Box display={"flex"}>
           {showMarkAllAsReadButton && (
             <IconButton
-              disabled={totalCount === 0}
+              disabled={unReadCount === 0}
               onClick={handleMarkAllAsReadButton}
               sx={{
                 display: "flex",
@@ -83,13 +81,17 @@ export const Header = ({ currentTab, totalCount, unReadCount }) => {
               <img
                 src="/markAllReadIcon.svg"
                 alt="mark all as read"
-                style={{ width: "20px", height: "20px", flexShrink: 0 }}
+                style={{
+                  width: isDownXs ? "16px" : "20px",
+                  height: isDownXs ? "16px" : "20px",
+                  flexShrink: 0,
+                }}
               />
             </IconButton>
           )}
           <MyTooltip title={"Delete notifications"} placement="bottom">
             <IconButton
-              disabled={unReadCount === 0}
+              disabled={totalCount === 0}
               onClick={handleDeletePopupOpen}
               sx={{
                 display: "flex",
@@ -98,7 +100,8 @@ export const Header = ({ currentTab, totalCount, unReadCount }) => {
                 background: "transparent",
                 fontSize: "1.5rem",
                 color: "#637381",
-                padding: "8px",
+                paddingTop: "0px",
+                margin: "8px",
                 borderRadius: "50%",
                 overflow: "hidden",
                 "&:hover": {
@@ -109,7 +112,11 @@ export const Header = ({ currentTab, totalCount, unReadCount }) => {
               <img
                 src="/delete.svg"
                 alt="mark all as read"
-                style={{ width: "20px", height: "20px", flexShrink: 0 }}
+                style={{
+                  width: isDownXs ? "16px" : "20px",
+                  height: isDownXs ? "16px" : "20px",
+                  flexShrink: 0,
+                }}
               />
             </IconButton>
           </MyTooltip>

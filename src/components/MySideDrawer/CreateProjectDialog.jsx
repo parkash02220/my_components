@@ -4,22 +4,22 @@ import { Box, Typography } from "@mui/material";
 import MyTextField from "../MyTextfield/MyTextfield";
 import MyDialog from "../MyDialog/MyDialog";
 import useProjectNameAvailability from "@/hooks/projects/useProjectNameAvailability";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import useToast from "@/hooks/common/useToast";
 import MyAutoCompleteVarient from "../MyAutoComplete/MyAutoCompleteVarient";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 const CreateProjectDialog = ({
   open,
   onClose,
   onCreate,
   loadingCreateProject,
 }) => {
-  const { isXs } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
   const [projectName, setProjectName] = useState("");
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [message, loading, available] = useProjectNameAvailability(projectName);
-  const { showToast } = useToast(); 
+  const { showToast } = useToast();
   const handleDialogClose = () => {
     setProjectName("");
     setError(false);
@@ -60,7 +60,7 @@ const CreateProjectDialog = ({
       open={open}
       handleClose={handleDialogClose}
       title="Create New Project"
-      width={isXs ? "100%" : "auto"}
+      width={isDownXs ? "100%" : "auto"}
       content={
         <Box pt={2} paddingInline={1}>
           <Box display={"flex"} flexDirection={"column"}>
@@ -89,12 +89,12 @@ const CreateProjectDialog = ({
             )}
           </Box>
           <Box mt={2}>
-           <MyAutoCompleteVarient 
-            type={"all_users"}
-            selectedOptions={selectedUsers}
-            setSelectedOptions={setSelectedUsers}
-            label="Select users"
-           />
+            <MyAutoCompleteVarient
+              type={"all_users"}
+              selectedOptions={selectedUsers}
+              setSelectedOptions={setSelectedUsers}
+              label="Select users"
+            />
           </Box>
         </Box>
       }
@@ -102,7 +102,7 @@ const CreateProjectDialog = ({
         <Box
           display="flex"
           justifyContent="space-between"
-          flexDirection={isXs ? "column-reverse" : "row"}
+          flexDirection={isDownXs ? "column-reverse" : "row"}
           gap={2}
           width="100%"
           p={2}

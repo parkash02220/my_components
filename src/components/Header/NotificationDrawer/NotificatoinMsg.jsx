@@ -30,6 +30,8 @@ const NotificatoinMsg = ({
           borderWidth: "0px 0px 0px",
           borderRadius: "0px",
           padding: "20px",
+          pt: { xs: "12px", sm: "20px" },
+          pb: { xs: "12px", sm: "20px" },
           borderBottom: "1px dashed rgba(145,158,171,0.2)",
           position: "relative",
           gap: 2,
@@ -62,17 +64,17 @@ const NotificatoinMsg = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              width: "40px",
-              height: "40px",
+              width: { xs: "30px", sm: "34px", lg: "40px" },
+              height: { xs: "30px", sm: "34px", lg: "40px" },
               borderRadius: "50%",
               overflow: "hidden",
               background: "#F4F6F8",
             }}
           >
             <img
-              src={notification?.sender?.avatar || '/dummyUser.svg'}
+              src={notification?.sender?.avatar || "/dummyUser.svg"}
               alt="avatar"
-               referrerPolicy="no-referrer"
+              referrerPolicy="no-referrer"
               style={{
                 width: "100%",
                 height: "100%",
@@ -95,12 +97,15 @@ const NotificatoinMsg = ({
             justifyContent={"center"}
           >
             <Box>
-              <Typography fontWeight={600} color="#1C252E" fontSize={14} mr={1}>
+              <Typography fontWeight={600} variant="primary" mr={1}>
                 {notification?.message || ""}
               </Typography>
             </Box>
             <Box>
-              <Typography color="#919EAB" fontSize={12}>
+              <Typography
+                color="#919EAB"
+                sx={{ fontSize: { xs: "10px", sm: "12px" } }}
+              >
                 {getTimeAgo(notification?.updatedAt || notification?.createdAt)}
               </Typography>
             </Box>

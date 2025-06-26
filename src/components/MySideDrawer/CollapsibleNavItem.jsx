@@ -12,6 +12,8 @@ import { SingleNavItem } from "./SingleNavItem";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 export const CollapsibleNavItem = ({
   item,
   open,
@@ -22,6 +24,8 @@ export const CollapsibleNavItem = ({
   onOpenMenu,
   onCloseMenu,
 }) => {
+  const { isDownXs } = useResponsiveBreakpoints();
+  const iconSize = useResponsiveValue("iconSize");
   return (
     <>
       <ListItemButton
@@ -43,7 +47,7 @@ export const CollapsibleNavItem = ({
           }
         }}
         sx={{
-          minHeight: 48,
+          minHeight: isDownXs ? 40 : 48,
           justifyContent: open ? "initial" : "center",
           px: 2.5,
           background: isExpanded && open ? "#919EAB14" : "#FFFFFF",
@@ -54,8 +58,8 @@ export const CollapsibleNavItem = ({
             minWidth: 0,
             mr: open ? "12px" : "auto",
             justifyContent: "center",
-            width:open?"24px":"20px",
-            height:open?"24px":"20px",
+            width: open ? iconSize : "20px",
+            height: open ? iconSize : "20px",
           }}
         >
           {item.imgSrc ? (
@@ -73,7 +77,7 @@ export const CollapsibleNavItem = ({
           primary={item.title}
           sx={{ opacity: open ? 1 : 0 }}
           primaryTypographyProps={{
-            fontSize: "14px",
+            fontSize: { xs: 12, sm: 13, lg: 14 },
             fontWeight: 500,
             color: isExpanded ? "#00A76F" : "#637381",
           }}
@@ -167,9 +171,9 @@ export const CollapsibleNavItem = ({
                     onClick={() => onClick(child)}
                     isCollapsible
                     sx={{
-                      minHeight: 36,
-                      pt: "4px",
-                      pb: "4px",
+                      minHeight: isDownXs ? 30 : 36,
+                      pt: isDownXs ? "0px" : "4px",
+                      pb: isDownXs ? "0px" : "4px",
                     }}
                   />
                 );

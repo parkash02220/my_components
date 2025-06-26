@@ -1,5 +1,5 @@
 import ConfirmationPopup from "@/components/ConfirmationPopup";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useClearSection from "@/hooks/projects/section/useClearSection";
 import useDeleteSection from "@/hooks/projects/section/useDeleteSection";
 import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
@@ -11,7 +11,7 @@ export default function ColumnHeaderMenu({
   column,
   setShowEditTextfield,
 }) {
-  const { isXs } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const handleMenuOpen = (event) => {
     setMenuAnchorEl(event.currentTarget);
@@ -145,7 +145,7 @@ export default function ColumnHeaderMenu({
               cursor: "pointer",
               padding: "6px 8px",
               borderRadius: "6px",
-              minHeight: isXs ? "40px" : "48px",
+              minHeight: isDownXs ? "40px" : "48px",
             }}
           >
             <Box

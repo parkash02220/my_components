@@ -23,7 +23,34 @@ const TableCellRenderer = ({
 }) => {
   switch (type) {
     case "checkbox":
-      return <Checkbox checked={isAllRowSelected ? true : Boolean(value)} onChange={onChange} />;
+      return (
+        <Checkbox
+          checked={isAllRowSelected ? true : Boolean(value)}
+          onChange={onChange}
+          sx={{
+            "& .MuiSvgIcon-root": {
+              fontSize: {
+                xs: "16px",
+                sm: "18px",
+                md: "20px",
+                lg: "22px",
+              },
+            },
+            width: {
+              xs: 20,
+              sm: 24,
+              md: 28,
+              lg: 32,
+            },
+            height: {
+              xs: 20,
+              sm: 24,
+              md: 28,
+              lg: 32,
+            },
+          }}
+        />
+      );
 
     case "button":
       return (
@@ -35,11 +62,11 @@ const TableCellRenderer = ({
     case "iconButton":
       return (
         <Tooltip title={tooltip || ""}>
-          <IconButton onClick={onClick} size="small" sx={{padding:"8px"}}>
+          <IconButton onClick={onClick} size="small" sx={{ padding: "8px" }}>
             {icon === "edit" ? (
-              <Edit sx={{width:"20px",height:"20px"}}/>
+              <Edit sx={{ width: "20px", height: "20px" }} />
             ) : icon === "delete" ? (
-              <Delete sx={{width:"20px",height:"20px"}}/>
+              <Delete sx={{ width: "20px", height: "20px" }} />
             ) : icon === "menu" ? (
               <img
                 src="/menuVerticalIcon.svg"
@@ -55,25 +82,37 @@ const TableCellRenderer = ({
 
     case "multipleIconButton": {
       return (
-        <Box display={'flex'} alignItems={'center'}  sx={{ minWidth: 0 }} justifyContent={'center'}>
-          {icons?.map((icon,index) => {
-          return  <Tooltip title={icon?.tooltip || ""} key={index}>
-              <IconButton onClick={icon?.onClick} size="small">
-                {icon?.icon === "edit" ? (
-                   <Edit sx={{width:"20px",height:"20px"}}/>
-                ) : icon?.icon === "delete" ? (
-                  <Delete sx={{width:"20px",height:"20px"}}/>
-                ) : icon?.icon === "menu" ? (
-                  <img
-                    src="/menuVerticalIcon.svg"
-                    alt="menu"
-                    style={{ height: "20px", width: "20px" }}
-                  />
-                ) : (
-                  icon?.icon
-                )}
-              </IconButton>
-            </Tooltip>;
+        <Box
+          display={"flex"}
+          alignItems={"center"}
+          sx={{ minWidth: 0 }}
+          justifyContent={"center"}
+        >
+          {icons?.map((icon, index) => {
+            return (
+              <Tooltip title={icon?.tooltip || ""} key={index}>
+                <IconButton onClick={icon?.onClick} size="small">
+                  {icon?.icon === "edit" ? (
+                    <Edit
+                      sx={{
+                        width: { xs: "16px", sm: "20px" },
+                        height: { xs: "16px", sm: "20px" },
+                      }}
+                    />
+                  ) : icon?.icon === "delete" ? (
+                    <Delete sx={{ width: "20px", height: "20px" }} />
+                  ) : icon?.icon === "menu" ? (
+                    <img
+                      src="/menuVerticalIcon.svg"
+                      alt="menu"
+                      style={{ height: "20px", width: "20px" }}
+                    />
+                  ) : (
+                    icon?.icon
+                  )}
+                </IconButton>
+              </Tooltip>
+            );
           })}
         </Box>
       );
@@ -85,23 +124,21 @@ const TableCellRenderer = ({
           <Avatar
             src={value?.avatar}
             alt={value?.name}
-            sx={{ width: 30, height: 30, fontSize: '0.875rem' }}
+            sx={{
+              width: { xs: 22, sm: 30 },
+              height: { xs: 22, sm: 30 },
+              fontSize: { xs: 12, sm: 13, lg: 14 },
+            }}
           >
             {value?.name?.[0]}
           </Avatar>
-          <Typography variant="body2" color="#1C252E">
-            {value?.name}
-          </Typography>
+          <Typography variant="primary">{value?.name}</Typography>
         </Box>
       );
 
     case "text":
     default:
-      return (
-        <Typography variant="body2" color="#1C252E">
-          {value}
-        </Typography>
-      );
+      return <Typography variant="primary">{value}</Typography>;
   }
 };
 

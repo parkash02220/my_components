@@ -75,6 +75,7 @@ export default function MySelect({
       border: error ? "1px solid red" : border || `1px solid ${borderColor}`,
     },
     "& .MuiSelect-select": {
+      paddingBottom: { xs: "12px", sm: "14px" },
       fontSize: selectFontSize,
       color: disabled ? "#a9a9a9" : color || labelColor,
       maxHeight: selectValueMaxHeight || "80px",
@@ -244,8 +245,8 @@ export default function MySelect({
                   className={`mySelect__option ${optionItemClassName}`}
                   sx={{
                     fontSize: menuItemFontSize,
-                    padding: "6px 8px",
-                    mb: "4px",
+                    padding: { xs: "0px 8px", sm: "6px 8px" },
+                    mb: { xs: "0px", sm: "4px" },
                     borderRadius: "6px",
                     bgcolor: "transparent",
                     "&.Mui-selected": {

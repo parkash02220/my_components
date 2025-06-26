@@ -8,6 +8,8 @@ import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import Content from "./Content";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 const AssignAllUsersDialog = ({
   open,
   handleClose,
@@ -16,6 +18,9 @@ const AssignAllUsersDialog = ({
 }) => {
   const toastId = "assing_all_user";
   const { showToast } = useToast();
+  const { isDownXs } = useResponsiveBreakpoints();
+  const fontSize = useResponsiveValue("fontSize");
+  const iconSize = useResponsiveValue("iconSize");
   const { loadingAssignProjectIds, errorAssignProject, toggleAssignProject } =
     useToggleAssignProject();
   const theme = useTheme();
@@ -57,14 +62,14 @@ const AssignAllUsersDialog = ({
   };
 
   const handleSearchClear = () => {
-     resetStates();
+    resetStates();
   };
 
   const handleAssignDialogClose = () => {
     resetStates();
     handleClose();
   };
-  
+
   return (
     <>
       <Box
@@ -88,24 +93,19 @@ const AssignAllUsersDialog = ({
               alignItems={"center"}
               gap={1}
             >
-              <Typography
-                variant="h2"
-                fontSize={"18px"}
-                fontWeight={600}
-                color={theme.palette.primary.main}
-              >
+              <Typography variant="title" fontWeight={600}>
                 Contacts
               </Typography>
-              <Typography color={theme.palette.primary.main}>{`(${
-                totalUsers || 0
-              })`}</Typography>
+              <Typography variant="title2">{`(${totalUsers || 0})`}</Typography>
             </Box>
           }
           content={
             <Box className="assignDialog__contentBox">
               <Box
                 className="assignDialog__searchBox"
-                padding={"24px 24px 20px 20px"}
+                padding={
+                  isDownXs ? "12px 24px 16px 20px" : "24px 24px 20px 20px"
+                }
               >
                 <MySearch
                   fullWidth
@@ -116,6 +116,8 @@ const AssignAllUsersDialog = ({
                   onChange={handleSearchValueChange}
                   onClear={handleSearchClear}
                   placeholder="Search contact..."
+                  inputFontSize={fontSize}
+                  iconStyle={{ width: iconSize, height: iconSize }}
                 />
               </Box>
 

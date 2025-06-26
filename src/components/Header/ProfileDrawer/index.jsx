@@ -7,10 +7,8 @@ import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import { useAppContext } from "@/context/App/AppContext";
 import { useRouter } from "next/navigation";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import userDrawerRoutes from "@/routes/userDrawerRoutes";
 const ProfileDrawer = ({ open, handleDrawer }) => {
-  const { isXs } = useBreakpointFlags();
   const { state } = useAppContext();
   const { activeUser } = state;
   const [logoutPopupOpen, setLogoutPopupOpen] = useState(false);
@@ -44,7 +42,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
           width={320}
           children={
             <Box>
-              <IconButton
+              {/* <IconButton
                 sx={{
                   display: "flex",
                   justifyContent: "center",
@@ -69,7 +67,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                   alt="close"
                   style={{ width: "100%", height: "20px", flexShrink: 0 }}
                 />
-              </IconButton>
+              </IconButton> */}
               <Box
                 sx={{
                   pt: 8,
@@ -86,8 +84,8 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     position: "relative",
                     padding: "6px",
                     borderRadius: "50%",
-                    width: "96px",
-                    height: "96px",
+                    width: { xs: "75px", sm: "96px" },
+                    height: { xs: "75px", sm: "96px" },
                     mb: 2,
                   }}
                 >
@@ -196,7 +194,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     <img
                       src={activeUser?.avatar || "/dummyUser.svg"}
                       alt="avatar"
-                       referrerPolicy="no-referrer"
+                      referrerPolicy="no-referrer"
                       style={{
                         width: "100%",
                         height: "100%",
@@ -211,13 +209,11 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     sx={{
                       margin: 0,
                       mt: 2,
-                      fontWeight: 600,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
-                      color: "#1C252E",
                     }}
-                    variant="h6"
+                    variant="title1"
                   >
                     {`${activeUser?.firstName || ""} ${
                       activeUser?.lastName || ""
@@ -229,13 +225,11 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     sx={{
                       margin: 0,
                       mt: "4px",
-                      fontSize: 14,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
-                      color: "#637381",
                     }}
-                    variant="h6"
+                    variant="secondary"
                   >
                     {activeUser?.email || ""}
                   </Typography>
@@ -315,7 +309,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                   padding: "24px 24px 20px 20px",
                   borderTop: "1px dashed rgba(145,158,171,0.2)",
                   borderBottom: "1px dashed rgba(145,158,171,0.2)",
-                  mt:2,
+                  mt: 2,
                 }}
               >
                 {userDrawerRoutes?.map((item, index) => {
@@ -345,9 +339,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                           style={{ width: "24px", height: "24px" }}
                         />
                       </Box>
-                      <Typography fontSize={14} color="inherit">
-                        {item?.title}
-                      </Typography>
+                      <Typography variant="secondary">{item?.title}</Typography>
                     </Box>
                   );
                 })}

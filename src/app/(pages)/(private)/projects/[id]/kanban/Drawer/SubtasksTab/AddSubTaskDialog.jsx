@@ -2,7 +2,7 @@ import MyButton from "@/components/MyButton/MyButton";
 import MyDialog from "@/components/MyDialog/MyDialog";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { useTaskContext } from "@/context/Task/TaskContext";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useCreateSubTask from "@/hooks/projects/task/subtask/useCreateSubTask";
 import { Box } from "@mui/material";
 import { useState } from "react";
@@ -10,7 +10,7 @@ import { useState } from "react";
 const AddSubTaskDialog = ({ open, onClose }) => {
   const { state } = useTaskContext();
   const { activeTask } = state;
-  const { isXs } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
   const { loadingCreateSubTask, addSubTaskToBackend } = useCreateSubTask();
   const [subtaskName, setSubtaskName] = useState("");
   const [error, setError] = useState(false);
@@ -57,7 +57,7 @@ const AddSubTaskDialog = ({ open, onClose }) => {
         open={open}
         handleClose={handleDialogClose}
         title="Add New Subtask"
-        width={isXs ? "100%" : "auto"}
+        width={isDownXs ? "100%" : "auto"}
         content={
           <Box pt={2}>
             <MyTextField
@@ -76,11 +76,11 @@ const AddSubTaskDialog = ({ open, onClose }) => {
         actions={
           <Box
             display="flex"
-            flexDirection={isXs ? "column-reverse" : "row"}
+            flexDirection={isDownXs ? "column-reverse" : "row"}
             justifyContent="space-between"
             gap={2}
             width="100%"
-            p={isXs ? 1 : 2}
+            p={isDownXs ? 1 : 2}
           >
             <MyButton
               onClick={handleDialogClose}

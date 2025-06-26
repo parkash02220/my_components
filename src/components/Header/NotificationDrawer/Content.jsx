@@ -252,7 +252,7 @@ export const Content = ({
                 />
               </Box>
             ) : notifications.length > 0 ? (
-              <Box>
+              <Box width={"100%"}>
                 {notifications.map((notification, i) => (
                   <Box key={i} width="100%">
                     <NotificatoinMsg
@@ -279,10 +279,7 @@ export const Content = ({
                   </Box>
                 )}
                 {hasMore && !loadingNotifications && (
-                  <Box
-                    ref={loadMoreRef}
-                    sx={{ height: "1px" }}
-                  ></Box>
+                  <Box ref={loadMoreRef} sx={{ height: "1px" }}></Box>
                 )}
               </Box>
             ) : (
@@ -293,27 +290,16 @@ export const Content = ({
                 alignItems={"center"}
                 justifyContent={"center"}
                 height={"100%"}
+                padding={2}
               >
-                <Box>
-                  <Typography
-                    fontSize={20}
-                    fontWeight={600}
-                    color="#1C252E"
-                    textAlign={"center"}
-                  >
-                    You're all caught up!
-                  </Typography>
-                </Box>
-                <Box>
-                  <Typography
-                    fontSize={14}
-                    color="#637381"
-                    textAlign={"center"}
-                  >
-                    No notifications at the moment — we'll let you know when
-                    something new comes in.
-                  </Typography>
-                </Box>
+                <Typography variant="title1" textAlign={"center"}>
+                  You're all caught up!
+                </Typography>
+
+                <Typography variant="secondary" textAlign={"center"}>
+                  No notifications at the moment — we'll let you know when
+                  something new comes in.
+                </Typography>
               </Box>
             )}
           </Box>

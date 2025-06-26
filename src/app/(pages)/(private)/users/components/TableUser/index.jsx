@@ -5,7 +5,7 @@ import useDeleteUser from "@/hooks/user/useDeleteUser";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import EditUserPopup from "../../EditUserPopup";
 import { getUserTableColumns } from "./GetTableColumns";
-
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 const TableUser = ({
   data,
@@ -23,15 +23,18 @@ const TableUser = ({
   handlePageSizeChange,
   hasFetchedOnce,
 }) => {
+  const { isDownXs } = useResponsiveBreakpoints();
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [selectedUserForEdit, setSelectedUserForEdit] = useState(null);
   const { loadingDeleteUser, errorDeleteUser, deleteUser } = useDeleteUser();
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const isLoading = loadingAllUsers || page === 0;
-  const isAllRowSelected = selectedUsers?.length > 0 && (selectedUsers?.length === pageSize || selectedUsers?.length === totalUsers);
-  const msgForDeleteUser = selectedUsers?.length === 1
-      ? "1 user"
-      : `${selectedUsers?.length} users`;
+  const isAllRowSelected =
+    selectedUsers?.length > 0 &&
+    (selectedUsers?.length === pageSize ||
+      selectedUsers?.length === totalUsers);
+  const msgForDeleteUser =
+    selectedUsers?.length === 1 ? "1 user" : `${selectedUsers?.length} users`;
   const handleSelectAllUsers = (checked) => {
     if (checked) {
       setSelectedUsers(data);
@@ -65,7 +68,7 @@ const TableUser = ({
     handleSingleUserSelect,
     handleEditClick,
   });
-  
+
   const handleOpenEditPopup = () => {
     setOpenEditPopup(true);
   };
@@ -124,18 +127,18 @@ const TableUser = ({
               top: "0px",
               left: "0px",
               zIndex: 9,
-              minHeight: 58,
+              minHeight: isDownXs ? 45 : 58,
               position: "absolute",
               alignItems: "center",
               justifyContent: "center",
               width: "100%",
-              p: 2,
+              p: isDownXs ? "12px 16px" : 2,
             }}
           >
             <Box
               sx={{
                 borderColor: "transparent",
-                fontSize: "14px",
+                fontSize: { xs: 12, sm: 13, lg: 14 },
                 color: "#637381",
                 fontWeight: 600,
                 background: "inherit",
@@ -146,7 +149,12 @@ const TableUser = ({
               {columns[0]?.label}
             </Box>
             <Box flexGrow={1}>
-              <Typography color="#00A76F" fontSize={14} fontWeight={600} ml={2}>
+              <Typography
+                color="#00A76F"
+                fontWeight={600}
+                ml={2}
+                sx={{ fontSize: { xs: 12, sm: 13, lg: 14 } }}
+              >
                 {`${selectedUsers?.length || 0} selected`}
               </Typography>
             </Box>
@@ -162,8 +170,8 @@ const TableUser = ({
                 src="/deleteIcon.svg"
                 alt="delete"
                 style={{
-                  width: "22px",
-                  height: "22px",
+                  width: isDownXs ? "18px" : "22px",
+                  height: isDownXs ? "18px" : "22px",
                   objectFit: "cover",
                 }}
               />

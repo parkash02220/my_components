@@ -4,14 +4,14 @@ import { Header } from "./header";
 import RightDrawer from "@/components/RightDrawer";
 import { Box } from "@mui/material";
 import useGetTask from "@/hooks/projects/task/useGetTask";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import { useRouter, useSearchParams } from "next/navigation";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 function KanbanRightDrawer({ open, handleDrawer, taskId }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const tab = searchParams.get("tab");
-  const { isXs } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
   const { activeTask, loadingActiveTask, errorActiveTask, getTaskFromBackend } =
     useGetTask();
   const tabValues = [
@@ -77,7 +77,7 @@ function KanbanRightDrawer({ open, handleDrawer, taskId }) {
     <>
       <Box>
         <RightDrawer
-          width={isXs ? "100vw" : ""}
+          width={isDownXs ? "100vw" : ""}
           open={open}
           header={
             !loadingActiveTask ? (

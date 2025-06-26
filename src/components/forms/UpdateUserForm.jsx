@@ -8,20 +8,25 @@ import {
   Typography,
 } from "@mui/material";
 import MyTextField from "../MyTextfield/MyTextfield";
-import { useState } from "react";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import { formatDate, getCalendarMinMaxDate } from "@/utils";
 import { departmentOptions, designationOptions } from "./formsData";
 import MySelect from "../MySelect/MySelect";
 import MySelectVariant from "../MySelect/MySelectVarient";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 const UpdateUserForm = ({ formik }) => {
-  const { isXs } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
   const { minDate, maxDate } = getCalendarMinMaxDate(13, 130);
+  const fontSize = useResponsiveValue("fontSize");
   return (
     <>
-      <Grid container spacing={isXs ? 2 : 3}>
+      <Grid container spacing={isDownXs ? 2 : 3}>
         <Grid size={12}>
-          <Typography color="#1C252E" fontWeight={700}>
+          <Typography
+            color="#1C252E"
+            fontWeight={700}
+            sx={{ fontSize: { xs: 13, sm: 14, lg: 16 } }}
+          >
             Basic details :
           </Typography>
         </Grid>
@@ -46,6 +51,7 @@ const UpdateUserForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
         <Grid size={6}>
@@ -67,6 +73,7 @@ const UpdateUserForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
         <Grid size={12}>
@@ -100,13 +107,18 @@ const UpdateUserForm = ({ formik }) => {
               <FormControlLabel
                 value="male"
                 control={
-                  <Radio sx={{ fontSize: 18, transform: "scale(0.8)" }} />
+                  <Radio
+                    sx={{
+                      fontSize: isDownXs ? 14 : 18,
+                      transform: "scale(0.8)",
+                    }}
+                  />
                 }
                 label="Male"
                 sx={{
                   mr: 4,
                   "& .MuiTypography-root": {
-                    fontSize: 14,
+                    fontSize: fontSize,
                     color: "#637381",
                   },
                 }}
@@ -114,12 +126,17 @@ const UpdateUserForm = ({ formik }) => {
               <FormControlLabel
                 value="female"
                 control={
-                  <Radio sx={{ fontSize: 18, transform: "scale(0.8)" }} />
+                  <Radio
+                    sx={{
+                      fontSize: isDownXs ? 14 : 18,
+                      transform: "scale(0.8)",
+                    }}
+                  />
                 }
                 label="Female"
                 sx={{
                   "& .MuiTypography-root": {
-                    fontSize: 14,
+                    fontSize: fontSize,
                     color: "#637381",
                   },
                 }}
@@ -176,13 +193,18 @@ const UpdateUserForm = ({ formik }) => {
               <FormControlLabel
                 value="admin"
                 control={
-                  <Radio sx={{ fontSize: 18, transform: "scale(0.8)" }} />
+                  <Radio
+                    sx={{
+                      fontSize: isDownXs ? 14 : 18,
+                      transform: "scale(0.8)",
+                    }}
+                  />
                 }
                 label="Admin"
                 sx={{
                   mr: 4,
                   "& .MuiTypography-root": {
-                    fontSize: 14,
+                    fontSize: fontSize,
                     color: "#637381",
                   },
                 }}
@@ -190,12 +212,17 @@ const UpdateUserForm = ({ formik }) => {
               <FormControlLabel
                 value="user"
                 control={
-                  <Radio sx={{ fontSize: 18, transform: "scale(0.8)" }} />
+                  <Radio
+                    sx={{
+                      fontSize: isDownXs ? 14 : 18,
+                      transform: "scale(0.8)",
+                    }}
+                  />
                 }
                 label="User"
                 sx={{
                   "& .MuiTypography-root": {
-                    fontSize: 14,
+                    fontSize: fontSize,
                     color: "#637381",
                   },
                 }}
@@ -209,7 +236,11 @@ const UpdateUserForm = ({ formik }) => {
           </FormControl>
         </Grid>
         <Grid size={12}>
-          <Typography color="#1C252E" fontWeight={700}>
+          <Typography
+            color="#1C252E"
+            fontWeight={700}
+            sx={{ fontSize: { xs: 13, sm: 14, lg: 16 } }}
+          >
             Other details :
           </Typography>
         </Grid>
@@ -310,6 +341,7 @@ const UpdateUserForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
         <Grid size={6}>
@@ -333,6 +365,7 @@ const UpdateUserForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
         <Grid size={6}>
@@ -361,6 +394,7 @@ const UpdateUserForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
       </Grid>

@@ -1,31 +1,21 @@
 "use client";
 
 import MyButton from "@/components/MyButton/MyButton";
-import MyTextField from "@/components/MyTextfield/MyTextfield";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import useSignUp from "@/hooks/user/activeUser/useSignUp";
 import { loginUserWithGoogle } from "@/utils";
-import {
-  Box,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Grid,
-  IconButton,
-  Radio,
-  RadioGroup,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { SignUpForm } from "@/components/forms";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 const SignUp = () => {
   const router = useRouter();
-  const { isXs, isMd, isLg } = useBreakpointFlags();
+  const { isDownMd, isDownXs } = useResponsiveBreakpoints();
+  const fontSize = useResponsiveValue("fontSize");
   const { loadingSignUp, errorSignUp, responseMsg, signUpUser } = useSignUp();
   const formik = useFormik({
     initialValues: {
@@ -65,7 +55,7 @@ const SignUp = () => {
   return (
     <>
       <Box className="signUpContainer" display={"flex"} minHeight={"100vh"}>
-        {!isMd ? (
+        {!isDownMd ? (
           <Box
             className="signUpContainer__leftBox"
             display={"flex"}
@@ -175,27 +165,22 @@ const SignUp = () => {
               flexDirection={"column"}
               whiteSpace={"pre-line"}
               gap={"12px"}
-              textAlign={isMd ? "center" : "left"}
+              textAlign={isDownMd ? "center" : "left"}
             >
-              <Typography
-                variant="h5"
-                fontSize={19}
-                fontWeight={700}
-                color="#1C252E"
-              >
+              <Typography variant="title1" fontWeight={700}>
                 Get started absolutely free
               </Typography>
               <Box
                 display={"flex"}
                 gap={1}
-                justifyContent={isMd ? "center" : ""}
+                justifyContent={isDownMd ? "center" : ""}
               >
-                <Typography fontSize={14} color="#637381">
+                <Typography fontSize={fontSize} color="#637381">
                   Already have an account?
                 </Typography>
                 <Link href={"/signin"}>
                   <Typography
-                    fontSize={14}
+                    fontSize={fontSize}
                     color="#00A76F"
                     fontWeight={600}
                     sx={{ "&:hover": { textDecoration: "underline" } }}
@@ -214,11 +199,15 @@ const SignUp = () => {
                   border={"2px solid #1C252E"}
                   borderRadius="8px"
                   sx={{ height: 48 }}
+                  fontSize={fontSize}
                   startIcon={
                     <img
                       src="/googleIcon.svg"
                       alt="google"
-                      style={{ width: "24px", height: "24px" }}
+                      style={{
+                        width: isDownXs ? "20px" : "24px",
+                        height: isDownXs ? "20px" : "24px",
+                      }}
                     />
                   }
                   hoverBgColor="whitesmoke"
@@ -232,6 +221,7 @@ const SignUp = () => {
                 <Typography
                   sx={{ mx: 2, whiteSpace: "nowrap" }}
                   color="textSecondary"
+                  fontSize={fontSize}
                 >
                   or
                 </Typography>
@@ -240,34 +230,39 @@ const SignUp = () => {
             </Box>
             <form onSubmit={formik.handleSubmit}>
               <Box display={"flex"} flexDirection={"column"}>
-                {<SignUpForm formik={formik} type={'signup'}/>}
-                  <MyButton
-                    minWidth="50px"
-                    fullWidth={true}
-                    backgroundColor="#1C252E"
-                    type="submit"
-                    loading={loadingSignUp}
-                    loadingText={"Signing up..."}
-                    padding={"8px 16px"}
-                    borderRadius="8px"
-                    fontSize={15}
-                    fontWeight={700}
-                    sx={{
-                      height: "48px",
-                      mt:2,
-                    }}
+                {<SignUpForm formik={formik} />}
+                <MyButton
+                  minWidth="50px"
+                  fullWidth={true}
+                  backgroundColor="#1C252E"
+                  type="submit"
+                  loading={loadingSignUp}
+                  loadingText={"Signing up..."}
+                  padding={"8px 16px"}
+                  borderRadius="8px"
+                  fontWeight={700}
+                  sx={{
+                    fontSize: { xs: 13, sm: 14, lg: 16 },
+                    height: "48px",
+                    mt: 2,
+                  }}
+                >
+                  Create account
+                </MyButton>
+                {responseMsg && (
+                  <Typography
+                    color="red"
+                    mt={1}
+                    ml={1}
+                    fontSize={isDownXs ? 10 : 12}
                   >
-                    Create account
-                  </MyButton>
-                  {responseMsg && (
-                    <Typography color="red" mt={1} ml={1} fontSize={12}>
-                      {responseMsg}
-                    </Typography>
-                  )}
+                    {responseMsg}
+                  </Typography>
+                )}
                 <Box mt={2}>
                   <Typography
                     color="#637381"
-                    fontSize={12}
+                    fontSize={isDownXs ? 10 : 12}
                     margin={"8px 0px 0px"}
                     textAlign={"center"}
                   >

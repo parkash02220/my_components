@@ -1,7 +1,8 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import MyDialog from "../MyDialog/MyDialog";
 import MyButton from "../MyButton/MyButton";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 
 const ConfirmationPopup = ({
   title,
@@ -16,7 +17,8 @@ const ConfirmationPopup = ({
   loading,
   loadingText,
 }) => {
-  const { isXs } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
+  const fontSize = useResponsiveValue("fontSize");
   const theme = useTheme();
   if (type === "delete") {
     return (
@@ -25,14 +27,14 @@ const ConfirmationPopup = ({
           open={open}
           handleClose={handleClose}
           title={title}
-          fontSize="18px"
+          fontSize={isDownXs ? "14px" : "18px"}
           titlepadding="24px 24px 16px"
           contentpadding="0px 24px !important"
           actionpadding="24px !important"
-          width={isXs ? "100%" : "auto"}
+          width={isDownXs ? "100%" : "auto"}
           content={
             <Box>
-              <Typography fontSize={14} color={theme?.palette?.primary?.main}>
+              <Typography variant="primary">
                 Are you sure you want to delete{" "}
                 <span style={{ fontWeight: 700 }}>{message}</span>?
               </Typography>
@@ -53,7 +55,7 @@ const ConfirmationPopup = ({
                 padding={"6px 12px"}
                 minWidth="64px"
                 fontWeight={700}
-                fontSize={14}
+                fontSize={fontSize}
                 color="#FFFFFF"
                 borderRadius="8px"
                 backgroundColor="#FF5630"
@@ -70,7 +72,7 @@ const ConfirmationPopup = ({
                 color={theme?.palette?.primary?.main}
                 borderRadius="8px"
                 variant="outlined"
-                fontSize={14}
+                fontSize={fontSize}
                 hoverBgColor="whitesmoke"
               >
                 {cancelText || "Cancel"}
@@ -91,7 +93,7 @@ const ConfirmationPopup = ({
           titlepadding="24px 24px 16px"
           contentpadding="0px 24px !important"
           actionpadding="24px !important"
-          width={isXs ? "100%" : "auto"}
+          width={isDownXs ? "100%" : "auto"}
           content={
             <Box>
               <Typography fontSize={14} color={theme?.palette?.primary?.main}>

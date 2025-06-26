@@ -1,5 +1,6 @@
 import { useAppContext } from "@/context/App/AppContext";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 import useGetActiveUser from "@/hooks/user/activeUser/useGetActiveUser";
 const { IconButton, Typography, Box } = require("@mui/material");
 const { useState } = require("react");
@@ -8,7 +9,7 @@ const { default: ProfileDrawer } = require("./ProfileDrawer");
 const HeaderUserProfile = () => {
   const { state } = useAppContext();
   const { activeUser, loadingActiveUser } = state;
-  const { isMd, isSm, isXs } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
   const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
 
   const OpenProfileDrawer = () => {
@@ -54,8 +55,8 @@ const HeaderUserProfile = () => {
               position: "relative",
               padding: "3px",
               borderRadius: "50%",
-              width: isXs ? "36px" : "40px",
-              height: isXs ? "36px" : "40px",
+              width: { xs: "32px", sm: "36px", lg: "40px" },
+              height: { xs: "32px", sm: "36px", lg: "40px" },
             }}
           >
             <Box

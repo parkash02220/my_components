@@ -4,13 +4,13 @@ import MyTable from "@/components/MyTable";
 import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { getFullName } from "@/utils";
 import { Box, Checkbox, IconButton, Typography } from "@mui/material";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import SelectUserDesignation from "../components/SelectUserDesignation";
 import TableUser from "../components/TableUser";
 import SearchUser from "../components/SearchUser";
 import MyMenu from "@/components/MyMenu";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 const ListUsers = () => {
-  const { isXs, isMd } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const isMenuOpen = Boolean(menuAnchorEl);
   const handleMenuOpen = (event) => {
@@ -90,7 +90,7 @@ const ListUsers = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          padding: "8px 40px 64px 40px",
+          padding: isDownXs ? "8px" : "8px 40px 64px 40px",
         }}
       >
         <Box
@@ -111,17 +111,19 @@ const ListUsers = () => {
           {" "}
           <Box
             p={"20px 8px 20px 20px"}
+            pl={isDownXs ? "8px" : "20px"}
             display={"flex"}
             alignItems={"center"}
             gap={2}
+            flexDirection={isDownXs ? "column" : "row"}
           >
-            <Box width={200} flexShrink={0}>
+            <Box width={isDownXs ? "100%" : 200} flexShrink={0}>
               <SelectUserDesignation
                 designations={designations}
                 setDesignations={setDesignations}
               />
             </Box>
-            <Box flexGrow={1}>
+            <Box flexGrow={1} width={"100%"}>
               <SearchUser
                 searchValue={searchValue}
                 setSearchValue={setSearchValue}

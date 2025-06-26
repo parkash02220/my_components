@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import TableCellRenderer from "./TableCellRenderer";
 import Loader from "../Loader/Loader";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 
 const MyTable = ({
   columns,
@@ -23,7 +24,7 @@ const MyTable = ({
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
+  const fontSize = useResponsiveValue("fontSize");
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     fetchMore({ page: newPage + 1, limit: rowsPerPage });
@@ -41,26 +42,33 @@ const MyTable = ({
       <TableContainer>
         <Table
           size="small"
-          sx={{ borderCollapse: "collapse", borderSpacing: 0, minWidth: 960,minHeight:isTableEmpty || isLoading ? 300 : 'auto'}}
+          sx={{
+            borderCollapse: "collapse",
+            borderSpacing: 0,
+            minWidth: { xs: 750, sm: 960 },
+            minHeight: isTableEmpty || isLoading ? 300 : "auto",
+          }}
         >
           <TableHead>
             <TableRow>
-              {columns.map((col) => (
-                <TableCell
-                  key={col.id}
-                  align={col.align || "left"}
-                  sx={{
-                    borderColor: "transparent",
-                    fontSize: "14px",
-                    color: "#637381",
-                    fontWeight: 600,
-                    background: "#F4F6F8",
-                    padding: "16px",
-                  }}
-                >
-                  {col.label}
-                </TableCell>
-              ))}
+              {columns.map((col) => {
+                return (
+                  <TableCell
+                    key={col.id}
+                    align={col.align || "left"}
+                    sx={{
+                      borderColor: "transparent",
+                      fontSize: { xs: 12, sm: 13, lg: 14 },
+                      color: "#637381",
+                      fontWeight: 600,
+                      background: "#F4F6F8",
+                      padding: "16px",
+                    }}
+                  >
+                    {col.label}
+                  </TableCell>
+                );
+              })}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -137,7 +145,27 @@ const MyTable = ({
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[5, 10, 25, 50]}
-        sx={{ p: "8px !important" }}
+        sx={{
+          p: "8px !important",
+          "& .MuiTablePagination-toolbar": {
+            minHeight: "40px",
+            fontSize: fontSize,
+          },
+          "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
+            {
+              fontSize: fontSize,
+            },
+          "& .MuiInputBase-root": {
+            fontSize: fontSize,
+          },
+          "& .MuiTablePagination-actions .MuiSvgIcon-root": {
+            fontSize: {
+              xs: "18px",
+              sm: "20px",
+              md: "22px",
+            },
+          },
+        }}
       />
     </Paper>
   );

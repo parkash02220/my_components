@@ -8,19 +8,16 @@ import {
   Typography,
 } from "@mui/material";
 import MyTextField from "../MyTextfield/MyTextfield";
-import { useState } from "react";
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
 import { formatDate, getCalendarMinMaxDate } from "@/utils";
-import MySelect from "../MySelect/MySelect";
-import { departmentOptions, designationOptions } from "./formsData";
 import MySelectVariant from "../MySelect/MySelectVarient";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 const EditProfileForm = ({ formik }) => {
-  const { isXs } = useBreakpointFlags();
+  const { isDownXs } = useResponsiveBreakpoints();
   const { minDate, maxDate } = getCalendarMinMaxDate(13, 130);
 
   return (
     <>
-      <Grid container spacing={isXs ? 2 : 3}>
+      <Grid container spacing={isDownXs ? 2 : 3}>
         <Grid size={12}>
           <Typography color="#1C252E" fontWeight={700}>
             Basic details :

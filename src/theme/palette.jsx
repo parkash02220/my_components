@@ -1,10 +1,12 @@
 const palette = {
   primary: {
     main: "#1C252E",
-    contrastText: "#fff",
   },
   secondary: {
     main: "#637381",
+  },
+  disabled: {
+    main: "#919EAB",
   },
   error: {
     main: "#f44336",

@@ -9,7 +9,11 @@ import { useState } from "react";
 import * as Yup from "yup";
 import UserProfile from "./UserProfile";
 import { CreateUserForm } from "@/components/forms";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 const CreateUser = () => {
+  const { isDownXs, isDownSm } = useResponsiveBreakpoints();
+  const fontSize = useResponsiveValue("fontSize");
   const { loadingCreateUser, errorCreateUser, createUser } = useCreateUser();
   const [profileImg, setProfileImg] = useState(null);
   const formik = useFormik({
@@ -49,7 +53,7 @@ const CreateUser = () => {
       <Box className="createUser__container">
         <Box
           sx={{
-            padding: "8px 40px 64px 40px",
+            padding: isDownXs ? "0px" : "8px 40px 64px 40px",
             marginInline: "auto",
             display: "flex",
             flexDirection: "column",
@@ -63,12 +67,7 @@ const CreateUser = () => {
               alignItems: "center",
             }}
           >
-            <Typography
-              fontSize={"20px"}
-              color="#1C252E"
-              variant="h6"
-              fontWeight={700}
-            >
+            <Typography variant="title1" fontWeight={700}>
               Create a new user
             </Typography>
           </Box>
@@ -76,13 +75,13 @@ const CreateUser = () => {
             <form onSubmit={formik.handleSubmit}>
               <Box display={"flex"}>
                 <Grid container spacing={2}>
-                  <Grid size={4}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <Box
                       sx={{
                         flexGrow: 0,
                         flexBasis: "auto",
                         minWidth: "0px",
-                        p: 3,
+                        p: isDownXs ? "24px 8px" : 3,
                       }}
                     >
                       <UserProfile
@@ -91,7 +90,7 @@ const CreateUser = () => {
                       />
                     </Box>
                   </Grid>
-                  <Grid size={8}>
+                  <Grid size={{ xs: 12, md: 8 }}>
                     <Box
                       sx={{
                         background: "#FFFFFF",
@@ -99,7 +98,7 @@ const CreateUser = () => {
                         zIndex: 0,
                         overflow: "hidden",
                         borderRadius: 2,
-                        p: 3,
+                        p: isDownXs ? 0 : 3,
                         flexGrow: 0,
                         flexBasis: "auto",
                       }}
@@ -112,7 +111,9 @@ const CreateUser = () => {
                           boxShadow:
                             "0 0 2px 0 rgba(145 158 171 / 0.2),0 12px 24px -4px rgba(145 158 171 / 0.12)",
                           zIndex: 0,
-                          padding: "80px 40px 24px 24px",
+                          padding: isDownXs
+                            ? "12px 8px 24px 8px"
+                            : "80px 40px 24px 24px",
                           overflow: "hidden",
                           borderRadius: "16px",
                         }}
@@ -123,7 +124,7 @@ const CreateUser = () => {
                             display={"flex"}
                             alignItems={"center"}
                             justifyContent={"flex-end"}
-                            mt={1}
+                            mt={isDownXs ? 3 : 1}
                           >
                             {errorCreateUser && (
                               <Typography
@@ -137,6 +138,8 @@ const CreateUser = () => {
                             <MyButton
                               type="submit"
                               disabled={loadingCreateUser}
+                              fontSize={fontSize}
+                              fullWidth={isDownXs}
                             >
                               Create user
                             </MyButton>

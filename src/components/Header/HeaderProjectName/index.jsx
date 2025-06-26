@@ -1,5 +1,3 @@
-import useBreakpointFlags from "@/hooks/common/useBreakpointsFlag";
-
 import { useRouter } from "next/navigation";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
@@ -7,6 +5,8 @@ import MyTextField from "@/components/MyTextfield/MyTextfield";
 import AssignAllUsersDialog from "./AssignAllUsersDIalog/index";
 import * as actions from "@/context/Projects/action";
 import { useAppContext } from "@/context/App/AppContext";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/useResponsiveValue";
 const {
   Box,
   Typography,
@@ -23,7 +23,8 @@ const {
 const { useState, useEffect, useRef } = require("react");
 
 const HeaderProjectName = () => {
-  const { isMd, isSm, isXs } = useBreakpointFlags();
+  const { isDownSm, isDownXs } = useResponsiveBreakpoints();
+  const fontSize = useResponsiveValue("fontSize");
   const { state, dispatch } = useProjectsContext();
   const { activeProject, loadingActiveProject } = state;
   const router = useRouter();
@@ -153,7 +154,7 @@ const HeaderProjectName = () => {
                 onKeyDown={(e) =>
                   handleProjectInputKeyDown(e, activeProject?.id)
                 }
-                minWidth="300px"
+                minWidth={isDownXs ? "100px" : "300px"}
                 maxHeight={"44px"}
                 loading={loadingUpdateProjectName}
                 error={errorUpdateProjectName}
@@ -163,10 +164,8 @@ const HeaderProjectName = () => {
               />
             ) : (
               <Typography
-                variant="h4"
-                fontSize={isXs ? "1.125rem" : isSm ? "1.25rem" : "1.5rem"}
+                variant="title1"
                 fontWeight={700}
-                color="#1C252E"
                 onClick={handleProjectNameStartEdidting}
               >
                 {activeProject?.name}
@@ -201,11 +200,11 @@ const HeaderProjectName = () => {
         onClose={handleMenuClose}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: isXs ? "right" : "left",
+          horizontal: isDownXs ? "right" : "left",
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: isXs ? "right" : "left",
+          horizontal: isDownXs ? "right" : "left",
         }}
         PaperProps={{
           sx: {
@@ -231,24 +230,24 @@ const HeaderProjectName = () => {
                 cursor: "pointer",
                 padding: "6px 8px",
                 borderRadius: "6px",
-                minHeight: isXs ? 40 : 48,
+                minHeight: isDownXs ? 40 : 48,
               }}
             >
               <Box
                 display="flex"
                 gap={2}
                 alignItems="center"
-                minWidth={isXs ? "130px" : "140px"}
-                mb={isXs ? "" : "4px"}
+                minWidth={isDownXs ? "130px" : "140px"}
+                mb={isDownXs ? "" : "4px"}
               >
                 <img
                   src={item.icon}
                   alt={item.label.toLowerCase()}
-                  width={isXs ? 16 : 20}
-                  height={isXs ? 16 : 20}
+                  width={isDownXs ? 16 : 20}
+                  height={isDownXs ? 16 : 20}
                 />
                 <Typography
-                  fontSize={isXs ? 13 : 14}
+                  fontSize={isDownXs ? 13 : 14}
                   color={item.color || "inherit"}
                 >
                   {item.label}

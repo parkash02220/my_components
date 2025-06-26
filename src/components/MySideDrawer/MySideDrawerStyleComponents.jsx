@@ -30,9 +30,10 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open" && prop !== "ismd" && prop !== "isxs",
-})(({ theme, open, ismd,isxs }) => ({
-  width: ismd ? '60px ' : open ? drawerWidth : miniDrawerWidth,
+  shouldForwardProp: (prop) =>
+    prop !== "open" && prop !== "ismd" && prop !== "isxs" && prop !== "issm",
+})(({ theme, open, ismd, isxs, issm }) => ({
+  width: ismd ? "60px " : open ? drawerWidth : miniDrawerWidth,
   left: 0,
   right: "auto",
   position: "fixed",
@@ -43,8 +44,8 @@ export const AppBar = styled(MuiAppBar, {
   backgroundColor: "#FFFFFF",
   boxShadow: "none",
   borderRight: ismd ? "" : "1px solid rgba(145,158,171,0.12)",
-  borderBottom : ismd ? "1px solid #eee" : "",
-  height: isxs ? "65px" : ismd ? '76px' : 'auto',
+  borderBottom: ismd ? "1px solid #eee" : "",
+  height: isxs ? "57px" : issm ? "61px" : "76px",
 }));
 
 export const Drawer = styled(MuiDrawer, {
