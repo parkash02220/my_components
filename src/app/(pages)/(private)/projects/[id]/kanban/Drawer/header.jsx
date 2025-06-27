@@ -9,8 +9,10 @@ import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import * as actions from "@/context/Task/action";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 export const Header = ({ activeTask, handleDrawer }) => {
-  const { isDownXs } = useResponsiveBreakpoints();
+  const { isDownXs,isDownSm } = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const { dispatch } = useTaskContext();
   const { loadingMoveTask, moveTask } = useMoveTask();
   const { loadingDeleteTask, errorDeleteTask, deleteTaskFromBackend } =
@@ -128,10 +130,9 @@ export const Header = ({ activeTask, handleDrawer }) => {
             }}
           >
             <Typography
+            variant="primary"
               sx={{
                 fontWeight: 700,
-                fontSize: "14px",
-                color: "#1C252E",
               }}
             >
               {sectionOfActiveTask?.name}
@@ -176,6 +177,7 @@ export const Header = ({ activeTask, handleDrawer }) => {
                   cursor: "pointer",
                   padding: "6px 8px",
                   borderRadius: "6px",
+                  minHeight: isDownXs ? "32px" : isDownSm ? "40px" : "48px",
                 }}
               >
                 <Box
@@ -185,7 +187,7 @@ export const Header = ({ activeTask, handleDrawer }) => {
                   minWidth="140px"
                   mb={"4px"}
                 >
-                  <Typography fontSize={14} color={"inherit"}>
+                  <Typography variant="primary">
                     {section?.name || ""}
                   </Typography>
                 </Box>
@@ -235,7 +237,7 @@ export const Header = ({ activeTask, handleDrawer }) => {
               <img
                 src="/deleteIcon.svg"
                 alt="delete"
-                style={{ width: "20px", height: "20px" }}
+                style={{ width: isDownXs ? "16px" : "20px", height: isDownXs ? "16px" :  "20px" }}
               />
             </IconButton>
           </MyTooltip>

@@ -10,10 +10,10 @@ import * as Yup from "yup";
 import UserProfile from "./UserProfile";
 import { CreateUserForm } from "@/components/forms";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const CreateUser = () => {
   const { isDownXs, isDownSm } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
   const { loadingCreateUser, errorCreateUser, createUser } = useCreateUser();
   const [profileImg, setProfileImg] = useState(null);
   const formik = useFormik({

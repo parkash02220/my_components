@@ -11,8 +11,12 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import ColumnHeaderMenu from "./ColumnHeaderMenu";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 
 export default function ColumnHeader({ tasks, column, attributes, listeners }) {
+  const {isXs,isSm,isMd} = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const editSectionNameRef = useRef(null);
   const [showEditTextfield, setShowEditTextfield] = useState(false);
   const {
@@ -61,7 +65,6 @@ export default function ColumnHeader({ tasks, column, attributes, listeners }) {
     cancelEditing();
     setShowEditTextfield(false);
   };
-
   return (
     <>
       <Box
@@ -74,14 +77,14 @@ export default function ColumnHeader({ tasks, column, attributes, listeners }) {
         <Box display={"flex"} alignItems={"center"} gap={1} flex={1}>
           <Typography
             sx={{
-              height: "24px",
-              minWidth: "24px",
+              height: isXs ? "20px" : "24px",
+              minWidth:isXs ? "20px" : "24px",
               background: "rgba(145,158,171,0.16)",
               whiteSpace: "nowrap",
               color: "#637381",
               borderRadius: "50%",
               fontWeight: 700,
-              fontSize: "12px",
+              fontSize: isXs ? "10px" : "12px",
               borderColor: "rgba(145,158,171,0.24)",
               display: "flex",
               justifyContent: "center",
@@ -109,7 +112,7 @@ export default function ColumnHeader({ tasks, column, attributes, listeners }) {
                   fullWidth={true}
                   minWidth="0px"
                   loading={loadingUpdateColumnName}
-                  inputFontSize="16px"
+                  inputFontSize={isXs ? "13px" : isMd ? "14px" : "16px"}
                 />
               </Box>
             </Fade>
@@ -122,6 +125,7 @@ export default function ColumnHeader({ tasks, column, attributes, listeners }) {
                 color: "rgb(35, 37, 46)",
                 width: "100%",
                 cursor: "text",
+                fontSize:{xs:13,sm:14,lg:16}
               }}
             >
               {columnName}
@@ -132,7 +136,7 @@ export default function ColumnHeader({ tasks, column, attributes, listeners }) {
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
-          gap={1}
+          gap={isXs ? 0 : 1}
         >
           <Box
             sx={{
@@ -151,8 +155,8 @@ export default function ColumnHeader({ tasks, column, attributes, listeners }) {
               sx={{
                 color: "white",
                 padding: "0px",
-                width: "20px",
-                height: "20px",
+                width: {xs:"16px",sm:"20px"},
+                height: {xs:"16px",sm:"20px"},
               }}
             >
               <img
@@ -188,8 +192,8 @@ export default function ColumnHeader({ tasks, column, attributes, listeners }) {
               style={{
                 cursor: "grab",
                 color: "#999",
-                width: "20px",
-                height: "20px",
+                width: {xs:"16px",sm:"20px"},
+                height: {xs:"16px",sm:"20px"},
                 padding: "0px",
               }}
               sx={{

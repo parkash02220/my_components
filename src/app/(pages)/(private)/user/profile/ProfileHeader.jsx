@@ -5,7 +5,11 @@ import Tab from "@mui/material/Tab";
 import PhoneIcon from "@mui/icons-material/Phone";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const ProfileHeader = ({ selectedTab, onTabChange }) => {
+  const {isDownXs} = useResponsiveBreakpoints();
+   const {fontSize,iconSize} = useResponsiveValue();
   const handleChange = (event, newValue) => {
     onTabChange(newValue);
   };
@@ -34,15 +38,16 @@ const ProfileHeader = ({ selectedTab, onTabChange }) => {
               <Tab
                 key={item?.value}
                 sx={{
-                  fontSize: "14px",
+                  fontSize: fontSize,
                   fontWeight: 700,
+                  minHeight: isDownXs ? '50px' : '72px',  
                 }}
                 icon={
                   <Box>
                     <img
                       src={item?.icon?.src}
                       alt={item?.icon?.alt}
-                      style={{ width: "24px", height: "24px" }}
+                      style={{ width: iconSize, height:iconSize }}
                     />
                   </Box>
                 }

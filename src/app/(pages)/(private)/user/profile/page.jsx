@@ -14,7 +14,9 @@ import { ExpandLess } from "@mui/icons-material";
 import BackButton from "@/components/BackButton";
 import { formikInitialValues, getFormikCompatibleValues } from "./helper";
 import editActiveUserValidationSchema from "@/validations/editActiveUserValidationSchema";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 export default function Profile() {
+  const {fontSize} = useResponsiveValue();
   const searchParams = useSearchParams();
   const router = useRouter();
   const tab = searchParams.get("tab");
@@ -65,7 +67,7 @@ export default function Profile() {
           flexDirection={"column"}
           alignItems={"flex-start"}
         >
-          <BackButton />
+          <BackButton fontSize={fontSize}/>
           <ProfileHeader
             selectedTab={selectedTab}
             onTabChange={handleTabChange}

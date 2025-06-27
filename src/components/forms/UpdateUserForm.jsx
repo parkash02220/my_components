@@ -13,11 +13,11 @@ import { departmentOptions, designationOptions } from "./formsData";
 import MySelect from "../MySelect/MySelect";
 import MySelectVariant from "../MySelect/MySelectVarient";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const UpdateUserForm = ({ formik }) => {
   const { isDownXs } = useResponsiveBreakpoints();
   const { minDate, maxDate } = getCalendarMinMaxDate(13, 130);
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
   return (
     <>
       <Grid container spacing={isDownXs ? 2 : 3}>

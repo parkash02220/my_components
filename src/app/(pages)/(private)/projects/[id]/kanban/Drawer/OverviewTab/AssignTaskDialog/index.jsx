@@ -6,6 +6,8 @@ import useGetAllUsers from "@/hooks/user/useGetAllUsers";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import Content from "./Content";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const AssignDialog = ({
   open,
   handleClose,
@@ -13,6 +15,8 @@ const AssignDialog = ({
   taskId,
   isDrawerOpen,
 }) => {
+  const {isXs,isSm} = useResponsiveBreakpoints();
+  const {fontSize,iconSize} = useResponsiveValue();
   const { loadingAssignTaskIds, errorAssignTask, toggleAssignTask } =
     useToggleAssignTask();
   const theme = useTheme();
@@ -98,15 +102,13 @@ const AssignDialog = ({
               alignItems={"center"}
               gap={1}
             >
-              <Typography
-                variant="h2"
-                fontSize={"18px"}
+              <Typography         
+                variant="title"
                 fontWeight={600}
-                color={theme.palette.primary.main}
               >
                 Contacts
               </Typography>
-              <Typography color={theme.palette.primary.main}>{`(${
+              <Typography variant="title2">{`(${
                 totalUsers || 0
               })`}</Typography>
             </Box>
@@ -115,7 +117,7 @@ const AssignDialog = ({
             <Box className="assignDialog__contentBox">
               <Box
                 className="assignDialog__searchBox"
-                padding="24px 24px 20px 20px"
+                padding={ isXs ? "16px" : "24px 24px 20px 20px"}
               >
                 <MySearch
                   fullWidth
@@ -126,6 +128,8 @@ const AssignDialog = ({
                   onChange={handleSearchValueChange}
                   onClear={handleSearchClear}
                   placeholder="Search contact..."
+                  iconStyle={{width:iconSize,height:iconSize}}
+                  inputFontSize={fontSize}
                 />
               </Box>
               <Content

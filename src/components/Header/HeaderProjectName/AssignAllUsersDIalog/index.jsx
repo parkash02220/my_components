@@ -9,7 +9,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import Content from "./Content";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const AssignAllUsersDialog = ({
   open,
   handleClose,
@@ -19,8 +19,7 @@ const AssignAllUsersDialog = ({
   const toastId = "assing_all_user";
   const { showToast } = useToast();
   const { isDownXs } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
-  const iconSize = useResponsiveValue("iconSize");
+  const {fontSize,iconSize} = useResponsiveValue();
   const { loadingAssignProjectIds, errorAssignProject, toggleAssignProject } =
     useToggleAssignProject();
   const theme = useTheme();

@@ -9,10 +9,10 @@ import {
 import MyTextField from "../MyTextfield/MyTextfield";
 import { useState } from "react";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const SignUpForm = ({ formik }) => {
   const { isDownXs } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
   const [showPasswrod, setShowPassword] = useState(false);
   const handleShowPasswrod = () => {
     setShowPassword(true);

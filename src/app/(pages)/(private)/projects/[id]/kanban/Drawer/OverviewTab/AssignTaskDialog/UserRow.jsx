@@ -1,8 +1,12 @@
 import MyButton from "@/components/MyButton/MyButton";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { Box, Typography, useTheme } from "@mui/material";
 
 const UserRow = ({ user, isAssigned, onToggle, loading }) => {
     const theme = useTheme();
+    const {isXs,isSm} = useResponsiveBreakpoints();
+    const {fontSize} = useResponsiveValue();
     return (
       <Box
         className="assignDialog__contactBox"
@@ -11,7 +15,7 @@ const UserRow = ({ user, isAssigned, onToggle, loading }) => {
         alignItems="center"
         justifyContent="space-between"
       >
-        <Box className="cotactBox__avatarBox" width={40} height={40}>
+        <Box className="cotactBox__avatarBox" width={isXs ? 30 : 40} height={isXs ? 30 : 40}>
           <AvatarBox src={user?.avatar} />
         </Box>
         <Box
@@ -19,13 +23,14 @@ const UserRow = ({ user, isAssigned, onToggle, loading }) => {
           flex="1 1 auto"
           minWidth={0}
           margin={0}
+          display={'flex'}
+          flexDirection={'column'}
         >
           <Typography
-            color={theme.palette.primary.main}
+            variant="primary"
             fontWeight={600}
-            fontSize="14px"
           >{`${user?.firstName || ""} ${user?.lastName || ""}`}</Typography>
-          <Typography color="#637381" fontSize="14px">
+          <Typography variant="secondary">
             {user?.email || ""}
           </Typography>
         </Box>
@@ -38,7 +43,7 @@ const UserRow = ({ user, isAssigned, onToggle, loading }) => {
             sx={{ height: "30px" }}
             borderRadius="8px"
             padding="4px"
-            fontSize="13px"
+            fontSize={isXs ? "10px" : "13px"}
             minWidth="64px"
             variant="text"
             color={
@@ -58,8 +63,8 @@ const UserRow = ({ user, isAssigned, onToggle, loading }) => {
               }
               alt="assign"
               style={{
-                width: "16px",
-                height: "16px",
+                width: isXs ? "12px" : "16px",
+                height: isXs ? "12px" :  "16px",
                 marginRight: "4px",
               }}
             />
@@ -73,14 +78,16 @@ export default UserRow;
 
 const AvatarBox = ({ src, alt = "user" }) => (
     <Box
-      width={40}
-      height={40}
       display="flex"
       alignItems="center"
       justifyContent="center"
       borderRadius="50%"
       overflow="hidden"
-      fontSize="1.25rem"
+      sx={{
+        width: {xs:30,sm:40},
+        height: {xs:30,sm:40},
+        fontSize:{xs:14,sm:16,lg:18}
+      }}
     >
       <img
         src={src || "/dummyUser.svg"}

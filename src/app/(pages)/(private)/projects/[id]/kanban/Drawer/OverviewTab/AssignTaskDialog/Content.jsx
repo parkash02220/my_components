@@ -1,5 +1,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import UserRow from "./UserRow";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 
 const Content = ({
   hasFetchedOnce,
@@ -14,6 +16,8 @@ const Content = ({
   assignedUserIds,
   loadingAssignTaskIds,
 }) => {
+  const {isXs,isSm} = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const theme = useTheme();
   const hasError = !!errorAllUsers;
   if (hasError) {
@@ -50,9 +54,7 @@ const Content = ({
         alignItems="center"
       >
         <Typography
-          variant="h6"
-          fontSize="18px"
-          color={theme.palette.primary.main}
+          variant="title"
           fontWeight={600}
         >
           Not found
@@ -60,18 +62,17 @@ const Content = ({
         {debouncedSearchValue && (
           <>
             <Box display="flex" gap={1}>
-              <Typography fontSize="14px" color={theme.palette.primary.main}>
+              <Typography variant="primary">
                 No results found for
               </Typography>
               <Typography
-                fontSize="14px"
+                variant="primary"
                 fontWeight={700}
-                color={theme.palette.primary.main}
               >
                 {`"${debouncedSearchValue}".`}
               </Typography>
             </Box>
-            <Typography fontSize="14px" color={theme.palette.primary.main}>
+            <Typography variant="primary">
               Try checking for typos or using complete words.
             </Typography>
           </>

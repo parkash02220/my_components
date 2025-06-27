@@ -8,10 +8,14 @@ import PriorityIcon from "./PriorityIcon";
 import SubComments from "./SubComments";
 import DueDatePopper from "./DueDatePopper";
 import AssignedTo from "./AssignedTo";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 
 export function TaskCard({ task, isOverlay }) {
   const taskData = task?.content;
   const theme = useTheme();
+  const {isXs} = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const {
     setNodeRef,
     attributes,
@@ -86,7 +90,7 @@ export function TaskCard({ task, isOverlay }) {
             <Box
               className="taskCard__dataBox"
               fontWeight={600}
-              fontSize={14}
+              fontSize={fontSize}
               padding={"20px 16px"}
               position={"relative"}
             >
@@ -98,7 +102,7 @@ export function TaskCard({ task, isOverlay }) {
                 <Typography
                   color={theme?.palette?.primary?.main}
                   fontWeight={600}
-                  fontSize={"14px"}
+                  fontSize={fontSize}
                   whiteSpace={"pre-wrap"}
                   textAlign={"left"}
                 >

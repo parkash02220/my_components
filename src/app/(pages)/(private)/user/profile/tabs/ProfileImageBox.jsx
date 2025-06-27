@@ -1,4 +1,5 @@
 import CropImageDialog from "@/components/CropImageDialog";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { useState } from "react";
 
@@ -10,6 +11,7 @@ const ProfileImageBox = ({
   loading,
   progress,
 }) => {
+  const {isDownXs} = useResponsiveBreakpoints();
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -51,7 +53,7 @@ const ProfileImageBox = ({
           boxShadow:
             "0 0 2px 0 rgba(145 158 171 / 0.2),0 12px 24px -4px rgba(145 158 171 / 0.12)",
           zIndex: 0,
-          padding: "80px 24px 40px",
+          padding: isDownXs ? "8px" : "80px 24px 40px",
           overflow: "hidden",
           borderRadius: "16px",
         }}
@@ -60,8 +62,8 @@ const ProfileImageBox = ({
           <Box
             padding={1}
             margin={"auto"}
-            width={144}
-            height={144}
+            width={isDownXs ? 200 : 144}
+            height={isDownXs ? 200 : 144}
             sx={{ cursor: "pointer" }}
             overflow={"hidden"}
             borderRadius={"50%"}

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import MySelect from "../MySelect";
 import { selectConfig } from "./SelectConfig";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 
 const MySelectVariant = ({
   selectedValue,

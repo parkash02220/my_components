@@ -19,8 +19,12 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ConfirmationPopup from "@/components/ConfirmationPopup";
 import useDeleteSubtask from "@/hooks/projects/task/subtask/useDeleteSubtask";
 import AddSubTaskDialog from "./AddSubTaskDialog";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const SubTasksTab = () => {
   const theme = useTheme();
+  const {isXs} = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const [selectedSubTask, setSelectedSubtask] = useState(null);
   const [subTaskPopupOpen, setSubTaskPopupOpen] = useState(false);
   const { loadingIdsToggle, subtasks, toggleCompletionSubTask } =
@@ -74,9 +78,8 @@ const SubTasksTab = () => {
         <Box display={"flex"} flexDirection={"column"} gap={2}>
           <Box>
             <Typography
+              variant="primary"
               mb={1}
-              fontSize={14}
-              color={theme?.palette?.primary?.main}
             >
               {`${completedCount} of ${totalCount}`}
             </Typography>
@@ -106,13 +109,13 @@ const SubTasksTab = () => {
                     onChange={() => handleToggle(subtask.id, subtask.completed)}
                     icon={
                       <CheckBoxOutlineBlankIcon
-                        sx={{ fontSize: 20, borderRadius: 2 }}
+                        sx={{ fontSize: isXs ? 16 : 20, borderRadius: 2 }}
                       />
                     }
                     checkedIcon={
                       <CheckBoxIcon
                         sx={{
-                          fontSize: 20,
+                          fontSize: isXs ? 16 : 20,
                           borderRadius: 2,
                           color: "rgb(44,167,111)",
                         }}
@@ -130,7 +133,7 @@ const SubTasksTab = () => {
                         handleToggle(subtask.id, subtask.completed)
                       }
                       sx={{
-                        fontSize: 14,
+                        fontSize: fontSize,
                         color: theme?.palette?.primary?.main,
                         cursor: "pointer",
                         width: "fit-content",
@@ -146,7 +149,7 @@ const SubTasksTab = () => {
                     <img
                       src="/delete.svg"
                       alt="edit"
-                      style={{ width: "20px", height: "20px" }}
+                      style={{ width: isXs ? "16px" : "20px", height: isXs ? "16px" :  "20px" }}
                     />
                   </IconButton>
                 </Box>
@@ -156,11 +159,11 @@ const SubTasksTab = () => {
 
           <Button
             onClick={() => setSubTaskPopupOpen(true)}
-            startIcon={<AddIcon sx={{ fontSize: "24px" }} />}
+            startIcon={<AddIcon sx={{ fontSize: isXs ? "20px" : "24px" }} />}
             size="small"
             sx={{
               fontWeight: 700,
-              fontSize: 14,
+              fontSize: fontSize,
               minWidth: 64,
               padding: "5px 12px",
               border: "1px solid rgba(145,158,171,0.32)",

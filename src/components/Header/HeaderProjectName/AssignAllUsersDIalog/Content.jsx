@@ -2,7 +2,7 @@ import React from "react";
 import UserRow from "./UserRow";
 import { Box, Typography, useTheme } from "@mui/material";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 
 const Content = ({
   hasFetchedOnce,
@@ -19,7 +19,7 @@ const Content = ({
 }) => {
   const theme = useTheme();
   const { isDownXs } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
   const hasError = !!errorAllUsers;
   if (hasError) {
     return (

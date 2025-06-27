@@ -7,12 +7,16 @@ import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import useDeleteAttachments from "@/hooks/projects/task/useDeleteAttachments";
-import DueDateDialog from "./DueDateDialog.jsx";
 import AttachmentViewer from "./AttachmentViewer.jsx";
 import { formatDueDateRange, getFullName } from "@/utils/index.js";
 import { useTaskContext } from "@/context/Task/TaskContext.js";
 import isEqual from "lodash/isEqual";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
+import DueDateDialog from "./DueDateDialog/DueDateDialog";
 const OverviewTab = ({ isDrawerOpen }) => {
+  const {isXs,isSm,isMd,isLg} = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const { state } = useTaskContext();
   const { activeTask } = state || {};
   const {
@@ -172,10 +176,11 @@ const OverviewTab = ({ isDrawerOpen }) => {
                   formik.handleSubmit();
                   setShowEditTextfield(false);
                 }}
+                inputFontSize={isXs ? "14px" : isMd ? "16px" : "18px"}
               />
             ) : (
               <Typography
-                fontSize={18}
+                fontSize={isXs ? "14px" : isMd ? "16px" : "18px"}
                 fontWeight={600}
                 padding={"4px 0px 5px"}
                 color="#1C252E"
@@ -225,14 +230,14 @@ const OverviewTab = ({ isDrawerOpen }) => {
                                 alt={name}
                                 referrerPolicy="no-referrer"
                                 style={{
-                                  width: 24,
-                                  height: 24,
+                                  width: isXs ? 20 : 24,
+                                  height: isXs ? 20 :  24,
                                   borderRadius: "50%",
                                   objectFit: "cover",
                                 }}
                               />
                               <Typography
-                                fontSize={12}
+                                fontSize={isXs ? 10 : 12}
                                 fontWeight={500}
                                 color="white"
                               >
@@ -245,14 +250,14 @@ const OverviewTab = ({ isDrawerOpen }) => {
                     }
                   >
                     <Box
-                      width={40}
-                      height={40}
+                      width={isXs ? 30 : 40}
+                      height={isXs ? 30 : 40}
                       display="flex"
                       alignItems="center"
                       justifyContent="center"
                       borderRadius="50%"
                       overflow="hidden"
-                      fontSize="14px"
+                      fontSize={fontSize}
                       sx={{
                         cursor: "pointer",
                         background: "#C8FAD6",
@@ -295,13 +300,13 @@ const OverviewTab = ({ isDrawerOpen }) => {
             ) : null}
             <MyTooltip title="Add assignee" placement="bottom">
               <Box
-                width={40}
-                height={40}
+                width={isXs ? 30 : 40}
+                height={isXs ? 30 : 40}
                 display={"flex"}
                 alignItems={"center"}
                 justifyContent={"center"}
                 borderRadius={"50%"}
-                fontSize={"1.25rem"}
+                fontSize={isXs ? 14 : isMd ? 16 : 18}
                 overflow={"hidden"}
                 padding={"8px"}
                 border={"1px dashed rgba(145 158 171 / 0.2)"}
@@ -318,8 +323,8 @@ const OverviewTab = ({ isDrawerOpen }) => {
                   src="/addAssignIcon.svg"
                   alt="add assignee"
                   style={{
-                    width: "20px",
-                    height: "20px",
+                    width: isXs ? "16px" : "20px",
+                    height: isXs ? "16px" :  "20px",
                     color: "transparent",
                     objectFit: "cover",
                   }}
@@ -338,7 +343,7 @@ const OverviewTab = ({ isDrawerOpen }) => {
             <Typography
               fontWeight={700}
               color="#1C252E"
-              fontSize="13px"
+              fontSize={fontSize}
               onClick={handleDueDateDialogOpen}
               sx={{
                 cursor: "pointer",
@@ -388,6 +393,7 @@ const OverviewTab = ({ isDrawerOpen }) => {
                 fullWidth={true}
                 hoverBorderColor="#1C252E"
                 acitveBorder={"2px solid #000000"}
+                inputFontSize={fontSize}
               />
             </Box>
           </SectionRow>
@@ -406,8 +412,8 @@ const OverviewTab = ({ isDrawerOpen }) => {
                   <Box
                     key={imagePath}
                     sx={{
-                      width: "64px",
-                      height: "64px",
+                      width: isXs ? "48px" : "64px",
+                      height: isXs ? "48px" :  "64px",
                       borderRadius: "8px",
                       overflow: "hidden",
                       position: "relative",
@@ -445,8 +451,8 @@ const OverviewTab = ({ isDrawerOpen }) => {
                       {isDeleting ? (
                         <CircularProgress
                           sx={{
-                            width: "16px !important",
-                            height: "16px !important",
+                            width: isXs ? "12px" : "16px !important",
+                            height: isXs ? "12px" :  "16px !important",
                             color: "#637381",
                           }}
                         />
@@ -465,8 +471,8 @@ const OverviewTab = ({ isDrawerOpen }) => {
               {loadingUploadAttachments && (
                 <Box
                   sx={{
-                    width: "64px",
-                    height: "64px",
+                    width: isXs ? "48px" : "64px",
+                    height: isXs ? "48px" :  "64px",
                     borderRadius: "8px",
                     overflow: "hidden",
                     position: "relative",
@@ -484,8 +490,8 @@ const OverviewTab = ({ isDrawerOpen }) => {
                     variant="determinate"
                     value={progressUploadAttachments}
                     sx={{
-                      width: "28px !important",
-                      height: "28px !important",
+                      width: isXs ? "20px !important" : "28px !important",
+                      height: isXs ? "20px !important" :  "28px !important",
                       color: "#637381",
                     }}
                   />
@@ -551,10 +557,9 @@ const SectionRow = ({ label, labelStyle = {}, children, className = "" }) => (
   <Box display="flex" alignItems="center" className={className}>
     <Typography
       fontWeight={600}
-      fontSize="0.75rem"
+      variant="disabled"
       width="100px"
       flexShrink={0}
-      color="#637381"
       sx={{ ...labelStyle }}
     >
       {label}
@@ -578,8 +583,6 @@ const AvatarBox = ({ src, alt = "user", user, withToolTip }) =>
       placement="bottom"
     >
       <Box
-        width={40}
-        height={40}
         display="flex"
         alignItems="center"
         justifyContent="center"
@@ -588,6 +591,8 @@ const AvatarBox = ({ src, alt = "user", user, withToolTip }) =>
         fontSize="1.25rem"
         sx={{
           cursor: "pointer",
+          width:{xs:30,sm:40},
+          height:{xs:30,sm:40},
         }}
       >
         <img
@@ -605,14 +610,16 @@ const AvatarBox = ({ src, alt = "user", user, withToolTip }) =>
     </MyTooltip>
   ) : (
     <Box
-      width={40}
-      height={40}
       display="flex"
       alignItems="center"
       justifyContent="center"
       borderRadius="50%"
       overflow="hidden"
       fontSize="1.25rem"
+      sx={{
+        width:{xs:30,sm:40},
+        height:{xs:30,sm:40},
+      }}
     >
       <img
         src={src || "/dummyUser.svg"}
@@ -666,7 +673,7 @@ const PriorityOption = ({ label, iconSrc, isSelected = false }) => (
       border: isSelected ? "2px solid black" : "none",
     }}
   >
-    <Box sx={{ width: "20px", height: "20px", marginRight: "4px" }}>
+    <Box sx={{ width: {xs:"16px",sm:"20px"}, height: {xs:"16px",sm:"20px"}, marginRight: "4px" }}>
       <img
         src={iconSrc}
         alt={label}
@@ -675,7 +682,7 @@ const PriorityOption = ({ label, iconSrc, isSelected = false }) => (
     </Box>
     <Typography
       sx={{
-        fontSize: "12px",
+        fontSize: {xs:"10px",sm:"12px"},
         fontWeight: 700,
         textTransform: "capitalize",
         color: "#1C252E",

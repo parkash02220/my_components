@@ -2,6 +2,7 @@ import MyButton from "@/components/MyButton/MyButton";
 import MyDialog from "@/components/MyDialog/MyDialog";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { useTaskContext } from "@/context/Task/TaskContext";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useCreateSubTask from "@/hooks/projects/task/subtask/useCreateSubTask";
 import { Box } from "@mui/material";
@@ -11,6 +12,7 @@ const AddSubTaskDialog = ({ open, onClose }) => {
   const { state } = useTaskContext();
   const { activeTask } = state;
   const { isDownXs } = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const { loadingCreateSubTask, addSubTaskToBackend } = useCreateSubTask();
   const [subtaskName, setSubtaskName] = useState("");
   const [error, setError] = useState(false);
@@ -58,6 +60,7 @@ const AddSubTaskDialog = ({ open, onClose }) => {
         handleClose={handleDialogClose}
         title="Add New Subtask"
         width={isDownXs ? "100%" : "auto"}
+        fontSize={isDownXs ? "16px" : "20px"}
         content={
           <Box pt={2}>
             <MyTextField

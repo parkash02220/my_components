@@ -12,7 +12,11 @@ import _ from "lodash";
 import { getFormikCompatibleValues } from "../helper";
 import useToast from "@/hooks/common/useToast";
 import { EditProfileForm } from "@/components/forms";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const GeneralTab = ({ formik, isAdmin, avatar, activeUser }) => {
+  const {isDownXs,isDownMd} = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const { showToast } = useToast();
   const { uploadProfileImage, loadingUploadProfile, progress } =
     useUploadProfileImage();
@@ -68,7 +72,7 @@ const GeneralTab = ({ formik, isAdmin, avatar, activeUser }) => {
       />
       <Box
         sx={{
-          padding: "8px 40px 64px 40px",
+          padding: isDownXs ? "8px" : "8px 40px 64px 40px",
           marginInline: "auto",
           display: "flex",
           flexDirection: "column",
@@ -78,13 +82,13 @@ const GeneralTab = ({ formik, isAdmin, avatar, activeUser }) => {
         <Box>
           <Box display={"flex"}>
             <Grid container spacing={2}>
-              <Grid size={4}>
+              <Grid size={isDownMd ? 12 : 4}>
                 <Box
                   sx={{
                     flexGrow: 0,
                     flexBasis: "auto",
                     minWidth: "0px",
-                    p: 3,
+                    p: isDownXs ? 0 : 3,
                   }}
                 >
                   <ProfileImageBox
@@ -97,7 +101,7 @@ const GeneralTab = ({ formik, isAdmin, avatar, activeUser }) => {
                   />
                 </Box>
               </Grid>
-              <Grid size={8}>
+              <Grid size={isDownMd ? 12 : 8}>
                 <Box
                   sx={{
                     background: "#FFFFFF",
@@ -105,7 +109,7 @@ const GeneralTab = ({ formik, isAdmin, avatar, activeUser }) => {
                     zIndex: 0,
                     overflow: "hidden",
                     borderRadius: 2,
-                    p: 3,
+                    p: isDownXs ? 0 : 3,
                     flexGrow: 0,
                     flexBasis: "auto",
                   }}
@@ -118,7 +122,7 @@ const GeneralTab = ({ formik, isAdmin, avatar, activeUser }) => {
                       boxShadow:
                         "0 0 2px 0 rgba(145 158 171 / 0.2),0 12px 24px -4px rgba(145 158 171 / 0.12)",
                       zIndex: 0,
-                      padding: "80px 40px 24px 24px",
+                      padding: isDownXs ? "24px 8px 24px 8px" : "80px 40px 24px 24px",
                       overflow: "hidden",
                       borderRadius: "16px",
                     }}
@@ -129,7 +133,7 @@ const GeneralTab = ({ formik, isAdmin, avatar, activeUser }) => {
                         display={"flex"}
                         alignItems={"center"}
                         justifyContent={"flex-end"}
-                        mt={2}
+                        mt={isDownXs ? 4 : 2}
                       >
                         {
                           // errorCreateUser && <Typography width={'100%'} color="red" fontSize={12}>{errorCreateUser}</Typography>
@@ -141,8 +145,8 @@ const GeneralTab = ({ formik, isAdmin, avatar, activeUser }) => {
                           sx={{
                             fontWeight: 700,
                             padding: "6px 12px",
-                            minWidth: 64,
-                            fontSize: 14,
+                            minWidth: isDownXs ? '100%' : 64,
+                            fontSize: fontSize,
                             color: "#FFFFFF",
                             background: "#1C252E",
                             "&.Mui-disabled": {

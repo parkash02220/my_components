@@ -11,7 +11,7 @@ import useToast from "@/hooks/common/useToast";
 import { UpdateUserForm } from "@/components/forms";
 import { useOrganizationContext } from "@/context/Organization/OrganizationContext";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const EditUserPopup = ({
   title,
   handleClose,
@@ -28,7 +28,7 @@ const EditUserPopup = ({
   setData,
 }) => {
   const { isDownXs } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
   const theme = useTheme();
   const { showToast } = useToast();
   const { loadingUpdateUser, errorUpdateUser, updateUser } = useUpdateUser();

@@ -6,7 +6,7 @@ import AssignAllUsersDialog from "./AssignAllUsersDIalog/index";
 import * as actions from "@/context/Projects/action";
 import { useAppContext } from "@/context/App/AppContext";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const {
   Box,
   Typography,
@@ -24,7 +24,7 @@ const { useState, useEffect, useRef } = require("react");
 
 const HeaderProjectName = () => {
   const { isDownSm, isDownXs } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
   const { state, dispatch } = useProjectsContext();
   const { activeProject, loadingActiveProject } = state;
   const router = useRouter();

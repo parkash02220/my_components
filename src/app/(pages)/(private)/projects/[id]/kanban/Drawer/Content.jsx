@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import OverviewTab from "./OverviewTab/index.jsx";
 import SubTasksTab from "./SubtasksTab/index.jsx";
 import CommentsTab from "./CommentsTab/index.jsx";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints.js";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue.js";
 export const Content = ({
   currentTab,
   tabValues,
@@ -12,6 +14,8 @@ export const Content = ({
   loadingGetTask,
   open,
 }) => {
+  const {isXs,isSm,isLg} = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const containerRef = useRef(null);
   const [targetStyle, setTargetStyle] = useState({ left: 0, width: 0 });
   const [prevStyle, setPrevStyle] = useState({ left: 0, width: 0 });
@@ -134,7 +138,7 @@ export const Content = ({
                     sx={{
                       color: currentTab === tab?.value ? "#1C252E !important" : "#637381 !important",
                       fontWeight: currentTab === tab?.value ? 600 : 500,
-                      fontSize: "14px",
+                      fontSize: fontSize,
                       textTransform: "none",
                       padding: "8px 0px",
                       borderRadius: "8px",

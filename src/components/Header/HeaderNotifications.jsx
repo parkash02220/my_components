@@ -6,13 +6,13 @@ const { IconButton, Typography } = require("@mui/material");
 const { useState } = require("react");
 import NotificationDrawer from "@/components/Header/NotificationDrawer";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 import useGetNotificationCount from "@/hooks/notifications/useGetNotificationCount";
 import { useNotificationsSocket } from "@/hooks/sockets/notifications/useNotificationsSocket";
 const HeaderNotifications = () => {
   useGetNotificationCount();
   useNotificationsSocket();
-  const iconSize = useResponsiveValue("iconSize");
+  const {iconSize} = useResponsiveValue();
   const { isDownXs } = useResponsiveBreakpoints();
   const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
   const {

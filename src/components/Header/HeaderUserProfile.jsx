@@ -1,6 +1,6 @@
 import { useAppContext } from "@/context/App/AppContext";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 import useGetActiveUser from "@/hooks/user/activeUser/useGetActiveUser";
 const { IconButton, Typography, Box } = require("@mui/material");
 const { useState } = require("react");

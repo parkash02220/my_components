@@ -15,9 +15,6 @@ const createTextVariant = (theme, color, xs, sm, md, lg, weight = 400) => ({
 const typography = (theme) => ({
   fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
 
-  h1: { fontSize: "2rem", fontWeight: 700 },
-  h2: createTextVariant(theme, "#1C252E", "16px", "20px", "24px", 700),
-
   title1: createTextVariant(
     theme,
     theme?.palette?.primary?.main,

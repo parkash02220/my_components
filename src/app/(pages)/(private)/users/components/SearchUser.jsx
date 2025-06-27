@@ -1,5 +1,5 @@
 import MySearch from "@/components/MySearch/MySearch";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 import { useTheme } from "@emotion/react";
 import { Box } from "@mui/system";
 
@@ -10,8 +10,7 @@ export default function SearchUser({
   resetStates,
 }) {
   const theme = useTheme();
-  const fontSize = useResponsiveValue("fontSize");
-  const iconSize = useResponsiveValue("iconSize");
+  const {fontSize,iconSize} = useResponsiveValue();
   const handleSearchClear = () => {
     resetStates();
   };

@@ -1,15 +1,16 @@
 import MyTextField from "@/components/MyTextfield/MyTextfield";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useChangePassword from "@/hooks/user/activeUser/useChangePassword";
 import { Box, Button, Grid, IconButton } from "@mui/material";
 import { useFormik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
 const SecurityTab = () => {
-  const {
-    loadingChangePassword,
-    errorChangePassword,
-    changePassword,
-} = useChangePassword();
+  const { isDownXs } = useResponsiveBreakpoints();
+  const { fontSize } = useResponsiveValue();
+  const { loadingChangePassword, errorChangePassword, changePassword } =
+    useChangePassword();
   const [showPasswrod, setShowPassword] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -32,12 +33,12 @@ const SecurityTab = () => {
         .required("Confirm password is required")
         .oneOf([Yup.ref("newPassword"), null], "Passwords must match"),
     }),
-    onSubmit:async (values) => {
-     const isSuccess = await changePassword(values);
-     if(isSuccess){
-      formik.resetForm();
-     }
-    },  
+    onSubmit: async (values) => {
+      const isSuccess = await changePassword(values);
+      if (isSuccess) {
+        formik.resetForm();
+      }
+    },
   });
   const handleShowPasswrod = () => {
     setShowPassword(true);
@@ -55,162 +56,168 @@ const SecurityTab = () => {
         }
       >
         <form onSubmit={formik.handleSubmit}>
-        <Grid container spacing={3}>
-          <Grid size={12}>
-            <MyTextField
-              type={showPasswrod ? "text" : "password"}
-              name="oldPassword"
-              value={formik?.values?.oldPassword}
-              onChange={formik.handleChange}
-              error={
-                formik.touched?.oldPassword &&
-                Boolean(formik.errors?.oldPassword)
-              }
-              helperText={formik.errors?.oldPassword}
-              label="Old password"
-              minWidth="50px"
-              fullWidth={true}
-              borderRadius="8px"
-              borderColor="rgba(145,158,171,0.2)"
-              hoverBorderColor={"#1C252E"}
-              acitveBorder={"2px solid #1C252E"}
-              labelColor="#637381"
-              activeLabelColor={"#1C252E"}
-              labelFontWeight={600}
-              placeholder="Password 6+"
-              color={"#1C252E"}
-              customEndAdornment={
-                showPasswrod ? (
-                  <IconButton onClick={handleHidePasswrod}>
-                    <img
-                      src="/passwordShow.svg"
-                      alt="hide pass"
-                      style={{ width: "20px", height: "20px" }}
-                    ></img>
-                  </IconButton>
-                ) : (
-                  <IconButton onClick={handleShowPasswrod}>
-                    <img
-                      src="/passwordHide.svg"
-                      alt="hide pass"
-                      style={{ width: "20px", height: "20px" }}
-                    ></img>
-                  </IconButton>
-                )
-              }
-            />
-          </Grid>
-          <Grid size={12}>
-            <MyTextField
-              type={showPasswrod ? "text" : "password"}
-              name="newPassword"
-              value={formik?.values?.newPassword}
-              onChange={formik.handleChange}
-              error={
-                formik.touched?.newPassword &&
-                Boolean(formik.errors?.newPassword)
-              }
-              helperText={formik.errors?.newPassword}
-              label="New password"
-              minWidth="50px"
-              fullWidth={true}
-              borderRadius="8px"
-              borderColor="rgba(145,158,171,0.2)"
-              hoverBorderColor={"#1C252E"}
-              acitveBorder={"2px solid #1C252E"}
-              labelColor="#637381"
-              activeLabelColor={"#1C252E"}
-              labelFontWeight={600}
-              placeholder="Password 6+"
-              color={"#1C252E"}
-              customEndAdornment={
-                showPasswrod ? (
-                  <IconButton onClick={handleHidePasswrod}>
-                    <img
-                      src="/passwordShow.svg"
-                      alt="hide pass"
-                      style={{ width: "20px", height: "20px" }}
-                    ></img>
-                  </IconButton>
-                ) : (
-                  <IconButton onClick={handleShowPasswrod}>
-                    <img
-                      src="/passwordHide.svg"
-                      alt="hide pass"
-                      style={{ width: "20px", height: "20px" }}
-                    ></img>
-                  </IconButton>
-                )
-              }
-            />
-          </Grid>
-          <Grid size={12}>
-            <MyTextField
-              type={showPasswrod ? "text" : "password"}
-              name="confirmPassword"
-              value={formik?.values?.confirmPassword}
-              onChange={formik.handleChange}
-              error={
-                formik.touched?.confirmPassword &&
-                Boolean(formik.errors?.confirmPassword)
-              }
-              helperText={formik.errors?.confirmPassword}
-              label="Confirm password"
-              minWidth="50px"
-              fullWidth={true}
-              borderRadius="8px"
-              borderColor="rgba(145,158,171,0.2)"
-              hoverBorderColor={"#1C252E"}
-              acitveBorder={"2px solid #1C252E"}
-              labelColor="#637381"
-              activeLabelColor={"#1C252E"}
-              labelFontWeight={600}
-              placeholder="Password 6+"
-              color={"#1C252E"}
-              customEndAdornment={
-                showPasswrod ? (
-                  <IconButton onClick={handleHidePasswrod}>
-                    <img
-                      src="/passwordShow.svg"
-                      alt="hide pass"
-                      style={{ width: "20px", height: "20px" }}
-                    ></img>
-                  </IconButton>
-                ) : (
-                  <IconButton onClick={handleShowPasswrod}>
-                    <img
-                      src="/passwordHide.svg"
-                      alt="hide pass"
-                      style={{ width: "20px", height: "20px" }}
-                    ></img>
-                  </IconButton>
-                )
-              }
-            />
-          </Grid>
-          <Grid size={12} textAlign={'end'}>
-            <Button
-            disabled={loadingChangePassword}
-              type="submit"
-              sx={{
-                fontWeight: 700,
-                padding: "6px 12px",
-                minWidth: 64,
-                fontSize: 14,
-                color: "#FFFFFF",
-                background: "#1C252E",
-                "&.Mui-disabled": {
+          <Grid container spacing={3}>
+            <Grid size={12}>
+              <MyTextField
+                type={showPasswrod ? "text" : "password"}
+                name="oldPassword"
+                value={formik?.values?.oldPassword}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched?.oldPassword &&
+                  Boolean(formik.errors?.oldPassword)
+                }
+                helperText={formik.errors?.oldPassword}
+                label="Old password"
+                minWidth="50px"
+                fullWidth={true}
+                borderRadius="8px"
+                borderColor="rgba(145,158,171,0.2)"
+                hoverBorderColor={"#1C252E"}
+                acitveBorder={"2px solid #1C252E"}
+                labelColor="#637381"
+                activeLabelColor={"#1C252E"}
+                labelFontWeight={600}
+                placeholder="Password 6+"
+                color={"#1C252E"}
+                customEndAdornment={
+                  showPasswrod ? (
+                    <IconButton onClick={handleHidePasswrod}>
+                      <img
+                        src="/passwordShow.svg"
+                        alt="hide pass"
+                        style={{ width: isDownXs ? "16px" : "20px", height: isDownXs ? "16px" :  "20px" }}
+                      ></img>
+                    </IconButton>
+                  ) : (
+                    <IconButton onClick={handleShowPasswrod}>
+                      <img
+                        src="/passwordHide.svg"
+                        alt="hide pass"
+                        style={{ width: isDownXs ? "16px" : "20px", height: isDownXs ? "16px" :  "20px" }}
+                      ></img>
+                    </IconButton>
+                  )
+                }
+                inputFontSize={fontSize}
+                labelFontSize={fontSize}
+              />
+            </Grid>
+            <Grid size={12}>
+              <MyTextField
+                type={showPasswrod ? "text" : "password"}
+                name="newPassword"
+                value={formik?.values?.newPassword}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched?.newPassword &&
+                  Boolean(formik.errors?.newPassword)
+                }
+                helperText={formik.errors?.newPassword}
+                label="New password"
+                minWidth="50px"
+                fullWidth={true}
+                borderRadius="8px"
+                borderColor="rgba(145,158,171,0.2)"
+                hoverBorderColor={"#1C252E"}
+                acitveBorder={"2px solid #1C252E"}
+                labelColor="#637381"
+                activeLabelColor={"#1C252E"}
+                labelFontWeight={600}
+                placeholder="Password 6+"
+                color={"#1C252E"}
+                customEndAdornment={
+                  showPasswrod ? (
+                    <IconButton onClick={handleHidePasswrod}>
+                      <img
+                        src="/passwordShow.svg"
+                        alt="hide pass"
+                        style={{ width: isDownXs ? "16px" : "20px", height: isDownXs ? "16px" :  "20px" }}
+                      ></img>
+                    </IconButton>
+                  ) : (
+                    <IconButton onClick={handleShowPasswrod}>
+                      <img
+                        src="/passwordHide.svg"
+                        alt="hide pass"
+                        style={{ width: isDownXs ? "16px" : "20px", height: isDownXs ? "16px" :  "20px" }}
+                      ></img>
+                    </IconButton>
+                  )
+                }
+                inputFontSize={fontSize}
+                labelFontSize={fontSize}
+              />
+            </Grid>
+            <Grid size={12}>
+              <MyTextField
+                type={showPasswrod ? "text" : "password"}
+                name="confirmPassword"
+                value={formik?.values?.confirmPassword}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched?.confirmPassword &&
+                  Boolean(formik.errors?.confirmPassword)
+                }
+                helperText={formik.errors?.confirmPassword}
+                label="Confirm password"
+                minWidth="50px"
+                fullWidth={true}
+                borderRadius="8px"
+                borderColor="rgba(145,158,171,0.2)"
+                hoverBorderColor={"#1C252E"}
+                acitveBorder={"2px solid #1C252E"}
+                labelColor="#637381"
+                activeLabelColor={"#1C252E"}
+                labelFontWeight={600}
+                placeholder="Password 6+"
+                color={"#1C252E"}
+                customEndAdornment={
+                  showPasswrod ? (
+                    <IconButton onClick={handleHidePasswrod}>
+                      <img
+                        src="/passwordShow.svg"
+                        alt="hide pass"
+                        style={{ width: isDownXs ? "16px" : "20px", height: isDownXs ? "16px" :  "20px" }}
+                      ></img>
+                    </IconButton>
+                  ) : (
+                    <IconButton onClick={handleShowPasswrod}>
+                      <img
+                        src="/passwordHide.svg"
+                        alt="hide pass"
+                        style={{ width: isDownXs ? "16px" : "20px", height: isDownXs ? "16px" :  "20px" }}
+                      ></img>
+                    </IconButton>
+                  )
+                }
+                inputFontSize={fontSize}
+                labelFontSize={fontSize}
+              />
+            </Grid>
+            <Grid size={12} textAlign={"end"}>
+              <Button
+                disabled={loadingChangePassword}
+                type="submit"
+                sx={{
+                  fontWeight: 700,
+                  padding: "6px 12px",
+                  minWidth: 64,
+                  fontSize: fontSize,
                   color: "#FFFFFF",
                   background: "#1C252E",
-                  opacity: 0.7,
-                  cursor:'not-allowed',
-                },
-              }}
-            >
-              Save changes
-            </Button>
+                  "&.Mui-disabled": {
+                    color: "#FFFFFF",
+                    background: "#1C252E",
+                    opacity: 0.7,
+                    cursor: "not-allowed",
+                  },
+                }}
+              >
+                Save changes
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
         </form>
       </Box>
     </>

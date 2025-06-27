@@ -11,19 +11,21 @@ import MyTextField from "../MyTextfield/MyTextfield";
 import { formatDate, getCalendarMinMaxDate } from "@/utils";
 import MySelectVariant from "../MySelect/MySelectVarient";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const EditProfileForm = ({ formik }) => {
   const { isDownXs } = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const { minDate, maxDate } = getCalendarMinMaxDate(13, 130);
 
   return (
     <>
       <Grid container spacing={isDownXs ? 2 : 3}>
         <Grid size={12}>
-          <Typography color="#1C252E" fontWeight={700}>
+          <Typography variant="title2" fontWeight={700}>
             Basic details :
           </Typography>
         </Grid>
-        <Grid size={6}>
+        <Grid size={{xs:12,sm:6}}>
           <MyTextField
             name="firstName"
             value={formik?.values?.firstName}
@@ -44,9 +46,10 @@ const EditProfileForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{xs:12,sm:6}}>
           <MyTextField
             name="lastName"
             value={formik?.values?.lastName}
@@ -65,6 +68,7 @@ const EditProfileForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
         <Grid size={12}>
@@ -87,13 +91,13 @@ const EditProfileForm = ({ formik }) => {
               <FormControlLabel
                 value="male"
                 control={
-                  <Radio sx={{ fontSize: 18, transform: "scale(0.8)" }} />
+                  <Radio sx={{ fontSize: isDownXs ? 14 : 18, transform: isDownXs ? "scale(0.6)" : "scale(0.8)" }} />
                 }
                 label="Male"
                 sx={{
                   mr: 4,
                   "& .MuiTypography-root": {
-                    fontSize: 14,
+                    fontSize: fontSize,
                     color: "#637381",
                   },
                 }}
@@ -101,12 +105,12 @@ const EditProfileForm = ({ formik }) => {
               <FormControlLabel
                 value="female"
                 control={
-                  <Radio sx={{ fontSize: 18, transform: "scale(0.8)" }} />
+                  <Radio sx={{ fontSize: isDownXs ? 14 : 18, transform: isDownXs ? "scale(0.6)" : "scale(0.8)" }} />
                 }
                 label="Female"
                 sx={{
                   "& .MuiTypography-root": {
-                    fontSize: 14,
+                    fontSize: fontSize,
                     color: "#637381",
                   },
                 }}
@@ -133,11 +137,11 @@ const EditProfileForm = ({ formik }) => {
           </FormControl>
         </Grid>
         <Grid size={12}>
-          <Typography color="#1C252E" fontWeight={700}>
+          <Typography variant="title2" fontWeight={700}>
             Other details :
           </Typography>
         </Grid>
-        <Grid size={6}>
+        <Grid size={{xs:12,sm:6}}>
           {/* <MySelect
               name="department"
               value={formik?.values?.department}
@@ -176,7 +180,7 @@ const EditProfileForm = ({ formik }) => {
             helperText={formik.touched.department && formik.errors.department}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{xs:12,sm:6}}>
           {/* <MySelect
               name="designation"
               value={formik?.values?.designation}
@@ -215,7 +219,7 @@ const EditProfileForm = ({ formik }) => {
             disabled={!formik.values?.department}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{xs:12,sm:6}}>
           <MyTextField
             name="phone"
             value={formik?.values?.phone}
@@ -234,9 +238,10 @@ const EditProfileForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{xs:12,sm:6}}>
           <MyTextField
             name="employeeId"
             value={formik?.values?.employeeId}
@@ -257,9 +262,10 @@ const EditProfileForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{xs:12,sm:6}}>
           <MyTextField
             name="dateOfBirth"
             value={formik?.values?.dateOfBirth}
@@ -285,6 +291,7 @@ const EditProfileForm = ({ formik }) => {
             activeLabelColor={"#1C252E"}
             labelFontWeight={600}
             color={"#1C252E"}
+            inputFontSize={fontSize}
           />
         </Grid>
       </Grid>

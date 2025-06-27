@@ -13,7 +13,7 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 export const CollapsibleNavItem = ({
   item,
   open,
@@ -25,7 +25,7 @@ export const CollapsibleNavItem = ({
   onCloseMenu,
 }) => {
   const { isDownXs } = useResponsiveBreakpoints();
-  const iconSize = useResponsiveValue("iconSize");
+  const {iconSize} = useResponsiveValue();
   return (
     <>
       <ListItemButton

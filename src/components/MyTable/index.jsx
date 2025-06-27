@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import TableCellRenderer from "./TableCellRenderer";
 import Loader from "../Loader/Loader";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 
 const MyTable = ({
   columns,
@@ -24,7 +24,7 @@ const MyTable = ({
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     fetchMore({ page: newPage + 1, limit: rowsPerPage });

@@ -12,9 +12,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { TaskCard } from "../Task";
 import ColumnHeader from "./Header";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
- 
+  const {isXs} = useResponsiveBreakpoints();
   const taskIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
   const isActive = column.id === activeColumnId && !isOverlay;
   const sortableData = useMemo(
@@ -57,7 +58,7 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
         elevation={isOverlay ? 6 : 3}
         style={{
           height: "100%",
-          width: 336,
+          width: isXs ? 300 : 336,
           ...columnStyle,
           backgroundColor: "#F4F6F8",
           borderStyle: "solid",

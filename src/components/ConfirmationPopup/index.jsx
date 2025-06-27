@@ -2,7 +2,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import MyDialog from "../MyDialog/MyDialog";
 import MyButton from "../MyButton/MyButton";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 
 const ConfirmationPopup = ({
   title,
@@ -18,7 +18,7 @@ const ConfirmationPopup = ({
   loadingText,
 }) => {
   const { isDownXs } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
   const theme = useTheme();
   if (type === "delete") {
     return (

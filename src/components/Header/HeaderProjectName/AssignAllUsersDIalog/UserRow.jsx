@@ -1,6 +1,6 @@
 import MyButton from "@/components/MyButton/MyButton";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 import { Box, Typography, useTheme } from "@mui/material";
 
 const UserRow = ({
@@ -11,7 +11,7 @@ const UserRow = ({
   theme,
 }) => {
   const { isDownXs } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
 
   return (
     <>

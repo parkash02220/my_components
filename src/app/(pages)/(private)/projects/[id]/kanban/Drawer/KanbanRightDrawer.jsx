@@ -79,6 +79,7 @@ function KanbanRightDrawer({ open, handleDrawer, taskId }) {
         <RightDrawer
           width={isDownXs ? "100vw" : ""}
           open={open}
+          showCloseDrawerMobileIcon={false}
           header={
             !loadingActiveTask ? (
               <Header

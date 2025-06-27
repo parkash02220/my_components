@@ -3,10 +3,11 @@ import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useClearNotifications from "@/hooks/notifications/useClearNotifications";
 import useMarkAllNotificationAsRead from "@/hooks/notifications/useMarkAllNotificationAsRead";
+import { ExpandLess } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
 import { useState } from "react";
 
-export const Header = ({ currentTab, totalCount, unReadCount }) => {
+export const Header = ({ currentTab, totalCount, unReadCount,handleDrawer }) => {
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const showMarkAllAsReadButton = currentTab === "unread";
   const { isDownXs } = useResponsiveBreakpoints();
@@ -48,12 +49,23 @@ export const Header = ({ currentTab, totalCount, unReadCount }) => {
       )}
       <Box
         display={"flex"}
-        padding={"16px 8px 16px 20px"}
         pb={isDownXs ? "0px" : "16px"}
+        pt={isDownXs ? "0px" : "16px"}
+        pl={isDownXs ? "8px" : "20px"}
+        pr={isDownXs ? "8px" : "20px"}
         minHeight={68}
         alignItems={"center"}
       >
         <Box flexGrow={1}>
+          {isDownXs && (
+            <ExpandLess
+              onClick={handleDrawer}
+              sx={{
+                transform: "rotate(270deg)",
+                color: "#1C252E",
+              }}
+            />
+          )}
           <Typography variant="title" fontWeight={600}>
             Notifications
           </Typography>

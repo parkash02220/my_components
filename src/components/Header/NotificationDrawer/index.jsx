@@ -60,6 +60,7 @@ const index = ({
           width={420}
           overflowY={"hidden"}
           noFooterBorderTop
+          showCloseDrawerMobileIcon={false}
           header={
             <Header
               handleDrawer={handleRightDrawerClose}

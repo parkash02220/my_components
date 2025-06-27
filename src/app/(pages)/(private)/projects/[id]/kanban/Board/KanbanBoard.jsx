@@ -28,12 +28,14 @@ import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { BoardColumn } from "../Column/BoardColumn";
 import { useTaskContext } from "@/context/Task/TaskContext";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 export default function KanbanBoard({
   boardId,
   activeProject,
   projectVersion,
 }) {
+  const {isXs,isSm,isMd} = useResponsiveBreakpoints();
   const [openDrawer, setOpenDrawer] = useState(false);
   const inputRef = useRef(null);
   const wasDragged = useRef(false);
@@ -364,12 +366,13 @@ export default function KanbanBoard({
                 sx={{ borderColor: "#DBE0E4" }}
                 hoverBgColor="whitesmoke"
                 onClick={() => setShowAddColumnButton(false)}
+                fontSize={isXs ? "13px" : isMd ? "14px" : "16px"}
               >
                 Add Column
               </MyButton>
             </Box>
           ) : (
-            <Box height={"100%"} minWidth={336}>
+            <Box height={"100%"} sx={{minWidth:{xs:300,sm:336}}}>
               <MyTextField
                 fullWidth={true}
                 ref={inputRef}
@@ -383,7 +386,7 @@ export default function KanbanBoard({
                 onChange={handleColumnInputfieldChange}
                 onKeyDown={handleColumnInputKeyDown}
                 onBlur={handleCreateSectionBlur}
-                inputFontSize="18px"
+                inputFontSize={isXs ? "13px" : isLg ? "14px" : "16px"}
                 loading={loadingCreateColumn}
               />
               <Typography

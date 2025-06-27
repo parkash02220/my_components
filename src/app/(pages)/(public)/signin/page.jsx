@@ -11,11 +11,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { loginUserWithGoogle } from "@/utils";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 export default function SignIn() {
   const router = useRouter();
   const { isDownXs, isDownMd } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
   const { loadingLogin, loginUser, errorMsg, errorLogin } = useLogin();
   const [showPasswrod, setShowPassword] = useState(false);
   const formik = useFormik({

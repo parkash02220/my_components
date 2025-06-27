@@ -11,11 +11,11 @@ import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { SignUpForm } from "@/components/forms";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const SignUp = () => {
   const router = useRouter();
   const { isDownMd, isDownXs } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
   const { loadingSignUp, errorSignUp, responseMsg, signUpUser } = useSignUp();
   const formik = useFormik({
     initialValues: {

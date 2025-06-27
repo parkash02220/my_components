@@ -6,14 +6,26 @@ import MyDialog from "@/components/MyDialog/MyDialog";
 import { useEffect, useState } from "react";
 import MyButton from "@/components/MyButton/MyButton";
 import dayjs from "dayjs";
-const DueDateDialog = ({ open, handleClose,updateDueDate,taskStartDate,taskEndDate,loadingEditTask }) => {
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
+import defaultCalendarStyle from './calendarStyle';
+const DueDateDialog = ({
+  open,
+  handleClose,
+  updateDueDate,
+  taskStartDate,
+  taskEndDate,
+  loadingEditTask,
+}) => {
+  const { isXs, isSm, isMd, isLg } = useResponsiveBreakpoints();
+  const { fontSize, calendarDaySize } = useResponsiveValue();
+  const calendarStyles = defaultCalendarStyle({ isXs, fontSize, calendarDaySize });
   const theme = useTheme();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [dateError, setDateError] = useState("");
   const formattedStartDate = startDate ? startDate.format("DD-MMM") : "";
   const formattedEndDate = endDate ? endDate.format("DD-MMM YYYY") : "";
-  
 
   const handleStartDateChange = (newValue) => {
     setStartDate(newValue);
@@ -22,7 +34,7 @@ const DueDateDialog = ({ open, handleClose,updateDueDate,taskStartDate,taskEndDa
     } else {
       setDateError("");
     }
-  }
+  };
   const handleEndDateChange = (newValue) => {
     setEndDate(newValue);
     if (startDate && startDate.isAfter(newValue)) {
@@ -30,13 +42,13 @@ const DueDateDialog = ({ open, handleClose,updateDueDate,taskStartDate,taskEndDa
     } else {
       setDateError("");
     }
-  }
+  };
   const handleDueDateApplyButton = async () => {
-    const startD = startDate ? startDate.format("YYYY-MM-DD") : ""
-     const endD = endDate ? endDate.format("YYYY-MM-DD") : ""
-   await  updateDueDate(startD,endD);
-     handleClose();
-  }
+    const startD = startDate ? startDate.format("YYYY-MM-DD") : "";
+    const endD = endDate ? endDate.format("YYYY-MM-DD") : "";
+    await updateDueDate(startD, endD);
+    handleClose();
+  };
   useEffect(() => {
     if (taskStartDate) setStartDate(dayjs(taskStartDate));
     if (taskEndDate) setEndDate(dayjs(taskEndDate));
@@ -63,12 +75,7 @@ const DueDateDialog = ({ open, handleClose,updateDueDate,taskStartDate,taskEndDa
               alignItems={"center"}
               gap={1}
             >
-              <Typography
-                variant="h2"
-                fontSize={"18px"}
-                fontWeight={600}
-                color={theme.palette.primary.main}
-              >
+              <Typography variant="title" fontWeight={600}>
                 Select due date
               </Typography>
             </Box>
@@ -79,8 +86,9 @@ const DueDateDialog = ({ open, handleClose,updateDueDate,taskStartDate,taskEndDa
                 className="calendar__box"
                 padding={"8px 0px 8px 0px"}
                 display={"flex"}
-                gap={3}
-                justifyContent={"center"}
+                gap={isXs ? 2 : 3}
+                justifyContent={isXs ? "center" : "space-between"}
+                flexDirection={isXs ? "column" : "row"}
               >
                 <Box
                   className="start_dueDate"
@@ -93,18 +101,16 @@ const DueDateDialog = ({ open, handleClose,updateDueDate,taskStartDate,taskEndDa
                       onChange={(newValue) => handleStartDateChange(newValue)}
                       showDaysOutsideCurrentMonth
                       fixedWeekNumber={6}
-                      sx={{
-                        "& .MuiPickersDay-dayWithMargin": {
-                          fontSize: "12px",
-                        },
-                        "& .Mui-selected": {
-                          backgroundColor: "#00A76F !important",
-                          color: "#fff",
-                        },
-                        "& .MuiPickersDay-root:hover": {
-                          backgroundColor: "rgba(0,167,111,0.08)",
+                      slotProps={{
+                        day: {
+                          sx: {
+                            fontSize: isXs ? "10px" : "12px",
+                            width: calendarDaySize,
+                            height: calendarDaySize,
+                          },
                         },
                       }}
+                      sx={calendarStyles}
                     />
                   </LocalizationProvider>
                 </Box>
@@ -119,25 +125,25 @@ const DueDateDialog = ({ open, handleClose,updateDueDate,taskStartDate,taskEndDa
                       onChange={(newValue) => handleEndDateChange(newValue)}
                       showDaysOutsideCurrentMonth
                       fixedWeekNumber={6}
-                      sx={{
-                        "& .MuiPickersDay-dayWithMargin": {
-                          fontSize: "12px",
-                        },
-                        "& .Mui-selected": {
-                          backgroundColor: "#00A76F !important",
-                          color: "#fff",
-                        },
-                        "& .MuiPickersDay-root:hover": {
-                          backgroundColor: "rgba(0,167,111,0.08)",
+                      slotProps={{
+                        day: {
+                          sx: {
+                            fontSize: isXs ? "10px" : "12px",
+                            width: calendarDaySize,
+                            height: calendarDaySize,
+                          },
                         },
                       }}
+                      sx={calendarStyles}
                     />
                   </LocalizationProvider>
                 </Box>
               </Box>
               <Box>
                 {dateError && (
-                    <Typography color="#FF5630" fontSize={12}>{dateError}</Typography>
+                  <Typography color="#FF5630" fontSize={12}>
+                    {dateError}
+                  </Typography>
                 )}
               </Box>
             </Box>
@@ -148,12 +154,12 @@ const DueDateDialog = ({ open, handleClose,updateDueDate,taskStartDate,taskEndDa
               alignItems={"center"}
               justifyContent={"flex-end"}
               padding={3}
-              gap={'12px'}
+              gap={"12px"}
             >
               <MyButton
                 fontWeight={700}
                 minWidth="'64px"
-                fontSize={14}
+                fontSize={fontSize}
                 variant="outlined"
                 color="#DFE3EB"
                 backgroundColor="#FFFFFF"
@@ -165,10 +171,10 @@ const DueDateDialog = ({ open, handleClose,updateDueDate,taskStartDate,taskEndDa
                 Cancel
               </MyButton>
               <MyButton
-              onClick={handleDueDateApplyButton}
+                onClick={handleDueDateApplyButton}
                 fontWeight={700}
                 minWidth="'64px"
-                fontSize={14}
+                fontSize={fontSize}
                 color="#1C252E"
                 backgroundColor="#FFFFFF"
                 borderRadius="8px"
@@ -176,7 +182,7 @@ const DueDateDialog = ({ open, handleClose,updateDueDate,taskStartDate,taskEndDa
                 border={"1px solid rgba(145,158,171,0.32)"}
                 disabled={!!dateError || !startDate || !endDate}
                 loading={loadingEditTask}
-                loadingText={'Applying...'}
+                loadingText={"Applying..."}
               >
                 Apply
               </MyButton>

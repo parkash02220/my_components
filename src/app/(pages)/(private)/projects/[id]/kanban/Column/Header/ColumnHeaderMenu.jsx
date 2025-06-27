@@ -1,4 +1,5 @@
 import ConfirmationPopup from "@/components/ConfirmationPopup";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useClearSection from "@/hooks/projects/section/useClearSection";
 import useDeleteSection from "@/hooks/projects/section/useDeleteSection";
@@ -11,7 +12,8 @@ export default function ColumnHeaderMenu({
   column,
   setShowEditTextfield,
 }) {
-  const { isDownXs } = useResponsiveBreakpoints();
+  const { isDownXs,isDownSm } = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const handleMenuOpen = (event) => {
     setMenuAnchorEl(event.currentTarget);
@@ -96,8 +98,8 @@ export default function ColumnHeaderMenu({
           onClick={handleMenuOpen}
           sx={{
             padding: "0px",
-            width: "20px",
-            height: "20px",
+            width: {xs:"16px",sm:"20px"},
+                height: {xs:"16px",sm:"20px"},
             "&:hover": {
               background: "transparent",
             },
@@ -145,7 +147,7 @@ export default function ColumnHeaderMenu({
               cursor: "pointer",
               padding: "6px 8px",
               borderRadius: "6px",
-              minHeight: isDownXs ? "40px" : "48px",
+              minHeight: isDownXs ? "32px" : isDownSm ? "40px" : "48px",
             }}
           >
             <Box
@@ -158,10 +160,10 @@ export default function ColumnHeaderMenu({
               <img
                 src={item.icon}
                 alt={item.label.toLowerCase()}
-                width={20}
-                height={20}
+                width={isDownXs ? 16 : 20}
+                height={isDownXs ? 16 : 20}
               />
-              <Typography fontSize={14} color={item.color || "inherit"}>
+              <Typography fontSize={fontSize} color={item.color || "inherit"}>
                 {item.label}
               </Typography>
             </Box>

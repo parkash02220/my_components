@@ -12,10 +12,10 @@ import { formatDate, getCalendarMinMaxDate } from "@/utils";
 import MySelectVariant from "../MySelect/MySelectVarient";
 import useGetDesignationsByDepartment from "@/hooks/organization/useGetDesignationsByDepartment";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const CreateUserForm = ({ formik }) => {
   const { isDownXs } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
+  const {fontSize} = useResponsiveValue();
   const { minDate, maxDate } = getCalendarMinMaxDate(13, 130);
   const { loading, error, fetchDesignationByDepartment, hasFetchedOnce } =
     useGetDesignationsByDepartment();

@@ -12,6 +12,7 @@ const RightDrawer = ({
   width,
   overflowY,
   noFooterBorderTop,
+  showCloseDrawerMobileIcon=true,
 }) => {
   const { isDownXs } = useResponsiveBreakpoints();
   return (
@@ -29,7 +30,7 @@ const RightDrawer = ({
         zIndex: (theme) => theme.zIndex.drawer + 2,
       }}
     >
-      {isDownXs && (
+      { showCloseDrawerMobileIcon && isDownXs && (
         <IconButton
           aria-label="close"
           onClick={handleDrawer}

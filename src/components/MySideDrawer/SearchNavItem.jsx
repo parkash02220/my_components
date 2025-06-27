@@ -1,12 +1,11 @@
 import { ListItem } from "@mui/material";
 import MySearch from "../MySearch/MySearch";
-import useResponsiveValue from "@/hooks/common/useResponsiveValue";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 const SearchNavItem = ({ open, value, onChange, handleSearchClear }) => {
   const { isDownXs } = useResponsiveBreakpoints();
-  const fontSize = useResponsiveValue("fontSize");
-  const iconSize = useResponsiveValue("iconSize");
+  const {fontSize,iconSize} = useResponsiveValue();
   return (
     <>
       {open ? (

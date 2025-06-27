@@ -35,9 +35,10 @@ const PageNotFound = () => {
           ></Box>
           <Box>
             <Typography
-              variant="h1"
               fontSize={isDownXs ? 38 : isDownMd ? 50 : 60}
+              fontWeight={700}
               color="#1C252E"
+              textAlign={'center'}
             >
               {` 404 Page not found`}
             </Typography>
@@ -48,10 +49,10 @@ const PageNotFound = () => {
             alignItems={"center"}
             flexDirection={"column"}
           >
-            <Typography color="#1C252E" fontSize={isDownXs ? 14 : 16}>
+            <Typography variant="title2">
               {`Looks like something's broken.It's not you its us.`}
             </Typography>
-            <Typography color="#1C252E" fontSize={isDownXs ? 14 : 16}>
+            <Typography variant="title2">
               {`How about going back to the home page?.`}
             </Typography>
           </Box>
