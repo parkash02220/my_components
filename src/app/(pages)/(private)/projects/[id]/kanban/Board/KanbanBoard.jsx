@@ -353,6 +353,8 @@ export default function KanbanBoard({
                 column={col}
                 tasks={tasksByColumn[col.id] || []}
                 activeColumnId={activeColumn?.id}
+                setActiveTaskId={setActiveTaskId}
+                handleDrawerOpen={handleDrawerOpen}
               />
             ))}
           </SortableContext>

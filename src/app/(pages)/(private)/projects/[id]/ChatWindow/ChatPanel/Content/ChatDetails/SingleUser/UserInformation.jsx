@@ -3,7 +3,9 @@ import React, { useMemo, useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { useOrganizationContext } from "@/context/Organization/OrganizationContext";
 import { getDepartmentName } from "@/utils";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 const UserInformation = ({user}) => {
+  const {isXs} = useResponsiveBreakpoints();
   const [isExpanded, setIsExpanded] = useState(true);
   const toggleIsExpanded = () => {
     setIsExpanded((pre) => !pre);
@@ -82,7 +84,7 @@ const UserInformation = ({user}) => {
             {inoformationData?.map((data, i) => {
               return (
                 <React.Fragment key={i}>
-                  <InformationRow label={data?.label} value={data?.value} />
+                  <InformationRow label={data?.label} value={data?.value} screen={{isXs}}/>
                 </React.Fragment>
               );
             })}
@@ -94,8 +96,9 @@ const UserInformation = ({user}) => {
 };
 export default UserInformation;
 
-export const InformationRow = ({ label, value }) => {
+export const InformationRow = ({ label, value,screen={} }) => {
   if(!value) return null;
+  const {isXs} = screen;
   return (
     <>
       <Box display={"flex"} gap={1} alignItems={"center"}>
@@ -103,13 +106,12 @@ export const InformationRow = ({ label, value }) => {
           <img
             src={label?.src}
             alt={label?.atl}
-            style={{ width: "20px", height: "20px" }}
+            style={{ width: isXs ? "16px" : "20px", height: isXs ? "16px" :  "20px" }}
           />
         </Box>
         <Box>
           <Typography
-            color="#1C252E"
-            fontSize={14}
+            variant="primary"
             sx={{ wordBreak: "break-all" }}
           >
             {value}

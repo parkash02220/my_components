@@ -1,7 +1,9 @@
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { Box, IconButton } from "@mui/material";
 import React, { useState } from "react";
 
 const HeaderIconButtons = ({toggleExpand}) => {
+  const {isXs} = useResponsiveBreakpoints();
   const icons = [
     {
       name: "call",
@@ -47,7 +49,7 @@ const HeaderIconButtons = ({toggleExpand}) => {
                 <img
                   src={icon?.src}
                   alt={icon?.alt}
-                  style={{ width: "20px", height: "20px", flexShrink: 0 }}
+                  style={{ width: isXs ? "16px" : "20px", height: isXs ? "16px" :  "20px", flexShrink: 0 }}
                 />{" "}
               </IconButton>
             </React.Fragment>

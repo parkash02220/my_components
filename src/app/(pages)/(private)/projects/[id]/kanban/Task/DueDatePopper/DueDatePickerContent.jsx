@@ -5,6 +5,9 @@ import { Box, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import MyButton from "@/components/MyButton/MyButton";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
+import defaultCalendarStyle from "../../Drawer/OverviewTab/DueDateDialog/calendarStyle";
 
 export default function DueDatePickerContent({
   taskStartDate,
@@ -13,6 +16,13 @@ export default function DueDatePickerContent({
   onApply,
   loading,
 }) {
+  const { isXs, isSm, isMd, isLg } = useResponsiveBreakpoints();
+  const { fontSize, calendarDaySize } = useResponsiveValue();
+  const calendarStyles = defaultCalendarStyle({
+    isXs,
+    fontSize,
+    calendarDaySize,
+  });
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [dateError, setDateError] = useState("");
@@ -47,29 +57,70 @@ export default function DueDatePickerContent({
   };
 
   return (
-    <Box p={2} width="fit-content">
-      <Box display="flex" gap={2}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateCalendar
-            value={startDate}
-            onChange={handleStartDateChange}
-            showDaysOutsideCurrentMonth
-            fixedWeekNumber={6}
-            sx={calendarStyles}
-          />
-        </LocalizationProvider>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateCalendar
-            value={endDate}
-            onChange={handleEndDateChange}
-            showDaysOutsideCurrentMonth
-            fixedWeekNumber={6}
-            sx={calendarStyles}
-          />
-        </LocalizationProvider>
+    <Box
+      p={isXs ? 0 : 2}
+      width="fit-content"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <Box
+        className="calendar__box"
+        padding={"8px 0px 8px 0px"}
+        display={"flex"}
+        gap={isXs ? 2 : 3}
+        justifyContent={isXs ? "center" : "space-between"}
+        flexDirection={isXs ? "column" : "row"}
+      >
+        <Box
+          className="start_dueDate"
+          borderRadius={1}
+          border={"1px dashed rgba(145,158,171,0.2)"}
+        >
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateCalendar
+              value={startDate}
+              onChange={handleStartDateChange}
+              showDaysOutsideCurrentMonth
+              fixedWeekNumber={6}
+              slotProps={{
+                day: {
+                  sx: {
+                    fontSize: isXs ? "10px" : "12px",
+                    width: calendarDaySize,
+                    height: calendarDaySize,
+                  },
+                },
+              }}
+              sx={calendarStyles}
+            />
+          </LocalizationProvider>
+        </Box>
+        <Box
+          className="end_dueDate"
+          borderRadius={1}
+          border={"1px dashed rgba(145,158,171,0.2)"}
+        >
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateCalendar
+              value={endDate}
+              onChange={handleEndDateChange}
+              showDaysOutsideCurrentMonth
+              fixedWeekNumber={6}
+              slotProps={{
+                day: {
+                  sx: {
+                    fontSize: isXs ? "10px" : "12px",
+                    width: calendarDaySize,
+                    height: calendarDaySize,
+                  },
+                },
+              }}
+              sx={calendarStyles}
+            />
+          </LocalizationProvider>
+        </Box>
       </Box>
       {dateError && (
-        <Typography color="#FF5630" fontSize={12} mt={1}>
+        <Typography color="#FF5630" fontSize={isXs ? 10 : 12} mt={1}>
           {dateError}
         </Typography>
       )}
@@ -79,7 +130,7 @@ export default function DueDatePickerContent({
           variant="outlined"
           padding="5px 12px"
           borderRadius="8px"
-          fontSize={14}
+          fontSize={fontSize}
           border="1px solid rgba(145,158,171,0.32)"
           color="#1C252E"
           minWidth="100px"
@@ -92,7 +143,7 @@ export default function DueDatePickerContent({
           disabled={!!dateError || !startDate || !endDate}
           loading={loading}
           loadingText="Applying..."
-          fontSize={14}
+          fontSize={fontSize}
           padding="5px 12px"
           borderRadius="8px"
           minWidth="100px"
@@ -104,14 +155,3 @@ export default function DueDatePickerContent({
     </Box>
   );
 }
-
-const calendarStyles = {
-  "& .MuiPickersDay-dayWithMargin": { fontSize: "12px" },
-  "& .Mui-selected": {
-    backgroundColor: "#00A76F !important",
-    color: "#fff",
-  },
-  "& .MuiPickersDay-root:hover": {
-    backgroundColor: "rgba(0,167,111,0.08)",
-  },
-};

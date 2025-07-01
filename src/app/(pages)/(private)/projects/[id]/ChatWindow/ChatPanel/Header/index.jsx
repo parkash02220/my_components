@@ -4,11 +4,12 @@ import HeaderIconButtons from "./HeaderIconButtons";
 import GroupUsersDetails from "./GroupUsersDetails";
 import InitialHeader from "./InitialHeader";
 import { useMemo } from "react";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 const Header = ({ toggleExpand, selectedDirectoryItem, selectedUsers, setSelectedUsers }) => {
   const isGroup = selectedDirectoryItem?.isGroup;
   const hasSelectedItem = Boolean(selectedDirectoryItem);
-
+  const {isXs} = useResponsiveBreakpoints();
   const HeaderContent = useMemo(() => {
     if (!hasSelectedItem) {
       return (
@@ -28,11 +29,11 @@ const Header = ({ toggleExpand, selectedDirectoryItem, selectedUsers, setSelecte
 
   return (
     <Box
-      height={72}
+      minHeight={isXs ? 64 : 72}
       flexShrink={0}
       display="flex"
       alignItems="center"
-      padding="8px 8px 8px 20px"
+      padding={ isXs ? '8px' : "8px 8px 8px 20px"}
       borderBottom="1px solid rgba(145,158,171,0.2)"
     >
       {HeaderContent}

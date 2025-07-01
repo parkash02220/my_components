@@ -4,6 +4,7 @@ import ChatDetails from "./ChatDetails";
 
 const Content = ({
   isExpanded,
+  setIsExpanded,
   selectedDirectoryItem,
   selectedUsers,
   onSendMessage,
@@ -23,6 +24,7 @@ const Content = ({
         {selectedDirectoryItem && (
           <ChatDetails
             isExpanded={isExpanded}
+            setIsExpanded={setIsExpanded}
             selectedDirectoryItem={selectedDirectoryItem}
           />
         )}

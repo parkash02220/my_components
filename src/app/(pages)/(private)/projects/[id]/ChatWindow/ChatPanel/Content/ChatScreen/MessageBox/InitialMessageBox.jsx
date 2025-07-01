@@ -1,6 +1,8 @@
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { Box, Typography } from "@mui/material";
 
 const InitialMessageBox = () => {
+  const {isXs} = useResponsiveBreakpoints();
   return (
     <>
       <Box
@@ -19,10 +21,10 @@ const InitialMessageBox = () => {
           alt="message"
           style={{ width: "100%", maxWidth: "160px" }}
         />
-        <Typography fontSize={18} color="#919EAB" fontWeight={600}>
+        <Typography fontSize={isXs ? 16 : 18} color="#919EAB" fontWeight={600}>
           Welcome !
         </Typography>
-        <Typography fontSize={14} color="#919EAB">
+        <Typography variant="disabled">
           Write something awesome...
         </Typography>
       </Box>

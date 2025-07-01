@@ -18,7 +18,9 @@ import useJoinRoomSocket from "@/hooks/sockets/chat/useJoinRoomSocket";
 import useMarkAllMsgAsReadSocket from "@/hooks/sockets/chat/useMarkAllMsgAsReadSocket";
 import useNewMessageSocket from "@/hooks/sockets/chat/useNewMessageSocket";
 import useNewChatroomCreatedSocket from "@/hooks/sockets/chat/usePrivateChatroomCreatedSocket";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 const ChatWindow = ({ projectId }) => {
+  const {isXs} = useResponsiveBreakpoints();
   const { isCHatWindowAvailable } = useInitializeChatWindow();
   const { joinRoom } = useJoinRoomSocket();
   useNewMessageSocket();
@@ -131,9 +133,21 @@ const ChatWindow = ({ projectId }) => {
         display={"flex"}
         justifyContent={"flex-start"}
         alignItems={"center"}
-        mb={2}
+        mb={isXs ? 1 : 2}
       >
-        <BackButton fontSize={16} path={`/projects/${projectId}`} />
+        <BackButton fontSize={isXs ? 14 : 16} path={`/projects/${projectId}`} iconOnly={isXs}/>
+        {
+          isXs && (
+            <Typography
+          variant="h4"
+          color="#1C252E"
+          fontSize={isXs ? 18 : 24}
+          fontWeight={700}
+        >
+          Chat
+        </Typography>
+          )
+        }
       </Box>
       <Box
         className="chatWindow__container"
@@ -141,19 +155,19 @@ const ChatWindow = ({ projectId }) => {
           display: "flex",
           flexDirection: "column",
           flex: "1 1 auto",
-          padding: "8px 40px 64px 40px",
+          padding: isXs ? "8px 8px 16px 8px" : "8px 40px 64px 40px",
           minHeight: 0,
         }}
       >
-        <Typography
+       { !isXs && ( <Typography
           variant="h4"
           color="#1C252E"
-          mb={5}
-          fontSize={24}
+          mb={isXs ? 2 : 5}
+          fontSize={isXs ? 18 : 24}
           fontWeight={700}
         >
           Chat
-        </Typography>
+        </Typography>)}
         <Box
           sx={{
             flex: " 1 1 0px",

@@ -3,9 +3,11 @@ import UserWithStatus from "../../components/UserWithStatus";
 import { getFullName } from "@/utils";
 import { useMemo } from "react";
 import { useChatContext } from "@/context/Chat/ChatContext";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 const SingleUserDetails = ({ userDetails }) => {
   const user = userDetails?.targetUser;
+  const {isXs} = useResponsiveBreakpoints();
   const { onlineUsers } = useChatContext().state;
   const fullName = useMemo(() => {
     return getFullName(user?.firstName, user?.lastName);
@@ -19,16 +21,16 @@ const SingleUserDetails = ({ userDetails }) => {
   return (
     <Box display="flex" gap={2} alignItems="center">
       <UserWithStatus
-        width={40}
-        height={40}
+        width={isXs ? 30 : 40}
+        height={isXs ? 30 : 40}
         type={userDetails?.isGroup}
         avatar={user?.avatar}
       />
       <Box flex="1 1 auto" minWidth={0}>
-        <Typography color="#1C252E" fontSize={14} fontWeight={600} noWrap>
+        <Typography variant="primary" fontWeight={600} noWrap>
           {fullName}
         </Typography>
-        <Typography color={ isOnline ? "green" : "#637381"} fontSize={12} fontWeight={500} noWrap>
+        <Typography color={ isOnline ? "green" : "#637381"} fontSize={isXs ? 10 : 12} fontWeight={500} noWrap>
          {isOnline ? "Online" : "Offline"}
         </Typography>
       </Box>

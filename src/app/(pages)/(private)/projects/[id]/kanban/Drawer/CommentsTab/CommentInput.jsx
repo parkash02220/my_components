@@ -1,8 +1,12 @@
 import MyButton from "@/components/MyButton/MyButton";
 import MyTextField from "@/components/MyTextfield/MyTextfield";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { Box, IconButton } from "@mui/material";
 
 const CommentInput = ({ avatar, formik, loadingAddCommnet, theme }) => {
+  const {isXs} = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   return (
     <>
       <Box
@@ -24,8 +28,8 @@ const CommentInput = ({ avatar, formik, loadingAddCommnet, theme }) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            width: "40px",
-            height: "40px",
+            width: isXs ? 30 : "40px",
+            height: isXs ? 30 : "40px",
             borderRadius: "50%",
             overflow: "hidden",
             flexShrink: 0,
@@ -71,6 +75,7 @@ const CommentInput = ({ avatar, formik, loadingAddCommnet, theme }) => {
               rows={2}
               border={"none"}
               disabled={loadingAddCommnet}
+              inputFontSize={fontSize}
             />
           </Box>
           <Box display={"flex"} alignItems={"space-between"}>
@@ -117,6 +122,7 @@ const CommentInput = ({ avatar, formik, loadingAddCommnet, theme }) => {
                 loading={loadingAddCommnet}
                 loadingText={"Adding..."}
                 disabledTextColor={"white"}
+                fontSize={fontSize}
               >
                 Comment
               </MyButton>

@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
+import useResponsiveValue from "./responsive/useResponsiveValue";
 const toastStyles = {
   base: {
     padding: "4px 8px 4px 4px",
@@ -23,6 +24,7 @@ const toastStyles = {
 };
 
 const useToast = () => {
+  const {fontSize,iconSize} = useResponsiveValue();
   const showToast = useCallback(
     ({ type = "success", message = "", duration = 3000,toastId=null,refetchMsg=false }) => {
 
@@ -88,25 +90,25 @@ const useToast = () => {
                     <img
                       src="/toastSuccessIcon.svg"
                       alt="success"
-                      style={{ width: "24px", height: "24px", flexShrink: 0 }}
+                      style={{ width: iconSize, height: iconSize, flexShrink: 0 }}
                     />
                   ) : type === "error" ? (
                     <img
                       src="/errorToastIcon.png"
                       alt="error"
-                      style={{ width: "24px", height: "24px", flexShrink: 0 }}
+                      style={{ width: iconSize, height: iconSize, flexShrink: 0 }}
                     />
                   ) : type === "loading" ? (
                     <img
                       src="/iosLoader.gif"
                       alt="loading"
-                      style={{ width: "24px", height: "24px", flexShrink: 0 }}
+                      style={{ width: iconSize, height: iconSize, flexShrink: 0 }}
                     />
                   ) : (
                     <img
                     src="/notificationToastIcon.svg"
                     alt="loading"
-                    style={{ width: "24px", height: "24px", flexShrink: 0 }}
+                    style={{ width: iconSize, height: iconSize, flexShrink: 0 }}
                   />
                   )
                 }
@@ -121,11 +123,11 @@ const useToast = () => {
                   }}
                 >
                   <Typography
-                    sx={{ fontSize: 14, fontWeight: 500, color: "#1C252E",textAlign:'center' }}
+                    sx={{ fontSize: fontSize, fontWeight: 500, color: "#1C252E",textAlign:'center' }}
                   >
                     {message}
                   </Typography>
-                  {refetchMsg && <Typography  sx={{ fontSize: 14, fontWeight: 500, color: "#1C252E" }}>Please refresh page.</Typography>}
+                  {refetchMsg && <Typography  sx={{ fontSize: fontSize, fontWeight: 500, color: "#1C252E" }}>Please refresh page.</Typography>}
                 </Box>
              
                 {type !== "loading" ? (

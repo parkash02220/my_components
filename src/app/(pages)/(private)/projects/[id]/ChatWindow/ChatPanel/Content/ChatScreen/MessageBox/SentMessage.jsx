@@ -1,8 +1,12 @@
 import { useMemo } from "react";
 import { getTimeAgo } from "@/utils";
 import { Box, IconButton, Typography } from "@mui/material";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 
 const SentMessage = ({ msg }) => {
+  const { isXs } = useResponsiveBreakpoints();
+  const { fontSize } = useResponsiveValue();
   const timeAgo = useMemo(() => getTimeAgo(msg?.createdAt), [msg?.createdAt]);
 
   const actionIcons = [
@@ -12,26 +16,33 @@ const SentMessage = ({ msg }) => {
   ];
 
   return (
-    <Box mb={5} display="flex" justifyContent="flex-end">
+    <Box mb={isXs ? 2 : 5} display="flex" justifyContent="flex-end">
       <Box display="flex" flexDirection="column" alignItems="flex-end">
-        <Typography color="#919EAB" fontSize={12} mb={1} noWrap>
+        <Typography color="#919EAB" fontSize={isXs ? 10 : 12} mb={1} noWrap>
           {timeAgo}
         </Typography>
 
-        <Box display="flex" alignItems="center" position="relative">
+        <Box display="flex" alignItems="center" position="relative" justifyContent={'flex-end'}>
           <Box
             px={1.5}
             py={1.5}
             minWidth={48}
-            maxWidth={320}
-            fontSize={14}
+            maxWidth={isXs ? "60%" : 320}
             borderRadius={1}
             bgcolor="#C8FAD6"
-            color="#1C252E"
             display="flex"
-            flexDirection="column"
+            justifyContent={'flex-end'}
           >
-            {msg?.text || ""}
+            <Typography
+              variant="primary"
+              overflow={"hidden"}
+              sx={{
+                wordBreak: "break-word",
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {msg?.text || ""}
+            </Typography>
           </Box>
 
           <Box

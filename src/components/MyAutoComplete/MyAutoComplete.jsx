@@ -106,6 +106,7 @@ export default function MyAutoComplete({
     minWidth,
     "& .MuiOutlinedInput-root": {
       borderRadius,
+      // paddingRight:{xs:"36px !important",sm:"65px"},
       "&:hover .MuiOutlinedInput-notchedOutline": {
         borderColor: error ? "red" : hoverBorderColor || borderColor || 'black',
       },

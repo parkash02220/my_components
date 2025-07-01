@@ -1,6 +1,8 @@
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { Box } from "@mui/material";
 
 export default function UserWithStatus({ width, height, type, avatar,isOnline=false }) {
+  const {isXs} = useResponsiveBreakpoints();
   if (type === "group__chat") {
     return (
       <Box position={"relative"} display={"inline-flex"} flexShrink={0}>
@@ -9,13 +11,13 @@ export default function UserWithStatus({ width, height, type, avatar,isOnline=fa
           flexDirection={"row-reverse"}
           justifyContent={"flex-end"}
           position={"relative"}
-          width={width || 48}
-          height={height || 48}
+          width={width || isXs ? 40 : 48}
+          height={height || isXs ? 40 : 48}
           gap={-1}
         >
           <Box
-            width={32}
-            height={32}
+            width={isXs ? 28 : 32}
+            height={isXs ? 28 : 32}
             position={"absolute"}
             zIndex={9}
             left={0}
@@ -43,8 +45,8 @@ export default function UserWithStatus({ width, height, type, avatar,isOnline=fa
           <Box
             top={0}
             right={0}
-            width={32}
-            height={32}
+            width={isXs ? 28 : 32}
+            height={isXs ? 28 : 32}
             position={"absolute"}
             border={"2px solid #FFFFFF"}
             display={"flex"}
@@ -94,8 +96,8 @@ export default function UserWithStatus({ width, height, type, avatar,isOnline=fa
           flexShrink={0}
           overflow={"hidden"}
           fontWeight={500}
-          width={width || 48}
-          height={height || 48}
+          width={width || isXs ? 40 : 48}
+          height={height || isXs ? 40 :  48}
           borderRadius={"50%"}
           sx={{ cursor: "pointer" }}
           border={"2px solid #FFFFFF"}

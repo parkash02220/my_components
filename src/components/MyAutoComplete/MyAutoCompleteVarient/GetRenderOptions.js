@@ -1,7 +1,7 @@
 import { getFullName } from "@/utils";
 import { Typography } from "@mui/material";
 
-export const getRenderOptions = (type) => {
+export const getRenderOptions = (type,screen) => {
   switch (type) {
     case "user_with_avatar": {
       const UserWithAvatarOption = (props, option) => {
@@ -17,13 +17,13 @@ export const getRenderOptions = (type) => {
               alt={option?.firstName}
               referrerPolicy="no-referrer"
               style={{
-                width: 30,
-                height: 30,
+                width: screen.isXs ? 24 : 30,
+                height: screen.isXs ? 24 :  30,
                 marginRight: 10,
                 borderRadius: "50%",
               }}
             />
-            <Typography>
+            <Typography variant="primary">
               {getFullName(option.firstName, option.lastName)}
             </Typography>
           </li>

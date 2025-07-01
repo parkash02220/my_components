@@ -1,6 +1,7 @@
 import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { Box, IconButton } from "@mui/material";
 import TextMessage from "./TextMessage";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 const MessageInputBox = ({
   selectedUsers,
@@ -9,6 +10,7 @@ const MessageInputBox = ({
   onSendInputMessageChange,
   sendMessageInputValue,
 }) => {
+  const {isXs} = useResponsiveBreakpoints();
   const isDisabled = !selectedDirectoryItem && selectedUsers?.length === 0;
   const inputIcons = [
     {
@@ -33,7 +35,7 @@ const MessageInputBox = ({
   return (
     <>
       <Box
-        height={56}
+        minHeight={isXs ? 48 : 56}
         flexShrink={0}
         borderTop={"1px solid rgba(145,158,171,0.2)"}
         paddingInline={1}
@@ -57,7 +59,7 @@ const MessageInputBox = ({
           <img
             src="/emojiIcon.svg"
             alt="emoji"
-            style={{ width: "20px", height: "20px", flexShrink: 0 }}
+            style={{ width: isXs ? "16px" : "20px", height: isXs ? "16px" :  "20px", flexShrink: 0 }}
           />
         </IconButton>
         <Box flex={"1 1 auto"}>
@@ -84,7 +86,7 @@ const MessageInputBox = ({
                   }}
                 >
                   <img
-                    style={{ width: "20px", height: "20px", flexShrink: 0 }}
+                    style={{ width: isXs ? "16px" :  "20px", height: isXs ? "16px" :  "20px", flexShrink: 0 }}
                     src={icon?.src}
                     alt={icon?.alt}
                   />

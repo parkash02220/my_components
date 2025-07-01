@@ -2,7 +2,7 @@ import { ExpandLess } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 
-const BackButton = ({fontSize,path}) => {
+const BackButton = ({fontSize,path,iconOnly=false,}) => {
     const router = useRouter();
     const handleBackNavigation = () => {
           if(path){
@@ -28,7 +28,7 @@ const BackButton = ({fontSize,path}) => {
             color:"#1C252E"
           }}
         />{" "}
-       <Typography fontWeight={700} color="#1C252E" fontSize={fontSize || 14}>Back</Typography>
+     { !iconOnly && ( <Typography fontWeight={700} color="#1C252E" fontSize={fontSize || 14}>Back</Typography>)}
       </Box>
     </>
   );

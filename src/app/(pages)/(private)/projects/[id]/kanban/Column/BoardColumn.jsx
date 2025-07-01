@@ -14,8 +14,15 @@ import { TaskCard } from "../Task";
 import ColumnHeader from "./Header";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
-function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
-  const {isXs} = useResponsiveBreakpoints();
+function BoardColumnComponent({
+  column,
+  tasks,
+  isOverlay,
+  activeColumnId,
+  handleDrawerOpen,
+  setActiveTaskId,
+}) {
+  const { isXs } = useResponsiveBreakpoints();
   const taskIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
   const isActive = column.id === activeColumnId && !isOverlay;
   const sortableData = useMemo(
@@ -50,7 +57,6 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
     [transform, transition, isOverlay]
   );
 
-  
   return (
     <>
       <Paper
@@ -72,7 +78,12 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
           gap: "20px",
         }}
       >
-        <ColumnHeader tasks={tasks} column={column} attributes={attributes} listeners={listeners}/>
+        <ColumnHeader
+          tasks={tasks}
+          column={column}
+          attributes={attributes}
+          listeners={listeners}
+        />
 
         <Box
           sx={{
@@ -106,7 +117,14 @@ function BoardColumnComponent({ column, tasks, isOverlay, activeColumnId }) {
                   </Typography>
                 </Box>
               ) : (
-                tasks.map((task) => <TaskCard key={task.id} task={task} />)
+                tasks.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    setActiveTaskId={setActiveTaskId}
+                    handleDrawerOpen={handleDrawerOpen}
+                  />
+                ))
               )}
             </SortableContext>
           </Box>

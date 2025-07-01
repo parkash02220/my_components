@@ -1,8 +1,10 @@
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { getFullName, getTimeAgo } from "@/utils";
 import { Box, IconButton, Typography } from "@mui/material";
 import { useMemo } from "react";
 
 const ReceivedMessage = ({ msg }) => {
+  const { isXs } = useResponsiveBreakpoints();
   const { sender } = msg;
 
   const fullName = useMemo(
@@ -19,7 +21,7 @@ const ReceivedMessage = ({ msg }) => {
   ];
 
   return (
-    <Box mb={5} display="flex">
+    <Box mb={isXs ? 2 : 5} display="flex">
       <Box
         mr={2}
         width={32}
@@ -55,19 +57,26 @@ const ReceivedMessage = ({ msg }) => {
         </Typography>
 
         <Box display="flex" alignItems="center" position="relative">
-          <Box
+        <Box
             px={1.5}
             py={1.5}
             minWidth={48}
-            maxWidth={320}
-            fontSize={14}
+            maxWidth={isXs ? "60%" : 320}
             borderRadius={1}
-            bgcolor="#F4F6F8"
-            color="#1C252E"
+            bgcolor="#C8FAD6"
             display="flex"
-            flexDirection="column"
+            justifyContent={'flex-end'}
           >
-            {msg?.text || ""}
+            <Typography
+              variant="primary"
+              overflow={"hidden"}
+              sx={{
+                wordBreak: "break-word",
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {msg?.text || ""}
+            </Typography>
           </Box>
 
           <Box

@@ -41,6 +41,7 @@ const MyDialog = ({ open, handleClose, title, content, actions, ...props }) => {
             maxHeight: props?.maxheight,
             height: props?.height,
             minHeight: props?.minheight,
+            margin: props?.margin || undefined,
           },
         }}
         {...props}

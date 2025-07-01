@@ -1,9 +1,12 @@
 import MySearch from "@/components/MySearch/MySearch";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { Box } from "@mui/material";
 import { useState } from "react";
 
 const SearchBox = ({handleSearchClear,handleSearchValueChange,searchValue}) => {
-
+  const {isXs} =useResponsiveBreakpoints();
+  const {fontSize,iconSize} = useResponsiveValue();
   return (
     <>
       <Box
@@ -29,6 +32,9 @@ const SearchBox = ({handleSearchClear,handleSearchValueChange,searchValue}) => {
             value={searchValue}
             onChange={handleSearchValueChange}
             onClear={handleSearchClear}
+            inputFontSize={fontSize}
+            iconStyle={{width:iconSize,height:iconSize}}
+            clearIconStyle={{width:iconSize,height:iconSize}}
           />
         </Box>
       </Box>

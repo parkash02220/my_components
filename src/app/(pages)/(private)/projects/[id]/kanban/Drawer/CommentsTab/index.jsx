@@ -12,8 +12,12 @@ import { useFormik } from "formik";
 import React, { useState } from "react";
 import CommentInput from "./CommentInput";
 import CommentBox from "./CommentBox";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 
 const CommentsTab = ({ activeTask }) => {
+  const { isXs } = useResponsiveBreakpoints();
+  const { fontSize } = useResponsiveValue();
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const [selectedComment, setSelectedComment] = useState(null);
   const [editingCommentId, setEditingCommentId] = useState(null);
@@ -113,8 +117,9 @@ const CommentsTab = ({ activeTask }) => {
             }}
           >
             {allComments?.map((comment) => {
-              return (<React.Fragment   key={comment?.id}>
+              return (
                 <CommentBox
+                  key={comment?.id}
                   comment={comment}
                   editingCommentId={editingCommentId}
                   theme={theme}
@@ -125,7 +130,6 @@ const CommentsTab = ({ activeTask }) => {
                   handleDeletePopupOpen={handleDeletePopupOpen}
                   editedText={editedText}
                 />
-                </React.Fragment>
               );
             })}
           </Box>

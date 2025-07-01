@@ -12,7 +12,10 @@ import DueDatePickerContent from "./DueDatePickerContent";
 import useEditTask from "@/hooks/projects/task/useEditTask";
 import EventIcon from "@mui/icons-material/Event";
 import { formatDueDateRange } from "@/utils";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import MyDialog from "@/components/MyDialog/MyDialog";
 export default function DueDatePopper({ taskStartDate, taskEndDate, taskId }) {
+  const { isXs } = useResponsiveBreakpoints();
   const { loadingEditTask, errorEditTask, updateTaskInBackend } = useEditTask();
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
@@ -22,7 +25,8 @@ export default function DueDatePopper({ taskStartDate, taskEndDate, taskId }) {
     setOpen((prev) => !prev);
   };
 
-  const handleClose = () => {
+  const handleClose = (e) => {
+    e.stopPropagation();
     setOpen(false);
   };
 
@@ -73,29 +77,12 @@ export default function DueDatePopper({ taskStartDate, taskEndDate, taskId }) {
         )}
       </IconButton>
 
-      <Popper
-        open={open}
-        anchorEl={anchorRef.current}
-        placement="bottom"
-        modifiers={[
-          {
-            name: "offset",
-            options: {
-              offset: [0, 8],
-            },
-          },
-        ]}
-        style={{ zIndex: 1300 }}
-        onMouseDown={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <ClickAwayListener onClickAway={handleClose}>
-          <Paper elevation={3}>
+      {isXs ? (
+        <MyDialog
+          open={open}
+          handleClose={handleClose}
+          margin={isXs ? "12px" : undefined}
+          content={
             <DueDatePickerContent
               taskStartDate={taskStartDate}
               taskEndDate={taskEndDate}
@@ -103,9 +90,43 @@ export default function DueDatePopper({ taskStartDate, taskEndDate, taskId }) {
               onApply={handleApply}
               loading={loadingEditTask}
             />
-          </Paper>
-        </ClickAwayListener>
-      </Popper>
+          }
+        />
+      ) : (
+        <Popper
+          open={open}
+          anchorEl={anchorRef.current}
+          placement="bottom"
+          modifiers={[
+            {
+              name: "offset",
+              options: {
+                offset: [0, 8],
+              },
+            },
+          ]}
+          style={{ zIndex: 1300 }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <ClickAwayListener onClickAway={handleClose}>
+            <Paper elevation={3}>
+              <DueDatePickerContent
+                taskStartDate={taskStartDate}
+                taskEndDate={taskEndDate}
+                onCancel={handleClose}
+                onApply={handleApply}
+                loading={loadingEditTask}
+              />
+            </Paper>
+          </ClickAwayListener>
+        </Popper>
+      )}
     </>
   );
 }

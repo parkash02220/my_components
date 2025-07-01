@@ -1,11 +1,12 @@
 import { Typography, Chip } from "@mui/material";
 import { getFullName } from "@/utils";
 
-export const getRenderTags = (type) => {
+export const getRenderTags = (type,screen) => {
   switch (type) {
     case "username": {
+      const visibleTagNumber = screen.isXs ? 2 : 4;
       const UserNameRenderTags = (value, getTagProps) => {
-        const visibleTags = value.slice(0, 4);
+        const visibleTags = value.slice(0, visibleTagNumber);
         return [
           ...visibleTags.map((option, index) => {
             const { key, ...tagProps } = getTagProps({ index });
@@ -13,13 +14,20 @@ export const getRenderTags = (type) => {
               <Chip
                 key={option?.id || key}
                 label={getFullName(option?.firstName, option?.lastName)}
+                sx={{
+                  fontSize:{xs:12,sm:13,lg:14},
+                  maxWidth:{xs:"150px !important",sm:"300px !important"},
+                  textOverflow:'ellipsis',
+                  overflow:'hidden',
+                  whiteSpace:'nowrap',
+                }}
                 {...tagProps}
               />
             );
           }),
-          value.length > 4 && (
-            <Typography key="more" fontSize={14}>
-              +{value.length - 4} more
+          value.length > visibleTagNumber && (
+            <Typography key="more" variant="primary">
+              +{value.length - visibleTagNumber} more
             </Typography>
           ),
         ];

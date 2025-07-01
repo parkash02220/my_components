@@ -23,7 +23,7 @@ const defaultCalendarStyle = ({ isXs, fontSize, calendarDaySize }) => ({
       width: calendarDaySize,
       height: calendarDaySize,
       borderRadius: "50%",
-      margin: "0 auto",
+      // margin: "0 auto",
     },
   
     "& .MuiPickersDay-root.MuiPickersDay-today": {
@@ -31,7 +31,7 @@ const defaultCalendarStyle = ({ isXs, fontSize, calendarDaySize }) => ({
       width: calendarDaySize,
       height: calendarDaySize,
       borderRadius: "50%",
-      margin: "0 auto",
+      // margin: "0 auto",
     },
   
     "& .MuiPickersDay-root:hover": {

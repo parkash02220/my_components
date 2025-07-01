@@ -21,8 +21,8 @@ export const autocompleteConfigMap = {
       hasFetchedOnce: result?.hasFetchedOnce,
       refetchOptions: result?.resetStatesAndFetch,
     }),
-    renderTags: getRenderTags("username"),
-    renderOption: getRenderOptions("user_with_avatar"),
+    getRenderTag:(screen) => getRenderTags("username",screen),
+    getRenderOption: (screen) => getRenderOptions("user_with_avatar", screen),
   },
 
   chatroom_users: {
@@ -42,7 +42,7 @@ export const autocompleteConfigMap = {
       hasFetchedOnce: result?.hasFetchedOnce,
       refetchOptions: result?.resetStatesAndFetch,
     }),
-    renderTags: getRenderTags("username"),
-    renderOption: getRenderOptions("user_with_avatar"),
+    getRenderTag:(screen) => getRenderTags("username",screen),
+    getRenderOption: (screen) => getRenderOptions("user_with_avatar", screen),
   },
 };

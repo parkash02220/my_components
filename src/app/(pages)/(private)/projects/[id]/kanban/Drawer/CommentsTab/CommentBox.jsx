@@ -1,4 +1,6 @@
 import MyTextField from "@/components/MyTextfield/MyTextfield";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { getTimeAgo } from "@/utils";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 
@@ -13,6 +15,8 @@ const CommentBox = ({
   handleDeletePopupOpen,
   editedText,
 }) => {
+  const {fontSize} = useResponsiveValue();
+  const {isXs} = useResponsiveBreakpoints();
   return (
     <>
       <Box
@@ -34,8 +38,8 @@ const CommentBox = ({
             justifyContent: "center",
             alignItems: "center",
             flexShrink: 0,
-            width: 40,
-            height: 40,
+            width: isXs ? 30 : 40,
+            height: isXs ? 30 : 40,
             borderRadius: "50%",
             overflow: "hidden",
           }}
@@ -59,7 +63,7 @@ const CommentBox = ({
             display: "flex",
             flex: "1 1 auto",
             flexDirection: "column",
-            gap: "4px",
+            gap: isXs ? 0 : "4px",
           }}
         >
           <Box
@@ -71,14 +75,12 @@ const CommentBox = ({
             }}
           >
             <Typography
-              variant="h6"
+              variant="primary"
               fontWeight={600}
-              fontSize={14}
-              color={theme?.palette?.primary?.main}
             >{`${comment?.user?.firstName || ""} ${
               comment?.user?.lastName || ""
             }`}</Typography>
-            <Typography fontSize={12} color="#919EAB">
+            <Typography fontSize={isXs ? 10 : 12} color="#919EAB">
               {getTimeAgo(comment?.updatedAt || 0)}
             </Typography>
           </Box>
@@ -92,10 +94,11 @@ const CommentBox = ({
                 rows={2}
                 border="1px solid rgba(145,158,171,0.16)"
                 loading={loadingEditComment}
+                inputFontSize={fontSize}
                 label=""
               />
             ) : (
-              <Typography fontSize={14} color={theme?.palette?.primary?.main}>
+              <Typography variant="primary">
                 {comment?.text || ""}
               </Typography>
             )}
@@ -106,6 +109,9 @@ const CommentBox = ({
                   size="small"
                   onClick={() => handleEditComment(comment?.id)}
                   disabled={loadingEditComment}
+                  sx={{
+                    fontSize:fontSize,
+                  }}
                 >
                   Save
                 </Button>
@@ -115,6 +121,9 @@ const CommentBox = ({
                   onClick={() => {
                     setEditingCommentId(null);
                     setEditedText("");
+                  }}
+                  sx={{
+                    fontSize:fontSize,
                   }}
                 >
                   Cancel

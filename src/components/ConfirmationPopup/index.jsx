@@ -89,14 +89,14 @@ const ConfirmationPopup = ({
           open={open}
           handleClose={handleClose}
           title={title}
-          fontSize="18px"
+          fontSize={isDownXs ? "14px":"18px"}
           titlepadding="24px 24px 16px"
           contentpadding="0px 24px !important"
           actionpadding="24px !important"
           width={isDownXs ? "100%" : "auto"}
           content={
             <Box>
-              <Typography fontSize={14} color={theme?.palette?.primary?.main}>
+              <Typography fontSize={fontSize} color={theme?.palette?.primary?.main}>
                 Are you sure you want to logout ?
               </Typography>
             </Box>
@@ -116,7 +116,7 @@ const ConfirmationPopup = ({
                 padding={"6px 12px"}
                 minWidth="64px"
                 fontWeight={700}
-                fontSize={14}
+                fontSize={fontSize}
                 borderRadius="8px"
                 loading={loading}
                 backgroundColor="#1C252E"
@@ -131,7 +131,7 @@ const ConfirmationPopup = ({
                 color={theme?.palette?.primary?.main}
                 borderRadius="8px"
                 variant="outlined"
-                fontSize={14}
+                fontSize={fontSize}
                 hoverBgColor="whitesmoke"
               >
                 {cancelText || "Cancel"}

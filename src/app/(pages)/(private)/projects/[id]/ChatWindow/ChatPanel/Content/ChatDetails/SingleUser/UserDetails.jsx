@@ -1,9 +1,11 @@
 import { useOrganizationContext } from "@/context/Organization/OrganizationContext";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { getDesignationName, getFullName } from "@/utils";
 import { Box, Typography } from "@mui/material";
 import { useMemo } from "react";
 
 const UserDetails = ({ user }) => {
+  const {isXs} = useResponsiveBreakpoints();
   const { allDesignations } = useOrganizationContext()?.state;
   const designation = useMemo(() => {
     return getDesignationName(allDesignations,user?.userProfile?.designation);
@@ -18,8 +20,8 @@ const UserDetails = ({ user }) => {
         pb={5}
       >
         <Box
-          width={96}
-          height={96}
+          width={isXs ? 75 : 96}
+          height={isXs ? 75 : 96}
           mb={2}
           overflow={"hidden"}
           borderRadius={"50%"}
@@ -40,10 +42,10 @@ const UserDetails = ({ user }) => {
             }}
           />
         </Box>
-        <Typography variant="h6" fontWeight={600} fontSize={20} color="#1C252E">
+        <Typography variant="title1" fontWeight={600}>
           {getFullName(user?.firstName, user?.lastName)}
         </Typography>
-        <Typography color="#637381" fontSize={14} mt={"4px"}>
+        <Typography variant="secondary" mt={"4px"}>
           {designation}
         </Typography>
       </Box>

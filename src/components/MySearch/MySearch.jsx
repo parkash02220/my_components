@@ -131,7 +131,7 @@ export default function MySearch({
               ...clearIconStyle,
             }}
           >
-            <ClearIcon />
+            <ClearIcon sx={{width:clearIconStyle?.width,height:clearIconStyle?.width}}/>
           </IconButton>
         )}
         {

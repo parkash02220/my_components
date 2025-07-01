@@ -5,7 +5,9 @@ import UserWithStatus from "../../../../components/UserWithStatus";
 import { getDesignationName, getFullName } from "@/utils";
 import { useOrganizationContext } from "@/context/Organization/OrganizationContext";
 import { useChatContext } from "@/context/Chat/ChatContext";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 const RoomDetails = ({ users = [] }) => {
+  const {isXs} = useResponsiveBreakpoints();
   const [isExpanded, setIsExpanded] = useState(true);
   const toggleIsExpanded = () => {
     setIsExpanded((pre) => !pre);
@@ -61,7 +63,7 @@ const RoomDetails = ({ users = [] }) => {
             {users?.map((user) => {
               return (
                 <React.Fragment key={user?.id}>
-                  <RoomRow user={user} />
+                  <RoomRow user={user} screen={{isXs}}/>
                 </React.Fragment>
               );
             })}
@@ -73,9 +75,10 @@ const RoomDetails = ({ users = [] }) => {
 };
 export default RoomDetails;
 
-export const RoomRow = ({ user }) => {
+export const RoomRow = ({ user,screen={} }) => {
   const { allDesignations } = useOrganizationContext()?.state;
   const { onlineUsers } = useChatContext().state;
+  const {isXs} = screen;
   const designation = useMemo(() => {
     return getDesignationName(allDesignations,user?.userProfile?.designation);
   }, [allDesignations, user]);
@@ -96,7 +99,7 @@ export const RoomRow = ({ user }) => {
           p: "8px 16px",
         }}
       >
-        <UserWithStatus width={40} height={40} avatar={user?.avatar} isOnline={isOnline}/>
+        <UserWithStatus width={isXs ? 30 : 40} height={isXs ? 30 : 40} avatar={user?.avatar} isOnline={isOnline}/>
         <Box
           flex={"1 1 auto"}
           minWidth={0}
@@ -109,8 +112,7 @@ export const RoomRow = ({ user }) => {
             textOverflow={"ellipsis"}
             whiteSpace={"nowrap"}
             fontWeight={600}
-            color="#1C252E"
-            fontSize={14}
+             variant="primary"
           >
             {getFullName(user?.firstName, user?.lastName)}
           </Typography>
@@ -119,7 +121,7 @@ export const RoomRow = ({ user }) => {
             textOverflow={"ellipsis"}
             whiteSpace={"nowrap"}
             color="#637381"
-            fontSize={12}
+            fontSize={isXs ? 10 : 12}
           >
             {designation}
           </Typography>

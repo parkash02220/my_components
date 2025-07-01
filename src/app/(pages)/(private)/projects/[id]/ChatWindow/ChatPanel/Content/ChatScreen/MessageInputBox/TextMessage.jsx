@@ -1,4 +1,5 @@
 import MyTextField from "@/components/MyTextfield/MyTextfield";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 import { Box } from "@mui/material";
 const TextMessage = ({
   isDisabled,
@@ -6,7 +7,7 @@ const TextMessage = ({
   onSendInputMessageChange,
   sendMessageInputValue,
 }) => {
-
+  const {fontSize} = useResponsiveValue();
   const handleSendMessage = async (e) => {
     if (e.key === "Enter") {
       onSendMessage();
@@ -25,6 +26,7 @@ const TextMessage = ({
           onChange={onSendInputMessageChange}
           onKeyDown={handleSendMessage}
           value={sendMessageInputValue}
+          inputFontSize={fontSize}
         />
       </Box>
     </>

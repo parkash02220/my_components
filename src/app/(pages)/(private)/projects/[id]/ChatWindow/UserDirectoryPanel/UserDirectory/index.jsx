@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import UserDIrectoryItem from "./UserDIrectoryItem";
 import React from "react";
 import Loader from "@/components/Loader/Loader";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 const UserDirectory = ({
   isExpanded,
@@ -12,7 +13,13 @@ const UserDirectory = ({
   loading,
   loadingMore,
   debouncedSearchValue,
+  setIsExpanded,
 }) => {
+  const {isXs} = useResponsiveBreakpoints();
+  const handleMobileChatStart = (chatroom) => {
+    handleChatStart(chatroom);
+    setIsExpanded(false);
+  }
   return (
     <Box
       minWidth={0}
@@ -40,7 +47,7 @@ const UserDirectory = ({
       >
         <Box pb={1} display="flex" flexDirection="column">
           {loading && combinedList?.length === 0 && (
-            <Box position={'absolute'} width={'100%'} height={'100%'}>
+            <Box position={'absolute'} width={'100%'} height={'100%'} minHeight={200}>
               <Loader />
             </Box>
           )}
@@ -52,10 +59,10 @@ const UserDirectory = ({
                 isExpanded={isExpanded}
                 chatroom={type === "chatroom" ? data : undefined}
                 user={type === "user" ? data : undefined}
-                handleChatStart={handleChatStart}
+                handleChatStart={ isXs ? handleMobileChatStart : handleChatStart}
               />
             ))}
-          {hasMore && (
+          {hasMore && !loading && (
             <Box ref={loadMoreRef} sx={{ height: "1px" }} />
           )}
           {loadingMore && (
@@ -73,22 +80,20 @@ const UserDirectory = ({
               alignItems="center"
             >
               <Typography
-                variant="h6"
-                fontSize="18px"
-                color={"#1C252E"}
+                variant="title"
                 fontWeight={600}
               >
                 Not found
               </Typography>
               <Box display="flex" gap={1}>
-                <Typography fontSize="14px" color={"#1C252E"}>
+                <Typography variant="primary">
                   No results found for
                 </Typography>
-                <Typography fontSize="14px" fontWeight={700} color={"#1C252E"}>
+                <Typography variant="primary" fontWeight={700}>
                   {`"${debouncedSearchValue}".`}
                 </Typography>
               </Box>
-              <Typography fontSize="14px" color={"#1C252E"}>
+              <Typography variant="primary">
                 Try checking for typos or using complete words.
               </Typography>
             </Box>

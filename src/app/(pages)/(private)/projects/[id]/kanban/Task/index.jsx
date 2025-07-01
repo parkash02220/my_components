@@ -3,7 +3,14 @@
 import React, { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Card, CardContent, Box, Typography, useTheme } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Box,
+  Typography,
+  useTheme,
+  IconButton,
+} from "@mui/material";
 import PriorityIcon from "./PriorityIcon";
 import SubComments from "./SubComments";
 import DueDatePopper from "./DueDatePopper";
@@ -11,11 +18,16 @@ import AssignedTo from "./AssignedTo";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 
-export function TaskCard({ task, isOverlay }) {
+export function TaskCard({
+  task,
+  isOverlay,
+  handleDrawerOpen,
+  setActiveTaskId,
+}) {
   const taskData = task?.content;
   const theme = useTheme();
-  const {isXs} = useResponsiveBreakpoints();
-  const {fontSize} = useResponsiveValue();
+  const { isXs } = useResponsiveBreakpoints();
+  const { fontSize } = useResponsiveValue();
   const {
     setNodeRef,
     attributes,
@@ -46,12 +58,18 @@ export function TaskCard({ task, isOverlay }) {
     //   : undefined,
   };
 
+  const handleSideDrawerOpen = (task) => {
+    setActiveTaskId(task?.id);
+    handleDrawerOpen();
+  };
+
   return (
     <>
       <Card
         ref={setNodeRef}
         {...attributes}
-        {...listeners}
+        {...(!isXs ? listeners : {})}
+        onClick={() => handleSideDrawerOpen(task)}
         style={style}
         sx={{
           width: "100%",
@@ -73,6 +91,42 @@ export function TaskCard({ task, isOverlay }) {
           }}
         >
           <Box className="taskCard__contentBox">
+            {isXs && (
+              <Box
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"flex-end"}
+                mt={1}
+                mr={1}
+              >
+                <IconButton
+                  {...attributes}
+                  {...listeners}
+                  onClick={(e) => e.stopPropagation()}
+                  size="small"
+                  style={{
+                    cursor: "grab",
+                    color: "#999",
+                    width: { xs: "16px", sm: "20px" },
+                    height: { xs: "16px", sm: "20px" },
+                    padding: "0px",
+                  }}
+                  sx={{
+                    "&:hover": {
+                      background: "transparent",
+                    },
+                  }}
+                >
+                  <span className="sr-only">{`Move task: ${taskData?.title}`}</span>
+                  <img
+                    src="/columnDragIcon.svg"
+                    alt="drag task icon"
+                    width={"100%"}
+                    height={"100%"}
+                  />
+                </IconButton>
+              </Box>
+            )}
             {taskData?.images && taskData?.images?.length > 0 ? (
               <Box className="taskCard__imageBox" padding={"8px 8px 0px 8px"}>
                 <img
@@ -91,7 +145,7 @@ export function TaskCard({ task, isOverlay }) {
               className="taskCard__dataBox"
               fontWeight={600}
               fontSize={fontSize}
-              padding={"20px 16px"}
+              padding={isXs ? "12px" : "20px 16px"}
               position={"relative"}
             >
               {taskData?.priority && (

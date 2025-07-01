@@ -141,7 +141,7 @@ const DueDateDialog = ({
               </Box>
               <Box>
                 {dateError && (
-                  <Typography color="#FF5630" fontSize={12}>
+                  <Typography color="#FF5630" fontSize={isXs ? 10 : 12}>
                     {dateError}
                   </Typography>
                 )}

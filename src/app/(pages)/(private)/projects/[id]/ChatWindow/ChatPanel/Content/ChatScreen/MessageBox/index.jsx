@@ -28,10 +28,12 @@ const MessageBox = ({ selectedDirectoryItem }) => {
             display={"flex"}
             flexDirection={"column"}
             minHeight={0}
-            paddingInline={3}
             pt={2}
             pb={3}
             width={"100%"}
+            sx={{
+              paddingInline:{xs:1,sm:3},
+            }}
           >
             <RenderMessages selectedDirectoryItem={selectedDirectoryItem} />
             {isSomeoneTyping && (

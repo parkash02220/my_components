@@ -3,6 +3,7 @@ import Header from "./Header";
 import Content from "./Content";
 import { useState } from "react";
 import Loader from "@/components/Loader/Loader";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 const ChatPanel = ({
   chatWindow,
@@ -13,7 +14,8 @@ const ChatPanel = ({
   onSendInputMessageChange,
   sendMessageInputValue,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const {isXs} = useResponsiveBreakpoints();
+  const [isExpanded, setIsExpanded] = useState(!isXs);
   const toggleExpand = () => {
     setIsExpanded((pre) => !pre);
   };
@@ -23,7 +25,7 @@ const ChatPanel = ({
         sx={{
           minWidth: 0,
           display: "flex",
-          flex: "1 1 auto",
+          flex:{xs:'1 0 100%',sm:"1 1 auto"} ,
           flexDirection: "column",
         }}
       >
@@ -36,6 +38,7 @@ const ChatPanel = ({
         />
         <Content
           isExpanded={isExpanded}
+          setIsExpanded={setIsExpanded}
           selectedDirectoryItem={selectedDirectoryItem}
           selectedUsers={selectedUsers}
           onSendMessage={onSendMessage}

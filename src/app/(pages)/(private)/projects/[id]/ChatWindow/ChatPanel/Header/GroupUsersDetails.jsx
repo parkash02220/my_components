@@ -3,8 +3,12 @@ import UserWithStatus from "../../components/UserWithStatus";
 import MyTooltip from "@/components/MyTooltip/MyTooltip";
 import { getFullName } from "@/utils";
 import { useMemo } from "react";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 const GroupUsersDetails = ({ groupDetails }) => {
+  const {fontSize,iconSize} = useResponsiveValue();
+  const {isXs} = useResponsiveBreakpoints();
   const users = groupDetails?.participants || [];
 
   const visibleUsers = useMemo(() => {
@@ -33,13 +37,13 @@ const GroupUsersDetails = ({ groupDetails }) => {
                   alt={name}
                   referrerPolicy="no-referrer"
                   style={{
-                    width: 24,
-                    height: 24,
+                    width: iconSize,
+                    height: iconSize,
                     borderRadius: "50%",
                     objectFit: "cover",
                   }}
                 />
-                <Typography fontSize={12} fontWeight={500} color="white">
+                <Typography fontSize={isXs ? 10 : 12} fontWeight={500} color="white">
                   {name}
                 </Typography>
               </Box>
@@ -49,10 +53,10 @@ const GroupUsersDetails = ({ groupDetails }) => {
       }
     >
       <Box
-        fontSize={12}
+        fontSize={isXs ? 10 : 12}
         color="#007867"
-        width={32}
-        height={32}
+        width={isXs ? 24 : 32}
+        height={isXs ? 24 : 32}
         fontWeight={600}
         ml="-8px"
         position="relative"
@@ -83,8 +87,8 @@ const GroupUsersDetails = ({ groupDetails }) => {
                 placement="bottom"
               >
                 <Box
-                  width={32}
-                  height={32}
+                  width={isXs ? 24 : 32}
+                  height={isXs ? 24 : 32}
                   border="2px solid #FFFFFF"
                   ml="-8px"
                   position="relative"

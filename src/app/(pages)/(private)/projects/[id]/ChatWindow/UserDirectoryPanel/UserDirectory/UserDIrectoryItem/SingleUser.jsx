@@ -4,6 +4,8 @@ import { getFullName, getTimeAgo } from "@/utils";
 import { useChatContext } from "@/context/Chat/ChatContext";
 import { useMemo } from "react";
 import useCreateChatRoom from "@/hooks/chat/useCreateChatRoom";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 
 const SingleUser = ({
   isExpanded,
@@ -11,6 +13,8 @@ const SingleUser = ({
   userWithoutChatroom,
   handleChatStart,
 }) => {
+  const {isXs} = useResponsiveBreakpoints();
+  const {fontSize} = useResponsiveValue();
   const { createChatRoom } = useCreateChatRoom();
   const user = chatroom?.targetUser || userWithoutChatroom;
   const { firstName, lastName, avatar, id: userId } = user || {};
@@ -62,8 +66,8 @@ const SingleUser = ({
         minWidth: 0,
         width: "100%",
         paddingInline: "20px",
-        pt: "12px",
-        pb: "12px",
+        pt: isXs ? '4px' : "12px",
+        pb: isXs ? '4px' :  "12px",
         gap: 2,
         ":hover": {
           background: "rgba(145 158 171 / 0.08)",
@@ -71,7 +75,7 @@ const SingleUser = ({
       }}
     >
       <UserWithStatus avatar={avatar || ""} isOnline={isOnline} />
-      {isExpanded && (
+      { isExpanded && (
         <>
           <Box sx={{ flex: "1 1 auto", minWidth: 0 }}>
             <Typography
@@ -79,8 +83,7 @@ const SingleUser = ({
               textOverflow="ellipsis"
               whiteSpace="nowrap"
               fontWeight={600}
-              fontSize={14}
-              color="#1C252E"
+              variant="primary"
             >
               {userName}
             </Typography>
@@ -89,8 +92,7 @@ const SingleUser = ({
                 overflow="hidden"
                 textOverflow="ellipsis"
                 whiteSpace="nowrap"
-                color="#637381"
-                fontSize={14}
+                variant="secondary"
               >
                 {lastMessageText}
               </Typography>
@@ -107,7 +109,7 @@ const SingleUser = ({
                 overflow="hidden"
                 textOverflow="ellipsis"
                 whiteSpace="nowrap"
-                fontSize={12}
+                fontSize={isXs ? 10 : 12}
                 color="#919EAB"
                 mb="12px"
               >
