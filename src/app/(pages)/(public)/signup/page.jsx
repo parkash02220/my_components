@@ -147,7 +147,7 @@ const SignUp = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "80px 16px 80px 16px",
+            padding: isDownXs ? "32px 16px 32px 16px" : "80px 16px 80px 16px",
             flex: "1 1 auto",
             flexDirection: "column",
           }}

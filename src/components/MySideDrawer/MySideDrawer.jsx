@@ -300,7 +300,7 @@ export default function MySideDrawer({ open, setOpen }) {
               {projects?.length > 0 &&
                 hasMore &&
                 !loadingAllProjects &&
-                !isAdmin && <Box ref={loadMoreRef} style={{ height: 1 }} />}
+                !isAdmin && <Box ref={loadMoreRef} sx={{ height: 1,border:'1px solid red' }} />}
             </List>
           </MobileSideDrawer>
         )}

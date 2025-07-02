@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import useResponsiveValue from "./responsive/useResponsiveValue";
+import useResponsiveBreakpoints from "./useResponsiveBreakpoints";
 const toastStyles = {
   base: {
     padding: "4px 8px 4px 4px",
@@ -25,6 +26,7 @@ const toastStyles = {
 
 const useToast = () => {
   const {fontSize,iconSize} = useResponsiveValue();
+  const {isXs} = useResponsiveBreakpoints();
   const showToast = useCallback(
     ({ type = "success", message = "", duration = 3000,toastId=null,refetchMsg=false }) => {
 
@@ -64,6 +66,9 @@ const useToast = () => {
                     padding: 0,
                     borderRadius: "50%",
                     border: "1px solid rgba(145,158,171,0.16)",
+                    display:"flex",
+                    justifyContent:"center",
+                    alignItems:"center",
                   }}
                 >
                   <img

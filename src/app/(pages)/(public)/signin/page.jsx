@@ -146,7 +146,7 @@ export default function SignIn() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: isDownMd ? "24px 16px 80px 16px" : "80px 16px 80px 16px",
+            padding: isDownMd ? "32px 16px 32px 16px" : "80px 16px 80px 16px",
             flex: "1 1 auto",
             flexDirection: "column",
           }}
