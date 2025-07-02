@@ -7,13 +7,15 @@ import useProjectNameAvailability from "@/hooks/projects/useProjectNameAvailabil
 import useToast from "@/hooks/common/useToast";
 import MyAutoCompleteVarient from "../MyAutoComplete/MyAutoCompleteVarient";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const CreateProjectDialog = ({
   open,
   onClose,
   onCreate,
   loadingCreateProject,
 }) => {
-  const { isDownXs } = useResponsiveBreakpoints();
+  const { isDownXs, isXs } = useResponsiveBreakpoints();
+  const { fontSize } = useResponsiveValue();
   const [projectName, setProjectName] = useState("");
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("");
@@ -60,6 +62,7 @@ const CreateProjectDialog = ({
       open={open}
       handleClose={handleDialogClose}
       title="Create New Project"
+      fontSize={isDownXs ? "18px" : "24px"}
       width={isDownXs ? "100%" : "auto"}
       content={
         <Box pt={2} paddingInline={1}>
@@ -73,12 +76,12 @@ const CreateProjectDialog = ({
               autoFocus
               error={error}
               helperText={helperText}
-              inputFontSize="14px"
-              labelFontSize="14px"
+              inputFontSize={fontSize}
+              labelFontSize={fontSize}
             />
             {!error && (
               <Typography
-                fontSize={12}
+                fontSize={isXs ? 10 : 12}
                 fontWeight={700}
                 color={available ? "green" : "red"}
                 mt={0}
@@ -116,6 +119,7 @@ const CreateProjectDialog = ({
             fullWidth={true}
             size="medium"
             padding={"8px 12px"}
+            fontSize={fontSize}
           >
             Cancel
           </MyButton>
@@ -128,6 +132,7 @@ const CreateProjectDialog = ({
             loadingText={"checking..."}
             size="medium"
             padding={"8px 12px"}
+            fontSize={fontSize}
           >
             Create
           </MyButton>

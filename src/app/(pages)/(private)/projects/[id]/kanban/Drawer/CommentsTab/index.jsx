@@ -99,7 +99,7 @@ const CommentsTab = ({ activeTask }) => {
           flexDirection: "column",
           minHeight: "100%",
           position: "relative",
-          height: "calc(100vh - 145px)",
+          height: "calc(100dvh - 145px)",
         }}
       >
         {!loadingAllTaskComments ? (

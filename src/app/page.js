@@ -5,17 +5,19 @@ import { Box } from "@mui/material";
 import Loader from "@/components/Loader/Loader";
 
 export default function Page() {
-  const [isMounted,setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     setIsMounted(true);
-  },[]);
+  }, []);
 
-  if(!isMounted) return null;
+  if (!isMounted) return null;
 
-  return <>
-  <Box height={'100vh'}>
-  <Loader />
-  </Box>
-  </>
+  return (
+    <>
+      <Box height={"100dvh"}>
+        <Loader />
+      </Box>
+    </>
+  );
 }

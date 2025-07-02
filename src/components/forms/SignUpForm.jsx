@@ -12,7 +12,7 @@ import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const SignUpForm = ({ formik }) => {
   const { isDownXs } = useResponsiveBreakpoints();
-  const {fontSize} = useResponsiveValue();
+  const { fontSize } = useResponsiveValue();
   const [showPasswrod, setShowPassword] = useState(false);
   const handleShowPasswrod = () => {
     setShowPassword(true);
@@ -24,7 +24,7 @@ const SignUpForm = ({ formik }) => {
   return (
     <>
       <Grid container spacing={isDownXs ? 2 : 3}>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="firstName"
             value={formik?.values?.firstName}
@@ -48,7 +48,7 @@ const SignUpForm = ({ formik }) => {
             inputFontSize={fontSize}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="lastName"
             value={formik?.values?.lastName}

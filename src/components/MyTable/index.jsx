@@ -8,6 +8,7 @@ import {
   Paper,
   TableContainer,
   TablePagination,
+  Box,
 } from "@mui/material";
 import TableCellRenderer from "./TableCellRenderer";
 import Loader from "../Loader/Loader";
@@ -24,7 +25,7 @@ const MyTable = ({
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const {fontSize} = useResponsiveValue();
+  const { fontSize } = useResponsiveValue();
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     fetchMore({ page: newPage + 1, limit: rowsPerPage });
@@ -39,104 +40,119 @@ const MyTable = ({
   const isTableEmpty = !isLoading && rows?.length === 0;
   return (
     <Paper sx={{ width: "100%" }}>
-      <TableContainer>
-        <Table
-          size="small"
-          sx={{
-            borderCollapse: "collapse",
-            borderSpacing: 0,
-            minWidth: { xs: 750, sm: 960 },
-            minHeight: isTableEmpty || isLoading ? 300 : "auto",
-          }}
-        >
-          <TableHead>
-            <TableRow>
-              {columns.map((col) => {
-                return (
-                  <TableCell
-                    key={col.id}
-                    align={col.align || "left"}
-                    sx={{
-                      borderColor: "transparent",
-                      fontSize: { xs: 12, sm: 13, lg: 14 },
-                      color: "#637381",
-                      fontWeight: 600,
-                      background: "#F4F6F8",
-                      padding: "16px",
-                    }}
-                  >
-                    {col.label}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {isLoading ? (
+      <Box sx={{ position: "relative" }}>
+        <TableContainer>
+          <Table
+            size="small"
+            sx={{
+              borderCollapse: "collapse",
+              borderSpacing: 0,
+              minWidth: { xs: 750, sm: 960 },
+              minHeight: isTableEmpty || isLoading ? 300 : "auto",
+            }}
+          >
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={columns.length} align="center">
-                  <Loader />
-                </TableCell>
-              </TableRow>
-            ) : isTableEmpty ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  align="center"
-                  sx={{ py: 4, fontStyle: "italic", color: "#637381" }}
-                >
-                  {emptyTableMsg || "No data found"}
-                </TableCell>
-              </TableRow>
-            ) : (
-              rows.map((row, rowIndex) => (
-                <TableRow
-                  key={row.id || rowIndex}
-                  sx={{ "&:hover": { background: "#F4F6F8" } }}
-                >
-                  {columns.map((col) => (
+                {columns.map((col) => {
+                  return (
                     <TableCell
                       key={col.id}
                       align={col.align || "left"}
                       sx={{
-                        p:
-                          col.type === "checkbox" || col.type?.includes("icon")
-                            ? 1
-                            : 2,
-                        width:
-                          col.type === "checkbox" || col.type?.includes("icon")
-                            ? "1%"
-                            : "auto",
-                        whiteSpace: "nowrap",
-                        ...(col.sx || {}),
+                        borderColor: "transparent",
+                        fontSize: { xs: 12, sm: 13, lg: 14 },
+                        color: "#637381",
+                        fontWeight: 600,
+                        background: "#F4F6F8",
+                        padding: "16px",
                       }}
                     >
-                      <TableCellRenderer
-                        type={col.type}
-                        isAllRowSelected={isAllRowSelected}
-                        value={row[col.id]}
-                        onChange={(e) => col.onChange?.(e, row)}
-                        onClick={(e) => col.onClick?.(e, row)}
-                        tooltip={col.tooltip}
-                        icon={col.icon}
-                        icons={
-                          col.type === "multipleIconButton"
-                            ? col.icons?.map((iconObj) => ({
-                                ...iconObj,
-                                onClick: (e) => iconObj.onClick?.(e, row),
-                              }))
-                            : undefined
-                        }
-                      />
+                      {col.label}
                     </TableCell>
-                  ))}
+                  );
+                })}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {isTableEmpty ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    align="center"
+                    sx={{ py: 4, fontStyle: "italic", color: "#637381" }}
+                  >
+                    {emptyTableMsg || "No data found"}
+                  </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
+              ) : (
+                rows.map((row, rowIndex) => (
+                  <TableRow
+                    key={row.id || rowIndex}
+                    sx={{ "&:hover": { background: "#F4F6F8" } }}
+                  >
+                    {columns.map((col) => (
+                      <TableCell
+                        key={col.id}
+                        align={col.align || "left"}
+                        sx={{
+                          p:
+                            col.type === "checkbox" ||
+                            col.type?.includes("icon")
+                              ? 1
+                              : 2,
+                          width:
+                            col.type === "checkbox" ||
+                            col.type?.includes("icon")
+                              ? "1%"
+                              : "auto",
+                          whiteSpace: "nowrap",
+                          ...(col.sx || {}),
+                        }}
+                      >
+                        <TableCellRenderer
+                          type={col.type}
+                          isAllRowSelected={isAllRowSelected}
+                          value={row[col.id]}
+                          onChange={(e) => col.onChange?.(e, row)}
+                          onClick={(e) => col.onClick?.(e, row)}
+                          tooltip={col.tooltip}
+                          icon={col.icon}
+                          icons={
+                            col.type === "multipleIconButton"
+                              ? col.icons?.map((iconObj) => ({
+                                  ...iconObj,
+                                  onClick: (e) => iconObj.onClick?.(e, row),
+                                }))
+                              : undefined
+                          }
+                        />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        {isLoading && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              bgcolor: "rgba(255, 255, 255, 0.6)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 2,
+            }}
+          >
+            <Loader />
+          </Box>
+        )}
+      </Box>
       <TablePagination
         component="div"
         count={totalCount}
@@ -163,6 +179,21 @@ const MyTable = ({
               xs: "18px",
               sm: "20px",
               md: "22px",
+            },
+          },
+          "@media (max-width: 400px)": {
+            // "& .MuiTablePagination-selectLabel,
+            "& .MuiTablePagination-displayedRows": {
+              display: "none",
+            },
+            "& .MuiTablePagination-actions": {
+              gap: "4px",
+            },
+            "& .MuiTablePagination-actions .MuiIconButton-root": {
+              padding: "4px",
+            },
+            "& .MuiTablePagination-actions .MuiSvgIcon-root": {
+              fontSize: "24px",
             },
           },
         }}

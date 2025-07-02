@@ -89,7 +89,7 @@ export const Content = ({
       <Box
         display={"flex"}
         flexDirection={"column"}
-        height={"calc(100vh - 132px)"}
+        height={"calc(100dvh - 68px)"}
       >
         <Box
           sx={{ width: "100%", background: "#F4F6F8" }}

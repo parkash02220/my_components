@@ -26,7 +26,7 @@ export default function HomeLayout({ children }) {
 
   if (loadingActiveUser) {
     return (
-      <Box height={"100vh"}>
+      <Box height={"100dvh"}>
         <Loader />
       </Box>
     );
@@ -54,7 +54,7 @@ export default function HomeLayout({ children }) {
                         : "calc(100% - 88px)"
                     }
                     position={"relative"}
-                    height={"100vh"}
+                    height={"100dvh"}
                   >
                     <Header />
                     <main

@@ -17,7 +17,7 @@ import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const UpdateUserForm = ({ formik }) => {
   const { isDownXs } = useResponsiveBreakpoints();
   const { minDate, maxDate } = getCalendarMinMaxDate(13, 130);
-  const {fontSize} = useResponsiveValue();
+  const { fontSize } = useResponsiveValue();
   return (
     <>
       <Grid container spacing={isDownXs ? 2 : 3}>
@@ -30,7 +30,7 @@ const UpdateUserForm = ({ formik }) => {
             Basic details :
           </Typography>
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="firstName"
             value={formik?.values?.firstName}
@@ -54,7 +54,7 @@ const UpdateUserForm = ({ formik }) => {
             inputFontSize={fontSize}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="lastName"
             value={formik?.values?.lastName}
@@ -244,7 +244,7 @@ const UpdateUserForm = ({ formik }) => {
             Other details :
           </Typography>
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           {/* <MySelect
               name="department"
               value={formik?.values?.department}
@@ -283,7 +283,7 @@ const UpdateUserForm = ({ formik }) => {
             helperText={formik.touched.department && formik.errors.department}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           {/* <MySelect
               name="designation"
               value={formik?.values?.designation}
@@ -322,7 +322,7 @@ const UpdateUserForm = ({ formik }) => {
             disabled={!formik.values?.department}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="phone"
             value={formik?.values?.phone}
@@ -344,7 +344,7 @@ const UpdateUserForm = ({ formik }) => {
             inputFontSize={fontSize}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="employeeId"
             value={formik?.values?.employeeId}
@@ -368,7 +368,7 @@ const UpdateUserForm = ({ formik }) => {
             inputFontSize={fontSize}
           />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <MyTextField
             name="dateOfBirth"
             value={formik?.values?.dateOfBirth}

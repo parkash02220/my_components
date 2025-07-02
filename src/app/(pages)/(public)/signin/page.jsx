@@ -15,7 +15,7 @@ import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 export default function SignIn() {
   const router = useRouter();
   const { isDownXs, isDownMd } = useResponsiveBreakpoints();
-  const {fontSize} = useResponsiveValue();
+  const { fontSize } = useResponsiveValue();
   const { loadingLogin, loginUser, errorMsg, errorLogin } = useLogin();
   const [showPasswrod, setShowPassword] = useState(false);
   const formik = useFormik({
@@ -53,7 +53,7 @@ export default function SignIn() {
   };
   return (
     <>
-      <Box className="signInContainer" display={"flex"} minHeight={"100vh"}>
+      <Box className="signInContainer" display={"flex"} minHeight={"100dvh"}>
         {!isDownMd ? (
           <Box
             className="signInContainer__leftBox"

@@ -15,7 +15,7 @@ import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const SignUp = () => {
   const router = useRouter();
   const { isDownMd, isDownXs } = useResponsiveBreakpoints();
-  const {fontSize} = useResponsiveValue();
+  const { fontSize } = useResponsiveValue();
   const { loadingSignUp, errorSignUp, responseMsg, signUpUser } = useSignUp();
   const formik = useFormik({
     initialValues: {
@@ -54,7 +54,7 @@ const SignUp = () => {
   };
   return (
     <>
-      <Box className="signUpContainer" display={"flex"} minHeight={"100vh"}>
+      <Box className="signUpContainer" display={"flex"} minHeight={"100dvh"}>
         {!isDownMd ? (
           <Box
             className="signUpContainer__leftBox"
