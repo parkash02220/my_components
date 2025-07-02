@@ -158,7 +158,7 @@ export const CollapsibleNavItem = ({
                     <Box
                       key={idx}
                       ref={loadMoreRef}
-                      sx={{ height: 1, width: "100%" }}
+                      sx={{ height: 10, width: "100%",border:'2px solid red' }}
                     />
                   );
                 }
