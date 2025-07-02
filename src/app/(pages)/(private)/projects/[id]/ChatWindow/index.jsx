@@ -135,19 +135,7 @@ const ChatWindow = ({ projectId }) => {
         alignItems={"center"}
         mb={isXs ? 1 : 2}
       >
-        <BackButton fontSize={isXs ? 14 : 16} path={`/projects/${projectId}`} iconOnly={isXs}/>
-        {
-          isXs && (
-            <Typography
-          variant="h4"
-          color="#1C252E"
-          fontSize={isXs ? 18 : 24}
-          fontWeight={700}
-        >
-          Chat
-        </Typography>
-          )
-        }
+        <BackButton  fontSize={16} path={`/projects/${projectId}`} text={isXs ? "Chat" : "Back"} />
       </Box>
       <Box
         className="chatWindow__container"

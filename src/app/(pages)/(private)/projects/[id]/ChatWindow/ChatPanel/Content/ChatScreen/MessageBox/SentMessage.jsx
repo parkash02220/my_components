@@ -16,13 +16,13 @@ const SentMessage = ({ msg }) => {
   ];
 
   return (
-    <Box mb={isXs ? 2 : 5} display="flex" justifyContent="flex-end">
-      <Box display="flex" flexDirection="column" alignItems="flex-end">
+    <Box mb={isXs ? 2 : 5} display="flex" justifyContent="flex-end" width={'100%'}>
+      <Box display="flex" flexDirection="column" alignItems="flex-end" width={'100%'}>
         <Typography color="#919EAB" fontSize={isXs ? 10 : 12} mb={1} noWrap>
           {timeAgo}
         </Typography>
 
-        <Box display="flex" alignItems="center" position="relative" justifyContent={'flex-end'}>
+        <Box display="flex" alignItems="center" position="relative" justifyContent={'flex-end'} width={'100%'}>
           <Box
             px={1.5}
             py={1.5}
