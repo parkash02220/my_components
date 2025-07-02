@@ -94,6 +94,9 @@ const useUpdateProjectName = (
   const handleUpdateProjectName = async (projectId) => {
     if (loading) return;
     const trimmedProjectName = projectName?.trim();
+    if (error) {
+      showToast({ toastId, type: "error", message: helperText });
+    }
     if (
       !trimmedProjectName ||
       trimmedProjectName === originalProjectName ||

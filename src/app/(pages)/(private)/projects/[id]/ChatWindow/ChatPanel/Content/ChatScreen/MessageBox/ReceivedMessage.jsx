@@ -21,7 +21,7 @@ const ReceivedMessage = ({ msg }) => {
   ];
 
   return (
-    <Box mb={isXs ? 2 : 5} display="flex">
+    <Box mb={isXs ? 2 : 5} display="flex" width={"100%"}>
       <Box
         mr={2}
         width={32}
@@ -46,26 +46,30 @@ const ReceivedMessage = ({ msg }) => {
         />
       </Box>
 
-      <Box display="flex" flexDirection="column" alignItems="flex-start">
-        <Typography
-          color="#919EAB"
-          fontSize={12}
-          mb={1}
-          noWrap
-        >
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="flex-start"
+        width={"100%"}
+      >
+        <Typography color="#919EAB" fontSize={12} mb={1} noWrap>
           {fullName}, {timeAgo}
         </Typography>
 
-        <Box display="flex" alignItems="center" position="relative">
         <Box
+          display="flex"
+          alignItems="center"
+          position="relative"
+          width={"100%"}
+        >
+          <Box
             px={1.5}
             py={1.5}
-            minWidth={48}
             maxWidth={isXs ? "60%" : 320}
             borderRadius={1}
             bgcolor="#C8FAD6"
             display="flex"
-            justifyContent={'flex-end'}
+            justifyContent={"flex-end"}
           >
             <Typography
               variant="primary"
@@ -88,7 +92,7 @@ const ReceivedMessage = ({ msg }) => {
               display: "flex",
               pt: "4px",
               transition: "opacity 200ms ease",
-              '&:hover': {
+              "&:hover": {
                 opacity: 1,
               },
             }}

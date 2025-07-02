@@ -70,7 +70,7 @@ const UserDirectoryPanel = ({
       >
         {isXs && (
           <IconButton
-            onClick={()=> setIsExpanded(true)}
+            onClick={() => setIsExpanded(true)}
             sx={{
               background: "#00A76F",
               top: "84px",
@@ -105,6 +105,7 @@ const UserDirectoryPanel = ({
           >
             <Header
               isExpanded={isExpanded}
+              setIsExpanded={setIsExpanded}
               toggleExpand={toggleExpand}
               setSelectedDirectoryItem={setSelectedDirectoryItem}
               clearInput={clearInput}
@@ -132,7 +133,7 @@ const UserDirectoryPanel = ({
           <MobileSideDrawer
             open={isExpanded}
             handleDrawer={() => setIsExpanded(false)}
-            width={'calc(100vw - 32px)'}
+            width={"calc(100vw - 32px)"}
             showCloseDialogIcon={false}
             header={
               <Box>

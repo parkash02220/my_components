@@ -16,22 +16,37 @@ const SentMessage = ({ msg }) => {
   ];
 
   return (
-    <Box mb={isXs ? 2 : 5} display="flex" justifyContent="flex-end" width={'100%'}>
-      <Box display="flex" flexDirection="column" alignItems="flex-end" width={'100%'}>
+    <Box
+      mb={isXs ? 2 : 5}
+      display="flex"
+      justifyContent="flex-end"
+      width={"100%"}
+    >
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="flex-end"
+        width={"100%"}
+      >
         <Typography color="#919EAB" fontSize={isXs ? 10 : 12} mb={1} noWrap>
           {timeAgo}
         </Typography>
 
-        <Box display="flex" alignItems="center" position="relative" justifyContent={'flex-end'} width={'100%'}>
+        <Box
+          display="flex"
+          alignItems="center"
+          position="relative"
+          justifyContent={"flex-end"}
+          width={"100%"}
+        >
           <Box
             px={1.5}
             py={1.5}
-            minWidth={48}
             maxWidth={isXs ? "60%" : 320}
             borderRadius={1}
             bgcolor="#C8FAD6"
             display="flex"
-            justifyContent={'flex-end'}
+            justifyContent={"flex-end"}
           >
             <Typography
               variant="primary"

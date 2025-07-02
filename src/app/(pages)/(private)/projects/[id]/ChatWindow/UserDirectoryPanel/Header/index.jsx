@@ -3,15 +3,21 @@ import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { Box, IconButton } from "@mui/material";
 
-const Header = ({ isExpanded,setIsExpanded, toggleExpand, setSelectedDirectoryItem,clearInput }) => {
-  const {fontSize} = useResponsiveValue();
-  const {isXs} = useResponsiveBreakpoints();
+const Header = ({
+  isExpanded,
+  setIsExpanded,
+  toggleExpand,
+  setSelectedDirectoryItem,
+  clearInput,
+}) => {
+  const { fontSize } = useResponsiveValue();
+  const { isXs } = useResponsiveBreakpoints();
   const { activeUser } = useAppContext()?.state;
   const handleResetDirectory = () => {
-         setSelectedDirectoryItem(null);
-         clearInput();
-         setIsExpanded(false);
-  }
+    setSelectedDirectoryItem(null);
+    clearInput();
+    setIsExpanded(!isXs);
+  };
   return (
     <>
       <Box
@@ -20,8 +26,8 @@ const Header = ({ isExpanded,setIsExpanded, toggleExpand, setSelectedDirectoryIt
         justifyContent={"center"}
         alignItems={"center"}
       >
-           { isExpanded &&  (
-            <>
+        {isExpanded && (
+          <>
             <Box position={"relative"} display={"inline-flex"} flexShrink={0}>
               <Box
                 position={"relative"}
@@ -63,8 +69,8 @@ const Header = ({ isExpanded,setIsExpanded, toggleExpand, setSelectedDirectoryIt
               ></Box>
             </Box>
             <Box flexGrow={1} />
-            </>
-            )}
+          </>
+        )}
         <IconButton
           onClick={toggleExpand}
           sx={{
@@ -77,13 +83,14 @@ const Header = ({ isExpanded,setIsExpanded, toggleExpand, setSelectedDirectoryIt
             alt="toggle"
             style={{
               width: isXs ? 16 : "20px",
-              height: isXs ? 16 :  "20px",
+              height: isXs ? 16 : "20px",
               flexShrink: 0,
               transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
             }}
           />
         </IconButton>
-         { isExpanded && (<IconButton
+        {isExpanded && (
+          <IconButton
             onClick={handleResetDirectory}
             sx={{
               borderRadius: "50%",
@@ -96,9 +103,14 @@ const Header = ({ isExpanded,setIsExpanded, toggleExpand, setSelectedDirectoryIt
             <img
               src="/addUser.svg"
               alt="user"
-              style={{ width:  isXs ? 18 :  "24px", height: isXs ? 18 :  "24px", flexShrink: 0 }}
+              style={{
+                width: isXs ? 18 : "24px",
+                height: isXs ? 18 : "24px",
+                flexShrink: 0,
+              }}
             />
-          </IconButton>)}
+          </IconButton>
+        )}
       </Box>
     </>
   );

@@ -1,16 +1,22 @@
 import MyDialog from "@/components/MyDialog/MyDialog";
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Keyboard } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Keyboard } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
-const AttachmentViewer = ({ attachments, selectedImage, open, handleClose }) => {
+const AttachmentViewer = ({
+  attachments,
+  selectedImage,
+  open,
+  handleClose,
+}) => {
   const [images, setImages] = useState(attachments || []);
   const [startIndex, setStartIndex] = useState(selectedImage);
-
+  const { isXs } = useResponsiveBreakpoints();
   useEffect(() => {
     setImages(attachments || []);
   }, [attachments]);
@@ -23,23 +29,23 @@ const AttachmentViewer = ({ attachments, selectedImage, open, handleClose }) => 
     <MyDialog
       open={open}
       handleClose={handleClose}
-      width={'calc(100% - 64px)'}
-      height={'calc(100% - 64px)'}
+      width={isXs ? "calc(100% - 32px)" : "calc(100% - 64px)"}
+      height={isXs ? "calc(100% - 32px)" : "calc(100% - 64px)"}
       maxwidth="1200px"
       maxheight="700px"
       contentpadding="0px !important"
       content={
         <Box p={2} height="100%">
           <Swiper
-           key={startIndex}
+            key={startIndex}
             modules={[Navigation, Pagination, Keyboard]}
-            navigation
+            navigation={!isXs}
             pagination={{ clickable: true }}
             keyboard={{ enabled: true }}
             initialSlide={startIndex}
             spaceBetween={20}
             slidesPerView={1}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: "100%", height: "100%" }}
           >
             {images.map((src, index) => (
               <SwiperSlide key={index}>
@@ -52,7 +58,13 @@ const AttachmentViewer = ({ attachments, selectedImage, open, handleClose }) => 
                   borderRadius="8px"
                 >
                   <img
-                 src={src ? (typeof src === "string" ? src : URL.createObjectURL(src)) : ""}
+                    src={
+                      src
+                        ? typeof src === "string"
+                          ? src
+                          : URL.createObjectURL(src)
+                        : ""
+                    }
                     alt={`Image ${index}`}
                     style={{
                       maxHeight: "100%",

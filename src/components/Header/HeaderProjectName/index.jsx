@@ -24,7 +24,7 @@ const { useState, useEffect, useRef } = require("react");
 
 const HeaderProjectName = () => {
   const { isDownSm, isDownXs } = useResponsiveBreakpoints();
-  const {fontSize} = useResponsiveValue();
+  const { fontSize } = useResponsiveValue();
   const { state, dispatch } = useProjectsContext();
   const { activeProject, loadingActiveProject } = state;
   const router = useRouter();
@@ -158,7 +158,7 @@ const HeaderProjectName = () => {
                 maxHeight={"44px"}
                 loading={loadingUpdateProjectName}
                 error={errorUpdateProjectName}
-                helperText={helperTextUpdateProjectName}
+                // helperText={helperTextUpdateProjectName}
                 acitveBorder={"2px solid #1C252E"}
                 boxMargin={"8px 0px 0px 0px"}
               />
