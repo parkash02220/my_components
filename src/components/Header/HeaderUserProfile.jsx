@@ -180,8 +180,8 @@ const HeaderUserProfile = () => {
               position: "relative",
               padding: "3px",
               borderRadius: "50%",
-              width: "40px",
-              height: "40px",
+              width: { xs: "32px", sm: "36px", lg: "40px" },
+              height: { xs: "32px", sm: "36px", lg: "40px" },
               background: "#F4F4F4",
               border: "1px dotted #1C252E",
             }}

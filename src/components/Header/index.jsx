@@ -68,7 +68,7 @@ export default function Header() {
                 pr: 1,
                 cursor: "pointer",
                 borderRadius: "12px",
-                // gap: 1,
+                gap: '4px',
               }}
             >
               <HeaderNotifications />

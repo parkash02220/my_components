@@ -112,8 +112,6 @@ export const Header = ({ currentTab, totalCount, unReadCount,handleDrawer }) => 
                 background: "transparent",
                 fontSize: "1.5rem",
                 color: "#637381",
-                paddingTop: "0px",
-                margin: "8px",
                 borderRadius: "50%",
                 overflow: "hidden",
                 "&:hover": {
