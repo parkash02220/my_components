@@ -2,16 +2,17 @@ import MyTextField from "@/components/MyTextfield/MyTextfield";
 import { Box, IconButton } from "@mui/material";
 import TextMessage from "./TextMessage";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import { useChatContext } from "@/context/Chat/ChatContext";
 
 const MessageInputBox = ({
   selectedUsers,
-  selectedDirectoryItem,
   onSendMessage,
   onSendInputMessageChange,
   sendMessageInputValue,
 }) => {
   const {isXs} = useResponsiveBreakpoints();
-  const isDisabled = !selectedDirectoryItem && selectedUsers?.length === 0;
+  const {activeChatRoom} = useChatContext()?.state;
+  const isDisabled = !activeChatRoom && selectedUsers?.length === 0;
   const inputIcons = [
     {
       name: "add image",

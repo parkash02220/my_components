@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 const { useSocketContext } = require("@/context/Socket/SocketContext");
 import * as actions from "@/context/Chat/action";
 import { useChatContext } from "@/context/Chat/ChatContext";
@@ -15,11 +15,11 @@ const useJoinRoomSocket = ({
     activeChatRoomRef.current = state.activeChatRoom;
   }, [state.activeChatRoom]);
 
-  const joinRoom = (roomId) => {
+  const joinRoom = useCallback((roomId) => {
     if (!socket || !roomId) return;
     console.log(":::Emitting joinRoom for:", roomId);
     socket.emit("joinRoom", roomId);
-  };
+  },[socket]); 
 
   useEffect(() => {
     if (!socket) return;

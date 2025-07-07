@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import RoomDetails from "./RoomDetails";
 import RoomAttachments from "./RoomAttachments";
 
-const MultipleUsers = ({ selectedDirectoryItem }) => {
+const MultipleUsers = ({ activeChatRoom }) => {
   return (
     <>
       <Box
@@ -12,7 +12,7 @@ const MultipleUsers = ({ selectedDirectoryItem }) => {
         flex={"1 1 auto"}
         minHeight={0}
       >
-        <RoomDetails users={selectedDirectoryItem?.participants} />
+        <RoomDetails users={activeChatRoom?.participants} />
         {/* <RoomAttachments /> */}
       </Box>
     </>

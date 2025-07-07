@@ -5,10 +5,12 @@ import GroupUsersDetails from "./GroupUsersDetails";
 import InitialHeader from "./InitialHeader";
 import { useMemo } from "react";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
+import { useChatContext } from "@/context/Chat/ChatContext";
 
-const Header = ({ toggleExpand, selectedDirectoryItem, selectedUsers, setSelectedUsers }) => {
-  const isGroup = selectedDirectoryItem?.isGroup;
-  const hasSelectedItem = Boolean(selectedDirectoryItem);
+const Header = ({ toggleExpand, selectedUsers, setSelectedUsers }) => {
+  const {activeChatRoom} = useChatContext()?.state;
+  const isGroup = activeChatRoom?.isGroup;
+  const hasSelectedItem = Boolean(activeChatRoom);
   const {isXs} = useResponsiveBreakpoints();
   const HeaderContent = useMemo(() => {
     if (!hasSelectedItem) {
@@ -21,11 +23,11 @@ const Header = ({ toggleExpand, selectedDirectoryItem, selectedUsers, setSelecte
     }
 
     return isGroup ? (
-      <GroupUsersDetails groupDetails={selectedDirectoryItem} />
+      <GroupUsersDetails groupDetails={activeChatRoom} />
     ) : (
-      <SingleUserDetails userDetails={selectedDirectoryItem} />
+      <SingleUserDetails userDetails={activeChatRoom} />
     );
-  }, [hasSelectedItem, isGroup, selectedUsers, setSelectedUsers, selectedDirectoryItem]);
+  }, [hasSelectedItem, isGroup, selectedUsers, setSelectedUsers, activeChatRoom]);
 
   return (
     <Box
@@ -41,7 +43,6 @@ const Header = ({ toggleExpand, selectedDirectoryItem, selectedUsers, setSelecte
       {hasSelectedItem && (
         <HeaderIconButtons
           toggleExpand={toggleExpand}
-          selectedDirectoryItem={selectedDirectoryItem}
         />
       )}
     </Box>

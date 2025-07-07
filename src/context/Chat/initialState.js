@@ -24,7 +24,7 @@ export const initialState = {
     loadingChatWindow:false,
     errorChatWindow:null,
     activeChatRoomId:null,
-    activeChatRoom:{},
+    activeChatRoom:null,
     allChatMessages:{},
     // groupChat:{
     //     page:0,

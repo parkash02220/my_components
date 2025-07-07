@@ -3,6 +3,7 @@ import { initialState } from "./initialState";
 import * as actions from "./action";
 import {
   formatAddMessageInCHatMessages,
+  formatAddMessageReceivedInSocket,
   formatAllMessages,
   formatChatroomsAndUsers,
   formatLastMessage,
@@ -64,6 +65,14 @@ function chatReducer(state = initialState, action) {
       };
     }
 
+    case actions.CLEAR_ACTIVE_CHAT_ROOM: {
+      return {
+        ...state,
+        activeChatRoomId: null,
+        activeChatRoom: null,
+      };
+    }
+
     case actions.SET_CHAT_MESSAGES_REQUEST: {
       const { chatRoomId, page } = payload;
       return {
@@ -117,9 +126,9 @@ function chatReducer(state = initialState, action) {
       return {
         ...state,
         allChatMessages: {
-          ...state.allChatMessages,
+          ...state?.allChatMessages,
           [chatRoomId]: {
-            ...(state.allChatMessages[chatRoomId] || {}),
+            ...(state?.allChatMessages[chatRoomId] || {}),
             loading: false,
             error: error || "Failed to load messages.",
             messages: [],
@@ -136,13 +145,13 @@ function chatReducer(state = initialState, action) {
         allChatMessages: {
           ...state.allChatMessages,
           [chatRoomId]: {
-            ...state.allChatMessages[chatRoomId],
+            ...state?.allChatMessages[chatRoomId],
             messages: [
-              ...(state.allChatMessages[chatRoomId].messages || []),
+              ...(state?.allChatMessages[chatRoomId]?.messages || []),
               message,
             ],
             totalMessages:
-              (state.allChatMessages[chatRoomId].totalMessages || 0) + 1,
+              (state?.allChatMessages[chatRoomId]?.totalMessages || 0) + 1,
           },
         },
       };
@@ -221,26 +230,9 @@ function chatReducer(state = initialState, action) {
 
     case actions.ADD_NEW_MESSAGE_IN_CHAT: {
       const { newMessageData, activeUser } = payload;
-      const { chatRoomId, message } = newMessageData;
-      const isRoomExists =
-        state.chatWindow.chatRooms?.allIds?.includes(chatRoomId);
-      if (!isRoomExists) return state;
-      const updatedMessage = message;
-      updatedMessage.isSentMessage = message?.sender?.id === activeUser?.id;
-      return {
-        ...state,
-        allChatMessages: {
-          ...state.allChatMessages,
-          [chatRoomId]: {
-            ...state.allChatMessages[chatRoomId],
-            messages: [
-              ...(state.allChatMessages[chatRoomId]?.messages || []),
-              updatedMessage,
-            ],
-          },
-        },
-      };
+      return formatAddMessageReceivedInSocket(state, newMessageData, activeUser);
     }
+    
 
     case actions.ADD_USER_IN_TYPING_USERS: {
       const { user } = payload;

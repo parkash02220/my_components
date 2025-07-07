@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import SentMessage from "./SentMessage";
 import ReceivedMessage from "./ReceivedMessage";
 import useGetAllMessages from "@/hooks/chat/useGetAllMessages";
-const RenderMessages = ({ selectedDirectoryItem }) => {
+const RenderMessages = ({ activeChatRoom }) => {
   const {
     getAllMessages,
     loadMoreRef,
@@ -16,7 +16,7 @@ const RenderMessages = ({ selectedDirectoryItem }) => {
     error,
     pageSize,
     hasMore,
-  } = useGetAllMessages(selectedDirectoryItem);
+  } = useGetAllMessages();
   const bottomRef = useRef(null);
   const isFirstLoad = useRef(true);
   const prevMessagesLength = useRef(0);
@@ -56,7 +56,7 @@ const RenderMessages = ({ selectedDirectoryItem }) => {
     isFirstLoad.current = true;
     preFirstMessageId.current = null;
     prevMessagesLength.current = 0;
-  }, [selectedDirectoryItem?.id]);
+  }, [activeChatRoom?.id]);
 
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;

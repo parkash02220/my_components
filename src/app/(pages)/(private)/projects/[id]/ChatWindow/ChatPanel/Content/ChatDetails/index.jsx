@@ -3,9 +3,11 @@ import SingleUser from "./SingleUser";
 import MultipleUsers from "./MultipleUsers";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import MobileSideDrawer from "@/components/MySideDrawer/MobileSideDrawer";
+import { useChatContext } from "@/context/Chat/ChatContext";
 
-const ChatDetails = ({ isExpanded, setIsExpanded, selectedDirectoryItem }) => {
-  const isGroup = selectedDirectoryItem?.isGroup;
+const ChatDetails = ({ isExpanded, setIsExpanded }) => {
+  const {activeChatRoom} = useChatContext()?.state;
+  const isGroup = activeChatRoom?.isGroup;
   const { isXs } = useResponsiveBreakpoints();
   const handleMobileDrawer = () => {
     setIsExpanded(false);
@@ -29,9 +31,9 @@ const ChatDetails = ({ isExpanded, setIsExpanded, selectedDirectoryItem }) => {
         borderLeft="1px solid rgba(145,158,171,0.2)"
       >
         {isGroup ? (
-          <MultipleUsers selectedDirectoryItem={selectedDirectoryItem} />
+          <MultipleUsers activeChatRoom={activeChatRoom} />
         ) : (
-          <SingleUser selectedDirectoryItem={selectedDirectoryItem} />
+          <SingleUser activeChatRoom={activeChatRoom} />
         )}
       </Box>
     </Box>
@@ -66,9 +68,9 @@ const ChatDetails = ({ isExpanded, setIsExpanded, selectedDirectoryItem }) => {
       }
     >
       {isGroup ? (
-        <MultipleUsers selectedDirectoryItem={selectedDirectoryItem} />
+        <MultipleUsers activeChatRoom={activeChatRoom} />
       ) : (
-        <SingleUser selectedDirectoryItem={selectedDirectoryItem} />
+        <SingleUser activeChatRoom={activeChatRoom} />
       )}
     </MobileSideDrawer>
   );

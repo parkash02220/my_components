@@ -4,17 +4,17 @@ import { useAppContext } from "@/context/App/AppContext";
 import { useInView } from "react-intersection-observer";
 import { ApiCall } from "@/utils/ApiCall";
 import { convertIdFields } from "@/utils";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import * as actions from "@/context/Chat/action";
-const useGetAllMessages = (selectedDirectoryItem = {}) => {
+const useGetAllMessages = () => {
   const toastId = "get__messages";
   const { showToast } = useToast();
   const { dispatch, state } = useChatContext();
+  const {activeChatRoom} = state;
   const { activeUser } = useAppContext().state;
   const { ref: loadMoreRef, inView } = useInView();
-
   const { allChatMessages } = state;
-  const chatDetails = allChatMessages[selectedDirectoryItem?.id];
+  const chatDetails = allChatMessages[activeChatRoom?.id];
   const {
     messages = [],
     loading = false,
@@ -24,7 +24,7 @@ const useGetAllMessages = (selectedDirectoryItem = {}) => {
     hasMore = false,
   } = chatDetails || {};
 
-  const fetchMessages = async (chatRoomId, pageToFetch = page + 1) => {
+  const fetchMessages = useCallback(async (chatRoomId, pageToFetch = page + 1) => {
     dispatch({
       type: actions.SET_CHAT_MESSAGES_REQUEST,
       payload: { chatRoomId, page: pageToFetch - 1 },
@@ -58,27 +58,27 @@ const useGetAllMessages = (selectedDirectoryItem = {}) => {
         activeUser,
       },
     });
-  };
+  },[dispatch,showToast,activeUser]);
 
   useEffect(() => {
     if (
-      selectedDirectoryItem?.id &&
+      activeChatRoom?.id &&
       inView &&
       hasMore &&
       !loading &&
       messages.length > 0
     ) {
-      fetchMessages(selectedDirectoryItem.id);
+      fetchMessages(activeChatRoom.id);
     }
-  }, [inView, hasMore, loading, selectedDirectoryItem?.id,messages?.length]);
+  }, [inView, hasMore, loading, activeChatRoom?.id,messages?.length]);
 
-  const initMessages = async (chatRoomId) => {
+  const initMessages = useCallback(async (chatRoomId) => {
     await fetchMessages(chatRoomId, 1);
-  };
+  },[fetchMessages]); 
 
   return {
     initMessages,
-    loadMoreRef,
+    loadMoreRef,  
     messages,
     loading: page === 0 && loading,
     loadingMore: page > 0 && loading,

@@ -3,8 +3,8 @@ import UserDetails from "./UserDetails";
 import UserInformation from "./UserInformation";
 import UserAttachments from "./UserAttachments";
 
-const SingleUser = ({ selectedDirectoryItem }) => {
-    const user = selectedDirectoryItem?.targetUser || selectedDirectoryItem;
+const SingleUser = ({ activeChatRoom }) => {
+    const user = activeChatRoom?.targetUser || activeChatRoom;
   return (
     <>
       <Box

@@ -3,7 +3,6 @@ import MessageBox from "./MessageBox";
 import MessageInputBox from "./MessageInputBox";
 
 const ChatScreen = ({
-  selectedDirectoryItem,
   selectedUsers,
   onSendMessage,
   onSendInputMessageChange,
@@ -18,11 +17,9 @@ const ChatScreen = ({
         flexDirection={"column"}
       >
         <MessageBox
-          selectedDirectoryItem={selectedDirectoryItem}
         />
         <MessageInputBox
           selectedUsers={selectedUsers}
-          selectedDirectoryItem={selectedDirectoryItem}
           onSendMessage={onSendMessage}
           onSendInputMessageChange={onSendInputMessageChange}
           sendMessageInputValue={sendMessageInputValue}

@@ -1,20 +1,22 @@
 import { useAppContext } from "@/context/App/AppContext";
+import { useChatContext } from "@/context/Chat/ChatContext";
 import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { Box, IconButton } from "@mui/material";
-
+import * as actions from '@/context/Chat/action';
 const Header = ({
   isExpanded,
   setIsExpanded,
   toggleExpand,
-  setSelectedDirectoryItem,
   clearInput,
+  removeActiveChatRoom,
 }) => {
   const { fontSize } = useResponsiveValue();
   const { isXs } = useResponsiveBreakpoints();
   const { activeUser } = useAppContext()?.state;
+  const {dispatch} = useChatContext();
   const handleResetDirectory = () => {
-    setSelectedDirectoryItem(null);
+    removeActiveChatRoom();
     clearInput();
     setIsExpanded(!isXs);
   };

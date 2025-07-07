@@ -7,7 +7,6 @@ import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 
 const ChatPanel = ({
   chatWindow,
-  selectedDirectoryItem,
   selectedUsers,
   setSelectedUsers,
   onSendMessage,
@@ -32,14 +31,12 @@ const ChatPanel = ({
         <Header
           toggleExpand={toggleExpand}
           chatWindow={chatWindow}
-          selectedDirectoryItem={selectedDirectoryItem}
           selectedUsers={selectedUsers}
           setSelectedUsers={setSelectedUsers}
         />
         <Content
           isExpanded={isExpanded}
           setIsExpanded={setIsExpanded}
-          selectedDirectoryItem={selectedDirectoryItem}
           selectedUsers={selectedUsers}
           onSendMessage={onSendMessage}
           onSendInputMessageChange={onSendInputMessageChange}

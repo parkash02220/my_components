@@ -161,6 +161,66 @@ export const formatAddMessageInCHatMessages = (payload, activeUser) => {
   return message;
 };
 
+export const formatAddMessageReceivedInSocket = (state, payload, activeUser) => {
+  const { chatRoomId, message } = payload;
+  const isRoomExists = state.chatWindow.chatRooms?.allIds?.includes(chatRoomId);
+  if (!isRoomExists) return state;
+
+  const updatedMessage = {
+    ...message,
+    isSentMessage: message?.sender?.id === activeUser?.id,
+  };
+
+  const updatedLastMessage = {
+    ...message,
+    isSentByActiveUser: message?.sender?.id === activeUser?.id,
+    isSeenByActiveUser: message?.readBy?.includes(activeUser?.id),
+  };
+
+  if (
+    updatedMessage?.chatRoom === state?.activeChatRoomId &&
+    !message?.readBy?.includes(activeUser?.id)
+  ) {
+    updatedMessage.readBy = [...message?.readBy, activeUser?.id];
+    updatedLastMessage.isSeenByActiveUser = true;
+  }
+
+  const allIds = state.chatWindow.chatRooms.allIds || [];
+  const updatedAllIds = [
+    chatRoomId,
+    ...allIds.filter((id) => id !== chatRoomId),
+  ];
+
+  return {
+    ...state,
+    allChatMessages: {
+      ...state.allChatMessages,
+      [chatRoomId]: {
+        ...state.allChatMessages[chatRoomId],
+        messages: [
+          ...(state.allChatMessages[chatRoomId]?.messages || []),
+          updatedMessage,
+        ],
+      },
+    },
+    chatWindow: {
+      ...state.chatWindow,
+      chatRooms: {
+        ...state.chatWindow.chatRooms,
+        allIds: updatedAllIds,
+        byIds: {
+          ...state.chatWindow.chatRooms.byIds,
+          [chatRoomId]: {
+            ...state.chatWindow.chatRooms.byIds[chatRoomId],
+            lastMessage: updatedLastMessage,
+          },
+        },
+      },
+    },
+  };
+};
+
+
 export const formatNewChatRoomPayload = (chatRoom, activeUser) => {
   let updatedChatRoom = chatRoom;
   if (!chatRoom?.isGroup) {

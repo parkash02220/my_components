@@ -2,13 +2,13 @@
 import { useAppContext } from "@/context/App/AppContext";
 import { useChatContext } from "@/context/Chat/ChatContext";
 import { useSocketContext } from "@/context/Socket/SocketContext";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import * as actions from "@/context/Chat/action";
 const useMarkAllMsgAsReadSocket = () => {
   const socket = useSocketContext();
   const { activeUser } = useAppContext().state;
   const { dispatch } = useChatContext();
-  const markAllMsgAsRead = (chatId) => {
+  const markAllMsgAsRead = useCallback((chatId) => {
     const readerId = activeUser?.id;
     if (!chatId || !readerId) return;
 
@@ -21,7 +21,7 @@ const useMarkAllMsgAsReadSocket = () => {
       type: actions.MARK_CHAT_AS_READ,
       payload: { chatId, readerId },
     });
-  };
+  },[activeUser,socket,dispatch]); 
 
   useEffect(() => {
     if (!socket) return;

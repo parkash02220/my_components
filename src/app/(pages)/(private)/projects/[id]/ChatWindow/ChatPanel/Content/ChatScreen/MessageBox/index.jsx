@@ -6,8 +6,8 @@ import TypingIndicator from "./TypingIndicator";
 import { getFullName } from "@/utils";
 import RenderMessages from "./RenderMessages";
 
-const MessageBox = ({ selectedDirectoryItem }) => {
-  const { typingUsers } = useChatContext().state;
+const MessageBox = () => {
+  const { typingUsers,activeChatRoom } = useChatContext().state;
   const isSomeoneTyping = typingUsers?.length > 0;
   const typingUser = typingUsers[typingUsers?.length - 1];
   return (
@@ -23,7 +23,7 @@ const MessageBox = ({ selectedDirectoryItem }) => {
         alignItems={"flex-start"}
         position={"relative"}
       >
-        {selectedDirectoryItem ? (
+        {activeChatRoom ? (
           <Box
             display={"flex"}
             flexDirection={"column"}
@@ -35,7 +35,7 @@ const MessageBox = ({ selectedDirectoryItem }) => {
               paddingInline:{xs:1,sm:3},
             }}
           >
-            <RenderMessages selectedDirectoryItem={selectedDirectoryItem} />
+            <RenderMessages activeChatRoom={activeChatRoom} />
             {isSomeoneTyping && (
               <TypingIndicator
                 username={getFullName(

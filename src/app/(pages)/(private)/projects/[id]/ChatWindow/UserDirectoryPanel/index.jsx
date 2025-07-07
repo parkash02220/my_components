@@ -10,8 +10,8 @@ import MobileSideDrawer from "@/components/MySideDrawer/MobileSideDrawer";
 
 const UserDirectoryPanel = ({
   handleChatStart,
-  setSelectedDirectoryItem,
   clearInput,
+  removeActiveChatRoom,
 }) => {
   const { isXs } = useResponsiveBreakpoints();
   const {
@@ -107,8 +107,8 @@ const UserDirectoryPanel = ({
               isExpanded={isExpanded}
               setIsExpanded={setIsExpanded}
               toggleExpand={toggleExpand}
-              setSelectedDirectoryItem={setSelectedDirectoryItem}
               clearInput={clearInput}
+              removeActiveChatRoom={removeActiveChatRoom}
             />
             {isExpanded && (
               <SearchBox
@@ -141,8 +141,8 @@ const UserDirectoryPanel = ({
                   isExpanded={isExpanded}
                   setIsExpanded={setIsExpanded}
                   toggleExpand={toggleExpand}
-                  setSelectedDirectoryItem={setSelectedDirectoryItem}
                   clearInput={clearInput}
+                  removeActiveChatRoom={removeActiveChatRoom}
                 />
                 <SearchBox
                   handleSearchClear={handleSearchClear}
