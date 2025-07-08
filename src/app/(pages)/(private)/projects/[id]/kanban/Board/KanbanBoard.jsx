@@ -35,7 +35,7 @@ export default function KanbanBoard({
   activeProject,
   projectVersion,
 }) {
-  const {isXs,isSm,isMd} = useResponsiveBreakpoints();
+  const {isXs,isSm,isMd,isLg} = useResponsiveBreakpoints();
   const [openDrawer, setOpenDrawer] = useState(false);
   const inputRef = useRef(null);
   const wasDragged = useRef(false);
