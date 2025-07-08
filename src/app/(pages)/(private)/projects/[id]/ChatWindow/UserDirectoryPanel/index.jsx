@@ -13,7 +13,7 @@ const UserDirectoryPanel = ({
   clearInput,
   removeActiveChatRoom,
 }) => {
-  const { isXs } = useResponsiveBreakpoints();
+  const { isXs,isMd } = useResponsiveBreakpoints();
   const {
     loading,
     loadingMore,
@@ -29,7 +29,7 @@ const UserDirectoryPanel = ({
   } = useGetChatroomsAndUsers();
   const { chatWindow } = useChatContext().state;
   const { usersWithoutChatRoom, chatRooms } = chatWindow;
-  const [isExpanded, setIsExpanded] = useState(!isXs);
+  const [isExpanded, setIsExpanded] = useState(!isMd);
   const toggleExpand = () => {
     setIsExpanded((pre) => !pre);
   };
@@ -64,11 +64,11 @@ const UserDirectoryPanel = ({
           flexDirection: "column",
           // flex:1,
           minHeight: 0,
-          width: isExpanded ? 320 : isXs ? 0 : 96,
+          width: isExpanded ? 320 : isMd ? 0 : 96,
           transition: "width 200ms cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        {isXs && (
+        {isMd && (
           <IconButton
             onClick={() => setIsExpanded(true)}
             sx={{
@@ -95,7 +95,7 @@ const UserDirectoryPanel = ({
             />
           </IconButton>
         )}
-        {!isXs && (
+        {!isMd && (
           <Box
             minHeight={0}
             display={"flex"}
@@ -129,11 +129,11 @@ const UserDirectoryPanel = ({
             />
           </Box>
         )}
-        {isXs && (
+        {isMd && (
           <MobileSideDrawer
             open={isExpanded}
             handleDrawer={() => setIsExpanded(false)}
-            width={"calc(100vw - 32px)"}
+            width={ isXs ? "calc(100vw - 32px)" : "400px"}
             showCloseDialogIcon={false}
             header={
               <Box>

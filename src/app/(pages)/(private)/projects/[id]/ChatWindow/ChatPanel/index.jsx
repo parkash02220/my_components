@@ -13,8 +13,8 @@ const ChatPanel = ({
   onSendInputMessageChange,
   sendMessageInputValue,
 }) => {
-  const {isXs} = useResponsiveBreakpoints();
-  const [isExpanded, setIsExpanded] = useState(!isXs);
+  const {isXs,isMd} = useResponsiveBreakpoints();
+  const [isExpanded, setIsExpanded] = useState(!isMd);
   const toggleExpand = () => {
     setIsExpanded((pre) => !pre);
   };
@@ -24,7 +24,7 @@ const ChatPanel = ({
         sx={{
           minWidth: 0,
           display: "flex",
-          flex:{xs:'1 0 100%',sm:"1 1 auto"} ,
+          flex:{xs:'1 0 100%',lg:"1 1 auto"} ,
           flexDirection: "column",
         }}
       >

@@ -8,11 +8,11 @@ import { useChatContext } from "@/context/Chat/ChatContext";
 const ChatDetails = ({ isExpanded, setIsExpanded }) => {
   const {activeChatRoom} = useChatContext()?.state;
   const isGroup = activeChatRoom?.isGroup;
-  const { isXs } = useResponsiveBreakpoints();
+  const { isXs,isMd } = useResponsiveBreakpoints();
   const handleMobileDrawer = () => {
     setIsExpanded(false);
   }
-  return !isXs ? (
+  return !isMd ? (
     <Box
       minHeight={0}
       display="flex"
@@ -42,7 +42,7 @@ const ChatDetails = ({ isExpanded, setIsExpanded }) => {
       open={isExpanded}
       anchor="right"
       handleDrawer={handleMobileDrawer}
-      width={"calc(100vw - 32px)"}
+      width={ isXs ? "calc(100vw - 32px)" : "400px"}
       showCloseDialogIcon={false}
       header={
         <Box>

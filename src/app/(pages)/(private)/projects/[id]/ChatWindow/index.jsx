@@ -17,7 +17,7 @@ import useSetupChatSockets from "@/hooks/chat/useSetupChatSockets";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const ChatWindow = ({ projectId }) => {
-  const { isXs } = useResponsiveBreakpoints();
+  const { isXs,isMd } = useResponsiveBreakpoints();
   const { isCHatWindowAvailable } = useInitializeChatWindow();
   const { state,dispatch } = useChatContext();
   const { loadingChatWindow, chatWindow } = state;
@@ -104,8 +104,8 @@ const ChatWindow = ({ projectId }) => {
 
   return (
     <Box display="flex" flexDirection="column" flex="1 1 auto" minHeight={0}>
-      <Box display="flex" alignItems="center" mb={isXs ? 1 : 2}>
-        <BackButton fontSize={16} path={`/projects/${projectId}`} text={isXs ? "Chat" : "Back"} />
+      <Box display="flex" alignItems="center" mb={isMd ? 1 : 2}>
+        <BackButton fontSize={16} path={`/projects/${projectId}`} text={isMd ? "Chat" : "Back"} />
       </Box>
       <Box
         className="chatWindow__container"
@@ -113,11 +113,11 @@ const ChatWindow = ({ projectId }) => {
           flex: "1 1 0px",
           display: "flex",
           flexDirection: "column",
-          padding: isXs ? "8px 8px 16px 8px" : "8px 40px 64px 40px",
+          padding: isMd ? "8px 8px 16px 8px" : "8px 40px 64px 40px",
         }}
       >
-        {!isXs && (
-          <Typography variant="h4" color="#1C252E" mb={isXs ? 2 : 5} fontSize={isXs ? 18 : 24} fontWeight={700}>
+        {!isMd && (
+          <Typography variant="h4" color="#1C252E" mb={isMd ? 2 : 5} fontSize={isXs ? 18 : 24} fontWeight={700}>
             Chat
           </Typography>
         )}

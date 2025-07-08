@@ -71,7 +71,7 @@ const MessageInputBox = ({
             sendMessageInputValue={sendMessageInputValue}
           />
         </Box>
-        <Box display={"flex"} alignItems={"space-between"}>
+        {/* <Box display={"flex"} alignItems={"space-between"}>
           <Box display={"flex"} flexGrow={1}>
             {inputIcons?.map((icon, i) => {
               return (
@@ -95,7 +95,7 @@ const MessageInputBox = ({
               );
             })}
           </Box>
-        </Box>
+        </Box> */}
       </Box>
     </>
   );
