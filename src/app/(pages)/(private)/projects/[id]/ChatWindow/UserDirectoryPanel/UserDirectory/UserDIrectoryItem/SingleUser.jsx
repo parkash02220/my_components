@@ -77,7 +77,8 @@ const SingleUser = ({
       <UserWithStatus avatar={avatar || ""} isOnline={isOnline} />
       { isExpanded && (
         <>
-          <Box sx={{ flex: "1 1 auto", minWidth: 0,display:'flex',flexDirection:'column' }}>
+          <Box sx={{display:'flex',flexDirection:'column',flex:'1 1 auto',minWidth:0 }}>
+            <Box display={'flex'} gap={'4px'} justifyContent={'space-between'} alignItems={'center'}>
             <Typography
               overflow="hidden"
               textOverflow="ellipsis"
@@ -87,18 +88,7 @@ const SingleUser = ({
             >
               {userName}
             </Typography>
-            {lastMessage && (
-              <Typography
-                overflow="hidden"
-                textOverflow="ellipsis"
-                whiteSpace="nowrap"
-                variant="secondary"
-              >
-                {lastMessageText}
-              </Typography>
-            )}
-          </Box>
-          <Box
+            <Box
             display="flex"
             alignSelf="stretch"
             alignItems="flex-end"
@@ -111,13 +101,24 @@ const SingleUser = ({
                 whiteSpace="nowrap"
                 fontSize={isXs ? 10 : 12}
                 color="#919EAB"
-                mb="12px"
               >
                 {getTimeAgo(lastMessage?.updatedAt)}
               </Typography>
             )}
             {isMsgUnread && (
               <Box width={8} height={8} borderRadius="50%" bgcolor="#00B8D9" />
+            )}
+          </Box>
+          </Box>
+            {lastMessage && (
+              <Typography
+                overflow="hidden"
+                textOverflow="ellipsis"
+                whiteSpace="nowrap"
+                variant="secondary"
+              >
+                {lastMessageText}
+              </Typography>
             )}
           </Box>
         </>

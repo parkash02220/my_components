@@ -15,7 +15,7 @@ import { EditProfileForm } from "@/components/forms";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 const GeneralTab = ({ formik, isAdmin, avatar, activeUser }) => {
-  const {isDownXs,isDownMd} = useResponsiveBreakpoints();
+  const {isDownXs,isDownMd,isSm} = useResponsiveBreakpoints();
   const {fontSize} = useResponsiveValue();
   const { showToast } = useToast();
   const { uploadProfileImage, loadingUploadProfile, progress } =
@@ -72,7 +72,7 @@ const GeneralTab = ({ formik, isAdmin, avatar, activeUser }) => {
       />
       <Box
         sx={{
-          padding: isDownXs ? "8px" : "8px 40px 64px 40px",
+          padding: isDownXs ? "8px" : isSm ? "16px" : "8px 40px 64px 40px",
           marginInline: "auto",
           display: "flex",
           flexDirection: "column",

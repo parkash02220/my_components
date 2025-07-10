@@ -27,7 +27,6 @@ const useGetAllDepartments = () => {
         type: "error",
         message: res?.error?.message || "Error while fetching departments",
       });
-      hasFetchedOnce.current = true;
     }
 
     const convertedIdResponse = convertIdFields(res?.data?.departments || []);
@@ -35,13 +34,13 @@ const useGetAllDepartments = () => {
       type: actions.GET_ALL_DEPARTMENTS_SUCCESS,
       payload: convertedIdResponse,
     });
-    hasFetchedOnce.current = true;
   }, [showToast, dispatch]);
 
   useEffect(() => {
     if (hasFetchedOnce.current || allDepartments?.allIds?.length > 0) return;
+    hasFetchedOnce.current = true;
     fetchAllDepartments();
-  }, [hasFetchedOnce.current,allDepartments]);
+  }, [allDepartments]);
 
   return {
     loading,

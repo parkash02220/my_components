@@ -65,7 +65,7 @@ export const getUserTableColumns = ({
       label: "",
       type: "multipleIconButton",
       icons: [
-        { icon: "edit", onClick: handleEditClick, tooltip: "Edit Task" },
+        { icon: "edit", onClick: handleEditClick, tooltip: "Edit user" },
         // add more icons here
       ],
       sx: { minWidth: "40px", maxWidth: "50px", padding: "4px" },

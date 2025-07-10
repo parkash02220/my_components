@@ -204,7 +204,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     />
                   </Box>
                 </Box>
-                <Box>
+                <Box display={'flex'} justifyContent={'center'} width={'100%'} paddingInline={'8px'}>
                   <Typography
                     sx={{
                       margin: 0,
@@ -212,6 +212,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
+                      
                     }}
                     variant="title1"
                   >
@@ -220,7 +221,7 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     }`}
                   </Typography>
                 </Box>
-                <Box>
+                <Box display={'flex'} justifyContent={'center'} width={'100%'} paddingInline={'8px'}>
                   <Typography
                     sx={{
                       margin: 0,

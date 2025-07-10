@@ -1,7 +1,7 @@
 
 import { convertIdFields } from "@/utils";
 import { ApiCall } from "@/utils/ApiCall";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useToast from "../common/useToast";
 import * as actions from "@/context/Projects/action";
 import { useProjectsContext } from "@/context/Projects/ProjectsContex";
@@ -12,6 +12,7 @@ const useGetProject = (id) => {
   const { dispatch,state } = useProjectsContext();
   const { activeProject, loadingActiveProject,errorActiveProject, projectVersion } = state;
   const [isNotFound,setIsNotFound] = useState(false);
+  const isFetchedOnce = useRef(false);
   const getProjectById = async (id) => {
     setIsNotFound(false);
     dispatch({type:actions.SET_ACTIVE_PROJECT_REQUEST});
@@ -33,8 +34,13 @@ const useGetProject = (id) => {
   };
   
   useEffect(() => {
-    if (id && activeProject?.id !== id) getProjectById(id);
-  }, [id]);
+    if (!id || isFetchedOnce.current) return;
+    if (activeProject?.id !== id) {
+      console.log(":::id",id,activeProject)
+      getProjectById(id);
+      isFetchedOnce.current = true;
+    }
+  }, [id, activeProject?.id]);
 
   return {getProjectById,activeProject,loadingActiveProject,errorActiveProject,projectVersion,isNotFound };
 };

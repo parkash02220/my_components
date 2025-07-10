@@ -144,7 +144,7 @@ const SubTasksTab = () => {
                     </Typography>
                   }
                 />
-                <Box>
+                <Box flex={'0 0 auto'}>
                   <IconButton onClick={() => handleDeletePopupOpen(subtask)}>
                     <img
                       src="/delete.svg"

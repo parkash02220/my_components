@@ -5,10 +5,10 @@ import { Box, Typography } from "@mui/material";
 import { useMemo } from "react";
 
 const UserDetails = ({ user }) => {
-  const {isXs} = useResponsiveBreakpoints();
+  const { isXs } = useResponsiveBreakpoints();
   const { allDesignations } = useOrganizationContext()?.state;
   const designation = useMemo(() => {
-    return getDesignationName(allDesignations,user?.userProfile?.designation);
+    return getDesignationName(allDesignations, user?.userProfile?.designation);
   }, [allDesignations, user]);
   return (
     <>
@@ -42,10 +42,18 @@ const UserDetails = ({ user }) => {
             }}
           />
         </Box>
-        <Typography variant="title1" fontWeight={600}>
+        <Typography
+          variant="title1"
+          fontWeight={600}
+          maxWidth={"100%"}
+          overflow={"hidden"}
+          textOverflow={"ellipsis"}
+          whiteSpace={"nowrap"}
+          paddingInline={"8px"}
+        >
           {getFullName(user?.firstName, user?.lastName)}
         </Typography>
-        <Typography variant="secondary" mt={"4px"}>
+        <Typography variant="secondary" mt={"4px"} sx={{wordBreak:"break-word",paddingInline:1}}>
           {designation}
         </Typography>
       </Box>

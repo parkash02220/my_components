@@ -41,12 +41,11 @@ const useGetDesignationsByDepartment = (departmentId) => {
     });
 
     setLoading(false);
-    hasFetchedOnce.current = true;
   }, [departmentId, showToast]);
 
   useEffect(() => {
-    if (!departmentId || designations?.length > 0) return;
-    hasFetchedOnce.current = false;
+    if (!departmentId || designations?.length > 0 || hasFetchedOnce.current) return;
+    hasFetchedOnce.current = true;
     fetchDesignationByDepartment();
   }, [departmentId, fetchDesignationByDepartment, designations]);
 

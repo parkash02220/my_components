@@ -141,8 +141,24 @@ const HeaderProjectName = () => {
         loading={loadingDeleteProject}
       />
       {activeProject?.name && !loadingActiveProject ? (
-        <Box display={"flex"} gap={1} alignItems={"center"}>
-          <Box>
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={1}
+          sx={{
+            maxWidth: "100%",
+            overflow: "hidden",
+          }}
+        >
+          <Box
+            sx={{
+              flex: "1 1 auto",
+              overflow: "hidden",
+              minWidth: 0,
+              display:'flex',
+              alignItems:'center',
+            }}
+          >
             {showProjectNameTextfield ? (
               <MyTextField
                 inputRef={inputRef}
@@ -158,7 +174,6 @@ const HeaderProjectName = () => {
                 maxHeight={"44px"}
                 loading={loadingUpdateProjectName}
                 error={errorUpdateProjectName}
-                // helperText={helperTextUpdateProjectName}
                 acitveBorder={"2px solid #1C252E"}
                 boxMargin={"8px 0px 0px 0px"}
               />
@@ -167,28 +182,34 @@ const HeaderProjectName = () => {
                 variant="title1"
                 fontWeight={700}
                 onClick={handleProjectNameStartEdidting}
+                sx={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: "inline-block",
+                  width: "100%",
+                }}
               >
                 {activeProject?.name}
               </Typography>
             )}
           </Box>
-          <Box display={"flex"} gap={"2px"} alignItems={"center"}>
+
+          <Box display="flex" gap="2px" alignItems="center" flexShrink={0}>
             <IconButton
               onClick={handleMenuOpen}
               sx={{
                 padding: "0px",
                 width: "20px",
                 height: "20px",
-                "&:hover": {
-                  background: "transparent",
-                },
+                "&:hover": { background: "transparent" },
               }}
             >
               <img
                 src="/columnMenuIcon.svg"
                 alt="column menu icon"
-                width={"100%"}
-                height={"100%"}
+                width="100%"
+                height="100%"
               />
             </IconButton>
           </Box>

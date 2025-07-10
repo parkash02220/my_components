@@ -50,6 +50,7 @@ export default function Header() {
               display: "flex",
               flex: "1 1 auto",
               justifyContent: "center",
+              minWidth:'16px',
             }}
           ></Box>
           <Box

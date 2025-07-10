@@ -19,7 +19,7 @@ const SingleUserDetails = ({ userDetails }) => {
   );
 
   return (
-    <Box display="flex" gap={2} alignItems="center">
+    <Box display="flex" gap={2} alignItems="center" flex={'1 1 auto'} minWidth={0}>
       <UserWithStatus
         width={isXs ? 30 : 40}
         height={isXs ? 30 : 40}
@@ -27,7 +27,7 @@ const SingleUserDetails = ({ userDetails }) => {
         avatar={user?.avatar}
       />
       <Box flex="1 1 auto" minWidth={0}>
-        <Typography variant="primary" fontWeight={600} noWrap>
+        <Typography variant="primary" fontWeight={600} noWrap overflow={'hidden'} textOverflow={'ellipsis'} display={'block'} maxWidth={'100%'}>
           {fullName}
         </Typography>
         <Typography color={ isOnline ? "green" : "#637381"} fontSize={isXs ? 10 : 12} fontWeight={500} noWrap>

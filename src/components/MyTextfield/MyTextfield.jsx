@@ -1,5 +1,4 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useMemo } from "react";
 import { TextField, Box, CircularProgress, Typography } from "@mui/material";
 
 const MyTextField = ({
@@ -55,31 +54,48 @@ const MyTextField = ({
   color,
   ...props
 }) => {
-  const shrinkTypes = [
-    "text",
-    "number",
-    "password",
-    "email",
-    "tel",
-    "url",
-    "search",
-  ];
+  const shrinkTypes = ["text", "number", "password", "email", "tel", "url", "search"];
   const shouldShrink = shrinkTypes.includes(type) ? undefined : true;
+
+  const mergedInputProps = useMemo(() => ({
+    ...(inputProps || {}),
+    style: {
+      padding,
+      fontSize: inputFontSize,
+      maxHeight,
+    }
+  }), [inputProps, padding, inputFontSize, maxHeight]);
+
+
+  const mergedInputPropsMain = useMemo(() => ({
+    ...(InputProps || {}),
+    startAdornment: customStartAdornment,
+    endAdornment: loading ? (
+      <CircularProgress size={20} sx={{ marginRight: "10px" }} />
+    ) : customEndAdornment,
+    style: {
+      borderRadius,
+      padding,
+      fontSize: inputFontSize,
+      maxHeight,
+    }
+  }), [
+    InputProps, customStartAdornment, customEndAdornment,
+    loading, borderRadius, padding, inputFontSize, maxHeight
+  ]);
+
+
+  const mergedInputLabelProps = useMemo(() => ({
+    ...InputLabelProps,
+    shrink: shrink || shouldShrink,
+    style: {
+      fontSize: labelFontSize,
+      fontWeight: labelFontWeight,
+    }
+  }), [InputLabelProps, shrink, shouldShrink, labelFontSize, labelFontWeight]);
+
   return (
     <Box sx={{ width: fullWidth ? "100%" : width || "fit-content" }} m={boxMargin || 0}>
-      {/* {label && (
-        <Typography
-          variant="body2"
-          sx={{
-            fontSize: labelFontSize,
-            color: error ? errorBorderColor : disabled ? "#a9a9a9" : labelColor,
-            marginBottom: "6px",
-            ...customLabelSx,
-          }}
-        >
-          {label} {required && <span style={{ color: requiredColor }}>*</span>}
-        </Typography>
-      )} */}
       <TextField
         value={value}
         label={label}
@@ -98,30 +114,9 @@ const MyTextField = ({
         minRows={minRows}
         autoComplete={autoComplete}
         helperText={error && helperText}
-        inputProps={inputProps} 
-        InputProps={{
-          ...InputProps,
-          style: {
-            borderRadius,
-            padding,
-            fontSize: inputFontSize,
-            maxHeight:maxHeight,
-          },
-          startAdornment: customStartAdornment,
-          endAdornment: loading ? (
-            <CircularProgress size={20} sx={{ marginRight: "10px" }} />
-          ) : (
-            customEndAdornment
-          ),
-        }}
-        InputLabelProps={{
-          ...InputLabelProps,
-          shrink: shrink || shouldShrink,
-          style: {
-            fontSize: labelFontSize,
-            fontWeight:labelFontWeight,
-          },
-        }}
+        inputProps={mergedInputProps}
+        InputProps={mergedInputPropsMain}
+        InputLabelProps={mergedInputLabelProps}
         sx={{
           width,
           minWidth,
@@ -131,38 +126,32 @@ const MyTextField = ({
           },
           "& .MuiOutlinedInput-input::placeholder": {
             color: placeholderColor,
-            fontWeight:fontWeight,
+            fontWeight,
           },
           "& .MuiOutlinedInput-root": {
-            color:color || "black",
-            border:border,
+            color: color || "black",
+            border,
             borderRadius,
             boxShadow,
-            background: background,
-            fontWeight:fontWeight,
+            background,
+            fontWeight,
             ...(border === "none"
-            ? {
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: "none",
-              },
-              "&:hover .MuiOutlinedInput-notchedOutline": {
-                border: "none",
-              },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                border: "none",
-              },
-            }
-          : {
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: error ? errorBorderColor : borderColor,
-              },
-              "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: error ? errorBorderColor : hoverBorderColor || borderColor,
-              },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                border: acitveBorder || `1px solid ${borderColor}`,
-              },
-            }),
+              ? {
+                  "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                  "&:hover .MuiOutlinedInput-notchedOutline": { border: "none" },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": { border: "none" },
+                }
+              : {
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: error ? errorBorderColor : borderColor,
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: error ? errorBorderColor : hoverBorderColor || borderColor,
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    border: acitveBorder || `1px solid ${borderColor}`,
+                  },
+                }),
           },
           "& .MuiInputLabel-root": {
             color: disabled ? "#a9a9a9" : labelColor,

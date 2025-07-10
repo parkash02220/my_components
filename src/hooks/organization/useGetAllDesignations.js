@@ -27,7 +27,6 @@ const useGetAllDesignations = () => {
         type: "error",
         message: res?.error?.message || "Error while fetching designations",
       });
-      hasFetchedOnce.current = true;
     }
 
     const convertedIdResponse = convertIdFields(res?.data?.designations || []);
@@ -35,13 +34,13 @@ const useGetAllDesignations = () => {
       type: actions.GET_ALL_DESIGNATION_SUCCESS,
       payload: convertedIdResponse,
     });
-    hasFetchedOnce.current = true;
   }, [showToast, dispatch]);
 
   useEffect(() => {
     if (hasFetchedOnce.current || allDesignations?.allIds?.length > 0) return;
+    hasFetchedOnce.current = true;
     fetchAllDesignations();
-  }, [allDesignations,hasFetchedOnce.current]);
+  }, [allDesignations]);
 
   return {
     loading,

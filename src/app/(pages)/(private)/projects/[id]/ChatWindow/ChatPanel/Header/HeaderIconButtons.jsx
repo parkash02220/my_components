@@ -32,7 +32,7 @@ const HeaderIconButtons = ({toggleExpand}) => {
   ];
   return (
     <>
-      <Box flexGrow={1} display={"flex"} justifyContent={"flex-end"}>
+      <Box flex={'1 0 auto'} display={"flex"} justifyContent={"flex-end"}>
         {icons?.map((icon, i) => {
           return (
             <React.Fragment key={i}>

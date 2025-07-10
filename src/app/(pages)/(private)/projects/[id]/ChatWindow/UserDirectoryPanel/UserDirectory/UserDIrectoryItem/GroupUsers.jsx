@@ -60,29 +60,31 @@ const GroupUsers = ({ isExpanded, chatroom, handleChatStart }) => {
       <UserWithStatus type="group__chat" avatar={avatars} />
       { isExpanded && (
         <>
-          <Box sx={{ flex: "1 1 auto", minWidth: 0 }}>
+          <Box sx={{display:'flex',flexDirection:'column',flex:'1 1 auto',minWidth:0 }}>
+          <Box display={'flex'} gap={'4px'} justifyContent={'space-between'} alignItems={'center'}>
             <Typography noWrap fontWeight={600} fontSize={fontSize} color="#1C252E">
               {name}
             </Typography>
-            {lastMessage && (
-              <Typography noWrap fontSize={fontSize} color="#637381">
-                {lastMessageText}
-              </Typography>
-            )}
-          </Box>
-          <Box
+            <Box
             display="flex"
             alignSelf="stretch"
             alignItems="flex-end"
             flexDirection="column"
           >
             {lastMessage && (
-              <Typography noWrap fontSize={isXs ? 10 : 12} color="#919EAB" mb="12px">
+              <Typography noWrap fontSize={isXs ? 10 : 12} color="#919EAB">
                 {getTimeAgo(lastMessage?.updatedAt)}
               </Typography>
             )}
             {isMsgUnread && (
               <Box width={8} height={8} borderRadius="50%" bgcolor="#00B8D9" />
+            )}
+          </Box>
+          </Box>
+            {lastMessage && (
+              <Typography noWrap fontSize={fontSize} color="#637381">
+                {lastMessageText}
+              </Typography>
             )}
           </Box>
         </>

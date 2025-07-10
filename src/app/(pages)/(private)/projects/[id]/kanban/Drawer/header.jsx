@@ -93,8 +93,9 @@ export const Header = ({ activeTask, handleDrawer }) => {
         padding={"20px 8px 20px 20px"}
         borderBottom={"1px solid rgba(145 158 171 / 0.2)"}
         pl={isDownXs ? "8px" : ""}
+        gap={1}
       >
-        <Box display={"flex"} gap={1} alignItems={"center"}>
+        <Box display={"flex"} gap={isDownXs ? 0 : 1} alignItems={"center"} flex={'0 1 auto'} minWidth={0}>
           {isDownXs ? (
             <IconButton
               onClick={handleDrawer}
@@ -105,6 +106,7 @@ export const Header = ({ activeTask, handleDrawer }) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                flexShrink:0,
               }}
             >
               <img
@@ -125,6 +127,8 @@ export const Header = ({ activeTask, handleDrawer }) => {
               padding: "6px 8px",
               borderWidth: "0px",
               borderRadius: "8px",
+              flex:'0 1 auto',
+              minWidth:0,
               transition:
                 "background-color 250ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1), border-color 250ms cubic-bezier(0.4, 0, 0.2, 1);",
             }}
@@ -133,6 +137,9 @@ export const Header = ({ activeTask, handleDrawer }) => {
             variant="primary"
               sx={{
                 fontWeight: 700,
+                whiteSpace:'nowrap',
+                overflow:"hidden",
+                textOverflow:"ellipsis",
               }}
             >
               {sectionOfActiveTask?.name}
@@ -195,7 +202,7 @@ export const Header = ({ activeTask, handleDrawer }) => {
             ))}
           </Menu>
         </Box>
-        <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
+        <Box display={"flex"} alignItems={"center"} justifyContent={"center"} flexShrink={0}>
           {/* <MyTooltip title={"Like"} placement="bottom">
             <IconButton
               sx={{

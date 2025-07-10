@@ -42,6 +42,7 @@ const MyMenu = ({
                 overflowY: "auto",
                 borderRadius: "8px",
                 minWidth: "180px",
+                maxWidth:"500px",
                 padding: "4px",
                 scrollbarWidth: "none",
                 "&::-webkit-scrollbar": {
@@ -94,16 +95,22 @@ const MyMenu = ({
                 }}
                 sx={{
                   p: "0px 8px",
-                  color: "#637381",
-                  fontSize: 14,
-                  fontWeight: 500,
                   height: "34px",
                   display: "flex",
                   alignItems: "center",
                   borderRadius: "8px",
                 }}
               >
+                <Typography sx={{
+                  color: "#637381",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  maxWidth:'100%',
+                  textOverflow:"ellipsis",
+                  overflow:'hidden',
+                }}>
                 {child.title}
+                </Typography>
               </MenuItem>
             );
           })}

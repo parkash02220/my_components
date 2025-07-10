@@ -73,8 +73,9 @@ export default function ColumnHeader({ tasks, column, attributes, listeners }) {
         justifyContent="space-between"
         // borderBottom="2px solid #ddd"
         height={"50px"}
+        overflow={'hidden'}
       >
-        <Box display={"flex"} alignItems={"center"} gap={1} flex={1}>
+        <Box display={"flex"} alignItems={"center"} gap={1} flex={'1 1 auto'} minWidth={0}>
           <Typography
             sx={{
               height: isXs ? "20px" : "24px",
@@ -113,6 +114,11 @@ export default function ColumnHeader({ tasks, column, attributes, listeners }) {
                   minWidth="0px"
                   loading={loadingUpdateColumnName}
                   inputFontSize={isXs ? "13px" : isMd ? "14px" : "16px"}
+                  inputProps={{
+                    sx: {
+                      padding: "8px 12px",
+                    }
+                  }}
                 />
               </Box>
             </Fade>
@@ -125,7 +131,10 @@ export default function ColumnHeader({ tasks, column, attributes, listeners }) {
                 color: "rgb(35, 37, 46)",
                 width: "100%",
                 cursor: "text",
-                fontSize:{xs:13,sm:14,lg:16}
+                fontSize:{xs:13,sm:14,lg:16},
+                whiteSpace:'nowrap',
+                overflow:'hidden',
+                textOverflow:'ellipsis',
               }}
             >
               {columnName}
@@ -137,6 +146,7 @@ export default function ColumnHeader({ tasks, column, attributes, listeners }) {
           alignItems={"center"}
           justifyContent={"center"}
           gap={isXs ? 0 : 1}
+          flexShrink={0}
         >
           <Box
             sx={{
