@@ -209,11 +209,10 @@ export default function MySideDrawer({ open, setOpen }) {
                   },
                 }}
               >
-                <ResponsiveImage
+                 <img
                   src={"/websperoLogo.svg"}
                   alt={"logo"}
-                  height={40}
-                  width={open ? 80 : 50}
+                  style={{ height: "40px", width: open ? "80px" : "50px" }}
                 />
               </IconButton>
             ) : (

@@ -62,7 +62,7 @@ const CreateProjectDialog = ({
       open={open}
       handleClose={handleDialogClose}
       title="Create New Project"
-      fontSize={isDownXs ? "18px" : "24px"}
+      fontSize={isDownXs ? "16px" : "20px"}
       width={isDownXs ? "100%" : "auto"}
       content={
         <Box pt={2} paddingInline={1}>

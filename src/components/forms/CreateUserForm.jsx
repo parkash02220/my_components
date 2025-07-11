@@ -17,7 +17,7 @@ const CreateUserForm = ({ formik }) => {
   const { isDownXs } = useResponsiveBreakpoints();
   const {fontSize} = useResponsiveValue();
   const { minDate, maxDate } = getCalendarMinMaxDate(13, 130);
-  const { loading, error, fetchDesignationByDepartment, hasFetchedOnce } =
+  const { loading, error, fetchDesignationByDepartment } =
     useGetDesignationsByDepartment();
 
   return (

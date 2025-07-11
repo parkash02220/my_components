@@ -9,7 +9,6 @@ const useGetDesignationsByDepartment = (departmentId) => {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const hasFetchedOnce = useRef(false);
   const { state, dispatch } = useOrganizationContext();
   const { designationsByDepartment } = state;
   const designations = designationsByDepartment[departmentId];
@@ -44,8 +43,7 @@ const useGetDesignationsByDepartment = (departmentId) => {
   }, [departmentId, showToast]);
 
   useEffect(() => {
-    if (!departmentId || designations?.length > 0 || hasFetchedOnce.current) return;
-    hasFetchedOnce.current = true;
+    if (!departmentId || designations?.length > 0) return;
     fetchDesignationByDepartment();
   }, [departmentId, fetchDesignationByDepartment, designations]);
 
@@ -53,7 +51,6 @@ const useGetDesignationsByDepartment = (departmentId) => {
     designations,
     loading,
     error,
-    hasFetchedOnce: hasFetchedOnce.current,
   };
 };
 
