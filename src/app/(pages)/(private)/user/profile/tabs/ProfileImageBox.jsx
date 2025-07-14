@@ -1,7 +1,7 @@
 import CropImageDialog from "@/components/CropImageDialog";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const ProfileImageBox = ({
   avatar,
@@ -11,10 +11,10 @@ const ProfileImageBox = ({
   loading,
   progress,
 }) => {
-  const {isDownXs} = useResponsiveBreakpoints();
+  const { isDownXs } = useResponsiveBreakpoints();
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-
+  const fileInputRef = useRef(null);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -24,6 +24,9 @@ const ProfileImageBox = ({
         setCropDialogOpen(true);
       };
       reader.readAsDataURL(file);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -75,6 +78,7 @@ const ProfileImageBox = ({
                 type="file"
                 accept="image/*"
                 hidden
+                ref={fileInputRef}
                 onChange={(e) => handleFileChange(e)}
               />
               <Box
