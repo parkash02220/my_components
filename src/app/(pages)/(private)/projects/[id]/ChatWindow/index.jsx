@@ -40,13 +40,20 @@ const ChatWindow = ({ projectId }) => {
 
   const { joinRoom, markAllMsgAsRead, initMessages } = useSetupChatSockets();
 
-  const { activeChatRoom, removeActiveChatRoom, status } =
-    useManageActiveChatRoom(
-      allChatRooms,
-      joinRoom,
-      markAllMsgAsRead,
-      initMessages
-    );
+  const {
+    activeChatRoom,
+    removeActiveChatRoom,
+    status,
+    startLoading,
+    setSuccess,
+    setFailure,
+    reset,
+  } = useManageActiveChatRoom(
+    allChatRooms,
+    joinRoom,
+    markAllMsgAsRead,
+    initMessages
+  );
 
   const {
     message,
@@ -84,25 +91,29 @@ const ChatWindow = ({ projectId }) => {
 
   const handleChatStart = async (chatRoom) => {
     if (!chatRoom?.id) return;
-    setSelectedUsers([]);
-
+    if(selectedUsers?.length > 0){
+      setSelectedUsers([]);
+    }
     const params = new URLSearchParams(searchParams.toString());
     params.set("chatRoomId", chatRoom.id);
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const handleTextMessageSubmit = async () => {
-    setSelectedUsers([]);
+   if(selectedUsers?.length > 0){
+      setSelectedUsers([]);
+    }
 
     if (activeChatRoom?.id) {
       await sendMessage(activeChatRoom);
       return;
     }
-
     const newRoom = await initializeChatRoom();
     if (newRoom) {
       await handleChatStart(newRoom);
       await sendMessage(newRoom);
+    } else {
+      setFailure("");
     }
   };
 

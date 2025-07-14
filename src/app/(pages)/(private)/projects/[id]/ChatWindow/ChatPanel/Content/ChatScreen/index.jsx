@@ -7,6 +7,7 @@ const ChatScreen = ({
   onSendMessage,
   onSendInputMessageChange,
   sendMessageInputValue,
+  status,
 }) => {
   return (
     <>
@@ -17,6 +18,7 @@ const ChatScreen = ({
         flexDirection={"column"}
       >
         <MessageBox
+        status={status}
         />
         <MessageInputBox
           selectedUsers={selectedUsers}

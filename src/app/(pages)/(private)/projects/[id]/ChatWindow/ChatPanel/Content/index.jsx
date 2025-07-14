@@ -10,6 +10,7 @@ const Content = ({
   onSendMessage,
   onSendInputMessageChange,
   sendMessageInputValue,
+  status,
 }) => {
   const {activeChatRoom} = useChatContext()?.state;
   return (
@@ -20,11 +21,13 @@ const Content = ({
           onSendMessage={onSendMessage}
           onSendInputMessageChange={onSendInputMessageChange}
           sendMessageInputValue={sendMessageInputValue}
+           status={status}
         />
-        {activeChatRoom && (
+        {(activeChatRoom || status === "success") && (
           <ChatDetails
             isExpanded={isExpanded}
             setIsExpanded={setIsExpanded}
+             status={status}
           />
         )}
       </Box>

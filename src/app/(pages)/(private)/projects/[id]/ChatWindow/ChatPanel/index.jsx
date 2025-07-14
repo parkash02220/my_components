@@ -59,6 +59,7 @@ const ChatPanel = ({
           onSendMessage={onSendMessage}
           onSendInputMessageChange={onSendInputMessageChange}
           sendMessageInputValue={sendMessageInputValue}
+           status={status}
         />
       </Box>
     </>

@@ -7,13 +7,13 @@ import { useMemo } from "react";
 import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import { useChatContext } from "@/context/Chat/ChatContext";
 
-const Header = ({ toggleExpand, selectedUsers, setSelectedUsers }) => {
+const Header = ({ toggleExpand, selectedUsers, setSelectedUsers,status }) => {
   const {activeChatRoom} = useChatContext()?.state;
   const isGroup = activeChatRoom?.isGroup;
   const hasSelectedItem = Boolean(activeChatRoom);
   const {isXs} = useResponsiveBreakpoints();
   const HeaderContent = useMemo(() => {
-    if (!hasSelectedItem) {
+    if (!hasSelectedItem || status === "error") {
       return (
         <InitialHeader
           selectedUsers={selectedUsers}

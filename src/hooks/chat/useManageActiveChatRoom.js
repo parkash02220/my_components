@@ -17,7 +17,6 @@ export default function useManageActiveChatRoom(
   const searchParams = useSearchParams();
   const { state, dispatch } = useChatContext();
   const { activeChatRoom } = state;
-
   const {
     status,
     error,
@@ -27,11 +26,10 @@ export default function useManageActiveChatRoom(
     setFailure,
     reset,
   } = useApiCallState();
-
+  
   const chatRoomId = searchParams.get("chatRoomId");
   const lastChatRoomIdRef = useRef(null);
   const abortControllerRef = useRef(null);
-
   useEffect(() => {
     if (!chatRoomId) {
       dispatch({ type: actions.CLEAR_ACTIVE_CHAT_ROOM });
@@ -95,13 +93,17 @@ export default function useManageActiveChatRoom(
       abortControllerRef.current.abort();
     }
 
-    reset();
-  }, [searchParams, pathname, router, dispatch, reset]);
+    setFailure("");
+  }, [searchParams, pathname, router, dispatch, setFailure]);
   return {
     activeChatRoom,
     status,
     error,
     loading,
     removeActiveChatRoom,
+    startLoading,
+    setSuccess,
+    setFailure,
+    reset,
   };
 }
