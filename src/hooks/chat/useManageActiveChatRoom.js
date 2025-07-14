@@ -4,6 +4,7 @@ import { useEffect, useCallback, useRef } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import * as actions from "@/context/Chat/action";
 import { useChatContext } from "@/context/Chat/ChatContext";
+import useApiCallState from "../common/useApiCallState";
 
 export default function useManageActiveChatRoom(
   allChatRooms,
@@ -17,25 +18,40 @@ export default function useManageActiveChatRoom(
   const { state, dispatch } = useChatContext();
   const { activeChatRoom } = state;
 
+  const {
+    status,
+    error,
+    loading,
+    startLoading,
+    setSuccess,
+    setFailure,
+    reset,
+  } = useApiCallState();
+
   const chatRoomId = searchParams.get("chatRoomId");
   const lastChatRoomIdRef = useRef(null);
   const abortControllerRef = useRef(null);
 
   useEffect(() => {
-    if(!chatRoomId){
+    if (!chatRoomId) {
       dispatch({ type: actions.CLEAR_ACTIVE_CHAT_ROOM });
+      setFailure("Chat room not found");
       return;
     }
-    if ( chatRoomId === lastChatRoomIdRef.current) return;
+
+    if (chatRoomId === lastChatRoomIdRef.current) return;
 
     const foundRoom = allChatRooms?.find((room) => room.id === chatRoomId);
-    if (!foundRoom) return;
+    if (!foundRoom) {
+      return;
+    }
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
-    lastChatRoomIdRef.current = chatRoomId;
 
+    lastChatRoomIdRef.current = chatRoomId;
+    startLoading();
     dispatch({ type: actions.SET_ACTIVE_CHAT_ROOM, payload: foundRoom });
 
     joinRoom(chatRoomId);
@@ -44,21 +60,27 @@ export default function useManageActiveChatRoom(
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    initMessages(chatRoomId, { signal: controller.signal }).catch((error) => {
-      if (error.name === "AbortError") {
-        console.log("initMessages aborted for chatRoomId:", chatRoomId);
-      } else {
-        console.error("initMessages failed:", error);
-      }
-    });
-
+    initMessages(chatRoomId, { signal: controller.signal })
+      .then(() => setSuccess())
+      .catch((error) => {
+        if (error.name === "AbortError") {
+          console.log("initMessages aborted for chatRoomId:", chatRoomId);
+        } else {
+          console.error("initMessages failed:", error);
+          setFailure(error.message || "Failed to load messages");
+        }
+      });
   }, [
     chatRoomId,
     allChatRooms,
     dispatch,
     joinRoom,
     markAllMsgAsRead,
-    initMessages
+    initMessages,
+    startLoading,
+    setSuccess,
+    setFailure,
+    reset,
   ]);
 
   const removeActiveChatRoom = useCallback(() => {
@@ -72,7 +94,14 @@ export default function useManageActiveChatRoom(
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
-  }, [searchParams, pathname, router, dispatch]);
 
-  return { activeChatRoom, removeActiveChatRoom };
+    reset();
+  }, [searchParams, pathname, router, dispatch, reset]);
+  return {
+    activeChatRoom,
+    status,
+    error,
+    loading,
+    removeActiveChatRoom,
+  };
 }

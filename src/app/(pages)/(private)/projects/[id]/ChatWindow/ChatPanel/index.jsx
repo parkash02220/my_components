@@ -12,19 +12,36 @@ const ChatPanel = ({
   onSendMessage,
   onSendInputMessageChange,
   sendMessageInputValue,
+  status,
 }) => {
-  const {isXs,isMd} = useResponsiveBreakpoints();
+  const { isXs, isMd } = useResponsiveBreakpoints();
   const [isExpanded, setIsExpanded] = useState(!isMd);
   const toggleExpand = () => {
     setIsExpanded((pre) => !pre);
   };
+
+  if (status === "idle" || status === "loading") {
+    return (
+      <Box
+        sx={{
+          minWidth: 0,
+          display: "flex",
+          flex: { xs: "1 0 100%", lg: "1 1 auto" },
+          flexDirection: "column",
+        }}
+      >
+        <Loader />
+      </Box>
+    );
+  }
+
   return (
     <>
       <Box
         sx={{
           minWidth: 0,
           display: "flex",
-          flex:{xs:'1 0 100%',lg:"1 1 auto"} ,
+          flex: { xs: "1 0 100%", lg: "1 1 auto" },
           flexDirection: "column",
         }}
       >
@@ -33,6 +50,7 @@ const ChatPanel = ({
           chatWindow={chatWindow}
           selectedUsers={selectedUsers}
           setSelectedUsers={setSelectedUsers}
+          status={status}
         />
         <Content
           isExpanded={isExpanded}
