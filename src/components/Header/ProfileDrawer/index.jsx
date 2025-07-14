@@ -89,92 +89,96 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     mb: 2,
                   }}
                 >
-                  <Box
-                    sx={{
-                      textAlign: "initial",
-                      width: "100%",
-                      height: "100%",
-                      position: "absolute",
-                      color: "#00A76F",
-                      padding: "1px",
-                      inset: "0px",
-                      margin: "auto",
-                      borderRadius: "inherit",
-                      animation: "rotateClockwise 5s linear infinite",
-                      WebkitMaskImage:
-                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
-                      WebkitMaskComposite: "xor", // for WebKit browsers (Chrome/Safari)
-                      maskImage:
-                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
-                      maskComposite: "exclude", // Firefox supports 'exclude' instead of 'xor'
-                    }}
-                  >
-                    <img
-                      src="/animationSvgWrapper.svg"
-                      alt="wrapper"
-                      style={{
-                        position: "absolute",
-                        height: "100%",
-                        width: "100%",
-                      }}
-                    />
-                    <Typography
+                  {activeUser?.avatar && (
+                    <Box
                       sx={{
-                        transform:
-                          "translateX(32.1081px) translateY(0.725105px) translateX(-50%) translateY(-50%)",
-                        width: "100px",
-                        height: "100px",
-                        filter: "blur(8px)",
-                        position: "absolute",
-                        background:
-                          "radial-gradient(#00A76F 40%, transparent 80%)",
-                      }}
-                    ></Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      textAlign: "initial",
-                      width: "100%",
-                      height: "100%",
-                      position: "absolute",
-                      transform: "scale(-1, -1)",
-                      color: "#FFAB00",
-                      padding: "1px",
-                      inset: "0px",
-                      margin: "auto",
-                      borderRadius: "50%",
-                      // animation: "rotateCounterClockwise 7s linear infinite",
-                      animation: "rotateClockwise 5s linear infinite",
-                      WebkitMaskImage:
-                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
-                      WebkitMaskComposite: "xor", // for WebKit browsers (Chrome/Safari)
-                      maskImage:
-                        "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
-                      maskComposite: "exclude", // Firefox supports 'exclude' instead of 'xor'
-                    }}
-                  >
-                    <img
-                      src="/animationSvgWrapper.svg"
-                      alt="wrapper"
-                      style={{
-                        position: "absolute",
-                        height: "100%",
+                        textAlign: "initial",
                         width: "100%",
-                      }}
-                    />
-                    <Typography
-                      sx={{
-                        transform:
-                          "translateX(32.1081px) translateY(0.725105px) translateX(-50%) translateY(-50%)",
-                        width: "100px",
-                        height: "100px",
-                        filter: "blur(8px)",
+                        height: "100%",
                         position: "absolute",
-                        background:
-                          "radial-gradient(#FFAB00 40%, transparent 80%)",
+                        color: "#00A76F",
+                        padding: "1px",
+                        inset: "0px",
+                        margin: "auto",
+                        borderRadius: "inherit",
+                        animation: "rotateClockwise 5s linear infinite",
+                        WebkitMaskImage:
+                          "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                        WebkitMaskComposite: "xor", // for WebKit browsers (Chrome/Safari)
+                        maskImage:
+                          "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                        maskComposite: "exclude", // Firefox supports 'exclude' instead of 'xor'
                       }}
-                    ></Typography>
-                  </Box>
+                    >
+                      <img
+                        src="/animationSvgWrapper.svg"
+                        alt="wrapper"
+                        style={{
+                          position: "absolute",
+                          height: "100%",
+                          width: "100%",
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          transform:
+                            "translateX(32.1081px) translateY(0.725105px) translateX(-50%) translateY(-50%)",
+                          width: "100px",
+                          height: "100px",
+                          filter: "blur(8px)",
+                          position: "absolute",
+                          background:
+                            "radial-gradient(#00A76F 40%, transparent 80%)",
+                        }}
+                      ></Typography>
+                    </Box>
+                  )}
+                  {activeUser?.avatar && (
+                    <Box
+                      sx={{
+                        textAlign: "initial",
+                        width: "100%",
+                        height: "100%",
+                        position: "absolute",
+                        transform: "scale(-1, -1)",
+                        color: "#FFAB00",
+                        padding: "1px",
+                        inset: "0px",
+                        margin: "auto",
+                        borderRadius: "50%",
+                        // animation: "rotateCounterClockwise 7s linear infinite",
+                        animation: "rotateClockwise 5s linear infinite",
+                        WebkitMaskImage:
+                          "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                        WebkitMaskComposite: "xor", // for WebKit browsers (Chrome/Safari)
+                        maskImage:
+                          "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px)",
+                        maskComposite: "exclude", // Firefox supports 'exclude' instead of 'xor'
+                      }}
+                    >
+                      <img
+                        src="/animationSvgWrapper.svg"
+                        alt="wrapper"
+                        style={{
+                          position: "absolute",
+                          height: "100%",
+                          width: "100%",
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          transform:
+                            "translateX(32.1081px) translateY(0.725105px) translateX(-50%) translateY(-50%)",
+                          width: "100px",
+                          height: "100px",
+                          filter: "blur(8px)",
+                          position: "absolute",
+                          background:
+                            "radial-gradient(#FFAB00 40%, transparent 80%)",
+                        }}
+                      ></Typography>
+                    </Box>
+                  )}
                   <Box
                     sx={{
                       position: "relative",
@@ -204,7 +208,12 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     />
                   </Box>
                 </Box>
-                <Box display={'flex'} justifyContent={'center'} width={'100%'} paddingInline={'8px'}>
+                <Box
+                  display={"flex"}
+                  justifyContent={"center"}
+                  width={"100%"}
+                  paddingInline={"8px"}
+                >
                   <Typography
                     sx={{
                       margin: 0,
@@ -212,7 +221,6 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
-                      
                     }}
                     variant="title1"
                   >
@@ -221,7 +229,12 @@ const ProfileDrawer = ({ open, handleDrawer }) => {
                     }`}
                   </Typography>
                 </Box>
-                <Box display={'flex'} justifyContent={'center'} width={'100%'} paddingInline={'8px'}>
+                <Box
+                  display={"flex"}
+                  justifyContent={"center"}
+                  width={"100%"}
+                  paddingInline={"8px"}
+                >
                   <Typography
                     sx={{
                       margin: 0,
