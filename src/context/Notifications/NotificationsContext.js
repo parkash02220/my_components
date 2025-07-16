@@ -1,27 +1,26 @@
 import { createContext, useContext, useReducer } from "react";
-import * as actions from './action'
+import * as actions from "./action";
 import { initialState } from "./initialState";
 const NotificationsContext = createContext();
 
 function notificationsReducer(state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
-
-     case actions.SET_NOTIFICATION_TAB: {
-        const tab = payload.tab;
-        return {
-          ...state,
-          notifications: {
-            ...state.notifications,
-            tab,
-            [tab]: state.notifications[tab] || {
-              data: [],
-              page: 1,
-              hasMore: true,
-            },
+    case actions.SET_NOTIFICATION_TAB: {
+      const tab = payload.tab;
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          tab,
+          [tab]: state.notifications[tab] || {
+            data: [],
+            page: 1,
+            hasMore: true,
           },
-        };
-      }
+        },
+      };
+    }
     case actions.CLEAR_NOTIFICATIONS: {
       return {
         ...state,
@@ -29,9 +28,7 @@ function notificationsReducer(state = initialState, action) {
           ...state.notifications,
           all: { data: [], page: 0, hasMore: true },
           unread: { data: [], page: 0, hasMore: true },
-          pageSize:10,
-          totalCount:0,
-          unReadCount:0,
+          pageSize: 10,
         },
       };
     }
@@ -39,8 +36,8 @@ function notificationsReducer(state = initialState, action) {
     case actions.SET_NOTIFICATIONS_REQUEST: {
       return {
         ...state,
-        loadingNotifications:true,
-        errorNotifications:null,
+        loadingNotifications: true,
+        errorNotifications: null,
       };
     }
 
@@ -62,15 +59,15 @@ function notificationsReducer(state = initialState, action) {
           unReadCount: totalUnread,
           totalCount,
         },
-        loadingNotifications:false,
+        loadingNotifications: false,
       };
     }
 
     case actions.SET_NOTIFICATIONS_FAILURE:
       return {
         ...state,
-          loadingNotifications:false,
-        errorNotifications:payload,
+        loadingNotifications: false,
+        errorNotifications: payload,
       };
 
     case actions.NEW_NOTIFICATION_RECEIVED: {
@@ -112,32 +109,36 @@ function notificationsReducer(state = initialState, action) {
       };
 
     case actions.MARK_NOTIFICATION_AS_READ: {
-      const { notificationId,user} = payload;
+      const { notificationId, user } = payload;
       const updatedAllNotifications = state?.notifications?.all?.data?.map(
         (notification) => {
           if (notification?.id === notificationId) {
             return {
               ...notification,
-              seenBy: [...(notification?.seenBy || []),{id:notification?.id,seen:true,user}],
-            }
+              seenBy: [
+                ...(notification?.seenBy || []),
+                { id: notification?.id, seen: true, user },
+              ],
+            };
           }
           return notification;
         }
       );
-      const updatedUnreadNotifications = state?.notifications?.unread?.data?.filter(
-        (notification) => notification?.id !== notificationId
-      );
+      const updatedUnreadNotifications =
+        state?.notifications?.unread?.data?.filter(
+          (notification) => notification?.id !== notificationId
+        );
       return {
         ...state,
         notifications: {
           ...state.notifications,
-          all:{
+          all: {
             ...state.notifications?.all,
-            data:updatedAllNotifications,
+            data: updatedAllNotifications,
           },
-          unread:{
+          unread: {
             ...state.notifications?.unread,
-            data:updatedUnreadNotifications,
+            data: updatedUnreadNotifications,
           },
           unReadCount: (state.notifications.unReadCount || 1) - 1,
         },
@@ -145,12 +146,15 @@ function notificationsReducer(state = initialState, action) {
     }
 
     case actions.MARK_ALL_NOTIFICATION_AS_READ: {
-      const {user} = payload;
+      const { user } = payload;
       const updatedAllNotifications = state?.notifications?.all?.data?.map(
         (notification) => {
           return {
             ...notification,
-            seenBy: [...(notification?.seenBy || []),{id:notification?.id,seen:true,user}],
+            seenBy: [
+              ...(notification?.seenBy || []),
+              { id: notification?.id, seen: true, user },
+            ],
           };
         }
       );
@@ -158,47 +162,46 @@ function notificationsReducer(state = initialState, action) {
         ...state,
         notifications: {
           ...state.notifications,
-          all:{
+          all: {
             ...state?.notifications?.all,
-            data:updatedAllNotifications,
+            data: updatedAllNotifications,
           },
-          unread:{
-           ...state?.notifications?.unread,
-           data:[],
-           page:0,
-           hasMore:true,
+          unread: {
+            ...state?.notifications?.unread,
+            data: [],
+            page: 0,
+            hasMore: true,
           },
           unReadCount: 0,
         },
       };
     }
 
-    case actions.SET_NOTIFICATIONS_COUNT:{
-      const {unreadCount=0,totalCount=0} = payload;
+    case actions.SET_NOTIFICATIONS_COUNT: {
+      const { unreadCount = 0, totalCount = 0 } = payload;
       return {
         ...state,
-        notifications:{
+        notifications: {
           ...state?.notifications,
-          unReadCount:unreadCount,
+          unReadCount: unreadCount,
           totalCount,
-        }
-      }
+        },
+      };
     }
 
-
     default:
-        return state;
+      return state;
   }
 }
 
-export function NotificationsContextProvider({children}){
-    const [state,dispatch] = useReducer(notificationsReducer,initialState);
+export function NotificationsContextProvider({ children }) {
+  const [state, dispatch] = useReducer(notificationsReducer, initialState);
 
-    return (
-        <NotificationsContext.Provider value={{state,dispatch}}>
-            {children}
-        </NotificationsContext.Provider>
-    )
+  return (
+    <NotificationsContext.Provider value={{ state, dispatch }}>
+      {children}
+    </NotificationsContext.Provider>
+  );
 }
 
 export const useNotificationContext = () => useContext(NotificationsContext);

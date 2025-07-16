@@ -8,17 +8,7 @@ import useNotifications from "@/hooks/notifications/useNotifications";
 import * as actions from "@/context/Notifications/action";
 import { useNotificationContext } from "@/context/Notifications/NotificationsContext";
 
-const index = ({
-  open,
-  handleDrawer,
-  notifications,
-  loadingNotifications,
-  totalCount,
-  unReadCount,
-  loadMoreRef,
-  hasMore,
-  page,
-}) => {
+const index = ({ open, handleDrawer }) => {
   const { dispatch } = useNotificationContext();
   const tabValues = [
     {
@@ -34,11 +24,25 @@ const index = ({
   ];
   const [currentTab, setCurrentTab] = useState("all");
 
+  const {
+    notifications,
+    loadingNotifications,
+    errorNotifications,
+    fetchNotifications,
+    totalCount,
+    unReadCount,
+    loadMoreRef,
+    hasMore,
+    clearNotifications,
+    page,
+  } = useNotifications(open);
+
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
   };
 
   const handleRightDrawerClose = () => {
+    clearNotifications();
     handleDrawer();
     setTimeout(() => {
       setCurrentTab("all");

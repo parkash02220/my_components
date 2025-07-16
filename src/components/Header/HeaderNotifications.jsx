@@ -9,31 +9,21 @@ import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 import useGetNotificationCount from "@/hooks/notifications/useGetNotificationCount";
 import { useNotificationsSocket } from "@/hooks/sockets/notifications/useNotificationsSocket";
+import { useNotificationContext } from "@/context/Notifications/NotificationsContext";
 const HeaderNotifications = () => {
   useGetNotificationCount();
   useNotificationsSocket();
-  const {iconSize} = useResponsiveValue();
+  const { iconSize } = useResponsiveValue();
   const { isDownXs } = useResponsiveBreakpoints();
   const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
-  const {
-    notifications,
-    loadingNotifications,
-    errorNotifications,
-    fetchNotifications,
-    totalCount,
-    unReadCount,
-    loadMoreRef,
-    hasMore,
-    clearNotifications,
-    page,
-  } = useNotifications(notificationDrawerOpen);
+  const { unReadCount: unreadNotifiCount = 0 } =
+    useNotificationContext()?.state?.notifications || {};
+
   const handleNotificationDrawerOpen = async () => {
     setNotificationDrawerOpen(true);
-    await fetchNotifications(true);
   };
 
   const handleNotificationDrawerClose = () => {
-    clearNotifications();
     setNotificationDrawerOpen(false);
   };
   return (
@@ -41,13 +31,6 @@ const HeaderNotifications = () => {
       <NotificationDrawer
         open={notificationDrawerOpen}
         handleDrawer={handleNotificationDrawerClose}
-        totalCount={totalCount}
-        notifications={notifications}
-        unReadCount={unReadCount}
-        loadingNotifications={loadingNotifications}
-        loadMoreRef={loadMoreRef}
-        hasMore={hasMore}
-        page={page}
       />
       <IconButton
         onClick={handleNotificationDrawerOpen}
@@ -61,7 +44,7 @@ const HeaderNotifications = () => {
           outline: "0px",
           borderWidth: "0px",
           margin: "0px",
-          marginTop:"5px",
+          marginTop: "5px",
           textDecoration: "none",
           flex: "0 0 auto",
           borderRadius: "50%",
@@ -82,7 +65,7 @@ const HeaderNotifications = () => {
             display: "inline-flex",
           }}
         />
-        {unReadCount > 0 && (
+        {unreadNotifiCount > 0 && (
           <Typography
             sx={{
               display: "flex",
@@ -104,7 +87,7 @@ const HeaderNotifications = () => {
               borderRadius: "10px",
             }}
           >
-            {unReadCount || 0}
+            {unreadNotifiCount}
           </Typography>
         )}
       </IconButton>
