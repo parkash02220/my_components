@@ -14,6 +14,7 @@ import useResponsiveBreakpoints from "@/hooks/common/useResponsiveBreakpoints";
 import useResponsiveValue from "@/hooks/common/responsive/useResponsiveValue";
 export default function SignIn() {
   const router = useRouter();
+  const [hasMounted, setHasMounted] = useState(false);
   const { isDownXs, isDownMd } = useResponsiveBreakpoints();
   const { fontSize } = useResponsiveValue();
   const { loadingLogin, loginUser, errorMsg, errorLogin } = useLogin();
@@ -51,6 +52,12 @@ export default function SignIn() {
   const handleGoogleLogin = () => {
     loginUserWithGoogle(router);
   };
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted) return;
+  
   return (
     <>
       <Box className="signInContainer" display={"flex"} minHeight={"100dvh"}>
