@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { formatDistanceToNowStrict } from "date-fns";
 export const getAuthTokenFromCookies = () => {
   return Cookies.get("auth_token");
 };
@@ -67,23 +68,37 @@ const uploadImage = async (file) => {
 
 const debouncedUpload = debounce(uploadImage, 1000);
 
+// export function getTimeAgo(updatedAt) {
+//   const updatedDate = new Date(updatedAt);
+//   const now = new Date();
+//   const diffMs = now - updatedDate;
+
+//   const diffMinutes = Math.floor(diffMs / (1000 * 60));
+//   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+//   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+//   if (diffMinutes < 1) return "Just now";
+//   if (diffHours < 1) {
+//     return `${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""} before`;
+//   }
+//   if (diffDays < 1) {
+//     return `${diffHours} hour${diffHours !== 1 ? "s" : ""} before`;
+//   }
+//   return `${diffDays} day${diffDays !== 1 ? "s" : ""} before`;
+// }
+
 export function getTimeAgo(updatedAt) {
-  const updatedDate = new Date(updatedAt);
   const now = new Date();
-  const diffMs = now - updatedDate;
+  const updatedDate = new Date(updatedAt);
+  const diffInSeconds = (now - updatedDate) / 1000;
 
-  const diffMinutes = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (diffInSeconds < 60) {
+    return "Just now";
+  }
 
-  if (diffMinutes < 1) return "Just now";
-  if (diffHours < 1) {
-    return `${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""} before`;
-  }
-  if (diffDays < 1) {
-    return `${diffHours} hour${diffHours !== 1 ? "s" : ""} before`;
-  }
-  return `${diffDays} day${diffDays !== 1 ? "s" : ""} before`;
+  return formatDistanceToNowStrict(updatedDate, {
+    addSuffix: true,
+  });
 }
 
 export function formatDueDateRange(due_start_date, due_end_date) {
